@@ -1,0 +1,67 @@
+{
+  "ReverseProxy": {
+    "Routes": {
+      "Identity Service": {
+        "ClusterId": "identityCluster",
+        "Match": {
+          "Path": "/api/identity/{**everything}"
+        },
+        "Transforms": [
+          {
+            "PathRemovePrefix": "/api/identity"
+          },
+          {
+            "RequestHeadersCopy": "true"
+          },
+          {
+            "RequestHeaderOriginalHost": "true"
+          }
+        ]
+      },
+      "Ordering Service": {
+        "ClusterId": "orderingCluster",
+        "Match": {
+          "Path": "/api/ordering/{**everything}"
+        }
+      }
+    },
+    "Clusters": {
+      "identityCluster": {
+        "Destinations": {
+          "destination1": {
+            "Address": "http://localhost:5078",
+            "Health": "http://localhost:5078/health"
+          }
+        }
+      },
+      "orderingCluster": {
+        "Destinations": {
+          "destination1": {
+            "Address": "http://localhost:5078"
+          },
+          "destination2": {
+            "Address": "http://localhost:7722"
+          }
+        },
+        "HealthCheck": {
+          //          "Active": {
+          //            "Enabled": "true",
+          //            "Interval": "00:00:10",
+          //            "Timeout": "00:00:10",
+          //            "Policy": "ConsecutiveFailures",
+          //            "Path": "/health"
+          //          },
+          "Passive": {
+            "Enabled": true,
+            "Policy": "TransportFailureRate",
+            "ReactivationPeriod": "00:00:10"
+          }
+        },
+        "MetaData": {
+          "TransportFailureRateHealthPolicy.RateLimit": "0.5",
+          "ConsecutiveFailuresHealthPolicy.Threshold": "3"
+        }
+      }
+    }
+  }
+}
