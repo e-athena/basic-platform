@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 模块
 /// </summary>
-[Table("AuthorityModules")]
+[Table("authority_modules")]
 public class Module : EntityCore, ICreator, IUpdater
 {
     /// <summary>

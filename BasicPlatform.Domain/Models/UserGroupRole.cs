@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 用户组与角色关联
 /// </summary>
-[Table("AuthorityUserGroupRoles")]
+[Table("authority_user_group_roles")]
 public class UserGroupRole : ValueObject
 {
     /// <summary>

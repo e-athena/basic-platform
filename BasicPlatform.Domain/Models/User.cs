@@ -6,9 +6,9 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 用户
 /// </summary>
-[Table("AuthorityUsers")]
+[Table("authority_users")]
 // ReSharper disable once ClassNeverInstantiated.Global
-public class User : EntityCore, ICreator, IUpdater
+public sealed class User : EntityCore, ICreator, IUpdater
 {
     /// <summary>
     /// 用户名
@@ -57,7 +57,7 @@ public class User : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 创建人
     /// </summary>
-    public virtual User? CreatedUser { get; set; }
+    public User? CreatedUser { get; set; }
 
     /// <summary>
     /// 最后更新人Id

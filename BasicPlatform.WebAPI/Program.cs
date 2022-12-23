@@ -1,9 +1,8 @@
-using Serilog;
-using Serilog.Debugging;
-
 SelfLog.Enable(Console.Error);
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+var services = builder.Services;
 
 builder.Host
     .ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
@@ -12,24 +11,45 @@ builder.Host
     );
 
 // Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddHttpContextAccessor();
+services.AddCustomMediatR(
+    Assembly.Load("BasicPlatform.AppService.FreeSql")
+);
+services.AddCustomServiceComponent(
+    Assembly.Load("BasicPlatform.AppService.FreeSql"),
+    Assembly.Load("BasicPlatform.Infrastructure")
+);
+services.AddCustomSwaggerGen(configuration);
+services.AddCustomFreeSql(FreeSql.DataType.MySql, configuration, builder.Environment, aop =>
+{
+    aop.CurdAfter += (_, e) =>
+    {
+        if (e.ElapsedMilliseconds > 200)
+        {
+            Console.WriteLine($"执行SQL耗时 {e.ElapsedMilliseconds} ms");
+        }
+    };
+});
+services.AddCustomJwtAuth(configuration);
+services.AddCustomCors(configuration);
+services.AddControllers(options =>
+{
+    options.AddCustomApiResultFilter();
+    options.AddCustomApiExceptionFilter();
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseCustomSwagger();
 }
 
-app.UseHttpsRedirection();
-
+app.UseCors();
+//启用验证
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.MapGet("/health", context => context.Response.WriteAsync("ok"));
 

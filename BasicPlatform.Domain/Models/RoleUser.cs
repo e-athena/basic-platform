@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 角色用户
 /// </summary>
-[Table("AuthorityRoleUsers")]
+[Table("authority_role_users")]
 public class RoleUser : ValueObject
 {
     /// <summary>

@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 功能
 /// </summary>
-[Table("AuthorityFunctions")]
+[Table("authority_functions")]
 public class Function : EntityCore, ICreator, IUpdater
 {
     /// <summary>

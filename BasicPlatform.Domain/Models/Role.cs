@@ -3,8 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 角色
 /// </summary>
-[Table("AuthorityRoles")]
-// ReSharper disable once ClassNeverInstantiated.Global
+[Table("authority_roles")]
 public class Role : EntityCore, ICreator, IUpdater
 {
     /// <summary>
@@ -35,7 +34,7 @@ public class Role : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 创建人
     /// </summary>
-    public virtual User? CreatedUser { get; set; }
+    public User? CreatedUser { get; set; }
 
     /// <summary>
     /// 最后更新人Id
@@ -46,7 +45,7 @@ public class Role : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 最后更新人
     /// </summary>
-    public virtual User? UpdatedUser { get; set; }
+    public User? UpdatedUser { get; set; }
 
     /// <summary>
     /// 
@@ -66,6 +65,19 @@ public class Role : EntityCore, ICreator, IUpdater
         Name = name;
         Remarks = remarks;
         CreatedUserId = createdUserId;
+    }
+    
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="remarks"></param>
+    /// <param name="updatedUserId"></param>
+    public void Update(string name, string? remarks, string? updatedUserId)
+    {
+        Name = name;
+        Remarks = remarks;
+        UpdatedUserId = updatedUserId;
     }
 
     /// <summary>

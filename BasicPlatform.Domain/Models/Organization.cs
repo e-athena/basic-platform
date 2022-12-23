@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 组织机构
 /// </summary>
-[Table("AuthorityOrganizations")]
+[Table("authority_organizations")]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Organization : EntityCore, ICreator, IUpdater
 {

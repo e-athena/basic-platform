@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.WebAPI", "Bas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.Gateway.Yarp", "BasicPlatform.Gateway.Yarp\BasicPlatform.Gateway.Yarp.csproj", "{7662438D-E02D-4E39-8A24-F0E2F4BA5E8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.Test", "BasicPlatform.Test\BasicPlatform.Test.csproj", "{67CE96A3-8D18-4867-B51C-6E596D03041B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{7662438D-E02D-4E39-8A24-F0E2F4BA5E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7662438D-E02D-4E39-8A24-F0E2F4BA5E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7662438D-E02D-4E39-8A24-F0E2F4BA5E8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

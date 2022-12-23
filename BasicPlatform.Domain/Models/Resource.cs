@@ -5,7 +5,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 资源
 /// </summary>
-[Table("AuthorityResources")]
+[Table("authority_resources")]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Resource : EntityCore, ICreator
 {

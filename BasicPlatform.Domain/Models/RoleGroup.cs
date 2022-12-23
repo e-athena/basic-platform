@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 角色组
 /// </summary>
-[Table("AuthorityRoleGroups")]
+[Table("authority_role_groups")]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class RoleGroup : EntityCore, ICreator, IUpdater
 {

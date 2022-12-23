@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 用户资源
 /// </summary>
-[Table("AuthorityUserResources")]
+[Table("authority_user_resources")]
 public class UserResource : ValueObject
 {
     /// <summary>

@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 数据访问策略配置组
 /// </summary>
-[Table("AuthorityDataAccessPolicyConfigurationGroups")]
+[Table("authority_data_access_policy_configuration_groups")]
 public class DataAccessPolicyConfigurationGroup : EntityCore, ICreator, IUpdater
 {
     /// <summary>

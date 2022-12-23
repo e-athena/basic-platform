@@ -1,0 +1,20 @@
+namespace BasicPlatform.AppService.Roles.Requests;
+
+/// <summary>
+/// 创建角色请求类
+/// </summary>
+public class CreateRoleRequest : IRequest<string>, ITransactionRequest
+{
+    /// <summary>
+    /// 名称
+    /// </summary>
+    [Required]
+    [MaxLength(32)]
+    public string Name { get; set; } = null!;
+
+    /// <summary>
+    /// 备注
+    /// </summary>
+    [MaxLength(1024)]
+    public string? Remarks { get; set; }
+}

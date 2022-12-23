@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 模块资源
 /// </summary>
-[Table("AuthorityModuleResources")]
+[Table("authority_module_resources")]
 public class ModuleResource : ValueObject
 {
     /// <summary>

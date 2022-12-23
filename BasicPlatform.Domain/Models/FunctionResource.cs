@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 功能资源
 /// </summary>
-[Table("AuthorityFunctionResources")]
+[Table("authority_function_resources")]
 public class FunctionResource : ValueObject
 {
     /// <summary>

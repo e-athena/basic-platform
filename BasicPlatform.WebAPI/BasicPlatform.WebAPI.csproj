@@ -7,12 +7,23 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net6.0\BasicPlatform.WebAPI.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
+        <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.1" />
+        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.0.8" />
+        <PackageReference Include="Athena.Infrastructure.Permission" Version="6.0.3" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
         <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
         <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BasicPlatform.AppService.FreeSql\BasicPlatform.AppService.FreeSql.csproj" />
     </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 职位用户
 /// </summary>
-[Table("AuthorityPositionUsers")]
+[Table("authority_position_users")]
 public class PositionUser : ValueObject
 {
     /// <summary>

@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 职位
 /// </summary>
-[Table("AuthorityPositions")]
+[Table("authority_positions")]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Position : EntityCore, ICreator, IUpdater
 {

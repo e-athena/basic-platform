@@ -3,7 +3,7 @@ namespace BasicPlatform.Domain.Models;
 /// <summary>
 /// 用户组
 /// </summary>
-[Table("AuthorityUserGroups")]
+[Table("authority_user_groups")]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class UserGroup : EntityCore, ICreator, IUpdater
 {
