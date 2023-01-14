@@ -32,6 +32,8 @@ public class UserTest : TestBase
 
         var res = await _queryService!.GetAsync(new GetUserPagingRequest());
         Assert.That(res, Is.Not.Null);
+
+        await _mediator!.SendAsync(new UserStatusChangeRequest {Id = id});
         await DbContext.Delete<User>(id).ExecuteAffrowsAsync();
     }
 }
