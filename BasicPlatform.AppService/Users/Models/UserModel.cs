@@ -3,13 +3,8 @@ namespace BasicPlatform.AppService.Users.Models;
 /// <summary>
 /// 用户信息
 /// </summary>
-public class UserModel
+public class UserModel : ViewModelBase
 {
-    /// <summary>
-    /// ID
-    /// </summary>
-    public string Id { get; set; } = null!;
-
     /// <summary>
     /// 用户名
     /// </summary>
@@ -31,8 +26,19 @@ public class UserModel
     public string? PhoneNumber { get; set; }
 
     /// <summary>
-    /// Email
+    /// 电子邮箱
     /// </summary>
     /// <value></value>
     public string? Email { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    /// <value></value>
+    public Status Status { get; set; }
+
+    /// <summary>
+    /// 是否启用
+    /// </summary>
+    public bool IsEnabled => Status == Status.Enabled;
 }

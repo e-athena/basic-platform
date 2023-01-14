@@ -1,7 +1,6 @@
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
-using BasicPlatform.Domain.Models;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
 
@@ -32,12 +31,12 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<Page<UserModel>> GetPagesAsync(GetUserPagesRequest request,
+    public async Task<Paging<UserModel>> GetAsync(GetUserPagingRequest request,
         CancellationToken cancellationToken = default)
     {
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.UserName.Contains(request.Keyword!))
-            .ToPageAsync<User, UserModel>(request, cancellationToken);
+            .ToPagingAsync<User, UserModel>(request, cancellationToken);
         return result;
     }
 }

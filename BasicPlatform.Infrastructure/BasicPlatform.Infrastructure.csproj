@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Athena.Infrastructure" Version="6.0.10" />
+    </ItemGroup>
+
 </Project>

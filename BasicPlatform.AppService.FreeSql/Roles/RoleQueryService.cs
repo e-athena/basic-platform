@@ -21,12 +21,12 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<Page<GetRolePagesResponse>> GetPagesAsync(GetRolePagesRequest request,
+    public async Task<Paging<GetRolePagingResponse>> GetAsync(GetRolePagingRequest request,
         CancellationToken cancellationToken = default)
     {
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
-            .ToPageAsync(request, p => new GetRolePagesResponse
+            .ToPagingAsync(request, p => new GetRolePagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.UpdatedUser!.RealName

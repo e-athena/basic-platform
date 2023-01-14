@@ -41,6 +41,7 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
+    [Permission]
     public Task<UserModel> GetAsync([FromQuery] string id, CancellationToken cancellationToken)
     {
         return _queryService.GetAsync(id, cancellationToken);

@@ -14,7 +14,7 @@ public interface IUserQueryService
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Page<UserModel>> GetPagesAsync(GetUserPagesRequest request, CancellationToken cancellationToken = default);
+    Task<Paging<UserModel>> GetAsync(GetUserPagingRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 读取信息

@@ -15,7 +15,7 @@ public interface IRoleQueryService
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Page<GetRolePagesResponse>> GetPagesAsync(GetRolePagesRequest request,
+    Task<Paging<GetRolePagingResponse>> GetAsync(GetRolePagingRequest request,
         CancellationToken cancellationToken = default);
 
     /// <summary>

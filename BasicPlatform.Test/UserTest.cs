@@ -30,7 +30,7 @@ public class UserTest : TestBase
         var user = await _queryService!.GetAsync(id);
         Assert.That(user, Is.Not.Null);
 
-        var res = await _queryService!.GetPagesAsync(new GetUserPagesRequest());
+        var res = await _queryService!.GetAsync(new GetUserPagingRequest());
         Assert.That(res, Is.Not.Null);
         await DbContext.Delete<User>(id).ExecuteAffrowsAsync();
     }

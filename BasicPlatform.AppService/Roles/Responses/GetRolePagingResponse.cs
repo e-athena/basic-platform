@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Roles.Responses;
 /// <summary>
 /// 读取角色分页列表响应类
 /// </summary>
-public class GetRolePagesResponse : RoleModel
+public class GetRolePagingResponse : RoleModel
 {
     /// <summary>
     /// 创建人
