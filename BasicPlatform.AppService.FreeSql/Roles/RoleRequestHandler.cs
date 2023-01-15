@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// <summary>
 /// 角色请求处理程序
 /// </summary>
-public class RoleRequestHandler : ServiceBase<Domain.Models.Role>,
+public class RoleRequestHandler : ServiceBase<Role>,
     IRequestHandler<CreateRoleRequest, string>,
     IRequestHandler<UpdateRoleRequest, string>,
     IRequestHandler<RoleStatusChangeRequest, string>
@@ -26,7 +26,7 @@ public class RoleRequestHandler : ServiceBase<Domain.Models.Role>,
     /// <returns></returns>
     public async Task<string> Handle(CreateRoleRequest request, CancellationToken cancellationToken)
     {
-        var entity = new Domain.Models.Role(
+        var entity = new Role(
             request.Name,
             request.Remarks,
             _contextAccessor.UserId

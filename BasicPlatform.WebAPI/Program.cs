@@ -30,7 +30,12 @@ services.AddCustomFreeSqlWithMySql(configuration, builder.Environment, aop =>
         }
     };
 });
-services.AddCustomIntegrationEvent(configuration);
+services.AddCustomIntegrationEvent(configuration, opts =>
+{
+    // Dashboard
+    opts.UseDashboard();
+});
+services.AddCustomIntegrationEventHandler(Assembly.Load("BasicPlatform.IntegratedEventHandler"));
 services.AddCustomJwtAuth(configuration);
 services.AddCustomCors(configuration);
 services.AddControllers(options =>

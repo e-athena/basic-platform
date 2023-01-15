@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.Gateway.Yarp"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.Test", "BasicPlatform.Test\BasicPlatform.Test.csproj", "{67CE96A3-8D18-4867-B51C-6E596D03041B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.IntegratedEventHandler", "BasicPlatform.IntegratedEventHandler\BasicPlatform.IntegratedEventHandler.csproj", "{EBF10A81-1386-409E-B16E-2C8B730FB599}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{47DB6CE9-CF13-4181-9ABD-4B9C9BA33E7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +52,14 @@ Global
 		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67CE96A3-8D18-4867-B51C-6E596D03041B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7C817800-DE13-4422-A25B-36BE87E0367F} = {47DB6CE9-CF13-4181-9ABD-4B9C9BA33E7F}
+		{67CE96A3-8D18-4867-B51C-6E596D03041B} = {47DB6CE9-CF13-4181-9ABD-4B9C9BA33E7F}
+		{7662438D-E02D-4E39-8A24-F0E2F4BA5E8D} = {47DB6CE9-CF13-4181-9ABD-4B9C9BA33E7F}
 	EndGlobalSection
 EndGlobal

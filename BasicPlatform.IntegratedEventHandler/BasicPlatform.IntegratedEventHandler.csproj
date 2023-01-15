@@ -7,7 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Athena.Infrastructure" Version="6.0.12" />
+        <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.1.17" />
+    </ItemGroup>
 </Project>

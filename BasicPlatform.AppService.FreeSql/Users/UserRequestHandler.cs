@@ -33,7 +33,7 @@ public class UserRequestHandler : ServiceBase<Domain.Models.User>,
             throw FriendlyException.Of("用户名已存在");
         }
 
-        var entity = new Domain.Models.User(
+        var entity = new User(
             request.UserName,
             request.Password,
             request.RealName,

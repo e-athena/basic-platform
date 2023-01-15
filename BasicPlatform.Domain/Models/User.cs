@@ -86,6 +86,13 @@ public class User : EntityCore, ICreator, IUpdater
         Status = status;
         CreatedUserId = createdUserId;
         UpdatedUserId = createdUserId;
+
+        // 添加集成事件
+        AddIntegrationEvent(new UserCreatedEvent
+        {
+            Id = Id,
+            UserName = UserName
+        });
     }
 
 
