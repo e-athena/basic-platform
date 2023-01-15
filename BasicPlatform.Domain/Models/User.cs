@@ -1,14 +1,10 @@
-using Athena.Infrastructure.Exceptions;
-using Athena.Infrastructure.Securities;
-
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>
 /// 用户
 /// </summary>
 [Table("authority_users")]
-// ReSharper disable once ClassNeverInstantiated.Global
-public sealed class User : EntityCore, ICreator, IUpdater
+public class User : EntityCore, ICreator, IUpdater
 {
     /// <summary>
     /// 用户名
@@ -57,7 +53,7 @@ public sealed class User : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 创建人
     /// </summary>
-    public User? CreatedUser { get; set; }
+    public virtual User? CreatedUser { get; set; }
 
     /// <summary>
     /// 最后更新人Id

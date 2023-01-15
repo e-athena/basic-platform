@@ -45,7 +45,7 @@ public class TestBase
             Assembly.Load("BasicPlatform.AppService.FreeSql"),
             Assembly.Load("BasicPlatform.Infrastructure")
         );
-        services.AddCustomFreeSql(FreeSql.DataType.MySql, Configuration, new HostingEnvironment
+        services.AddCustomFreeSqlWithMySql(Configuration, new HostingEnvironment
         {
             EnvironmentName = "Development"
         }, aop =>
