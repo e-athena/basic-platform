@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// <summary>
 /// 用户请求处理程序
 /// </summary>
-public class UserRequestHandler : ServiceBase<Domain.Models.User>,
+public class UserRequestHandler : ServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>
 {
@@ -54,15 +54,7 @@ public class UserRequestHandler : ServiceBase<Domain.Models.User>,
     /// <returns></returns>
     public async Task<string> Handle(UserStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await Queryable
-            .Where(p => p.Id == request.Id)
-            .FirstAsync(cancellationToken);
-
-        if (entity == null)
-        {
-            throw FriendlyException.Of("用户不存在");
-        }
-
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.StatusChange(_contextAccessor.UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;

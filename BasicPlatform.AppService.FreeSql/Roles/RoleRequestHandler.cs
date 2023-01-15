@@ -43,14 +43,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(UpdateRoleRequest request, CancellationToken cancellationToken)
     {
-        var entity = await Queryable
-            .Where(p => p.Id == request.Id)
-            .FirstAsync(cancellationToken);
-        if (entity == null)
-        {
-            throw FriendlyException.NotData();
-        }
-
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.Update(request.Name, request.Remarks, _contextAccessor.UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
@@ -64,15 +57,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(RoleStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await Queryable
-            .Where(p => p.Id == request.Id)
-            .FirstAsync(cancellationToken);
-
-        if (entity == null)
-        {
-            throw FriendlyException.Of("角色不存在");
-        }
-
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.StatusChange(_contextAccessor.UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
