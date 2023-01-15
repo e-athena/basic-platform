@@ -20,7 +20,7 @@ services.AddCustomServiceComponent(
     Assembly.Load("BasicPlatform.Infrastructure")
 );
 services.AddCustomSwaggerGen(configuration);
-services.AddCustomFreeSql(FreeSql.DataType.MySql, configuration, builder.Environment, aop =>
+services.AddCustomFreeSqlWithMySql(configuration, builder.Environment, aop =>
 {
     aop.CurdAfter += (_, e) =>
     {
@@ -30,6 +30,7 @@ services.AddCustomFreeSql(FreeSql.DataType.MySql, configuration, builder.Environ
         }
     };
 });
+services.AddCustomIntegrationEvent(configuration);
 services.AddCustomJwtAuth(configuration);
 services.AddCustomCors(configuration);
 services.AddControllers(options =>

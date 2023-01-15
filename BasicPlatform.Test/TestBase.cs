@@ -58,6 +58,7 @@ public class TestBase
                 }
             };
         });
+        services.AddCustomIntegrationEvent(Configuration);
         services.AddScoped<ISecurityContextAccessor, DefaultSecurityContextAccessor>();
         Provider = services.BuildServiceProvider();
         DbContext = Provider.GetService<IFreeSql>()!;
@@ -71,6 +72,8 @@ public class DefaultSecurityContextAccessor : ISecurityContextAccessor
         // throw new NotImplementedException();
         return string.Empty;
     }
+
+    public string? AppId { get; }
 
     public string? MemberId { get; }
     public string? UserId => "63a4897bbd3497da92a27f5b";
