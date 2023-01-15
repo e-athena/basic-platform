@@ -3,6 +3,6 @@ namespace BasicPlatform.AppService.Roles.Requests;
 /// <summary>
 /// 角色状态变更请求类
 /// </summary>
-public class RoleStatusChangeRequest : IdRequest, IRequest<string>, ITransactionRequest
+public class RoleStatusChangeRequest : IdRequest, ITxRequest<string>
 {
 }

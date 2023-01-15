@@ -1,4 +1,4 @@
-namespace BasicPlatform.Infrastructure.Events;
+namespace BasicPlatform.Infrastructure.IntegrationEvents;
 
 /// <summary>
 /// 

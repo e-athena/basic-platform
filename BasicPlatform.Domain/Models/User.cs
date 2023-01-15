@@ -1,3 +1,5 @@
+using BasicPlatform.Infrastructure.IntegrationEvents;
+
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>

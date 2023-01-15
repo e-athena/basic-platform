@@ -3,7 +3,7 @@ namespace BasicPlatform.AppService.Users.Requests;
 /// <summary>
 /// 创建用户请求类
 /// </summary>
-public class CreateUserRequest : IRequest<string>, ITransactionRequest
+public class CreateUserRequest : ITxRequest<string>
 {
     /// <summary>
     /// 用户名

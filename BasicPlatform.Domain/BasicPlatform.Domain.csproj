@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Athena.Infrastructure.Domain" Version="6.0.12" />
+      <PackageReference Include="Athena.Infrastructure.Domain" Version="6.0.13" />
     </ItemGroup>
 
     <ItemGroup>

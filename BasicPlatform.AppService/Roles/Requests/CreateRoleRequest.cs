@@ -3,7 +3,7 @@ namespace BasicPlatform.AppService.Roles.Requests;
 /// <summary>
 /// 创建角色请求类
 /// </summary>
-public class CreateRoleRequest : IRequest<string>, ITransactionRequest
+public class CreateRoleRequest :ITxRequest<string>
 {
     /// <summary>
     /// 名称
