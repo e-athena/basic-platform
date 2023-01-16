@@ -35,7 +35,9 @@ services.AddCustomIntegrationEvent(configuration, opts =>
     // Dashboard
     opts.UseDashboard();
 });
-services.AddCustomIntegrationEventHandler(Assembly.Load("BasicPlatform.IntegratedEventHandler"));
+services.AddCustomIntegrationEventHandler(
+    Assembly.Load("BasicPlatform.IntegratedEventHandler")
+);
 services.AddCustomJwtAuth(configuration);
 services.AddCustomCors(configuration);
 services.AddControllers(options =>
