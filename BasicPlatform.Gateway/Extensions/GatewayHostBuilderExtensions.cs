@@ -1,4 +1,4 @@
-namespace BasicPlatform.Gateway.Yarp.Extensions;
+namespace Microsoft.AspNetCore.Builder;
 
 public static class GatewayHostBuilderExtensions
 {

@@ -1,4 +1,4 @@
-namespace BasicPlatform.Gateway.Yarp;
+namespace BasicPlatform.Gateway;
 
 public class WeatherForecast
 {

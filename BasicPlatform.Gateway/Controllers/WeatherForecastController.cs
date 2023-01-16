@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace BasicPlatform.Gateway.Yarp.Controllers;
+namespace BasicPlatform.Gateway.Controllers;
 
 [ApiController]
 [Route("[controller]")]

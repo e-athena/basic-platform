@@ -1,5 +1,4 @@
 using System.Threading.RateLimiting;
-using BasicPlatform.Gateway.Yarp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
