@@ -13,13 +13,13 @@
 
     <ItemGroup>
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.1" />
-        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.0.10" />
+        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.0.11" />
         <PackageReference Include="Athena.Infrastructure.Permission" Version="6.0.4" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
-        <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+        <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
-        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.0.0" />
+        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.1.0" />
         <PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.2.1" />
     </ItemGroup>
 

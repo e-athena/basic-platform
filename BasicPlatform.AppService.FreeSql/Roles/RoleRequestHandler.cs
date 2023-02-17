@@ -5,17 +5,14 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// <summary>
 /// 角色请求处理程序
 /// </summary>
-public class RoleRequestHandler : ServiceBase<Role>,
+public class RoleRequestHandler : AppServiceBase<Role>,
     IRequestHandler<CreateRoleRequest, string>,
     IRequestHandler<UpdateRoleRequest, string>,
     IRequestHandler<RoleStatusChangeRequest, string>
 {
-    private readonly ISecurityContextAccessor _contextAccessor;
-
     public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
-        : base(unitOfWorkManager)
+        : base(unitOfWorkManager, contextAccessor)
     {
-        _contextAccessor = contextAccessor;
     }
 
     /// <summary>
@@ -29,7 +26,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
         var entity = new Role(
             request.Name,
             request.Remarks,
-            _contextAccessor.UserId
+            UserId
         );
         await RegisterNewAsync(entity, cancellationToken);
         return entity.Id;
@@ -44,7 +41,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     public async Task<string> Handle(UpdateRoleRequest request, CancellationToken cancellationToken)
     {
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
-        entity.Update(request.Name, request.Remarks, _contextAccessor.UserId);
+        entity.Update(request.Name, request.Remarks, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
     }
@@ -58,7 +55,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     public async Task<string> Handle(RoleStatusChangeRequest request, CancellationToken cancellationToken)
     {
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
-        entity.StatusChange(_contextAccessor.UserId);
+        entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
     }

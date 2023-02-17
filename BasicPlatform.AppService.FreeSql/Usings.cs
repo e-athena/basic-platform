@@ -9,3 +9,6 @@ global using ECommon.Components;
 global using MediatR;
 global using FreeSql;
 global using BasicPlatform.Domain.Models;
+global using Athena.Infrastructure.Caching;
+global using Athena.Infrastructure.Domain;
+global using BasicPlatform.AppService.FreeSql.Commons;

@@ -5,16 +5,13 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// <summary>
 /// 用户请求处理程序
 /// </summary>
-public class UserRequestHandler : ServiceBase<User>,
+public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>
 {
-    private readonly ISecurityContextAccessor _contextAccessor;
-
     public UserRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
-        : base(unitOfWorkManager)
+        : base(unitOfWorkManager, contextAccessor)
     {
-        _contextAccessor = contextAccessor;
     }
 
     /// <summary>
@@ -39,8 +36,7 @@ public class UserRequestHandler : ServiceBase<User>,
             request.RealName,
             request.PhoneNumber,
             request.Email,
-            Status.Enabled,
-            _contextAccessor.UserId
+            UserId
         );
         await RegisterNewAsync(entity, cancellationToken);
         return entity.Id;
@@ -55,7 +51,7 @@ public class UserRequestHandler : ServiceBase<User>,
     public async Task<string> Handle(UserStatusChangeRequest request, CancellationToken cancellationToken)
     {
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
-        entity.StatusChange(_contextAccessor.UserId);
+        entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
     }

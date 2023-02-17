@@ -1,4 +1,6 @@
 global using Athena.Infrastructure.Attributes;
+global using Athena.Infrastructure.Messaging.Responses;
+global using Athena.Infrastructure.ViewModels;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Cors;

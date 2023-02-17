@@ -75,9 +75,8 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="realName">真实姓名</param>
     /// <param name="phoneNumber">手机号</param>
     /// <param name="email">电子邮箱</param>
-    /// <param name="status">状态</param>
     /// <param name="createdUserId">创建人</param>
-    public User(string userName, string password, string realName, string? phoneNumber, string? email, Status status,
+    public User(string userName, string password, string realName, string? phoneNumber, string? email,
         string? createdUserId)
     {
         UserName = userName;
@@ -85,7 +84,6 @@ public class User : EntityCore, ICreator, IUpdater
         RealName = realName;
         PhoneNumber = phoneNumber;
         Email = email;
-        Status = status;
         CreatedUserId = createdUserId;
         UpdatedUserId = createdUserId;
 

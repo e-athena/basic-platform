@@ -1,5 +1,6 @@
 using Athena.Infrastructure.FreeSql.Bases;
 using BasicPlatform.Domain.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BasicPlatform.IntegratedEventHandler;
 
@@ -8,8 +9,11 @@ namespace BasicPlatform.IntegratedEventHandler;
 /// </summary>
 public class UserEventHandler : QueryServiceBase<User>, IIntegratedEventHandler
 {
-    public UserEventHandler(IFreeSql freeSql) : base(freeSql)
+    private readonly ILogger<UserEventHandler> _logger;
+
+    public UserEventHandler(IFreeSql freeSql, ILoggerFactory loggerFactory) : base(freeSql)
     {
+        _logger = loggerFactory.CreateLogger<UserEventHandler>();
     }
 
     /// <summary>
@@ -25,5 +29,7 @@ public class UserEventHandler : QueryServiceBase<User>, IIntegratedEventHandler
             .FirstAsync(cancellationToken);
 
         Console.WriteLine(res.PhoneNumber);
+
+        _logger.LogError("TestAsync");
     }
 }

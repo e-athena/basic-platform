@@ -85,6 +85,20 @@ public class Organization : EntityCore, ICreator, IUpdater
         Remarks = remarks;
         Status = status;
         CreatedUserId = userId;
+    }
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="parentId"></param>
+    /// <param name="name"></param>
+    /// <param name="remarks"></param>
+    /// <param name="userId"></param>
+    public void Update(string? parentId, string name, string? remarks, string? userId)
+    {
+        ParentId = parentId;
+        Name = name;
+        Remarks = remarks;
         UpdatedUserId = userId;
     }
 
