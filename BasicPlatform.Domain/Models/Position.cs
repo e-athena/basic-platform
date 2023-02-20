@@ -84,7 +84,6 @@ public class Position : EntityCore, ICreator, IUpdater
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         UpdatedUserId = updatedUserId;
-        UpdatedOn = DateTime.Now;
     }
 
     /// <summary>

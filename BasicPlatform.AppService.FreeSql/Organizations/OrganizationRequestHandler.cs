@@ -126,7 +126,7 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
 
         if (parent == null)
         {
-            throw FriendlyException.Of("找不到上级菜单");
+            throw FriendlyException.Of("找不到上级组织架构");
         }
 
         return string.IsNullOrEmpty(parent.ParentPath)

@@ -1,4 +1,3 @@
-using Athena.Infrastructure.Enums;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 

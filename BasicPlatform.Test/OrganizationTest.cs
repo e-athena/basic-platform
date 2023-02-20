@@ -1,8 +1,5 @@
-using Athena.Infrastructure.Enums;
 using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Organizations.Requests;
-using BasicPlatform.AppService.Users;
-using BasicPlatform.AppService.Users.Requests;
 
 namespace BasicPlatform.Test;
 
@@ -39,7 +36,7 @@ public class OrganizationTest : TestBase
             Assert.That(organization?.Name, Is.EqualTo(req.Name));
             Assert.That(organization?.Remarks, Is.EqualTo(req.Remarks));
         });
-        // 读取用户分页数据
+        // 读取分页数据
         var res = await _queryService!.GetAsync(new GetOrganizationPagesRequest
         {
             Keyword = req.Name
@@ -52,7 +49,7 @@ public class OrganizationTest : TestBase
         Assert.That(organization1, Is.Not.Null);
         Assert.That(organization1?.Status, Is.EqualTo(Status.Disabled));
 
-        // 删除用户
+        // 删除
         await DbContext.Delete<Organization>(id).ExecuteAffrowsAsync();
     }
 }
