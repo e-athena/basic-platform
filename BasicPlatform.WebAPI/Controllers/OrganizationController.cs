@@ -32,9 +32,9 @@ public class OrganizationController : CustomControllerBase
     /// <returns></returns>
     [HttpPost]
     [Permission]
-    public Task<Page<GetOrganizationPagesResponse>> GetPagesAsync([FromBody] GetOrganizationPagesRequest request)
+    public Task<Paging<GetOrganizationPagingResponse>> GetPagingAsync([FromBody] GetOrganizationPagingRequest request)
     {
-        return _queryService.GetAsync(request);
+        return _queryService.GetPagingAsync(request);
     }
 
     /// <summary>

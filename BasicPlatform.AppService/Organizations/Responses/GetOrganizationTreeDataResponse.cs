@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Organizations.Responses;
 /// <summary>
 /// 读取组织架构树形数据响应类
 /// </summary>
-public class GetOrganizationTreeDataResponse : OrganizationViewModel
+public class GetOrganizationTreeDataResponse : OrganizationModel
 {
     /// <summary>
     /// 子项

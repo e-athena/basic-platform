@@ -21,12 +21,12 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public async Task<Page<GetOrganizationPagesResponse>> GetAsync(
-        GetOrganizationPagesRequest request)
+    public async Task<Paging<GetOrganizationPagingResponse>> GetPagingAsync(
+        GetOrganizationPagingRequest request)
     {
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
-            .ToPageAsync(request, p => new GetOrganizationPagesResponse
+            .ToPagingAsync(request, p => new GetOrganizationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName
             });

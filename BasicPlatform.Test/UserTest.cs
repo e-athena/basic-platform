@@ -40,7 +40,7 @@ public class UserTest : TestBase
             Assert.That(user.UserName, Is.EqualTo(req.UserName));
         });
         // 读取用户分页数据
-        var res = await _queryService!.GetAsync(new GetUserPagingRequest
+        var res = await _queryService!.GetPagingAsync(new GetUserPagingRequest
         {
             Keyword = req.UserName
         });

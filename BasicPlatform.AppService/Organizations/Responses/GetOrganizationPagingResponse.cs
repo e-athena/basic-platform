@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Organizations.Responses;
 /// <summary>
 /// 组织架构分页返回值
 /// </summary>
-public class GetOrganizationPagesResponse : OrganizationViewModel
+public class GetOrganizationPagingResponse : OrganizationModel
 {
     /// <summary>
     /// 创建人Id  

@@ -28,7 +28,7 @@ public class UserEventHandler : QueryServiceBase<User>, IIntegratedEventHandler
         var res = await QueryableNoTracking.Where(p => p.Id == obj.Id)
             .FirstAsync(cancellationToken);
 
-        Console.WriteLine(res.PhoneNumber);
+        Console.WriteLine(res?.PhoneNumber);
 
         _logger.LogError("TestAsync");
     }

@@ -1,9 +1,9 @@
-namespace BasicPlatform.AppService.Organizations.Models;
+namespace BasicPlatform.AppService.Positions.Models;
 
 /// <summary>
-/// 组织架构Dto
+/// [职位]数据传输对象
 /// </summary>
-public class OrganizationViewModel : ViewModelBase
+public class PositionModel : ViewModelBase
 {
     /// <summary>
     /// 父级Id
@@ -11,19 +11,14 @@ public class OrganizationViewModel : ViewModelBase
     public string? ParentId { get; set; }
 
     /// <summary>
-    /// 名称
+    /// 职位名
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// 路径
-    /// </summary>
-    public string ParentPath { get; set; } = string.Empty;
-
-    /// <summary>
     /// 备注
     /// </summary>
-    public string? Remarks { get; set; }
+    public string? Remarks { get; set; } = "";
 
     /// <summary>
     /// 状态

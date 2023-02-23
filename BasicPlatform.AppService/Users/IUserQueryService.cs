@@ -1,5 +1,5 @@
-using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
+using BasicPlatform.AppService.Users.Responses;
 
 namespace BasicPlatform.AppService.Users;
 
@@ -8,19 +8,58 @@ namespace BasicPlatform.AppService.Users;
 /// </summary>
 public interface IUserQueryService
 {
-    /// <summary>
-    /// 读取分页信息
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<Paging<UserModel>> GetAsync(GetUserPagingRequest request, CancellationToken cancellationToken = default);
+  /// <summary>
+  /// 读取分页列表
+  /// </summary>
+  /// <param name="request">请求类</param>
+  /// <returns></returns>
+  Task<Paging<GetUserPagingResponse>> GetPagingAsync(GetUserPagingRequest request);
 
-    /// <summary>
-    /// 读取信息
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<UserModel> GetAsync(string id, CancellationToken cancellationToken = default);
+  /// <summary>
+  /// 读取信息
+  /// </summary>
+  /// <param name="id">Id</param>
+  /// <param name="cancellationToken"></param>
+  /// <returns></returns>
+  Task<GetUserByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default);
+
+
+  /// <summary>
+  /// 读取信息
+  /// </summary>
+  /// <param name="userName">帐户名</param>
+  /// <returns></returns>
+  Task<GetUserByUserNameResponse> GetByUserNameAsync(string userName);
+
+
+  /// <summary>
+  /// 根据角色Id读取用户列表
+  /// </summary>
+  /// <param name="roleId">角色Id</param>
+  /// <returns></returns>
+  Task<List<string?>> GetIdsByRoleIdAsync(string roleId);
+
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns></returns>
+  Task<GetUserResponse> GetUserAsync(string? id);
+
+  /// <summary>
+  /// 读取用户数据
+  /// </summary>
+  /// <returns></returns>
+  Task<List<SelectViewModel>> GetSelectDataAsync();
+
+  /// <summary>
+  /// 读取组织架构用户树形列表
+  /// </summary>
+  /// <returns></returns>
+  Task<List<CascaderViewModel>> GetOrganizationUserTreeSelectListAsync();
+
+  /// <summary>
+  /// 读取组织架构和用户树形列表
+  /// </summary>
+  /// <returns></returns>
+  Task<List<CascaderViewModel>> GetOrganizationAndUserTreeSelectListAsync();
 }

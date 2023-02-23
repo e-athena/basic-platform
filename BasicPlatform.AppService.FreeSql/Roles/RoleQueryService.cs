@@ -21,7 +21,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<Paging<GetRolePagingResponse>> GetAsync(GetRolePagingRequest request,
+    public async Task<Paging<GetRolePagingResponse>> GetPagingAsync(GetRolePagingRequest request,
         CancellationToken cancellationToken = default)
     {
         var result = await QueryableNoTracking

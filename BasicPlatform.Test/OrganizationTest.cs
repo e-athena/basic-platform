@@ -5,7 +5,7 @@ namespace BasicPlatform.Test;
 
 public class OrganizationTest : TestBase
 {
-    private IOrganizationQueryService? _queryService;   
+    private IOrganizationQueryService? _queryService;
     private IMediator? _mediator;
 
     [SetUp]
@@ -37,7 +37,7 @@ public class OrganizationTest : TestBase
             Assert.That(organization?.Remarks, Is.EqualTo(req.Remarks));
         });
         // 读取分页数据
-        var res = await _queryService!.GetAsync(new GetOrganizationPagesRequest
+        var res = await _queryService!.GetPagingAsync(new GetOrganizationPagingRequest
         {
             Keyword = req.Name
         });

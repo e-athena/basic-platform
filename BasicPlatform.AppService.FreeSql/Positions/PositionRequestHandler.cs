@@ -3,7 +3,7 @@ using BasicPlatform.AppService.Positions.Requests;
 namespace BasicPlatform.AppService.FreeSql.Positions;
 
 /// <summary>
-/// 
+/// 职位请求处理程序
 /// </summary>
 public class PositionRequestHandler : AppServiceBase<Position>,
     IRequestHandler<CreatePositionRequest, string>,
@@ -11,8 +11,8 @@ public class PositionRequestHandler : AppServiceBase<Position>,
     IRequestHandler<AssignRolesForPositionRequest, string>,
     IRequestHandler<PositionStatusChangeRequest, string>
 {
-    public PositionRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor) : base(
-        unitOfWorkManager, accessor)
+    public PositionRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
+        : base(unitOfWorkManager, accessor)
     {
     }
 

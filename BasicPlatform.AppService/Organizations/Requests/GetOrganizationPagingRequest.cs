@@ -3,7 +3,7 @@ namespace BasicPlatform.AppService.Organizations.Requests;
 /// <summary>
 /// 
 /// </summary>
-public class GetOrganizationPagesRequest : GetPageRequestBase
+public class GetOrganizationPagingRequest : GetPagingRequestBase
 {
     /// <summary>
     /// 状态

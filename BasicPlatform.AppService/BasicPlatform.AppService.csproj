@@ -14,8 +14,4 @@
       <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Users\Responses" />
-    </ItemGroup>
-
 </Project>

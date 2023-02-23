@@ -1,6 +1,7 @@
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
+using BasicPlatform.AppService.Users.Responses;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -42,7 +43,7 @@ public class UserController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [Permission]
-    public Task<UserModel> GetAsync([FromQuery] string id, CancellationToken cancellationToken)
+    public Task<GetUserByIdResponse> GetAsync([FromQuery] string id, CancellationToken cancellationToken)
     {
         return _queryService.GetAsync(id, cancellationToken);
     }

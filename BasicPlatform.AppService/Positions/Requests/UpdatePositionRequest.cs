@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Positions.Requests;
 /// <summary>
 /// 更新职位请求类
 /// </summary>
-public class UpdatePositionRequest : PositionViewModel,ITxRequest<string>
+public class UpdatePositionRequest : PositionModel,ITxRequest<string>
 {
     /// <summary>
     /// 角色Ids

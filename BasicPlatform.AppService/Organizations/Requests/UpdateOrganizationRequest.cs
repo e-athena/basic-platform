@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Organizations.Requests;
 /// <summary>
 /// 更新组织架构请求类
 /// </summary>
-public class UpdateOrganizationRequest : OrganizationViewModel, ITxRequest<string>
+public class UpdateOrganizationRequest : OrganizationModel, ITxRequest<string>
 {
     /// <summary>
     /// 角色Ids

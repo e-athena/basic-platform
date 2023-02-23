@@ -13,8 +13,8 @@ public interface IOrganizationQueryService
     /// </summary>
     /// <param name="request">请求类</param>
     /// <returns></returns>
-    Task<Page<GetOrganizationPagesResponse>> GetAsync(GetOrganizationPagesRequest request);
-    
+    Task<Paging<GetOrganizationPagingResponse>> GetPagingAsync(GetOrganizationPagingRequest request);
+
     /// <summary>
     /// 读取信息
     /// </summary>
