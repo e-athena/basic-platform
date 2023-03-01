@@ -38,7 +38,8 @@ services.AddCustomIntegrationEvent(configuration, opts =>
 services.AddCustomIntegrationEventHandler(
     Assembly.Load("BasicPlatform.IntegratedEventHandler")
 );
-services.AddCustomJwtAuth(configuration);
+services.AddCustomCsRedisCache(configuration);
+services.AddCustomApiPermissionWithJwt(configuration);
 services.AddCustomCors(configuration);
 services.AddControllers(options =>
 {

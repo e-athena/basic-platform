@@ -7,7 +7,7 @@ namespace BasicPlatform.WebAPI.Controllers;
 [EnableCors]
 [Route("api/[controller]/[action]")]
 [ApiController]
-// [Authorize]
+[ApiPermissionAuthorize]
 // [PermissionAuthorizeFilter]
 public class CustomControllerBase : ControllerBase
 {

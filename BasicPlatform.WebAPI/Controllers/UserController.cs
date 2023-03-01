@@ -29,7 +29,6 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    [Permission]
     public Task<string> PostAsync([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -42,7 +41,6 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    [Permission]
     public Task<GetUserByIdResponse> GetAsync([FromQuery] string id, CancellationToken cancellationToken)
     {
         return _queryService.GetAsync(id, cancellationToken);

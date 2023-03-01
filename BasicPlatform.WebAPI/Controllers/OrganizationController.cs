@@ -31,7 +31,6 @@ public class OrganizationController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [Permission]
     public Task<Paging<GetOrganizationPagingResponse>> GetPagingAsync([FromBody] GetOrganizationPagingRequest request)
     {
         return _queryService.GetPagingAsync(request);
@@ -43,7 +42,6 @@ public class OrganizationController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [Permission]
     public Task<GetOrganizationByIdResponse?> GetAsync([FromQuery] string id)
     {
         return _queryService.GetAsync(id);
@@ -57,7 +55,6 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
-    [Permission]
     public Task<string> PostAsync([FromBody] CreateOrganizationRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -70,7 +67,6 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    [Permission]
     public Task<string> PutAsync([FromBody] UpdateOrganizationRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -83,7 +79,6 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    [Permission]
     public Task<string> StatusChangeAsync([FromBody] OrganizationStatusChangeRequest request,
         CancellationToken cancellationToken)
     {
@@ -99,7 +94,6 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Permission]
     public Task<List<TreeViewModel>> GetTreeDataAsync()
     {
         return _queryService.GetTreeDataAsync();
@@ -110,7 +104,6 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Permission]
     public Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
     {
         return _queryService.GetTreeSelectDataAsync();
@@ -121,7 +114,6 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Permission]
     public Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
     {
         return _queryService.GetTreeSelectDataForSelfAsync();
@@ -133,7 +125,6 @@ public class OrganizationController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [Permission]
     public Task<List<GetOrganizationTreeDataResponse>> GetTreeDataAsync(
         [FromBody] GetOrganizationTreeDataRequest request)
     {

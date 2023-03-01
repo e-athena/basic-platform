@@ -1,4 +1,5 @@
 global using Athena.Infrastructure.Attributes;
+global using Athena.Infrastructure.ApiPermission.Attributes;
 global using Athena.Infrastructure.Messaging.Responses;
 global using Athena.Infrastructure.ViewModels;
 global using MediatR;
