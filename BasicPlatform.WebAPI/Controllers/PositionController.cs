@@ -7,6 +7,13 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// <summary>
 /// 职位管理
 /// </summary>
+[Menu("职位管理",
+    ModuleCode = "system",
+    ModuleName = "系统模块",
+    ModuleRoutePath = "/system",
+    // RoutePath = "/system/position"
+    RoutePath = "/welcome"
+)]
 public class PositionController : CustomControllerBase
 {
     private readonly IPositionQueryService _service;

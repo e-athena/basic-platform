@@ -7,6 +7,13 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// <summary>
 /// 组织架构管理
 /// </summary>
+[Menu("组织架构",
+    ModuleCode = "system",
+    ModuleName = "系统模块",
+    ModuleRoutePath = "/system",
+    // RoutePath = "/system/organization",
+    RoutePath = "/list"
+)]
 public class OrganizationController : CustomControllerBase
 {
     private readonly IOrganizationQueryService _queryService;
@@ -26,7 +33,7 @@ public class OrganizationController : CustomControllerBase
     #region 基础接口
 
     /// <summary>
-    /// 读取列表
+    /// 读取分页列表
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
@@ -42,6 +49,7 @@ public class OrganizationController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(DisplayName = "详情")]
     public Task<GetOrganizationByIdResponse?> GetAsync([FromQuery] string id)
     {
         return _queryService.GetAsync(id);
@@ -67,6 +75,7 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(DisplayName = "编辑")]
     public Task<string> PutAsync([FromBody] UpdateOrganizationRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -79,6 +88,7 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(DisplayName = "切换状态")]
     public Task<string> StatusChangeAsync([FromBody] OrganizationStatusChangeRequest request,
         CancellationToken cancellationToken)
     {
@@ -94,6 +104,7 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:tree"})]
     public Task<List<TreeViewModel>> GetTreeDataAsync()
     {
         return _queryService.GetTreeDataAsync();
@@ -104,6 +115,7 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:treeSelect"})]
     public Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
     {
         return _queryService.GetTreeSelectDataAsync();
@@ -114,6 +126,7 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:treeSelectForSelf"})]
     public Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
     {
         return _queryService.GetTreeSelectDataForSelfAsync();
@@ -136,6 +149,7 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:cascader"})]
     public Task<List<CascaderViewModel>> GetCascaderDataAsync()
     {
         return _queryService.GetCascaderDataAsync();

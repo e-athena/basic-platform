@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Users;
-using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
@@ -8,6 +7,14 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// <summary>
 /// 用户管理
 /// </summary>
+[Menu("用户管理",
+    ModuleCode = "basic",
+    ModuleName = "基础模块",
+    ModuleIcon = "PicRightOutlined",
+    ModuleRoutePath = "/basic",
+    // RoutePath = "/system/user"
+    RoutePath = "/admin"
+)]
 public class UserController : CustomControllerBase
 {
     private readonly IMediator _mediator;

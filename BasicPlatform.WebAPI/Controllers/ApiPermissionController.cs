@@ -11,6 +11,17 @@ namespace BasicPlatform.WebAPI.Controllers;
 public class ApiPermissionController : ControllerBase
 {
     /// <summary>
+    /// 读取菜单资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<List<MenuTreeInfo>> GetMenuResourcesAsync()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var result = MenuHelper.GetResources(assembly);
+        return await Task.FromResult(result);
+    }
+    /// <summary>
     /// 读取权限资源
     /// </summary>
     /// <returns></returns>
