@@ -20,25 +20,19 @@ public class UserResource : ValueObject
     public virtual User User { get; set; } = null!;
 
     /// <summary>
-    /// 资源ID
+    /// 资源代码
     /// </summary>
     /// <value></value>
-    [MaxLength(36)]
-    public string ResourceId { get; set; } = null!;
-
-    /// <summary>
-    /// 资源
-    /// </summary>
-    /// <value></value>
-    public virtual Resource Resource { get; set; } = null!;
+    [MaxLength(256)]
+    public string ResourceCode { get; set; } = null!;
 
     public UserResource()
     {
     }
 
-    public UserResource(string userId, string resourceId)
+    public UserResource(string userId, string resourceCode)
     {
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
-        ResourceId = resourceId ?? throw new ArgumentNullException(nameof(resourceId));
+        ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));
     }
 }

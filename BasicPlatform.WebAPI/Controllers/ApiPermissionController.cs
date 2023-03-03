@@ -1,6 +1,3 @@
-using Athena.Infrastructure.ApiPermission.Helpers;
-using Athena.Infrastructure.Mvc.Attributes;
-
 namespace BasicPlatform.WebAPI.Controllers;
 
 /// <summary>
@@ -10,17 +7,29 @@ namespace BasicPlatform.WebAPI.Controllers;
 [Route("api/[controller]/[action]")]
 public class ApiPermissionController : ControllerBase
 {
+    private readonly IApiPermissionService _service;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="service"></param>
+    public ApiPermissionController(IApiPermissionService service)
+    {
+        _service = service;
+    }
+
     /// <summary>
     /// 读取菜单资源
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<List<MenuTreeInfo>> GetMenuResourcesAsync()
+    public async Task<IList<MenuTreeInfo>> GetMenuResourcesAsync()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var result = MenuHelper.GetResources(assembly);
+        var result = _service.GetMenuResources(assembly);
         return await Task.FromResult(result);
     }
+
     /// <summary>
     /// 读取权限资源
     /// </summary>

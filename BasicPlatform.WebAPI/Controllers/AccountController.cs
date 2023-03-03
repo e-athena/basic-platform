@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Athena.Infrastructure;
 using Athena.Infrastructure.Jwt;
 using Athena.Infrastructure.Mvc.Messaging.Requests;
 using Microsoft.Extensions.Options;
@@ -35,6 +36,12 @@ public class AccountController : ControllerBase
         var token = _securityContextAccessor.CreateToken(new List<Claim>
         {
             new(ClaimTypes.Name, request.UserName),
+
+            new(ClaimTypes.NameIdentifier, "63a4897bbd3497da92a27f5b"),
+            new(ClaimTypes.Role, ObjectId.GenerateNewStringId()),
+            new("RoleName", "admin"),
+            new(ClaimTypes.Name, request.UserName),
+            new("RealName", request.UserName)
         });
 
         return await Task.FromResult(new

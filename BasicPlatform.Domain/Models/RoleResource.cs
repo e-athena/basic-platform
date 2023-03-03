@@ -20,25 +20,19 @@ public class RoleResource : ValueObject
     public virtual Role Role { get; set; } = null!;
 
     /// <summary>
-    /// 资源ID
+    /// 资源代码
     /// </summary>
     /// <value></value>
-    [MaxLength(36)]
-    public string ResourceId { get; set; } = null!;
-
-    /// <summary>
-    /// 资源
-    /// </summary>
-    /// <value></value>
-    public virtual Resource Resource { get; set; } = null!;
-
+    [MaxLength(256)]
+    public string ResourceCode { get; set; } = null!;
+    
     public RoleResource()
     {
     }
 
-    public RoleResource(string roleId, string resourceId)
+    public RoleResource(string roleId, string resourceCode)
     {
         RoleId = roleId ?? throw new ArgumentNullException(nameof(roleId));
-        ResourceId = resourceId ?? throw new ArgumentNullException(nameof(resourceId));
+        ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));
     }
 }

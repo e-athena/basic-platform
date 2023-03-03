@@ -11,8 +11,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleCode = "system",
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
-    // RoutePath = "/system/organization",
-    RoutePath = "/list"
+    RoutePath = "/system/org",
+    Code = "org"
 )]
 public class OrganizationController : CustomControllerBase
 {
