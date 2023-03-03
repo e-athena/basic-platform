@@ -86,7 +86,7 @@ export async function removeRule(options?: { [key: string]: any }) {
 
 /** 查询菜单 GET /Admin/Index/GetMenuTree */
 export async function queryMenus(options?: { [key: string]: any }) {
-  return request<ApiResponse<API.MenuInfo[]>>('/api/ApiPermission/GetMenuResources', {
+  return request<ApiResponse<API.ResourceInfo[]>>('/api/ApiPermission/GetMenuResources', {
     method: 'GET',
     ...(options || {}),
   });

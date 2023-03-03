@@ -11,6 +11,7 @@ import { currentUser as queryCurrentUser, queryMenus } from './services/ant-desi
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
+import { recursionMenu } from './utils/menu';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -22,6 +23,8 @@ export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchMenuData?: () => Promise<MenuDataItem[]>;
+  apiResources?: API.ResourceInfo[];
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -34,44 +37,34 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+  const fetchApiResources = async () => {
+    const res = await queryMenus();
+    return res.data || [];
+  };
+  const fetchMenuData = async () => {
+    const data = await fetchApiResources();
+    return recursionMenu(data);
+  };
+
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+    const apiResources = await fetchApiResources();
     return {
+      fetchMenuData,
       fetchUserInfo,
       currentUser,
+      apiResources,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
+    fetchMenuData,
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
-
-// 递归处理菜单
-const recursionMenu = (menu: API.MenuInfo[]): MenuDataItem[] => {
-  return menu.map((item) => {
-    if (item.children) {
-      return {
-        ...item,
-        path: item.path.toLowerCase(),
-        name: item.name,
-        icon: item.icon,
-        hideInMenu: !item.isVisible,
-        children: recursionMenu(item.children),
-      };
-    }
-    return {
-      ...item,
-      icon: item.icon,
-      path: item.path.toLowerCase(),
-      name: item.name,
-      hideInMenu: !item.isVisible,
-    };
-  });
-};
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -89,9 +82,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     menu: {
       locale: false,
-      request: async (): Promise<MenuDataItem[]> => {
-        const res = await queryMenus();
-        return recursionMenu(res.data || []);
+      params: initialState,
+      request: async () => {
+        return initialState?.fetchMenuData?.() || [];
       },
     },
     waterMarkProps: {

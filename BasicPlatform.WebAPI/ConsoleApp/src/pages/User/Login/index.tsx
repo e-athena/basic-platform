@@ -125,7 +125,7 @@ const Login: React.FC = () => {
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
-        setToken(res.data.currentAuthority!);
+        setToken(res.data!.currentAuthority!);
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
       }
       console.log(res);
       // 如果失败去设置用户错误信息
-      setUserLoginState(res.data);
+      setUserLoginState(res.data!);
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',

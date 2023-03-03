@@ -46,6 +46,27 @@ export default [
     ],
   },
   {
+    path: '/system',
+    name: '系统模块',
+    icon: 'crown',
+    routes: [
+      {
+        path: '/system',
+        redirect: '/admin/menu',
+      },
+      {
+        path: '/system/resource',
+        name: '资源管理',
+        component: './System/Resource',
+      },
+      {
+        path: '/system/role',
+        name: '角色管理',
+        component: './System/Role',
+      },
+    ],
+  },
+  {
     name: 'list.table-list',
     icon: 'table',
     path: '/list',

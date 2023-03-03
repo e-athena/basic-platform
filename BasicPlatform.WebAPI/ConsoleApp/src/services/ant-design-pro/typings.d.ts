@@ -100,7 +100,7 @@ declare namespace API {
   };
 
 
-  type MenuInfo = {
+  type ResourceInfo = {
     parentCode: string;
     path: string;
     name: string;
@@ -111,11 +111,12 @@ declare namespace API {
     sort: number;
     id?: number;
     functions?: FunctionInfo[];
-    children: MenuInfo[];
+    children: ResourceInfo[];
   };
 
   type FunctionInfo = {
     parentCode: string;
+    key: string;
     label: string,
     value: string,
     values: string[],
