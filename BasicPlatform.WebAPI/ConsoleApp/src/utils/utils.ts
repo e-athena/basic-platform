@@ -1,3 +1,4 @@
+import { message, Modal } from "antd";
 import { SortOrder } from "antd/es/table/interface";
 
 /**
@@ -13,6 +14,37 @@ export const canAccessible = (code: string, resource: API.ResourceInfo | null): 
   const permissions = resource?.functions?.map((p) => p.key);
   return permissions?.includes(code) || false;
 }
+
+/**
+ * 提交处理
+ * @param {*} func
+ * @param {*} fields
+ */
+export async function submitHandle<T>(func: (values: T) => Promise<ApiResponse<boolean | string>>, fields: T): Promise<boolean> {
+  const hide = message.loading('处理中');
+  try {
+    const res = await func(fields);
+    hide();
+    if (res.success) {
+      message.success('处理成功');
+      return true;
+    }
+    Modal.error({
+      title: '处理失败',
+      content: res.message,
+    });
+    return false;
+  } catch (error) {
+    hide();
+    Modal.error({
+      title: '处理失败',
+      content: '请重试或联系管理员！',
+    });
+    return false;
+  }
+};
+
+
 /**
  * 获取Sorter
  * @param {*} sorter

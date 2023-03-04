@@ -108,6 +108,7 @@ declare namespace API {
     code: string;
     icon: string;
     isVisible: boolean;
+    isAuth: boolean;
     sort: number;
     id?: number;
     functions?: FunctionInfo[];

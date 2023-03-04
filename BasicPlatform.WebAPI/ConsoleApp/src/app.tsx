@@ -23,6 +23,7 @@ export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   fetchMenuData?: () => Promise<MenuDataItem[]>;
   apiResources?: API.ResourceInfo[];
 }> {
@@ -54,6 +55,7 @@ export async function getInitialState(): Promise<{
     return {
       fetchMenuData,
       fetchUserInfo,
+      fetchApiResources,
       currentUser,
       apiResources,
       settings: defaultSettings as Partial<LayoutSettings>,

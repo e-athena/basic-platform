@@ -12,6 +12,7 @@ import { canAccessible } from '@/utils/utils';
 
 const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ResourceInfo>();
@@ -102,7 +103,10 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer header={{
+      title: resource?.name,
+      children: resource?.description
+    }}>
       <ProTable<API.ResourceInfo, API.PageParams>
         headerTitle={'资源列表'}
         actionRef={actionRef}
@@ -149,9 +153,21 @@ const TableList: React.FC = () => {
             </Button>
           </Access>,
         ]}
-        request={query}
+        request={async () => {
+          const res = await query();
+          if (res.success) {
+            setExpandedRowKeys(res.data!.map(item => item.code));
+          }
+          return {
+            data: res.data || [],
+            success: res.success,
+            total: 0,
+          }
+        }}
+        expandable={{
+          expandedRowKeys: expandedRowKeys
+        }}
         columns={columns}
-        // scroll={{ x: 1366 }}
         rowSelection={false}
         pagination={false}
       />

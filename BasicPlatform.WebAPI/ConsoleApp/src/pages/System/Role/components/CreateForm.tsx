@@ -1,4 +1,3 @@
-import { submitHandle } from '@/utils/utils';
 import {
   ProFormText,
   ProFormTextArea,
@@ -6,17 +5,17 @@ import {
 } from '@ant-design/pro-components';
 import { Modal } from 'antd';
 import React from 'react';
-import { update } from '../service';
 import Authorization from './Authorization';
+import { create } from '../service';
+import { submitHandle } from '@/utils/utils';
 
-type UpdateFormProps = {
+type CreateFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
   open: boolean;
-  values?: API.RoleDetailItem;
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const CreateForm: React.FC<CreateFormProps> = (props) => {
   const [codes, setCodes] = React.useState<string[]>([]);
   return (
     <StepsForm
@@ -29,7 +28,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             width={860}
             bodyStyle={{ padding: '32px 40px 48px' }}
             destroyOnClose
-            title={'更新角色'}
+            title={'创建角色'}
             open={props.open}
             footer={submitter}
             onCancel={() => {
@@ -40,11 +39,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           </Modal>
         );
       }}
-      onFinish={async (values: API.UpdateRoleItem) => {
+      onFinish={async (values: API.CreateRoleItem) => {
         values.resourceCodes = codes;
-        values.id = props.values!.id!;
-        console.log(values);
-        const succeed = await submitHandle(update, values);
+        const succeed = await submitHandle(create, values);
         if (succeed) {
           props.onSuccess();
         }
@@ -52,10 +49,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <StepsForm.StepForm
         title={'基本信息'}
-        initialValues={{
-          name: props.values?.name,
-          remarks: props.values?.remarks,
-        }}
       >
         <ProFormText
           name="name"
@@ -75,9 +68,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           placeholder={'请输入'}
         />
       </StepsForm.StepForm>
-      <StepsForm.StepForm title={'配置权限'}>
+      <StepsForm.StepForm
+        initialValues={{
+          target: '0',
+          template: '0',
+        }}
+        title={'配置权限'}
+      >
         <Authorization
-          resourceCodes={props.values?.resourceCodes}
           onChange={(codes) => {
             setCodes(codes);
           }} />
@@ -86,4 +84,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateForm;
+export default CreateForm;
