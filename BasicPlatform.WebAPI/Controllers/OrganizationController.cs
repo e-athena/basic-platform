@@ -100,39 +100,6 @@ public class OrganizationController : CustomControllerBase
     #region 扩展接口
 
     /// <summary>
-    /// 读取树形数据列表
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:tree"})]
-    public Task<List<TreeViewModel>> GetTreeDataAsync()
-    {
-        return _queryService.GetTreeDataAsync();
-    }
-
-    /// <summary>
-    /// 读取树形下拉数据列表
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:treeSelect"})]
-    public Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
-    {
-        return _queryService.GetTreeSelectDataAsync();
-    }
-
-    /// <summary>
-    /// 读取树形选择框数据列表
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:treeSelectForSelf"})]
-    public Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
-    {
-        return _queryService.GetTreeSelectDataForSelfAsync();
-    }
-
-    /// <summary>
     /// 读取树形列表
     /// </summary>
     /// <param name="request"></param>
@@ -145,11 +112,45 @@ public class OrganizationController : CustomControllerBase
     }
 
     /// <summary>
+    /// 读取树形数据列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission("org:tree", IsVisible = false)]
+    public Task<List<TreeViewModel>> GetTreeDataAsync()
+    {
+        return _queryService.GetTreeDataAsync();
+    }
+
+    /// <summary>
+    /// 读取树形下拉数据列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission("org:treeSelect", IsVisible = false)]
+    public Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
+    {
+        return _queryService.GetTreeSelectDataAsync();
+    }
+
+    /// <summary>
+    /// 读取树形选择框数据列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission("org:treeSelectForSelf",IsVisible = false)]
+    public Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
+    {
+        return _queryService.GetTreeSelectDataForSelfAsync();
+    }
+
+
+    /// <summary>
     /// 获取组织架构级联人员信息
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(IsVisible = false, AdditionalRules = new[] {"org:cascader"})]
+    [ApiPermission("org:cascader", IsVisible = false)]
     public Task<List<CascaderViewModel>> GetCascaderDataAsync()
     {
         return _queryService.GetCascaderDataAsync();

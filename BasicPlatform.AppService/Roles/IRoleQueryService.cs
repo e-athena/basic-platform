@@ -24,7 +24,7 @@ public interface IRoleQueryService
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<RoleModel> GetAsync(string id, CancellationToken cancellationToken = default);
+    Task<GetRoleByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 读取下拉列表数据

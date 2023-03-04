@@ -11,7 +11,9 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleIcon = "PicRightOutlined",
     ModuleRoutePath = "/system",
     RoutePath = "/system/resource",
-    Sort = 2
+    Sort = 2,
+    // Description = "系统操作菜单以及功能目录树。支持排序，不可见菜单仅用于功能权限限制。每个菜单的权限子项由系统自动生成，请不要人为修改"
+    Description = "资源包含菜单树以及功能，由系统生成，用于控制系统菜单的展示及功能权限。"
 )]
 public class ResourceController : CustomControllerBase
 {

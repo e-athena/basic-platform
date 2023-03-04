@@ -26,4 +26,10 @@ public class GetRolePagingResponse : RoleModel
     /// 更新时间
     /// </summary>
     public DateTime? UpdatedOn { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    /// <value></value>
+    public Status Status { get; set; }
 }

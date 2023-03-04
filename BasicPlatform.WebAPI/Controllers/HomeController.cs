@@ -8,7 +8,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "首页",
     ModuleRoutePath = "/",
     ModuleIcon = "HomeOutlined",
-    IsVisible = false
+    IsVisible = false,
+    IsAuth = false
 )]
 public class HomeController
 {

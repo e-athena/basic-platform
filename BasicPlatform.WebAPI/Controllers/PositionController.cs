@@ -49,6 +49,7 @@ public class PositionController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission("position:detail", DisplayName = "详情")]
     public Task<GetPositionByIdResponse> GetAsync([FromQuery] string id)
     {
         return _service.GetAsync(id);
@@ -73,6 +74,7 @@ public class PositionController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(AdditionalRules = new[] {"position:detail"})]
     public Task<string> PutAsync([FromBody] UpdatePositionRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -96,7 +98,7 @@ public class PositionController : CustomControllerBase
     #region 扩展接口
 
     /// <summary>
-    /// 读取树形数据列表
+    /// 读取树形列表
     /// </summary>
     /// <returns></returns>
     [HttpGet]
@@ -106,20 +108,22 @@ public class PositionController : CustomControllerBase
     }
 
     /// <summary>
-    /// 读取树形下拉数据列表
+    /// 读取树形下拉列表
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission("position:treeSelect", IsVisible = false)]
     public Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
     {
         return _service.GetTreeSelectDataAsync();
     }
 
     /// <summary>
-    /// 读取树形选择框数据列表
+    /// 读取树形选择框列表
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission("position:treeSelectForSelf", IsVisible = false)]
     public Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
     {
         return _service.GetTreeSelectDataForSelfAsync();
@@ -131,6 +135,7 @@ public class PositionController : CustomControllerBase
     /// <param name="roleId">角色ID</param>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission("position:getIdsByRoleId", IsVisible = false)]
     public Task<List<string>> GetIdsByRoleIdAsync([FromQuery] string roleId)
     {
         return _service.GetIdsByRoleIdAsync(roleId);
@@ -143,6 +148,7 @@ public class PositionController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
+    [ApiPermission(DisplayName = "分配角色")]
     public Task<string> AssignRolesAsync([FromBody] AssignRolesForPositionRequest request,
         CancellationToken cancellationToken)
     {

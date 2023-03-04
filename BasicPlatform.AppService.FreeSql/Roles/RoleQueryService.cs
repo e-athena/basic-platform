@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Roles;
-using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
 
@@ -40,9 +39,22 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public Task<RoleModel> GetAsync(string id, CancellationToken cancellationToken = default)
+    public async Task<GetRoleByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default)
     {
-        return QueryableNoTracking.Where(p => p.Id == id).FirstAsync<RoleModel>(cancellationToken);
+        var entity = await QueryableNoTracking
+            .Where(p => p.Id == id)
+            .FirstAsync<GetRoleByIdResponse>(cancellationToken);
+        if (entity is null)
+        {
+            throw FriendlyException.Of("角色不存在");
+        }
+
+        // 读取资源代码
+        entity.ResourceCodes = await QueryNoTracking<RoleResource>()
+            .Where(p => p.RoleId == id)
+            .ToListAsync(p => p.ResourceCode, cancellationToken);
+
+        return entity;
     }
 
     /// <summary>

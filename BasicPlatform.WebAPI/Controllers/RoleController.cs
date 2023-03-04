@@ -13,7 +13,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
     RoutePath = "/system/role",
-    Sort = 3
+    Sort = 3,
+    Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class RoleController : CustomControllerBase
 {
@@ -50,8 +51,8 @@ public class RoleController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(AdditionalRules = new[] { "role:read" })]
-    public Task<RoleModel> GetAsync([FromQuery] string id)
+    [ApiPermission("role:detail", DisplayName = "详情")]
+    public Task<GetRoleByIdResponse> GetAsync([FromQuery] string id)
     {
         return _service.GetAsync(id);
     }
@@ -75,6 +76,7 @@ public class RoleController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(AdditionalRules = new[] {"role:detail"})]
     public Task<string> PutAsync([FromBody] UpdateRoleRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);

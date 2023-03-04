@@ -31,6 +31,30 @@ public class ApiPermissionController : ControllerBase
     }
 
     /// <summary>
+    /// 读取重名的资源代码
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<string>> GetDuplicateResourceCodes()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var result = _service.GetDuplicateResourceCodes(assembly);
+        return await Task.FromResult(result);
+    }
+
+    /// <summary>
+    /// 检查是否有重名的资源代码
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<bool> HasDuplicateResourceCodes()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var result = _service.HasDuplicateResourceCodes(assembly);
+        return await Task.FromResult(result);
+    }
+
+    /// <summary>
     /// 读取权限资源
     /// </summary>
     /// <returns></returns>
