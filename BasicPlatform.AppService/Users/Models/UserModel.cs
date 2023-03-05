@@ -41,4 +41,14 @@ public class UserModel : ViewModelBase
     /// 是否启用
     /// </summary>
     public bool IsEnabled => Status == Status.Enabled;
+
+    /// <summary>
+    /// 密码是否相等
+    /// </summary>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public bool PasswordEquals(string password)
+    {
+        return PasswordHash.ValidatePassword(password, Password);
+    }
 }

@@ -43,11 +43,6 @@ public class CreateUserRequest : ITxRequest<string>
     public IList<string> OrganizationIds { get; set; } = new List<string>();
 
     /// <summary>
-    /// 职位Ids
-    /// </summary>
-    public IList<string> PositionIds { get; set; } = new List<string>();
-
-    /// <summary>
     /// 角色Ids
     /// </summary>
     public IList<string> RoleIds { get; set; } = new List<string>();

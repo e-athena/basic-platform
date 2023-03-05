@@ -96,4 +96,19 @@ public class RoleController : CustomControllerBase
     }
 
     #endregion
+
+    #region 扩展接口
+
+    /// <summary>
+    /// 读取下拉列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(ApiPermissionConstant.RoleSelectList, IsVisible = false)]
+    public Task<List<SelectViewModel>> GetSelectListAsync()
+    {
+        return _service.GetSelectListAsync();
+    }
+
+    #endregion
 }

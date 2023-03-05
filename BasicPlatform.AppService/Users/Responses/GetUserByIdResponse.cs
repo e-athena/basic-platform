@@ -13,11 +13,6 @@ public class GetUserByIdResponse : UserModel
     public List<string> RoleIds { get; set; } = new();
 
     /// <summary>
-    /// 职位
-    /// </summary>
-    public List<string> PositionIds { get; set; } = new();
-
-    /// <summary>
     /// 组织架构
     /// </summary>
     public List<string> OrganizationIds { get; set; } = new();

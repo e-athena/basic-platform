@@ -72,4 +72,57 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
                 Value = p.Id
             }, cancellationToken);
     }
+
+    /// <summary>
+    /// 读取用户拥有的角色
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<List<string>> GetRoleIdsByUserIdAsync(string userId,
+        CancellationToken cancellationToken = default)
+    {
+        // 读取组织架构用户
+        var organizationIds = await Query<OrganizationUser>()
+            .Where(p => p.UserId == userId)
+            // 组织架构是启用的
+            .Where(p => p.Organization.Status == Status.Enabled)
+            .ToListAsync(p => p.OrganizationId, cancellationToken);
+        // 组织架构Id
+        var organizationIdList = new List<string>();
+        // 读取下级组织架构Id列表
+        foreach (var organizationId in organizationIds)
+        {
+            var itemIds = await QueryNoTracking<Organization>()
+                .Where(p => !string.IsNullOrEmpty(p.ParentPath) && p.ParentPath.Contains(organizationId))
+                // 组织架构是启用的
+                .Where(p => p.Status == Status.Enabled)
+                .ToListAsync(p => p.Id, cancellationToken);
+            if (itemIds.Count > 0)
+            {
+                organizationIdList.AddRange(itemIds);
+            }
+        }
+
+        // 读取组织架构角色
+        var roleIds1 = await QueryNoTracking<OrganizationRole>()
+            .As("b")
+            .Where(p => organizationIdList.Contains(p.OrganizationId))
+            // 组织架构是启用的
+            .Where(p => p.Organization.Status == Status.Enabled)
+            // 角色是启用的
+            .Where(p => p.Role.Status == Status.Enabled)
+            .ToListAsync(p => p.RoleId, cancellationToken);
+
+        // 读取用户角色
+        var roleIds3 = await QueryNoTracking<RoleUser>()
+            .As("d")
+            .Where(p => p.UserId == userId)
+            // 角色是启用的
+            .Where(p => p.Role.Status == Status.Enabled)
+            .ToListAsync(p => p.RoleId, cancellationToken);
+
+        return roleIds1.Union(roleIds3).ToList();
+    }
 }

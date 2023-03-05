@@ -105,10 +105,10 @@ public class OrganizationController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public Task<List<GetOrganizationTreeDataResponse>> GetTreeDataAsync(
+    public Task<List<GetOrganizationTreeDataResponse>> GetTreeListAsync(
         [FromBody] GetOrganizationTreeDataRequest request)
     {
-        return _queryService.GetTreeDataAsync(request);
+        return _queryService.GetTreeListAsync(request);
     }
 
     /// <summary>
@@ -117,9 +117,9 @@ public class OrganizationController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [ApiPermission("org:tree", IsVisible = false)]
-    public Task<List<TreeViewModel>> GetTreeDataAsync()
+    public Task<List<TreeViewModel>> GetTreeListAsync()
     {
-        return _queryService.GetTreeDataAsync();
+        return _queryService.GetTreeListAsync();
     }
 
     /// <summary>
@@ -127,10 +127,10 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission("org:treeSelect", IsVisible = false)]
-    public Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
+    [ApiPermission(ApiPermissionConstant.OrgTreeSelectList, IsVisible = false)]
+    public Task<List<TreeSelectViewModel>> GetTreeSelectListAsync()
     {
-        return _queryService.GetTreeSelectDataAsync();
+        return _queryService.GetTreeSelectListAsync();
     }
 
     /// <summary>
@@ -138,10 +138,10 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission("org:treeSelectForSelf",IsVisible = false)]
-    public Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
+    [ApiPermission(ApiPermissionConstant.OrgTreeSelectListForSelf, IsVisible = false)]
+    public Task<List<TreeSelectViewModel>> GetTreeSelectListForSelfAsync()
     {
-        return _queryService.GetTreeSelectDataForSelfAsync();
+        return _queryService.GetTreeSelectListForSelfAsync();
     }
 
 
@@ -151,9 +151,9 @@ public class OrganizationController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [ApiPermission("org:cascader", IsVisible = false)]
-    public Task<List<CascaderViewModel>> GetCascaderDataAsync()
+    public Task<List<CascaderViewModel>> GetCascaderListAsync()
     {
-        return _queryService.GetCascaderDataAsync();
+        return _queryService.GetCascaderListAsync();
     }
 
     #endregion

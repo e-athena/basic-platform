@@ -27,29 +27,29 @@ public interface IOrganizationQueryService
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    Task<List<GetOrganizationTreeDataResponse>> GetTreeDataAsync(GetOrganizationTreeDataRequest request);
+    Task<List<GetOrganizationTreeDataResponse>> GetTreeListAsync(GetOrganizationTreeDataRequest request);
 
     /// <summary>
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>
-    Task<List<TreeViewModel>> GetTreeDataAsync();
+    Task<List<TreeViewModel>> GetTreeListAsync();
 
     /// <summary>
     /// 读取树形选择框数据列表
     /// </summary>
     /// <returns></returns>
-    Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync();
+    Task<List<TreeSelectViewModel>> GetTreeSelectListAsync();
 
     /// <summary>
     /// 读取树形选择框数据列表
     /// </summary>
     /// <returns></returns>
-    Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync();
+    Task<List<TreeSelectViewModel>> GetTreeSelectListForSelfAsync();
 
     /// <summary>
     /// 获取组织架构级联人员信息
     /// </summary>
     /// <returns></returns>
-    Task<List<CascaderViewModel>> GetCascaderDataAsync();
+    Task<List<CascaderViewModel>> GetCascaderListAsync();
 }

@@ -11,11 +11,6 @@ public class GetUserPagingRequest : GetPagingRequestBase
     public string? OrganizationId { get; set; }
 
     /// <summary>
-    /// 职位Id
-    /// </summary>
-    public string? PositionId { get; set; }
-
-    /// <summary>
     /// 角色Id
     /// </summary>
     public string? RoleId { get; set; }

@@ -54,19 +54,6 @@ public class AppQueryServiceBase<T> : QueryServiceBase<T> where T : EntityCore, 
     }
 
     /// <summary>
-    /// 读取职位同级及下级用户列表
-    /// </summary>
-    /// <param name="positionId"></param>
-    /// <returns></returns>
-    protected async Task<List<string>?> GetPositionUserIdTreeAsync(string positionId)
-    {
-        var list = await QueryNoTracking<PositionUser>()
-            .Where(c => c.Position.ParentPath.Contains(positionId) || c.PositionId == positionId)
-            .ToListAsync(p => p.UserId);
-        return list.GroupBy(p => p).Select(p => p.Key).ToList();
-    }
-
-    /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="id"></param>

@@ -60,7 +60,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public async Task<List<GetOrganizationTreeDataResponse>> GetTreeDataAsync(
+    public async Task<List<GetOrganizationTreeDataResponse>> GetTreeListAsync(
         GetOrganizationTreeDataRequest request)
     {
         var list = await QueryableNoTracking
@@ -81,7 +81,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>
-    public async Task<List<TreeViewModel>> GetTreeDataAsync()
+    public async Task<List<TreeViewModel>> GetTreeListAsync()
     {
         var list = await QueryableNoTracking.ToListAsync();
         var result = new List<TreeViewModel>();
@@ -95,7 +95,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// 读取树形选择框数据列表
     /// </summary>
     /// <returns></returns>
-    public async Task<List<TreeSelectViewModel>> GetTreeSelectDataAsync()
+    public async Task<List<TreeSelectViewModel>> GetTreeSelectListAsync()
     {
         var list = await QueryableNoTracking.ToListAsync();
         var result = new List<TreeSelectViewModel>();
@@ -109,7 +109,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// 读取树形选择框数据列表
     /// </summary>
     /// <returns></returns>
-    public async Task<List<TreeSelectViewModel>> GetTreeSelectDataForSelfAsync()
+    public async Task<List<TreeSelectViewModel>> GetTreeSelectListForSelfAsync()
     {
         var list = await QueryableNoTracking.ToListAsync();
         if (!IsRoot)
@@ -136,7 +136,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// </summary>
     /// <returns></returns>
     // ReSharper disable once IdentifierTypo
-    public async Task<List<CascaderViewModel>> GetCascaderDataAsync()
+    public async Task<List<CascaderViewModel>> GetCascaderListAsync()
     {
         var list = await QueryableNoTracking.ToListAsync();
         if (!IsRoot)

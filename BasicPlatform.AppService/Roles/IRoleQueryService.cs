@@ -32,4 +32,12 @@ public interface IRoleQueryService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<SelectViewModel>> GetSelectListAsync(CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// 读取用户拥有的角色
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<List<string>> GetRoleIdsByUserIdAsync(string userId, CancellationToken cancellationToken = default);
 }

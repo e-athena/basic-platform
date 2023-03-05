@@ -7,13 +7,24 @@ namespace BasicPlatform.AppService.Users.Responses;
 /// </summary>
 public class GetUserPagingResponse : UserModel
 {
-  /// <summary>
-  /// 创建人ID
-  /// </summary>
-  public string? CreatedUserId { get; set; }
+    /// <summary>
+    /// 创建人ID
+    /// </summary>
+    public string? CreatedUserId { get; set; }
 
-  /// <summary>
-  /// 创建人
-  /// </summary>
-  public string? CreatedUserName { get; set; }
+    /// <summary>
+    /// 创建人
+    /// </summary>
+    public string? CreatedUserName { get; set; }
+
+
+    /// <summary>
+    /// 更新人ID
+    /// </summary>
+    public string? UpdatedUserId { get; set; }
+
+    /// <summary>
+    /// 更新人
+    /// </summary>
+    public string? UpdatedUserName { get; set; }
 }

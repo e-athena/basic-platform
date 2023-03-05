@@ -8,6 +8,7 @@ global using Athena.Infrastructure.ViewModels;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Cors;
+global using Microsoft.AspNetCore.Authorization;
 global using System.Reflection;
 global using Serilog;
 global using Serilog.Debugging;

@@ -59,7 +59,7 @@ public class ApiPermissionController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<List<ApiPermissionTreeInfo>> GetResourcesAsync()
+    public async Task<List<ResourceTreeInfo>> GetResourcesAsync()
     {
         var assembly = Assembly.GetExecutingAssembly();
         var result = ApiPermissionHelper.GetResources(assembly);

@@ -62,6 +62,12 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     [MaxLength(36)]
     public string? UpdatedUserId { get; set; }
+    
+    /// <summary>
+    /// 更新人
+    /// </summary>
+    public virtual User? UpdatedUser { get; set; }
+
 
     public User()
     {

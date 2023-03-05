@@ -11,12 +11,7 @@ public class UpdateUserRequest : UserModel,ITxRequest<string>
     /// 组织架构Ids
     /// </summary>
     public IList<string> OrganizationIds { get; set; } = new List<string>();
-
-    /// <summary>
-    /// 职位Ids
-    /// </summary>
-    public IList<string> PositionIds { get; set; } = new List<string>();
-
+    
     /// <summary>
     /// 角色Ids
     /// </summary>

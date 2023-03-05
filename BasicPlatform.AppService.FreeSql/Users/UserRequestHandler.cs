@@ -8,7 +8,8 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UpdateUserRequest, string>,
-    IRequestHandler<UserStatusChangeRequest, string>
+    IRequestHandler<UserStatusChangeRequest, string>,
+    IRequestHandler<AssignUserResourcesRequest, string>
 {
     public UserRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
@@ -51,16 +52,6 @@ public class UserRequestHandler : AppServiceBase<User>,
         }
 
         // 新增关联数据
-        if (request.PositionIds.Count > 0)
-        {
-            var positionUsers = request
-                .PositionIds
-                .Select(positionId => new PositionUser(positionId, entity.Id))
-                .ToList();
-            await RegisterNewRangeValueObjectAsync(positionUsers, cancellationToken);
-        }
-
-        // 新增关联数据
         if (request.RoleIds.Count > 0)
         {
             var userRoles = request
@@ -81,6 +72,11 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <returns></returns>
     public async Task<string> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
     {
+        if (request.Id == UserId)
+        {
+            throw FriendlyException.Of("不能修改自己的信息");
+        }
+
         // 查询用户名是否重复
         var exists = await Queryable
             .Where(p => p.Id != request.Id)
@@ -123,25 +119,6 @@ public class UserRequestHandler : AppServiceBase<User>,
 
         #endregion
 
-        #region 职位用户
-
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<PositionUser>(
-            p => p.UserId == entity.Id, cancellationToken
-        );
-
-        // 新增关联数据
-        if (request.PositionIds.Count > 0)
-        {
-            var positionUsers = request
-                .PositionIds
-                .Select(positionId => new PositionUser(positionId, entity.Id))
-                .ToList();
-            await RegisterNewRangeValueObjectAsync(positionUsers, cancellationToken);
-        }
-
-        #endregion
-
         #region 用户角色
 
         // 删除旧数据
@@ -174,9 +151,47 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <returns></returns>
     public async Task<string> Handle(UserStatusChangeRequest request, CancellationToken cancellationToken)
     {
+        if (request.Id == UserId)
+        {
+            throw FriendlyException.Of("不能修改自己的状态");
+        }
+
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
+    }
+
+    /// <summary>
+    /// 分配资源
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<string> Handle(AssignUserResourcesRequest request, CancellationToken cancellationToken)
+    {
+        if (request.Id == UserId)
+        {
+            throw FriendlyException.Of("不能给自己分配资源");
+        }
+
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<UserResource>(
+            p => p.UserId == request.Id, cancellationToken
+        );
+        if (request.ResourceCodes.Count <= 0)
+        {
+            return request.Id;
+        }
+
+        // 新增新数据
+        var userResources = request
+            .ResourceCodes
+            .Select(code => new UserResource(request.Id, code))
+            .ToList();
+        await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
+
+        return request.Id;
     }
 }
