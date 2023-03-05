@@ -3,7 +3,7 @@
 
 declare namespace API {
   type CurrentUser = {
-    name?: string;
+    realName?: string;
     avatar?: string;
     userid?: string;
     email?: string;
@@ -27,33 +27,12 @@ declare namespace API {
     status?: string;
     type?: string;
     currentAuthority?: string;
+    errorMessage?: string
   };
 
   type PageParams = {
     current?: number;
     pageSize?: number;
-  };
-
-  type RuleListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    avatar?: string;
-    name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
-    status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
-  };
-
-  type RuleList = {
-    data?: RuleListItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
   };
 
   type FakeCaptcha = {
@@ -122,6 +101,30 @@ declare namespace API {
     value: string,
     values: string[],
     description?: string
+  }
+
+  /**
+   * 下拉列表
+   */
+  type SelectInfo = {
+    label: string;
+    value: string;
+    disabled: boolean;
+    extend?: string;
+  }
+  /**
+   * 树形下拉列表
+   */
+  type TreeSelectInfo = {
+    id: string;
+    parentId?: string;
+    title: string;
+    value: string;
+    disabled: boolean;
+    isLeaf: boolean;
+    checked: boolean;
+    children?: TreeSelectInfo[];
+    extend?: string;
   }
 }
 

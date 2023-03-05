@@ -1,21 +1,21 @@
 import { get, paging, post, put } from '@/utils/request';
 
-/** 查询数据 */
+/** 列表 */
 export function query(params: API.RolePagingParams) {
   return paging<API.RoleListItem>('/api/Role/GetPaging', params);
 }
 
-/** 查询详情 */
+/** 详情 */
 export function detail(id: string) {
-  return get<API.RoleDetailItem>(`/api/Role/Get`, { id: id });
+  return get<API.RoleDetailItem>('/api/Role/Get', { id });
 }
 
-/** 创建数据 */
+/** 创建 */
 export function create(data: API.CreateRoleItem) {
-  return post('/api/Role/Post', data);
+  return post<API.CreateRoleItem, string>('/api/Role/Post', data);
 }
 
-/** 更新数据 */
+/** 更新 */
 export function update(data: API.UpdateRoleItem) {
-  return put('/api/Role/Put', data);
+  return put<API.UpdateRoleItem, string>('/api/Role/Put', data);
 }

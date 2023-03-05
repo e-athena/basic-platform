@@ -7,7 +7,7 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser, queryMenus } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser, queryUserResources } from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
@@ -39,7 +39,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   const fetchApiResources = async () => {
-    const res = await queryMenus();
+    const res = await queryUserResources();
     return res.data || [];
   };
   const fetchMenuData = async () => {
@@ -90,7 +90,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       },
     },
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.realName,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {

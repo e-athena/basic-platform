@@ -28,6 +28,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       'Content-Type': 'application/json',
     },
     data: body,
+    skipErrorHandler: true,
     ...(options || {}),
   });
 }
@@ -80,6 +81,13 @@ export async function addRule(options?: { [key: string]: any }) {
 export async function removeRule(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/rule', {
     method: 'DELETE',
+    ...(options || {}),
+  });
+}
+/** 查询菜单 GET /Admin/Index/GetMenuTree */
+export async function queryUserResources(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ResourceInfo[]>>('/api/User/GetResources', {
+    method: 'GET',
     ...(options || {}),
   });
 }

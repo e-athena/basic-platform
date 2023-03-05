@@ -1,5 +1,5 @@
-import { query, detail } from './service';
-import { PlusOutlined, FormOutlined } from '@ant-design/icons';
+import { query, detail, queryResourceCodeInfo } from './service';
+import { PlusOutlined, FormOutlined, SafetyOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -13,15 +13,21 @@ import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
 import { canAccessible, getSorter } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
+import AuthorizationForm from './components/AuthorizationForm';
 
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
+  const [authorizationModalOpen, handleAuthorizationModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RoleDetailItem>();
-  // const [selectedRowsState, setSelectedRows] = useState<API.RoleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.UserDetailInfo>();
+  const [currentResourceCodeRow, setCurrentResourceCodeRow] = useState<API.UserResourceCodeInfo>({
+    roleResourceCodes: [],
+    userResourceCodes: []
+  });
+  // const [selectedRowsState, setSelectedRows] = useState<API.UserListItem[]>([]);
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
@@ -32,10 +38,16 @@ const TableList: React.FC = () => {
    * */
   const intl = useIntl();
 
-  const columns: ProColumns<API.RoleListItem>[] = [
+  const columns: ProColumns<API.UserListItem>[] = [
     {
-      title: '名称',
-      dataIndex: 'name',
+      title: '登录名',
+      dataIndex: 'userName',
+      hideInSearch: true,
+      width: 150,
+    },
+    {
+      title: '姓名',
+      dataIndex: 'realName',
       hideInSearch: true,
       width: 150,
     },
@@ -50,8 +62,14 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '备注',
-      dataIndex: 'remarks',
+      title: '手机号',
+      dataIndex: 'phoneNumber',
+      width: 120,
+      hideInSearch: true,
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'email',
       hideInSearch: true,
     },
     {
@@ -92,6 +110,24 @@ const TableList: React.FC = () => {
             }}>
             编辑
           </Button>,
+          <Button key={'auth'}
+            shape="circle"
+            type={'link'}
+            icon={<SafetyOutlined />}
+            onClick={async () => {
+              const hide = message.loading('正在查询');
+              const res = await queryResourceCodeInfo(entity.id);
+              hide();
+              if (res.success) {
+                setCurrentResourceCodeRow(res.data!)
+                setCurrentRow(entity as API.UserDetailInfo);
+                handleAuthorizationModalOpen(true);
+                return;
+              }
+              message.error(res.message);
+            }}>
+            授权
+          </Button>,
         ];
       },
     },
@@ -114,7 +150,7 @@ const TableList: React.FC = () => {
       title: resource?.name,
       children: resource?.description
     }}>
-      <ProTable<API.RoleListItem, API.RolePagingParams>
+      <ProTable<API.UserListItem, API.UserPagingParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
@@ -125,7 +161,7 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Access key={'add'} accessible={canAccessible(permission.role.postAsync, resource)}>
+          <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
             <Button
               type="primary"
               onClick={() => {
@@ -171,6 +207,23 @@ const TableList: React.FC = () => {
         open={createOrUpdateModalOpen}
         values={currentRow}
       />
+      <AuthorizationForm
+        onCancel={() => {
+          handleAuthorizationModalOpen(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        onSuccess={() => {
+          handleAuthorizationModalOpen(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        open={authorizationModalOpen}
+        values={currentRow}
+        resourceCodeInfo={currentResourceCodeRow}
+      />
       <Drawer
         width={600}
         open={showDetail}
@@ -180,17 +233,17 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.name && (
-          <ProDescriptions<API.RoleListItem>
+        {currentRow?.userName && (
+          <ProDescriptions<API.UserListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.userName}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.RoleListItem>[]}
+            columns={columns as ProDescriptionsItemProps<API.UserListItem>[]}
           />
         )}
       </Drawer>

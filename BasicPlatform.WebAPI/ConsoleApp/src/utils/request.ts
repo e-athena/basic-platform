@@ -31,7 +31,7 @@ export async function get<T>(url: string, params?: { [key: string]: any }): Prom
  * @param data 数据
  * @returns 结果集
  */
-export async function post<T>(url: string, data: T): Promise<ApiResponse<any>> {
+export async function post<T, TR>(url: string, data: T): Promise<ApiResponse<TR>> {
   return request(url, {
     method: 'POST',
     data
@@ -44,7 +44,7 @@ export async function post<T>(url: string, data: T): Promise<ApiResponse<any>> {
  * @param data 数据
  * @returns 结果集
  */
-export async function put<T>(url: string, data?: T): Promise<ApiResponse<any>> {
+export async function put<T, TR>(url: string, data?: T): Promise<ApiResponse<TR>> {
   return request(url, {
     method: 'PUT',
     data: data || {}

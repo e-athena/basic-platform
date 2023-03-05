@@ -49,17 +49,16 @@ export async function submitHandle<T>(func: (values: T) => Promise<ApiResponse<b
  * 获取Sorter
  * @param {*} sorter
  */
-export const getSorter = (sorter: Record<string, SortOrder>) => {
+export const getSorter = (sorter: Record<string, SortOrder>, alias?: string) => {
   let str = '';
   if (Object.keys(sorter).length > 0) {
     const key = Object.keys(sorter)[0];
     const value = sorter[key];
 
-    str = `${key.charAt(0).toUpperCase() + key.slice(1)} ${value === 'descend' ? 'DESC' : 'ASC'
-      }`;
+    str = `${key.charAt(0).toUpperCase() + key.slice(1)} ${value === 'descend' ? 'DESC' : 'ASC'}`;
   }
 
-  return str === '' ? {} : { sorter: str };
+  return str === '' ? {} : { sorter: alias ? `${alias}.${str}` : str };
 };
 
 /**

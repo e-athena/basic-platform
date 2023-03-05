@@ -60,6 +60,11 @@ export default [
         component: './System/Resource',
       },
       {
+        path: '/system/user',
+        name: '用户管理',
+        component: './System/User',
+      },
+      {
         path: '/system/role',
         name: '角色管理',
         component: './System/Role',

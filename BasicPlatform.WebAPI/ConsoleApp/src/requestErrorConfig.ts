@@ -15,6 +15,7 @@ enum ErrorShowType {
 interface ResponseStructure {
   success: boolean;
   data: any;
+  statusCode: number;
   errorCode?: number;
   errorMessage?: string;
   showType?: ErrorShowType;
@@ -30,9 +31,9 @@ export const errorConfig: RequestConfig = {
   errorConfig: {
     // 错误抛出
     errorThrower: (res) => {
-      const { success, data, errorCode, errorMessage, showType } =
+      const { success, data, errorCode, errorMessage, showType, statusCode } =
         res as unknown as ResponseStructure;
-      if (!success) {
+      if (!success && statusCode === 500) {
         const error: any = new Error(errorMessage);
         error.name = 'BizError';
         error.info = { errorCode, errorMessage, showType, data };
@@ -100,12 +101,12 @@ export const errorConfig: RequestConfig = {
   // 响应拦截器
   responseInterceptors: [
     (response) => {
-      // 拦截响应数据，进行个性化处理
-      const { data } = response as unknown as ResponseStructure;
+      // // 拦截响应数据，进行个性化处理
+      // const { data } = response as unknown as ResponseStructure;
 
-      if (data?.success === false) {
-        message.error('请求失败！');
-      }
+      // if (data?.success === false) {
+      //   message.error('请求失败！');
+      // }
       return response;
     },
   ],

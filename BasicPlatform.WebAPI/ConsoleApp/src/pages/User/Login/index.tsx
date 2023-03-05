@@ -131,19 +131,22 @@ const Login: React.FC = () => {
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(res);
       // 如果失败去设置用户错误信息
-      setUserLoginState(res.data!);
+      setUserLoginState({
+        status: 'error',
+        type,
+        errorMessage: res.message
+      });
     } catch (error) {
+      console.log(error);
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',
         defaultMessage: '登录失败，请重试！',
       });
-      console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };
-  const { status, type: loginType } = userLoginState;
+  const { status, type: loginType, errorMessage } = userLoginState;
 
   return (
     <div className={containerClassName}>
@@ -210,7 +213,7 @@ const Login: React.FC = () => {
 
           {status === 'error' && loginType === 'account' && (
             <LoginMessage
-              content={intl.formatMessage({
+              content={errorMessage || intl.formatMessage({
                 id: 'pages.login.accountLogin.errorMessage',
                 defaultMessage: '账户或密码错误(admin/ant.design)',
               })}
