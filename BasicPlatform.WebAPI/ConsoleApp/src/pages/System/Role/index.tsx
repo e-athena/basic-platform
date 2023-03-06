@@ -1,4 +1,4 @@
-import { query, detail } from './service';
+import { query, detail, statusChange } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -7,7 +7,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
@@ -40,19 +40,43 @@ const TableList: React.FC = () => {
       width: 150,
     },
     {
+      title: '备注',
+      dataIndex: 'remarks',
+      hideInSearch: true,
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       width: 90,
       hideInSearch: true,
       sorter: true,
       render(_, entity) {
+        if (canAccessible(permission.role.statusChangeAsync, resource)) {
+          return <Switch
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+            checked={entity.status === 1}
+            onClick={async () => {
+              const statusName = entity.status === 1 ? '禁用' : '启用';
+              Modal.confirm({
+                title: '操作提示',
+                content: `确定${statusName}{${entity.name}}吗？`,
+                onOk: async () => {
+                  const hide = message.loading(`正在${statusName}`);
+                  const res = await statusChange(entity.id!);
+                  hide();
+                  if (res.success) {
+                    actionRef.current?.reload();
+                    return;
+                  }
+                  message.error(res.message);
+                }
+              });
+            }}
+          />
+        }
         return <IconStatus status={entity.status === 1} />;
       },
-    },
-    {
-      title: '备注',
-      dataIndex: 'remarks',
-      hideInSearch: true,
     },
     {
       title: '更新人',
@@ -75,23 +99,25 @@ const TableList: React.FC = () => {
       width: 95,
       render(_, entity) {
         return [
-          <Button key={'view'}
-            shape="circle"
-            type={'link'}
-            icon={<FormOutlined />}
-            onClick={async () => {
-              const hide = message.loading('正在查询');
-              const res = await detail(entity.id);
-              hide();
-              if (res.success) {
-                setCurrentRow(res.data);
-                handleCreateOrUpdateModalOpen(true);
-                return;
-              }
-              message.error(res.message);
-            }}>
-            编辑
-          </Button>,
+          <Access key={'edit'} accessible={canAccessible(permission.role.putAsync, resource)}>
+            <Button
+              shape="circle"
+              type={'link'}
+              icon={<FormOutlined />}
+              onClick={async () => {
+                const hide = message.loading('正在查询');
+                const res = await detail(entity.id);
+                hide();
+                if (res.success) {
+                  setCurrentRow(res.data);
+                  handleCreateOrUpdateModalOpen(true);
+                  return;
+                }
+                message.error(res.message);
+              }}>
+              编辑
+            </Button>
+          </Access>
         ];
       },
     },
@@ -146,11 +172,6 @@ const TableList: React.FC = () => {
           }
         }}
         columns={columns}
-      // rowSelection={{
-      //   onChange: (_, selectedRows) => {
-      //     setSelectedRows(selectedRows);
-      //   },
-      // }}
       />
       <CreateOrUpdateForm
         onCancel={() => {

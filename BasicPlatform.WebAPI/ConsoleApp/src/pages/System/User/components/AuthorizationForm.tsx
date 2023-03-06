@@ -1,7 +1,8 @@
 import { submitHandle } from '@/utils/utils';
 import {
   ModalForm,
-  ProDescriptions
+  ProDescriptions,
+  ProFormDateTimePicker
 } from '@ant-design/pro-components';
 import React from 'react';
 import { assignResources } from '../service';
@@ -30,10 +31,11 @@ const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
         bodyStyle: { padding: '32px 40px 48px' },
         destroyOnClose: true,
       }}
-      onFinish={async () => {
+      onFinish={async (values) => {
         const succeed = await submitHandle(assignResources, {
           id: props.values!.id!,
           resourceCodes: codes,
+          expireAt: values.expireAt,
         })
         if (succeed) {
           props.onSuccess();
@@ -54,6 +56,12 @@ const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
           dataIndex: 'realName'
         }]
         } column={2} dataSource={props.values}
+      />
+      <ProFormDateTimePicker
+        name="expireAt"
+        label="有效期至"
+        tooltip="资源授权的有效期，超过有效期将自动失效。"
+        placeholder={'请选择'}
       />
       <Authorization
         resourceCodes={[...props.resourceCodeInfo.roleResourceCodes, ...props.resourceCodeInfo.userResourceCodes]}

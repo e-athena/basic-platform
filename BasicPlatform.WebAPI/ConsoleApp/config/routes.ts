@@ -55,9 +55,9 @@ export default [
         redirect: '/admin/menu',
       },
       {
-        path: '/system/resource',
-        name: '资源管理',
-        component: './System/Resource',
+        path: '/system/org',
+        name: '组织架构',
+        component: './System/Org',
       },
       {
         path: '/system/user',
@@ -68,6 +68,11 @@ export default [
         path: '/system/role',
         name: '角色管理',
         component: './System/Role',
+      },
+      {
+        path: '/system/resource',
+        name: '资源管理',
+        component: './System/Resource',
       },
     ],
   },

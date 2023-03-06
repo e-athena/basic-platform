@@ -19,3 +19,7 @@ export function create(data: API.CreateRoleItem) {
 export function update(data: API.UpdateRoleItem) {
   return put<API.UpdateRoleItem, string>('/api/Role/Put', data);
 }
+/** 切换状态 */
+export function statusChange(id: string) {
+  return put('/api/Role/StatusChange', { id });
+}

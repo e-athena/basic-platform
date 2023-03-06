@@ -12,7 +12,7 @@ export default {
     /** 切换状态 */
     statusChangeAsync: 'OrganizationController_StatusChangeAsync',
     /** 读取树形列表 */
-    getTreeDataAsync: 'OrganizationController_GetTreeDataAsync',
+    getTreeListAsync: 'OrganizationController_GetTreeListAsync',
   },
   /** 资源管理 */
   resource: {
@@ -38,23 +38,15 @@ export default {
   user: {
     /** 读取列表 */
     getPagingAsync: 'UserController_GetPagingAsync',
-    /** 根据ID读取 */
-    getAsync: 'UserController_GetAsync',
+    /** 详情 */
+    getAsync: 'user:detail',
     /** 创建 */
     postAsync: 'UserController_PostAsync',
     /** 更新 */
     putAsync: 'UserController_PutAsync',
     /** 状态变更 */
     statusChangeAsync: 'UserController_StatusChangeAsync',
-    /**  */
-    getUserAsync: 'UserController_GetUserAsync',
-    /** 读取用户 */
-    getSelectDataAsync: 'UserController_GetSelectDataAsync',
-    /** 读取组织架构用户树形列表 */
-    getOrganizationUserTreeSelectListAsync: 'UserController_GetOrganizationUserTreeSelectListAsync',
-    /** 读取组织架构和用户树形列表 */
-    getOrganizationAndUserTreeSelectListAsync: 'UserController_GetOrganizationAndUserTreeSelectListAsync',
-    /** 读取资源 */
-    getResourcesAsync: 'UserController_GetResourcesAsync',
+    /** 分配资源 */
+    assignResourcesAsync: 'UserController_AssignResourcesAsync',
   },
 };

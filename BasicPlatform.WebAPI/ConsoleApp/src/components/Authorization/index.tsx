@@ -81,7 +81,8 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
                     p.label.includes('读取') ||
                     p.label.includes('查询') ||
                     p.label.includes('查看') ||
-                    p.label.includes('详情')
+                    p.label.includes('详情') ||
+                    p.label.includes('列表')
                   ).map((func) => func.key);
                 });
               }

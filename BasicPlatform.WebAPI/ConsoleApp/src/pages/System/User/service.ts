@@ -29,3 +29,8 @@ export function queryResourceCodeInfo(id: string) {
 export function assignResources(data: API.AssignUserResourcesRequest) {
   return put<API.AssignUserResourcesRequest, string>('/api/User/AssignResources', data);
 }
+
+/** 切换状态 */
+export function statusChange(id: string) {
+  return put('/api/User/StatusChange', { id });
+}
