@@ -78,7 +78,7 @@ public class UserController : CustomControllerBase
     [HttpPut]
     [ApiPermission(AdditionalRules = new[]
     {
-        ApiPermissionConstant.OrgTreeSelectListForSelf,
+        ApiPermissionConstant.OrgTreeSelectList,
         ApiPermissionConstant.RoleSelectList,
         ApiPermissionConstant.UserDetail
     })]

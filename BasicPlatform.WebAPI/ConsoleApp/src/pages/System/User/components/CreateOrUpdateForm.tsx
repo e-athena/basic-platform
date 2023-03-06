@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import { update, create } from '../service';
 import { roleList } from '@/services/ant-design-pro/system/role'
-import { orgTreeSelectForSelf } from '@/services/ant-design-pro/system/org'
+import { orgTreeSelect } from '@/services/ant-design-pro/system/org'
 
 type CreateOrUpdateFormProps = {
   onCancel: () => void;
@@ -20,7 +20,6 @@ type CreateOrUpdateFormProps = {
 };
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
-  // const [codes, setCodes] = React.useState<string[]>([]);
   return (
     <ModalForm
       width={600}
@@ -127,7 +126,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           multiple: true,
         }}
         request={async () => {
-          const { data } = await orgTreeSelectForSelf();
+          const { data } = await orgTreeSelect();
           return data || [];
         }}
       />

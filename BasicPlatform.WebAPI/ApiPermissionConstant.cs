@@ -43,12 +43,12 @@ public static class ApiPermissionConstant
     /// <summary>
     /// 组织架构树形下拉列表
     /// </summary>
-    public const string OrgTreeSelectListForSelf = "org:treeSelect";
+    public const string OrgTreeSelectList = "org:treeSelect";
 
     /// <summary>
     /// 组织架构树形下拉列表(包含自己及下级)
     /// </summary>
-    public const string OrgTreeSelectList = "org:treeSelectForSelf";
+    public const string OrgTreeSelectListForSelf = "org:treeSelectForSelf";
 
     #endregion
 }
