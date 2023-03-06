@@ -47,7 +47,8 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         }
       }}
       initialValues={{
-        ...props.values
+        ...props.values,
+        status: props.values?.id === undefined ? true : props.values?.status === 1,
       }}
     >
       <ProFormTreeSelect
@@ -90,12 +91,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         placeholder={'请输入'}
       />
       {props.values?.id === undefined && (
-        <ProFormSwitch
-          name="status"
-          label="启用"
-          fieldProps={{
-            defaultChecked: true,
-          }} />)
+        <ProFormSwitch name="status" label="启用" />)
       }
     </ModalForm >
   );

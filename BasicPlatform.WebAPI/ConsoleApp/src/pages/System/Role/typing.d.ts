@@ -3,14 +3,14 @@ declare namespace API {
   type CreateRoleItem = {
     name: string;
     remarks?: string;
-    resourceCodes: string[];
+    resources: ResourceModel[];
   };
   /** 更新角色 */
   type UpdateRoleItem = {
     id: string;
     name: string;
     remarks?: string;
-    resourceCodes: string[];
+    resources: ResourceModel[];
   };
   /**
    * 角色列表
@@ -25,7 +25,7 @@ declare namespace API {
 
   /** 角色详情 */
   type RoleDetailItem = {
-    resourceCodes: string[];
+    resources: ResourceModel[];
   } & Partial<RoleListItem>;
 
   /**

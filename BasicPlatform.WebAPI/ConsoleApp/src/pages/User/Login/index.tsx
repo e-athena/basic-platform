@@ -114,6 +114,17 @@ const Login: React.FC = () => {
       });
     }
   };
+  const fetchApiResources = async () => {
+    const resources = await initialState?.fetchApiResources?.();
+    if (resources) {
+      flushSync(() => {
+        setInitialState((s) => ({
+          ...s,
+          apiResources: resources,
+        }));
+      });
+    }
+  };
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
@@ -127,6 +138,7 @@ const Login: React.FC = () => {
         message.success(defaultLoginSuccessMessage);
         setToken(res.data!.currentAuthority!);
         await fetchUserInfo();
+        await fetchApiResources();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;

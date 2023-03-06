@@ -51,28 +51,28 @@ export default [
     icon: 'crown',
     routes: [
       {
-        path: '/system',
-        redirect: '/admin/menu',
-      },
-      {
         path: '/system/org',
         name: '组织架构',
         component: './System/Org',
+        access: 'routeFilter'
       },
       {
         path: '/system/user',
         name: '用户管理',
         component: './System/User',
+        access: 'routeFilter'
       },
       {
         path: '/system/role',
         name: '角色管理',
         component: './System/Role',
+        access: 'routeFilter'
       },
       {
         path: '/system/resource',
         name: '资源管理',
         component: './System/Resource',
+        access: 'routeFilter'
       },
     ],
   },
@@ -84,7 +84,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome',
+    component: './Welcome',
   },
   {
     path: '*',

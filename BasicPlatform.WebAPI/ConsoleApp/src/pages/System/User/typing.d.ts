@@ -8,7 +8,7 @@ declare namespace API {
     email?: string;
     organizationIds: string[];
     roleIds: string[];
-    resourceCodes: string[];
+    resources: ResourceModel[];
   };
   /** 更新 */
   type UpdateUserRequest = {
@@ -31,20 +31,21 @@ declare namespace API {
 
   /** 详情 */
   type UserDetailInfo = {
-    resourceCodes: string[];
+    resources: ResourceModel[];
     organizationIds: string[];
     roleIds: string[];
   } & Partial<UserListItem>;
 
   /** 资源代码 */
   type UserResourceCodeInfo = {
-    roleResourceCodes: string[];
-    userResourceCodes: string[];
+    roleResources: ResourceModel[];
+    userResources: ResourceModel[];
   };
   /** 分配资源 */
   type AssignUserResourcesRequest = {
     id: string;
-    resourceCodes: string[];
+    resources: ResourceModel[];
+    expireAt?: string;
   }
   /**
    * 分页请求参数

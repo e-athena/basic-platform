@@ -74,3 +74,9 @@ declare interface ApiResponse<T = any> {
   message: string;
   statusCode: number;
 }
+
+/** 资源模型 */
+declare interface ResourceModel {
+  key: string;
+  code: string;
+}

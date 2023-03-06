@@ -18,7 +18,7 @@ type AuthorizationFormProps = {
 };
 
 const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
-  const [codes, setCodes] = React.useState<string[]>([]);
+  const [resources, setResources] = React.useState<ResourceModel[]>([]);
   return (
     <ModalForm
       width={860}
@@ -34,7 +34,7 @@ const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
       onFinish={async (values) => {
         const succeed = await submitHandle(assignResources, {
           id: props.values!.id!,
-          resourceCodes: codes,
+          resources: resources,
           expireAt: values.expireAt,
         })
         if (succeed) {
@@ -64,10 +64,10 @@ const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
         placeholder={'请选择'}
       />
       <Authorization
-        resourceCodes={[...props.resourceCodeInfo.roleResourceCodes, ...props.resourceCodeInfo.userResourceCodes]}
-        disabledResourceCodes={props.resourceCodeInfo.roleResourceCodes}
+        resources={[...props.resourceCodeInfo.roleResources, ...props.resourceCodeInfo.userResources]}
+        disabledResourceKeys={props.resourceCodeInfo.roleResources.map(r => r.key)}
         onChange={(_, currentCodes) => {
-          setCodes(currentCodes || []);
+          setResources(currentCodes || []);
         }} />
     </ModalForm>
   );

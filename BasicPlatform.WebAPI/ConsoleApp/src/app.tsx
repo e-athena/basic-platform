@@ -76,7 +76,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
       render: (_, avatarChildren) => {
-        return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
+        return <AvatarDropdown menu={true}>{avatarChildren}</AvatarDropdown>;
       },
     },
     menuDataRender(menuData) {
@@ -84,9 +84,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     menu: {
       locale: false,
-      params: initialState,
+      // params: initialState,
       request: async () => {
-        return initialState?.fetchMenuData?.() || [];
+        // return initialState?.fetchMenuData?.() || [];
+        return initialState?.apiResources === undefined ?
+          (initialState?.fetchMenuData?.() || []) :
+          recursionMenu(initialState?.apiResources);
       },
     },
     waterMarkProps: {

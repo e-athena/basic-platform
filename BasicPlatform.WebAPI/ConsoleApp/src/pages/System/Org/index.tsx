@@ -6,12 +6,12 @@ import {
   ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl, useModel, useLocation, Access } from '@umijs/max';
+import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
 import { Button, Drawer, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible } from '@/utils/utils';
+import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 
 
@@ -25,12 +25,10 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  const intl = useIntl();
+  const hideInTable: boolean = !hasPermission([
+    permission.organization.postAsync,
+    permission.organization.putAsync
+  ], resource);
 
   const columns: ProColumns<API.OrgTreeListItem>[] = [
     {
@@ -95,6 +93,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 95,
+      hideInTable: hideInTable,
       render(_, entity) {
         return [
           <Access key={'edit'} accessible={canAccessible(permission.organization.putAsync, resource)}>
@@ -151,10 +150,7 @@ const TableList: React.FC = () => {
       children: resource?.description
     }}>
       <ProTable<API.OrgTreeListItem, API.OrgTreeListParams>
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="id"
         search={{

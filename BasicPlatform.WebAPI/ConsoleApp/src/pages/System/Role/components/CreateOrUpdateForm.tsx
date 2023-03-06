@@ -17,7 +17,7 @@ type CreateOrUpdateFormProps = {
 };
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
-  const [codes, setCodes] = React.useState<string[]>([]);
+  const [resources, setResources] = React.useState<ResourceModel[]>([]);
   return (
     <ModalForm
       width={860}
@@ -32,7 +32,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       }}
       onFinish={async (values: API.UpdateRoleItem) => {
         const isUpdate = props.values !== undefined;
-        values.resourceCodes = codes;
+        values.resources = resources;
         if (isUpdate) {
           values.id = props.values!.id!;
         }
@@ -68,9 +68,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       </ProForm.Group>
       <ProForm.Item label={'资源授权'}>
         <Authorization
-          resourceCodes={props.values?.resourceCodes}
+          resources={props.values?.resources}
           onChange={(codes) => {
-            setCodes(codes);
+            setResources(codes);
           }} />
       </ProForm.Item>
     </ModalForm >

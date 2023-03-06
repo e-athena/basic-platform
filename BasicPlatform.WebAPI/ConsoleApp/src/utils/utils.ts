@@ -3,16 +3,30 @@ import { SortOrder } from "antd/es/table/interface";
 
 /**
  * 是否有权限
- * @param code 权限代码
+ * @param key 权限代码
  * @param resource API资源
  * @returns 
  */
-export const canAccessible = (code: string, resource: API.ResourceInfo | null): boolean => {
+export const canAccessible = (key: string, resource: API.ResourceInfo | null): boolean => {
   if (resource === null || resource?.functions === null || resource?.functions?.length === 0) {
     return false;
   }
   const permissions = resource?.functions?.map((p) => p.key);
-  return permissions?.includes(code) || false;
+  return permissions?.includes(key) || false;
+}
+
+/**
+ * 是否有权限
+ * @param keys 权限代码
+ * @param resource API资源
+ * @returns 
+ */
+export const hasPermission = (keys: string[], resource: API.ResourceInfo | null): boolean => {
+  if (resource === null || resource?.functions === null || resource?.functions?.length === 0) {
+    return false;
+  }
+  const permissions = resource?.functions?.map((p) => p.key);
+  return keys.some((p) => permissions?.includes(p));
 }
 
 /**

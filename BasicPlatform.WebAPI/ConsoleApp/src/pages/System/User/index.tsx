@@ -6,12 +6,12 @@ import {
   ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl, useModel, useLocation, Access } from '@umijs/max';
+import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
 import { Button, Drawer, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, getSorter } from '@/utils/utils';
+import { canAccessible, getSorter, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import AuthorizationForm from './components/AuthorizationForm';
 
@@ -24,19 +24,18 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.UserDetailInfo>();
   const [currentResourceCodeRow, setCurrentResourceCodeRow] = useState<API.UserResourceCodeInfo>({
-    roleResourceCodes: [],
-    userResourceCodes: []
+    roleResources: [],
+    userResources: []
   });
   // const [selectedRowsState, setSelectedRows] = useState<API.UserListItem[]>([]);
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
+  const hideInTable: boolean = !hasPermission([
+    permission.user.putAsync,
+    permission.user.assignResourcesAsync
+  ], resource);
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  const intl = useIntl();
 
   const columns: ProColumns<API.UserListItem>[] = [
     {
@@ -114,6 +113,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      hideInTable: hideInTable,
       width: 95,
       render(_, entity) {
         return [
@@ -179,10 +179,7 @@ const TableList: React.FC = () => {
       children: resource?.description
     }}>
       <ProTable<API.UserListItem, API.UserPagingParams>
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="id"
         search={{
