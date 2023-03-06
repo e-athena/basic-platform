@@ -20,11 +20,24 @@ public class UserResource : ValueObject
     public virtual User User { get; set; } = null!;
 
     /// <summary>
+    /// 资源Key
+    /// </summary>
+    [MaxLength(128)]
+    public string ResourceKey { get; set; } = null!;
+
+    /// <summary>
     /// 资源代码
+    /// <remarks>多个用逗号分割</remarks>
     /// </summary>
     /// <value></value>
     [MaxLength(256)]
     public string ResourceCode { get; set; } = null!;
+
+    /// <summary>
+    /// 资源代码列表
+    /// </summary>
+    public IList<string> ResourceCodes =>
+        string.IsNullOrEmpty(ResourceCode) ? new List<string>() : ResourceCode.Split(",");
 
     /// <summary>
     /// 有效期至
@@ -36,9 +49,10 @@ public class UserResource : ValueObject
     {
     }
 
-    public UserResource(string userId, string resourceCode, DateTime? expireAt = null)
+    public UserResource(string userId, string resourceKey, string resourceCode, DateTime? expireAt = null)
     {
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
+        ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));
         ExpireAt = expireAt;
     }

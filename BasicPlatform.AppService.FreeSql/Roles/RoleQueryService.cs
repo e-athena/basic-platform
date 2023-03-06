@@ -50,9 +50,13 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
         }
 
         // 读取资源代码
-        entity.ResourceCodes = await QueryNoTracking<RoleResource>()
+        entity.Resources = await QueryNoTracking<RoleResource>()
             .Where(p => p.RoleId == id)
-            .ToListAsync(p => p.ResourceCode, cancellationToken);
+            .ToListAsync(p => new ResourceModel
+            {
+                Key = p.ResourceKey,
+                Code = p.ResourceCode
+            }, cancellationToken);
 
         return entity;
     }

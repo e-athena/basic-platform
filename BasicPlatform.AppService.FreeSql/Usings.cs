@@ -12,3 +12,4 @@ global using Athena.Infrastructure.Caching;
 global using Athena.Infrastructure.Domain;
 global using BasicPlatform.AppService.FreeSql.Commons;
 global using Athena.Infrastructure.Attributes;
+global using BasicPlatform.AppService.Resources.Models;

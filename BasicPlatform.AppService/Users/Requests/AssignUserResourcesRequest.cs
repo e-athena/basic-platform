@@ -11,9 +11,9 @@ public class AssignUserResourcesRequest : ITxRequest<string>
     public string Id { get; set; } = null!;
 
     /// <summary>
-    /// 资源编码列表
+    /// 资源列表
     /// </summary>
-    public IList<string> ResourceCodes { get; set; } = new List<string>();
+    public IList<ResourceModel> Resources { get; set; } = new List<ResourceModel>();
     
     /// <summary>
     /// 有效期至

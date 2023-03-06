@@ -180,15 +180,15 @@ public class UserRequestHandler : AppServiceBase<User>,
         await RegisterDeleteValueObjectAsync<UserResource>(
             p => p.UserId == request.Id, cancellationToken
         );
-        if (request.ResourceCodes.Count <= 0)
+        if (request.Resources.Count <= 0)
         {
             return request.Id;
         }
 
         // 新增新数据
         var userResources = request
-            .ResourceCodes
-            .Select(code => new UserResource(request.Id, code, request.ExpireAt))
+            .Resources
+            .Select(p => new UserResource(request.Id, p.Key, p.Code, request.ExpireAt))
             .ToList();
         await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
 

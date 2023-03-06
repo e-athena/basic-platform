@@ -210,27 +210,37 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
-    /// 
+    /// 读取当前用户信息
     /// </summary>
-    /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="FriendlyException"></exception>
-    public async Task<GetUserResponse> GetUserAsync(string? id)
+    public async Task<GetCurrentUserResponse> GetCurrentUserAsync()
     {
-        id ??= UserId;
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(UserId))
         {
             throw FriendlyException.Of("用户未登录");
         }
 
-        var result = await Queryable
-            .Where(p => p.Id == id)
-            .ToOneAsync<GetUserResponse>();
+        var result = await QueryableNoTracking
+            .Where(p => p.Id == UserId)
+            .ToOneAsync<GetCurrentUserResponse>();
 
         if (result == null)
         {
             throw FriendlyException.Of("找不到数据");
         }
+
+        var userResources = await GetUserResourceAsync(UserId);
+
+        var list = new List<string>();
+
+        foreach (var model in userResources)
+        {
+            list.AddRange(model.Codes);
+        }
+
+        // 用户拥有的资源代码
+        result.ResourceCodes = list.Distinct().ToList();
 
         return result;
     }
@@ -347,15 +357,14 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// <param name="userId"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<List<string>> GetUserResourceAsync(string? userId)
+    public async Task<List<ResourceModel>> GetUserResourceAsync(string? userId)
     {
         userId ??= UserId;
         var result = await GetResourceCodeInfoAsync(userId!);
         // 去重
         return result
-            .RoleResourceCodes
-            .Union(result.UserResourceCodes)
-            .Distinct()
+            .RoleResources
+            .Union(result.UserResources)
             .ToList();
     }
 
@@ -367,28 +376,36 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// <exception cref="NotImplementedException"></exception>
     public async Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync(string userId)
     {
-        var roleResourceCodes = new List<string>();
+        var roleResources = new List<ResourceModel>();
         // 用户拥有的角色
         var roleIds = await _roleQueryService.GetRoleIdsByUserIdAsync(userId);
         if (roleIds.Count > 0)
         {
             // 角色资源
-            roleResourceCodes = await QueryNoTracking<RoleResource>()
+            roleResources = await QueryNoTracking<RoleResource>()
                 .Where(p => roleIds.Contains(p.RoleId))
-                .ToListAsync(p => p.ResourceCode);
+                .ToListAsync(p => new ResourceModel
+                {
+                    Key = p.ResourceKey,
+                    Code = p.ResourceCode
+                });
         }
 
         // 用户资源
-        var userResourceCodes = await QueryNoTracking<UserResource>()
+        var userResources = await QueryNoTracking<UserResource>()
             .Where(p => p.UserId == userId)
             // 读取未过期的
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
-            .ToListAsync(p => p.ResourceCode);
+            .ToListAsync(p => new ResourceModel
+            {
+                Key = p.ResourceKey,
+                Code = p.ResourceCode
+            });
 
         return new GetUserResourceCodeInfoResponse
         {
-            RoleResourceCodes = roleResourceCodes,
-            UserResourceCodes = userResourceCodes
+            RoleResources = roleResources,
+            UserResources = userResources
         };
     }
 

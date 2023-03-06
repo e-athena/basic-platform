@@ -29,14 +29,14 @@ public class RoleRequestHandler : AppServiceBase<Role>,
             UserId
         );
         await RegisterNewAsync(entity, cancellationToken);
-        if (request.ResourceCodes is not {Count: > 0})
+        if (request.Resources is not {Count: > 0})
         {
             return entity.Id;
         }
 
         var roleResources = request
-            .ResourceCodes
-            .Select(code => new RoleResource(entity.Id, code))
+            .Resources
+            .Select(p => new RoleResource(entity.Id, p.Key, p.Code))
             .ToList();
         await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
 
@@ -56,15 +56,15 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         await RegisterDeleteValueObjectAsync<RoleResource>(p => p.RoleId == request.Id, cancellationToken);
         entity.Update(request.Name, request.Remarks, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
-        if (request.ResourceCodes is not {Count: > 0})
+        if (request.Resources is not {Count: > 0})
         {
             return entity.Id;
         }
 
         // 添加新的资源
         var roleResources = request
-            .ResourceCodes
-            .Select(code => new RoleResource(entity.Id, code))
+            .Resources
+            .Select(p => new RoleResource(entity.Id, p.Key, p.Code))
             .ToList();
 
         await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);

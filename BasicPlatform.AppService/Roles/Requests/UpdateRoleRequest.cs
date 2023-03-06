@@ -8,7 +8,7 @@ namespace BasicPlatform.AppService.Roles.Requests;
 public class UpdateRoleRequest : RoleModel, ITxRequest<string>
 {
     /// <summary>
-    /// 资源代码列表
+    /// 资源列表
     /// </summary>
-    public IList<string>? ResourceCodes { get; set; }
+    public IList<ResourceModel> Resources { get; set; } = new List<ResourceModel>();
 }

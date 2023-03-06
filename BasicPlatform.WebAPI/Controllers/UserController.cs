@@ -156,6 +156,7 @@ public class UserController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [ApiPermission(IsVisible = false)]
+    [AllowAnonymous]
     public async Task<IList<MenuTreeInfo>> GetResourcesAsync(
         [FromServices] IApiPermissionService service,
         [FromServices] ISecurityContextAccessor accessor
@@ -167,8 +168,9 @@ public class UserController : CustomControllerBase
             return service.GetMenuResources(assembly);
         }
 
-        var codes = await _queryService.GetUserResourceAsync(null);
-        var result = service.GetPermissionMenuResources(assembly, codes);
+        var resources = await _queryService.GetUserResourceAsync(null);
+        var keys = resources.Select(p => p.Key).ToList();
+        var result = service.GetPermissionMenuResources(assembly, keys);
         return await Task.FromResult(result);
     }
 

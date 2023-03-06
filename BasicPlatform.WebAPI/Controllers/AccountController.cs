@@ -104,17 +104,33 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<dynamic> CurrentUserAsync()
+    public async Task<dynamic> CurrentUserAsync(
+        [FromServices] IApiPermissionCacheService apiPermissionCacheService,
+        [FromServices] ISecurityContextAccessor accessor
+    )
     {
-        var res = await _service.GetUserAsync(null);
+        var user = await _service.GetCurrentUserAsync();
+        if (user.ResourceCodes.Count == 0)
+        {
+            // 删除缓存
+            await apiPermissionCacheService
+                .RemoveOperationPermissionsAsync(accessor.TenantId, user.Id!);
+        }
+        else
+        {
+            // 设置缓存
+            await apiPermissionCacheService
+                .SetOperationPermissionsAsync(accessor.TenantId, user.Id!, user.ResourceCodes);
+        }
+
         return await Task.FromResult(new
         {
-            res.Id,
+            user.Id,
             Avatar = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
-            res.Email,
-            res.PhoneNumber,
-            res.RealName,
-            res.UserName,
+            user.Email,
+            user.PhoneNumber,
+            user.RealName,
+            user.UserName,
             Roles = "admin",
             Access = "admin"
         });

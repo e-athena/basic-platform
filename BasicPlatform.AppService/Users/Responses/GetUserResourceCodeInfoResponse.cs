@@ -8,10 +8,10 @@ public class GetUserResourceCodeInfoResponse
     /// <summary>
     /// 角色的资源编码列表
     /// </summary>
-    public IList<string> RoleResourceCodes { get; set; } = new List<string>();
+    public IList<ResourceModel> RoleResources { get; set; } = new List<ResourceModel>();
     
     /// <summary>
     /// 用户的资源编码列表
     /// </summary>
-    public IList<string> UserResourceCodes { get; set; }= new List<string>();
+    public IList<ResourceModel> UserResources { get; set; }= new List<ResourceModel>();
 }

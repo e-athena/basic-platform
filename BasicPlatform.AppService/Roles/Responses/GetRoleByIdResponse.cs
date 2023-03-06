@@ -16,5 +16,5 @@ public class GetRoleByIdResponse : RoleModel
     /// <summary>
     /// 资源代码
     /// </summary>
-    public List<string> ResourceCodes { get; set; } = new();
+    public List<ResourceModel> Resources { get; set; } = new();
 }

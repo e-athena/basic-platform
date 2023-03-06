@@ -40,10 +40,10 @@ public interface IUserQueryService
     Task<List<string?>> GetIdsByRoleIdAsync(string roleId);
 
     /// <summary>
-    /// 
+    /// 读取当前登录用户信息
     /// </summary>
     /// <returns></returns>
-    Task<GetUserResponse> GetUserAsync(string? id);
+    Task<GetCurrentUserResponse> GetCurrentUserAsync();
 
     /// <summary>
     /// 读取用户数据
@@ -68,7 +68,7 @@ public interface IUserQueryService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    Task<List<string>> GetUserResourceAsync(string? userId);
+    Task<List<ResourceModel>> GetUserResourceAsync(string? userId);
 
     /// <summary>
     /// 读取用户拥有的资源编码

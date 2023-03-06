@@ -19,7 +19,7 @@ public class CreateRoleRequest : ITxRequest<string>
     public string? Remarks { get; set; }
 
     /// <summary>
-    /// 资源代码列表
+    /// 资源列表
     /// </summary>
-    public IList<string>? ResourceCodes { get; set; }
+    public IList<ResourceModel>? Resources { get; set; }
 }
