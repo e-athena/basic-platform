@@ -55,11 +55,17 @@ if (app.Environment.IsDevelopment())
     app.UseCustomSwagger();
 }
 
+app.UseStaticFiles();
 app.UseCors();
 //启用验证
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/index.html");
+    return Task.CompletedTask;
+});
 app.MapGet("/health", context => context.Response.WriteAsync("ok"));
 
 app.Run();
