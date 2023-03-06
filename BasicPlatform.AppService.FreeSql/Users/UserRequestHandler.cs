@@ -188,7 +188,7 @@ public class UserRequestHandler : AppServiceBase<User>,
         // 新增新数据
         var userResources = request
             .ResourceCodes
-            .Select(code => new UserResource(request.Id, code))
+            .Select(code => new UserResource(request.Id, code, request.ExpireAt))
             .ToList();
         await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
 

@@ -239,7 +239,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// 读取树形选择框数据列表(系统用户)
     /// </summary>
     /// <returns></returns>
-    public async Task<List<SelectViewModel>> GetSelectDataAsync()
+    public async Task<List<SelectViewModel>> GetSelectListAsync()
     {
         var result = await Queryable
             .Where(p => p.Status == Status.Enabled)
@@ -381,6 +381,8 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         // 用户资源
         var userResourceCodes = await QueryNoTracking<UserResource>()
             .Where(p => p.UserId == userId)
+            // 读取未过期的
+            .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => p.ResourceCode);
 
         return new GetUserResourceCodeInfoResponse

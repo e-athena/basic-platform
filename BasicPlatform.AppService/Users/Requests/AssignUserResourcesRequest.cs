@@ -14,4 +14,10 @@ public class AssignUserResourcesRequest : ITxRequest<string>
     /// 资源编码列表
     /// </summary>
     public IList<string> ResourceCodes { get; set; } = new List<string>();
+    
+    /// <summary>
+    /// 有效期至
+    /// <remarks>为空时永久有效</remarks>
+    /// </summary>
+    public DateTime? ExpireAt { get; set; }
 }

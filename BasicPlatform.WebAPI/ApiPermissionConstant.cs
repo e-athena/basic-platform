@@ -20,10 +20,21 @@ public static class ApiPermissionConstant
     /// 用户详情
     /// </summary>
     public const string UserDetail = "user:detail";
+
     /// <summary>
     /// 用户资源编码信息
     /// </summary>
     public const string UserResourceCodeInfo = "user:resourceCodeInfo";
+
+    /// <summary>
+    /// 用户下拉列表
+    /// </summary>
+    public const string UserSelectList = "user:select";
+
+    /// <summary>
+    /// 组织架构用户树形下拉列表
+    /// </summary>
+    public const string OrgUserTreeSelectListForSelf = "user:orgUserTreeSelect";
 
     #endregion
 

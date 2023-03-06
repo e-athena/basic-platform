@@ -45,7 +45,7 @@ services.AddControllers(options =>
 {
     options.AddCustomApiResultFilter();
     options.AddCustomApiExceptionFilter();
-});
+}).AddNewtonsoftJson();
 
 var app = builder.Build();
 

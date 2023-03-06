@@ -26,13 +26,20 @@ public class UserResource : ValueObject
     [MaxLength(256)]
     public string ResourceCode { get; set; } = null!;
 
+    /// <summary>
+    /// 有效期至
+    /// <remarks>为空时永久有效</remarks>
+    /// </summary>
+    public DateTime? ExpireAt { get; set; }
+
     public UserResource()
     {
     }
 
-    public UserResource(string userId, string resourceCode)
+    public UserResource(string userId, string resourceCode, DateTime? expireAt = null)
     {
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));
+        ExpireAt = expireAt;
     }
 }

@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Roles;
-using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
 
@@ -13,7 +12,7 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
     RoutePath = "/system/role",
-    Sort = 3,
+    Sort = 2,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class RoleController : CustomControllerBase

@@ -28,7 +28,8 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .ToPagingAsync(request, p => new GetOrganizationPagingResponse
             {
-                CreatedUserName = p.CreatedUser!.RealName
+                CreatedUserName = p.CreatedUser!.RealName,
+                UpdatedUserName = p.UpdatedUser!.RealName
             });
 
         return result;
@@ -67,7 +68,8 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .ToListAsync(p => new GetOrganizationTreeDataResponse
             {
-                CreatedUserName = p.CreatedUser!.RealName
+                CreatedUserName = p.CreatedUser!.RealName,
+                UpdatedUserName = p.UpdatedUser!.RealName
             });
 
         var result = new List<GetOrganizationTreeDataResponse>();

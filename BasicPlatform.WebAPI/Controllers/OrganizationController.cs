@@ -12,7 +12,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
     RoutePath = "/system/org",
-    Code = "org"
+    Code = "org",
+    Description = "组织机构,部门，多级树状结构"
 )]
 public class OrganizationController : CustomControllerBase
 {
@@ -33,7 +34,7 @@ public class OrganizationController : CustomControllerBase
     #region 基础接口
 
     /// <summary>
-    /// 读取分页列表
+    /// 读取列表
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
@@ -88,7 +89,7 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    [ApiPermission(DisplayName = "切换状态")]
+    [ApiPermission(DisplayName = "状态变更")]
     public Task<string> StatusChangeAsync([FromBody] OrganizationStatusChangeRequest request,
         CancellationToken cancellationToken)
     {

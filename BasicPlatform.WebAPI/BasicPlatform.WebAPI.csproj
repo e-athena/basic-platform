@@ -18,6 +18,7 @@
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.9" />
         <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.0" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />

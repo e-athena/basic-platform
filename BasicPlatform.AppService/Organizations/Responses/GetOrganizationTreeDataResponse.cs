@@ -16,4 +16,9 @@ public class GetOrganizationTreeDataResponse : OrganizationModel
     /// 创建人
     /// </summary>
     public string? CreatedUserName { get; set; }
+
+    /// <summary>
+    /// 更新人
+    /// </summary>
+    public string? UpdatedUserName { get; set; }
 }

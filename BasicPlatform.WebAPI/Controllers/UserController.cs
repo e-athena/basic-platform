@@ -13,8 +13,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "系统模块",
     ModuleIcon = "PicRightOutlined",
     ModuleRoutePath = "/system",
-    RoutePath = "/system/user"
-    // RoutePath = "/admin"
+    RoutePath = "/system/user",
+    Sort = 1
 )]
 public class UserController : CustomControllerBase
 {
@@ -118,23 +118,14 @@ public class UserController : CustomControllerBase
     #region 扩展接口
 
     /// <summary>
-    /// 读取用户
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<GetUserResponse> GetUserAsync()
-    {
-        return _queryService.GetUserAsync(null);
-    }
-
-    /// <summary>
     /// 下拉列表
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public Task<List<SelectViewModel>> GetSelectDataAsync()
+    [ApiPermission(ApiPermissionConstant.UserSelectList, IsVisible = false)]
+    public Task<List<SelectViewModel>> GetSelectListAsync()
     {
-        return _queryService.GetSelectDataAsync();
+        return _queryService.GetSelectListAsync();
     }
 
 
@@ -143,28 +134,28 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(ApiPermissionConstant.OrgUserTreeSelectListForSelf, IsVisible = false)]
     public Task<List<CascaderViewModel>> GetOrganizationUserTreeSelectListAsync()
     {
         return _queryService.GetOrganizationUserTreeSelectListAsync();
     }
-    // 分配用户资源
-    // Allocate additional resources
 
-    /// <summary>
-    /// 读取组织架构和用户树形列表
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<List<CascaderViewModel>> GetOrganizationAndUserTreeSelectListAsync()
-    {
-        return _queryService.GetOrganizationAndUserTreeSelectListAsync();
-    }
+    // /// <summary>
+    // /// 读取组织架构和用户树形列表
+    // /// </summary>
+    // /// <returns></returns>
+    // [HttpGet]
+    // public Task<List<CascaderViewModel>> GetOrganizationAndUserTreeSelectListAsync()
+    // {
+    //     return _queryService.GetOrganizationAndUserTreeSelectListAsync();
+    // }
 
     /// <summary>
     /// 读取资源
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(IsVisible = false)]
     public async Task<IList<MenuTreeInfo>> GetResourcesAsync(
         [FromServices] IApiPermissionService service,
         [FromServices] ISecurityContextAccessor accessor

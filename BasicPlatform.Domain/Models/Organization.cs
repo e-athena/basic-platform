@@ -40,6 +40,9 @@ public class Organization : EntityCore, ICreator, IUpdater
     /// 状态
     /// </summary>
     public Status Status { get; set; } = Status.Enabled;
+    
+    // 负责人
+    // prop
 
     /// <summary>
     /// 创建人Id
