@@ -70,6 +70,16 @@ public class TestBase
 
 public class DefaultSecurityContextAccessor : ISecurityContextAccessor
 {
+    public string CreateToken(List<Claim> claims)
+    {
+        return string.Empty;
+    }
+
+    public string CreateToken(List<Claim> claims, string scheme)
+    {
+        return string.Empty;
+    }
+
     public string CreateToken(JwtConfig config, List<Claim> claims, string scheme = "Bearer")
     {
         // throw new NotImplementedException();

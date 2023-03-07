@@ -7,7 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Athena.Infrastructure" Version="6.1.0" />
+        <PackageReference Include="Athena.Infrastructure" Version="6.1.2" />
+        <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     </ItemGroup>
 
 </Project>
