@@ -3,7 +3,7 @@ import * as AllIcons from '@ant-design/icons';
 
 type FixIconProps = {
   name: string;
-  type: string;
+  type?: string;
 }
 
 const FixIcon = (props: FixIconProps): ReactNode => {

@@ -123,14 +123,13 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 
         if (result == null)
         {
-            throw FriendlyException.Of("找不到数据");
+            throw FriendlyException.Of("登录名或密码错误");
         }
 
         result.OrganizationName = await QueryNoTracking<OrganizationUser>()
             .Where(p => p.UserId == result.Id)
             .ToListAsync(p => p.Organization.Name);
-
-
+        
         // 读取角色
         var roleIds = Query<RoleUser>()
             .As("e")
@@ -159,17 +158,11 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .As("b")
             .Where(p => organizationIdList.Contains(p.OrganizationId));
 
-        // 读取用户角色
-        var roleIds3 = Query<RoleUser>()
-            .As("d")
-            .Where(p => p.UserId == result.Id);
-
         // 读取角色你信息
-        var roles = await Query<Role>()
+        var roles = await QueryNoTracking<Role>()
             .Where(p =>
                 roleIds.Any(e => e.RoleId == p.Id) ||
-                roleIds1.Any(b => b.RoleId == p.Id) ||
-                roleIds3.Any(d => d.RoleId == p.Id)
+                roleIds1.Any(b => b.RoleId == p.Id)
             )
             .ToListAsync<RoleModel>();
         result.Roles.AddRange(roles);

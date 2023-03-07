@@ -1,10 +1,9 @@
 using System.Security.Claims;
-using Athena.Infrastructure;
 using Athena.Infrastructure.Exceptions;
 using Athena.Infrastructure.Jwt;
 using Athena.Infrastructure.Mvc.Messaging.Requests;
 using BasicPlatform.AppService.Users;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
+using BasicPlatform.AppService.Users.Requests;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -37,10 +36,11 @@ public class AccountController : ControllerBase
     /// <summary>
     /// 登录
     /// </summary>
+    /// <param name="mediator"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<dynamic> LoginAsync(LoginRequest request)
+    public async Task<dynamic> LoginAsync([FromServices] IMediator mediator, [FromBody] LoginRequest request)
     {
         _logger.LogInformation("有人登录啦，{@Request}", request);
         // var token = _securityContextAccessor.CreateToken(new List<Claim>
@@ -60,6 +60,7 @@ public class AccountController : ControllerBase
         //     Type = "account",
         //     CurrentAuthority = token,
         // });
+
         // 读取用户信息
         var info = await _service.GetByUserNameAsync(request.UserName);
         // 验证密码
@@ -71,8 +72,14 @@ public class AccountController : ControllerBase
         // 验证状态
         if (!info.IsEnabled)
         {
-            throw FriendlyException.Of("帐户已被禁用,请联系管理员");
+            throw FriendlyException.Of("帐户不可用,请联系管理员");
         }
+
+        // 更新登录信息
+        await mediator.SendAsync(new UpdateUserLoginInfoRequest
+        {
+            Id = info.Id!
+        });
 
         var role = "";
         var roleName = "";

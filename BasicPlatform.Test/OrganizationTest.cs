@@ -1,3 +1,4 @@
+using System.Text;
 using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Organizations.Requests;
 
@@ -51,5 +52,32 @@ public class OrganizationTest : TestBase
 
         // 删除
         await DbContext.Delete<Organization>(id).ExecuteAffrowsAsync();
+    }
+
+    [Test]
+    public void Test()
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        var ipList = new List<string>
+        {
+            "58.44.143.160",
+            "183.9.242.9",
+            "119.130.230.57",
+            "58.211.24.210",
+            "113.109.243.219",
+            "113.65.229.252",
+            "127.0.0.1",
+            "192.168.21.56"
+        };
+        var dict = new Dictionary<string, string>();
+        foreach (var ip in ipList)
+        {
+            var address = NewLife.IP.Ip.GetAddress(ip);
+            if (address != null)
+            {
+                dict.Add(ip, address);
+            }
+        }
+        Assert.That(dict.Count, Is.EqualTo(ipList.Count));
     }
 }

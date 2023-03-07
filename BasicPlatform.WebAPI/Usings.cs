@@ -12,3 +12,4 @@ global using Microsoft.AspNetCore.Authorization;
 global using System.Reflection;
 global using Serilog;
 global using Serilog.Debugging;
+global using System.Text;

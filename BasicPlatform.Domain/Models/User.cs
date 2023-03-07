@@ -62,12 +62,31 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     [MaxLength(36)]
     public string? UpdatedUserId { get; set; }
-    
+
     /// <summary>
     /// 更新人
     /// </summary>
     public virtual User? UpdatedUser { get; set; }
 
+    /// <summary>
+    /// 最后登录时间
+    /// </summary>
+    public DateTime? LastLoginTime { get; set; }
+
+    /// <summary>
+    /// 最后登录Ip
+    /// </summary>
+    public string? LastLoginIp { get; set; }
+
+    /// <summary>
+    /// 最后登录地址
+    /// </summary>
+    public string? LastLoginAddress { get; set; }
+
+    /// <summary>
+    /// 登录次数
+    /// </summary>
+    public int LoginCount { get; set; }
 
     public User()
     {
@@ -189,5 +208,17 @@ public class User : EntityCore, ICreator, IUpdater
 
         Password = PasswordHash.CreateHash(newPassword);
         UpdatedUserId = updatedUserId;
+    }
+
+    /// <summary>
+    /// 更新登录信息
+    /// </summary>
+    /// <param name="ip"></param>
+    public void UpdateLoginInfo(string ip)
+    {
+        LastLoginTime = DateTime.Now;
+        LastLoginIp = ip;
+        LoginCount++;
+        LastLoginAddress = NewLife.IP.Ip.GetAddress(ip);
     }
 }

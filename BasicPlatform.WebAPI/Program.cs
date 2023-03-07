@@ -1,3 +1,5 @@
+using Athena.Infrastructure.Mvc.Middlewares.AuditLogs;
+
 SelfLog.Enable(Console.Error);
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +12,14 @@ builder.Host
         cfg.ReadFrom.Configuration(ctx.Configuration)
     );
 
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
 // Add services to the container.
 services.AddHttpContextAccessor();
 services.AddCustomMediatR(
     Assembly.Load("BasicPlatform.AppService.FreeSql")
 );
+// services.AddCustomLogging(configuration);
 services.AddCustomServiceComponent(
     Assembly.Load("BasicPlatform.AppService.FreeSql"),
     Assembly.Load("BasicPlatform.Infrastructure")
@@ -46,7 +51,6 @@ services.AddControllers(options =>
     options.AddCustomApiResultFilter();
     options.AddCustomApiExceptionFilter();
 }).AddNewtonsoftJson();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +65,7 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseCustomAuditLog();
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/index.html");

@@ -49,12 +49,17 @@ export default [
     path: '/system',
     name: '系统模块',
     icon: 'crown',
+    // component: './BasicLayout',
     routes: [
+      {
+        path: '/system',
+        redirect: '/system/org',
+      },
       {
         path: '/system/org',
         name: '组织架构',
         component: './System/Org',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
       {
         path: '/system/user',

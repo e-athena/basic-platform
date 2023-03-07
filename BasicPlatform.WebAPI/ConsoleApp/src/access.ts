@@ -9,6 +9,9 @@ export default function access(initialState: {
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
     routeFilter: (route: RouteInfo) => {
+      if (currentUser?.userName === 'root') {
+        return true;
+      }
       // 是否有权限访问
       if (apiResources && apiResources.length > 0) {
         let hasPermission = false;

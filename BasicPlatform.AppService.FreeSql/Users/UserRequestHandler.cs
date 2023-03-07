@@ -9,11 +9,15 @@ public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UpdateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>,
-    IRequestHandler<AssignUserResourcesRequest, string>
+    IRequestHandler<AssignUserResourcesRequest, string>,
+    IRequestHandler<UpdateUserLoginInfoRequest, bool>
 {
+    private readonly ISecurityContextAccessor _contextAccessor;
+
     public UserRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
     {
+        _contextAccessor = contextAccessor;
     }
 
     /// <summary>
@@ -193,5 +197,19 @@ public class UserRequestHandler : AppServiceBase<User>,
         await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
 
         return request.Id;
+    }
+
+    /// <summary>
+    /// 更新用户登录信息
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<bool> Handle(UpdateUserLoginInfoRequest request, CancellationToken cancellationToken)
+    {
+        var entity = await GetForEditAsync(request.Id);
+        entity.UpdateLoginInfo(_contextAccessor.IpAddress);
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return true;
     }
 }

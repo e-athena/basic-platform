@@ -23,14 +23,12 @@ public interface IUserQueryService
     /// <returns></returns>
     Task<GetUserByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default);
 
-
     /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="userName">帐户名</param>
     /// <returns></returns>
     Task<GetUserByUserNameResponse> GetByUserNameAsync(string userName);
-
 
     /// <summary>
     /// 根据角色Id读取用户列表
