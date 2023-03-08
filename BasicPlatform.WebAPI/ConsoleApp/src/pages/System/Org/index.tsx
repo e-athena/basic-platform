@@ -48,6 +48,7 @@ const TableList: React.FC = () => {
       dataIndex: 'status',
       width: 90,
       hideInSearch: true,
+      align: 'center',
       render(_, entity) {
         if (canAccessible(permission.organization.statusChangeAsync, resource)) {
           return <Switch

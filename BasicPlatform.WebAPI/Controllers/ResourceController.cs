@@ -1,3 +1,4 @@
+using BasicPlatform.AppService.Resources.Models;
 using BasicPlatform.AppService.Resources.Requests;
 
 namespace BasicPlatform.WebAPI.Controllers;
@@ -39,9 +40,15 @@ public class ResourceController : CustomControllerBase
     [ApiPermission(DisplayName = "同步资源", Description = "该操作会增量添加资源数据，存在且已分配的数据不会被删除，不存在且分配的的数据将会被删除")]
     public Task<int> SyncAsync(CancellationToken cancellationToken)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resources = _apiPermissionService.GetResourceCodeInfos(assembly);
         var request = new SyncResourceRequest
         {
-            ResourceCodes = _apiPermissionService.GetMenuResourceCodes(Assembly.GetExecutingAssembly())
+            Resources = resources.Select(p => new ResourceModel
+            {
+                Key = p.Key,
+                Code = p.Code
+            }).ToList()
         };
         return _mediator.SendAsync(request, cancellationToken);
     }
@@ -54,9 +61,15 @@ public class ResourceController : CustomControllerBase
     [ApiPermission(DisplayName = "重置资源", Description = "该操作会重置所有资源数据，所有被分配的资源也将会被清空")]
     public Task<int> ReinitializeAsync(CancellationToken cancellationToken)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resources = _apiPermissionService.GetResourceCodeInfos(assembly);
         var request = new ReinitializeResourceRequest
         {
-            ResourceCodes = _apiPermissionService.GetMenuResourceCodes(Assembly.GetExecutingAssembly())
+            Resources = resources.Select(p => new ResourceModel
+            {
+                Key = p.Key,
+                Code = p.Code
+            }).ToList()
         };
         return _mediator.SendAsync(request, cancellationToken);
     }

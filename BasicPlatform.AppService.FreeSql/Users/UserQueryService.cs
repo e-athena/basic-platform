@@ -129,7 +129,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         result.OrganizationName = await QueryNoTracking<OrganizationUser>()
             .Where(p => p.UserId == result.Id)
             .ToListAsync(p => p.Organization.Name);
-        
+
         // 读取角色
         var roleIds = Query<RoleUser>()
             .As("e")
@@ -223,17 +223,8 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             throw FriendlyException.Of("找不到数据");
         }
 
-        var userResources = await GetUserResourceAsync(UserId);
-
-        var list = new List<string>();
-
-        foreach (var model in userResources)
-        {
-            list.AddRange(model.Codes);
-        }
-
         // 用户拥有的资源代码
-        result.ResourceCodes = list.Distinct().ToList();
+        result.ResourceCodes = await GetResourceCodesAsync(UserId);
 
         return result;
     }
@@ -400,6 +391,23 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             RoleResources = roleResources,
             UserResources = userResources
         };
+    }
+
+    /// <summary>
+    /// 读取用户资源代码列表
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task<List<string>> GetResourceCodesAsync(string userId)
+    {
+        var userResources = await GetUserResourceAsync(userId);
+        var list = new List<string>();
+        foreach (var model in userResources)
+        {
+            list.AddRange(model.Codes);
+        }
+
+        return list;
     }
 
     /// <summary>

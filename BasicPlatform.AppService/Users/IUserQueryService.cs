@@ -69,9 +69,16 @@ public interface IUserQueryService
     Task<List<ResourceModel>> GetUserResourceAsync(string? userId);
 
     /// <summary>
-    /// 读取用户拥有的资源编码
+    /// 读取用户拥有的资源信息
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
     Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync(string userId);
+    
+    /// <summary>
+    /// 读取用户拥有的资源代码列表
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <returns></returns>
+    Task<List<string>> GetResourceCodesAsync(string userId);
 }

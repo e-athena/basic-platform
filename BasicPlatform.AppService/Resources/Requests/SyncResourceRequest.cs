@@ -9,5 +9,5 @@ public class SyncResourceRequest : ITxRequest<int>
     /// <summary>
     /// 资源代码列表
     /// </summary>
-    public IList<string> ResourceCodes { get; set; } = null!;
+    public IList<ResourceModel> Resources { get; set; } = null!;
 }

@@ -8,11 +8,10 @@ namespace BasicPlatform.Domain.Models;
 public class Resource : EntityCore, ICreator, IUpdater
 {
     /// <summary>
-    /// 唯一代码
+    /// 唯一Key
     /// </summary>
-    /// <value></value>
-    [MaxLength(256)]
-    public string Code { get; set; } = null!;
+    [MaxLength(128)]
+    public string Key { get; set; } = null!;
 
     /// <summary>
     /// 排序
@@ -50,9 +49,9 @@ public class Resource : EntityCore, ICreator, IUpdater
     {
     }
 
-    public Resource(string code, int sort, Status status, string? userId)
+    public Resource(string key, int sort, Status status, string? userId)
     {
-        Code = code;
+        Key = key;
         Sort = sort;
         Status = status;
         CreatedUserId = userId;
