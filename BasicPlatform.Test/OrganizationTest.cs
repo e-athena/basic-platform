@@ -67,7 +67,8 @@ public class OrganizationTest : TestBase
             "113.109.243.219",
             "113.65.229.252",
             "127.0.0.1",
-            "192.168.21.56"
+            "192.168.21.56",
+            "9.219.106.180"
         };
         var dict = new Dictionary<string, string>();
         foreach (var ip in ipList)

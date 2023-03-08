@@ -35,10 +35,10 @@ services.AddCustomFreeSqlWithMySql(configuration, builder.Environment, aop =>
         }
     };
 });
-services.AddCustomIntegrationEvent(configuration, opts =>
+services.AddCustomIntegrationEvent(configuration, capOptions =>
 {
     // Dashboard
-    opts.UseDashboard();
+    capOptions.UseDashboard();
 });
 services.AddCustomIntegrationEventHandler(
     Assembly.Load("BasicPlatform.IntegratedEventHandler")

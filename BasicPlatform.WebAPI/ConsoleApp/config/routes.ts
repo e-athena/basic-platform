@@ -79,6 +79,12 @@ export default [
         component: './System/Resource',
         access: 'routeFilter'
       },
+      {
+        path: '/system/server-info',
+        name: '服务器信息',
+        component: './System/ServerInfo',
+        access: 'routeFilter'
+      },
     ],
   },
   {

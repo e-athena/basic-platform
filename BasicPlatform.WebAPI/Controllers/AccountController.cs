@@ -17,19 +17,15 @@ public class AccountController : ControllerBase
 {
     private readonly ISecurityContextAccessor _securityContextAccessor;
     private readonly IUserQueryService _service;
-    private readonly ILogger<AccountController> _logger;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="securityContextAccessor"></param>
     /// <param name="service"></param>
-    /// <param name="loggerFactory"></param>
-    public AccountController(ISecurityContextAccessor securityContextAccessor, IUserQueryService service,
-        ILoggerFactory loggerFactory)
+    public AccountController(ISecurityContextAccessor securityContextAccessor, IUserQueryService service)
     {
         _securityContextAccessor = securityContextAccessor;
-        _logger = loggerFactory.CreateLogger<AccountController>();
         _service = service;
     }
 
@@ -42,7 +38,6 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<dynamic> LoginAsync([FromServices] IMediator mediator, [FromBody] LoginRequest request)
     {
-        _logger.LogInformation("有人登录啦，{@Request}", request);
         // var token = _securityContextAccessor.CreateToken(new List<Claim>
         // {
         //     new(ClaimTypes.Name, request.UserName),

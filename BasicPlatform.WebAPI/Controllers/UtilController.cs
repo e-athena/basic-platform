@@ -55,14 +55,4 @@ public class UtilController : ControllerBase
 
         return Ok("ok");
     }
-
-    /// <summary>
-    /// 服务器信息
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public StatusModel ServerInfo([FromServices] IConfiguration configuration)
-    {
-        return configuration.BuildAppStatusModel();
-    }
 }

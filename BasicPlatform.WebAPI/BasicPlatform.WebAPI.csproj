@@ -20,11 +20,12 @@
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.1" />
         <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.0.4" />
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.9" />
-        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.4" />
+        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.8" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
+        <PackageReference Include="Athena.Serilog.Enrichers.ClientInfo" Version="1.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
-        <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.2.0" />
+<!--        <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.2.0" />-->
         <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
