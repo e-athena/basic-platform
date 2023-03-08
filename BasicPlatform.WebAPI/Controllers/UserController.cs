@@ -9,12 +9,13 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// 用户管理
 /// </summary>
 [Menu("用户管理",
-    ModuleCode = "system",
-    ModuleName = "系统模块",
-    ModuleIcon = "PicRightOutlined",
-    ModuleRoutePath = "/system",
-    RoutePath = "/system/user",
-    Sort = 1
+    ModuleCode = "organization",
+    ModuleName = "组织架构",
+    ModuleIcon = "ApartmentOutlined",
+    ModuleRoutePath = "/organization",
+    RoutePath = "/organization/user",
+    Sort = 1,
+    Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class UserController : CustomControllerBase
 {
@@ -40,6 +41,10 @@ public class UserController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.OrgTreeList
+    })]
     public Task<Paging<GetUserPagingResponse>> GetPagingAsync([FromBody] GetUserPagingRequest request)
     {
         return _queryService.GetPagingAsync(request);

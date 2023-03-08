@@ -10,7 +10,8 @@ public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<UpdateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>,
     IRequestHandler<AssignUserResourcesRequest, string>,
-    IRequestHandler<UpdateUserLoginInfoRequest, bool>
+    IRequestHandler<UpdateUserLoginInfoRequest, bool>,
+    IRequestHandler<AddUserAccessRecordRequest, long>
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
@@ -211,5 +212,25 @@ public class UserRequestHandler : AppServiceBase<User>,
         entity.UpdateLoginInfo(_contextAccessor.IpAddress);
         await RegisterDirtyAsync(entity, cancellationToken);
         return true;
+    }
+
+    /// <summary>
+    /// 添加用户访问记录
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<long> Handle(AddUserAccessRecordRequest request, CancellationToken cancellationToken)
+    {
+        // 未登录
+        if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(request.AccessUrl))
+        {
+            return -1;
+        }
+
+        var entity = new UserAccessRecord(UserId, _contextAccessor.IpAddress, request.AccessUrl);
+        await RegisterNewValueObjectAsync(entity, cancellationToken);
+        return entity.Id;
     }
 }

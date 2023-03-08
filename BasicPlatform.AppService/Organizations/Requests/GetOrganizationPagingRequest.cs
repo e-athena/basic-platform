@@ -6,7 +6,12 @@ namespace BasicPlatform.AppService.Organizations.Requests;
 public class GetOrganizationPagingRequest : GetPagingRequestBase
 {
     /// <summary>
+    /// 上级ID
+    /// </summary>
+    public string? ParentId { get; set; }
+
+    /// <summary>
     /// 状态
     /// </summary>
-    public IList<string>? Status { get; set; }
+    public IList<Status>? Status { get; set; }
 }

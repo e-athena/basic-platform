@@ -1,7 +1,7 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
 import { message, notification } from 'antd';
-import { getToken } from '@/utils/token';
+import { getToken, removeToken } from '@/utils/token';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -75,8 +75,18 @@ export const errorConfig: RequestConfig = {
         // Axios 的错误
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
         switch (error.response.status) {
+          case 401:
+            removeToken();
+            break;
           case 403:
             message.error('接口未授权');
+            break;
+          case 500:
+            notification.open({
+              type: 'error',
+              message: '服务器内部错误',
+              description: `请联系管理员并提供追踪ID：${error.response.data.traceId}`,
+            });
             break;
           default:
             message.error(`Response status:${error.response.status}`);

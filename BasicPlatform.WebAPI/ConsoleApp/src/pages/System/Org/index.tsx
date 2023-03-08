@@ -1,6 +1,6 @@
-import { queryTreeList, detail, statusChange } from './service';
+import { query, detail, statusChange } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProDescriptions,
@@ -13,6 +13,7 @@ import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
+import OrganizationTree from '@/components/OrganizationTree';
 
 
 const TableList: React.FC = () => {
@@ -20,7 +21,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.OrgDetailItem>();
+  const [currentRow, setCurrentRow] = useState<API.OrgListItem>();
   // const [selectedRowsState, setSelectedRows] = useState<API.OrgListItem[]>([]);
   const { getResource } = useModel('resource');
   const location = useLocation();
@@ -30,7 +31,7 @@ const TableList: React.FC = () => {
     permission.organization.putAsync
   ], resource);
 
-  const columns: ProColumns<API.OrgTreeListItem>[] = [
+  const columns: ProColumns<API.OrgListItem>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -130,55 +131,59 @@ const TableList: React.FC = () => {
         ];
       },
     },
-    {
-      title: '关键字',
-      dataIndex: 'keyword',
-      hideInTable: true,
-      hideInForm: true,
-      hideInDescriptions: true,
-      hideInSearch: false,
-      hideInSetting: true,
-      fieldProps: {
-        placeholder: '搜索关键字',
-      },
-    },
   ];
+  const [parentId, setParentId] = useState<string | null>(null);
 
   return (
     <PageContainer header={{
       title: resource?.name,
       children: resource?.description
     }}>
-      <ProTable<API.OrgTreeListItem, API.OrgTreeListParams>
-        headerTitle={'查询表格'}
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Access key={'add'} accessible={canAccessible(permission.organization.postAsync, resource)}>
-            <Button
-              type="primary"
-              onClick={() => {
-                handleCreateOrUpdateModalOpen(true);
-              }}
-              icon={<PlusOutlined />}
-            >
-              <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          </Access>,
-        ]}
-        request={async (params) => {
-          const res = await queryTreeList(params);
-          return {
-            data: res.data || [],
-            success: res.success,
-            total: 0,
-          }
-        }}
-        columns={columns}
-      />
+      <ProCard split="vertical">
+        <ProCard colSpan="280px">
+          <OrganizationTree onSelect={(key) => {
+            setParentId(key);
+          }} />
+        </ProCard>
+        <ProCard>
+          <ProTable<API.OrgListItem, API.OrgPagingParams>
+            headerTitle={'查询表格'}
+            actionRef={actionRef}
+            rowKey="id"
+            search={false}
+            options={{
+              search: {
+                placeholder: '请输入名称',
+              }
+            }}
+            toolBarRender={() => [
+              <Access key={'add'} accessible={canAccessible(permission.organization.postAsync, resource)}>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    handleCreateOrUpdateModalOpen(true);
+                  }}
+                  icon={<PlusOutlined />}
+                >
+                  <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+                </Button>
+              </Access>,
+            ]}
+            params={{
+              parentId: parentId,
+            }}
+            request={async (params: API.OrgPagingParams) => {
+              const res = await query(params);
+              return {
+                data: res.data?.items || [],
+                // success: res.success,
+                total: res.data?.totalPages || 0,
+              }
+            }}
+            columns={columns}
+          />
+        </ProCard>
+      </ProCard>
       <CreateOrUpdateForm
         onCancel={() => {
           handleCreateOrUpdateModalOpen(false);

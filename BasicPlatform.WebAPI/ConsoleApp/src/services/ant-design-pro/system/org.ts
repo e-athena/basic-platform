@@ -10,3 +10,7 @@ export function orgTreeSelect() {
   return get<API.TreeSelectInfo[]>('/api/Organization/GetTreeSelectList');
 }
 
+/** 组织架构树形下拉列表(所有) */
+export function orgTree() {
+  return get<API.TreeInfo[]>('/api/Organization/GetTreeList');
+}

@@ -7,11 +7,12 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// <summary>
 /// 组织架构管理
 /// </summary>
-[Menu("组织架构",
-    ModuleCode = "system",
-    ModuleName = "系统模块",
-    ModuleRoutePath = "/system",
-    RoutePath = "/system/org",
+[Menu("组织管理",
+    ModuleCode = "organization",
+    ModuleName = "组织架构",
+    ModuleIcon = "ApartmentOutlined",
+    ModuleRoutePath = "/organization",
+    RoutePath = "/organization/org",
     Code = "org",
     Description = "组织机构,部门，多级树状结构"
 )]
@@ -39,6 +40,10 @@ public class OrganizationController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.OrgTreeList
+    })]
     public Task<Paging<GetOrganizationPagingResponse>> GetPagingAsync([FromBody] GetOrganizationPagingRequest request)
     {
         return _queryService.GetPagingAsync(request);
@@ -117,7 +122,7 @@ public class OrganizationController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission("org:tree", IsVisible = false)]
+    [ApiPermission(ApiPermissionConstant.OrgTreeList, IsVisible = false)]
     public Task<List<TreeViewModel>> GetTreeListAsync()
     {
         return _queryService.GetTreeListAsync();

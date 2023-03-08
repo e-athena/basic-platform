@@ -6,11 +6,11 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// 资源管理
 /// </summary>
 [Menu("资源管理",
-    ModuleCode = "system",
-    ModuleName = "系统模块",
-    ModuleIcon = "PicRightOutlined",
-    ModuleRoutePath = "/system",
-    RoutePath = "/system/resource",
+    ModuleCode = "permission",
+    ModuleName = "权限管理",
+    ModuleIcon = "SafetyOutlined",
+    ModuleRoutePath = "/permission",
+    RoutePath = "/permission/resource",
     Sort = 3,
     // Description = "系统操作菜单以及功能目录树。支持排序，不可见菜单仅用于功能权限限制。每个菜单的权限子项由系统自动生成，请不要人为修改"
     Description = "资源包含菜单树以及功能，由系统生成，用于控制系统菜单的展示及功能权限。"

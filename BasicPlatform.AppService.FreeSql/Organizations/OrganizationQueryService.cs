@@ -26,6 +26,8 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     {
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
+            .HasWhere(request.ParentId, p => p.ParentId == request.ParentId)
+            .HasWhere(request.Status, p => request.Status!.Contains(p.Status))
             .ToPagingAsync(request, p => new GetOrganizationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,

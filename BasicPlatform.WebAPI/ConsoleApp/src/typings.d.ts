@@ -63,6 +63,7 @@ declare interface ApiPagingResponse<T = any> {
   success: boolean;
   message: string;
   statusCode: number;
+  traceId?: string;
 }
 
 /**
@@ -73,6 +74,7 @@ declare interface ApiResponse<T = any> {
   success: boolean;
   message: string;
   statusCode: number;
+  traceId?: string;
 }
 
 /** 资源模型 */

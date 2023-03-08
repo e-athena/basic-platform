@@ -41,6 +41,11 @@ public static class ApiPermissionConstant
     #region 组织架构
 
     /// <summary>
+    /// 组织架构树形列表
+    /// </summary>
+    public const string OrgTreeList = "org:tree";
+
+    /// <summary>
     /// 组织架构树形下拉列表
     /// </summary>
     public const string OrgTreeSelectList = "org:treeSelect";

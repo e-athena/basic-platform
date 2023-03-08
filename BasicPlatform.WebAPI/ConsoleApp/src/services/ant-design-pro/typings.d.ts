@@ -127,4 +127,17 @@ declare namespace API {
     children?: TreeSelectInfo[];
     extend?: string;
   }
+  /**
+   * 树形列表
+   */
+  type TreeInfo = {
+    key: string | null;
+    title: string;
+    disabled: boolean;
+    children?: TreeInfo[];
+  }
+
+  type AddUserAccessRecordParams = {
+    accessUrl: string;
+  }
 }

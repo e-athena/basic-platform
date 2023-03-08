@@ -8,10 +8,11 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// 角色管理
 /// </summary>
 [Menu("角色管理",
-    ModuleCode = "system",
-    ModuleName = "系统模块",
-    ModuleRoutePath = "/system",
-    RoutePath = "/system/role",
+    ModuleCode = "permission",
+    ModuleName = "权限管理",
+    ModuleIcon = "SafetyOutlined",
+    ModuleRoutePath = "/permission",
+    RoutePath = "/permission/role",
     Sort = 2,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]

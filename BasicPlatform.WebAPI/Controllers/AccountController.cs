@@ -155,4 +155,21 @@ public class AccountController : ControllerBase
         //     Access = "admin"
         // });
     }
+
+    /// <summary>
+    /// 添加用户访问记录
+    /// </summary>
+    /// <param name="mediator"></param>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public Task<long> AddUserAccessRecordAsync(
+        [FromServices] IMediator mediator,
+        [FromBody] AddUserAccessRecordRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        return mediator.SendAsync(request, cancellationToken);
+    }
 }

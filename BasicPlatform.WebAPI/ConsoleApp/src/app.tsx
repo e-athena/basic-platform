@@ -7,7 +7,7 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser, queryUserResources } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser, queryUserResources, addUserAccessRecord } from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
@@ -98,9 +98,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
+      // console.log('location', location);
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
+        return;
+      }
+      if (location.pathname !== '/') {
+        // 添加访问记录
+        addUserAccessRecord({ accessUrl: location.pathname });
       }
     },
     layoutBgImgList: [

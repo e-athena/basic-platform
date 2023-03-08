@@ -99,3 +99,11 @@ export async function queryMenus(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+/** 添加访问记录 POST /api/account/addUserAccessRecord */
+export async function addUserAccessRecord(data: API.AddUserAccessRecordParams) {
+  return request<number>('/api/account/addUserAccessRecord', {
+    method: 'POST',
+    data
+  });
+}

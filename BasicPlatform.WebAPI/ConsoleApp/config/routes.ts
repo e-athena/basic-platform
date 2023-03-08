@@ -46,38 +46,59 @@ export default [
     ],
   },
   {
-    path: '/system',
-    name: '系统模块',
+    path: '/organization',
+    name: '组织架构',
     icon: 'crown',
-    // component: './BasicLayout',
     routes: [
       {
-        path: '/system',
-        redirect: '/system/org',
+        path: '/organization',
+        redirect: '/organization/org',
       },
       {
-        path: '/system/org',
+        path: '/organization/org',
         name: '组织架构',
         component: './System/Org',
         access: 'routeFilter',
       },
       {
-        path: '/system/user',
+        path: '/organization/user',
         name: '用户管理',
         component: './System/User',
         access: 'routeFilter'
       },
+    ],
+  },
+  {
+    path: '/permission',
+    name: '权限管理',
+    icon: 'crown',
+    routes: [
       {
-        path: '/system/role',
+        path: '/permission',
+        redirect: '/permission/role',
+      },
+      {
+        path: '/permission/role',
         name: '角色管理',
         component: './System/Role',
         access: 'routeFilter'
       },
       {
-        path: '/system/resource',
+        path: '/permission/resource',
         name: '资源管理',
         component: './System/Resource',
         access: 'routeFilter'
+      },
+    ],
+  },
+  {
+    path: '/system',
+    name: '系统模块',
+    icon: 'crown',
+    routes: [
+      {
+        path: '/system',
+        redirect: '/system/server-info',
       },
       {
         path: '/system/server-info',

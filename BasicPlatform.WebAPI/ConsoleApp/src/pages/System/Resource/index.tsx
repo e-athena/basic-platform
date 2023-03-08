@@ -1,8 +1,8 @@
 import { query, sync, reinitialize } from './service';
-import { FormOutlined, SyncOutlined, RedoOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, message, Tag } from 'antd';
+import { SyncOutlined, RedoOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
+import { Button, message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import FixIcon from '@/components/FixIcon';
@@ -11,11 +11,9 @@ import permission from '@/utils/permission';
 import { canAccessible } from '@/utils/utils';
 
 const TableList: React.FC = () => {
-  const [showDetail, setShowDetail] = useState<boolean>(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.ResourceInfo>();
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
@@ -76,29 +74,6 @@ const TableList: React.FC = () => {
           marginTop: 5
         }} key={item.value}>{item.label}</Tag>));
       }
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      fixed: 'right',
-      width: 70,
-      render(_, entity) {
-        return [
-          <Button
-            key={'view'}
-            shape="circle"
-            type={'link'}
-            icon={<FormOutlined />}
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            查看
-          </Button>,
-        ];
-      },
     }
   ];
 
@@ -171,29 +146,6 @@ const TableList: React.FC = () => {
         rowSelection={false}
         pagination={false}
       />
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.code && (
-          <ProDescriptions<API.ResourceInfo>
-            column={1}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.id,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.ResourceInfo>[]}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };
