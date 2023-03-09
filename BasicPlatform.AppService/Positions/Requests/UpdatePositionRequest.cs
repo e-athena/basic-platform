@@ -29,4 +29,9 @@ public class UpdatePositionRequest : ITxRequest<string>
     /// </summary>
     [MaxLength(1024)]
     public string? Remarks { get; set; }
+
+    /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
 }

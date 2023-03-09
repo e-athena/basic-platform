@@ -28,6 +28,7 @@ public class PositionRequestHandler : AppServiceBase<Position>,
             request.Name,
             request.Remarks,
             request.Status,
+            request.Sort,
             UserId
         );
         await RegisterNewAsync(entity, cancellationToken);
@@ -44,7 +45,7 @@ public class PositionRequestHandler : AppServiceBase<Position>,
     public async Task<string> Handle(UpdatePositionRequest request, CancellationToken cancellationToken)
     {
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
-        entity.Update(request.OrganizationId, request.Name, request.Remarks, UserId);
+        entity.Update(request.OrganizationId, request.Name, request.Remarks, request.Sort, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
     }

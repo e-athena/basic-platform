@@ -55,6 +55,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 p.Email!.Contains(request.Keyword!)
             )
             .HasWhere(request.Status, p => request.Status!.Contains(p.Status))
+            .HasWhere(request.Gender, p => request.Gender!.Contains(p.Gender))
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
             .HasWhere(userRoleQuery, p => userRoleQuery!.Any(d => d.UserId == p.Id))
             .ToPagingAsync(request, p => new GetUserPagingResponse

@@ -21,6 +21,11 @@ public class GetUserPagingRequest : GetPagingRequestBase
     public IList<Status>? Status { get; set; }
 
     /// <summary>
+    /// 性别
+    /// </summary>
+    public IList<Gender>? Gender { get; set; }
+
+    /// <summary>
     /// 排序值
     /// </summary>
     public override string? Sorter { get; set; } = "a.CreatedOn DESC";

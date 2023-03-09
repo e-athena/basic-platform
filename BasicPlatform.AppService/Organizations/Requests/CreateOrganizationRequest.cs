@@ -31,6 +31,11 @@ public class CreateOrganizationRequest : ITxRequest<string>
     public Status Status { get; set; }
 
     /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
+
+    /// <summary>
     /// 角色Ids
     /// </summary>
     public IList<string> RoleIds { get; set; } = new List<string>();

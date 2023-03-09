@@ -6,3 +6,4 @@ global using Athena.Infrastructure.Enums;
 global using System.ComponentModel.DataAnnotations;
 global using Athena.Infrastructure.Securities;
 global using BasicPlatform.AppService.Resources.Models;
+global using BasicPlatform.Infrastructure.Enums;

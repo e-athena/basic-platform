@@ -258,7 +258,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
             ? entities.Where(p => string.IsNullOrEmpty(p.ParentId)).ToList()
             : entities.Where(p => p.ParentId == parentId).ToList();
 
-        foreach (var t1 in result)
+        foreach (var t1 in result.OrderBy(p => p.Sort))
         {
             var res = new TreeViewModel
             {

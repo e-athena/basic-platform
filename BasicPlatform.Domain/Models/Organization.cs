@@ -53,6 +53,11 @@ public class Organization : EntityCore, ICreator, IUpdater
     public virtual User? Leader { get; set; }
 
     /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
+
+    /// <summary>
     /// 创建人Id
     /// </summary>
     [MaxLength(36)]
@@ -89,14 +94,17 @@ public class Organization : EntityCore, ICreator, IUpdater
     /// <param name="leaderId"></param>
     /// <param name="remarks"></param>
     /// <param name="status"></param>
+    /// <param name="sort"></param>
     /// <param name="userId"></param>
-    public Organization(string? parentId, string name, string? leaderId, string? remarks, Status status, string? userId)
+    public Organization(string? parentId, string name, string? leaderId, string? remarks, Status status, int sort,
+        string? userId)
     {
         ParentId = parentId;
         Name = name;
         LeaderId = leaderId;
         Remarks = remarks;
         Status = status;
+        Sort = sort;
         CreatedUserId = userId;
     }
 
@@ -107,13 +115,15 @@ public class Organization : EntityCore, ICreator, IUpdater
     /// <param name="name"></param>
     /// <param name="leaderId"></param>
     /// <param name="remarks"></param>
+    /// <param name="sort"></param>
     /// <param name="userId"></param>
-    public void Update(string? parentId, string name, string? leaderId, string? remarks, string? userId)
+    public void Update(string? parentId, string name, string? leaderId, string? remarks, int sort, string? userId)
     {
         ParentId = parentId;
         Name = name;
         LeaderId = leaderId;
         Remarks = remarks;
+        Sort = sort;
         UpdatedUserId = userId;
     }
 

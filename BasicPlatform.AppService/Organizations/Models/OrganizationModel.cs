@@ -35,4 +35,9 @@ public class OrganizationModel : ViewModelBase
     /// 状态
     /// </summary>
     public Status Status { get; set; }
+
+    /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
 }

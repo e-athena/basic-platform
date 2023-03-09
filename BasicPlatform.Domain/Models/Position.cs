@@ -36,6 +36,11 @@ public class Position : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
+
+    /// <summary>
     /// 创建人Id
     /// </summary>
     [MaxLength(36)]
@@ -72,13 +77,15 @@ public class Position : EntityCore, ICreator, IUpdater
     /// <param name="name"></param>
     /// <param name="remarks"></param>
     /// <param name="status"></param>
+    /// <param name="sort"></param>
     /// <param name="createdUserId"></param>
-    public Position(string organizationId, string name, string? remarks, Status status, string? createdUserId)
+    public Position(string organizationId, string name, string? remarks, Status status, int sort, string? createdUserId)
     {
         OrganizationId = organizationId;
         Name = name;
         Remarks = remarks;
         Status = status;
+        Sort = sort;
         CreatedUserId = createdUserId;
     }
 
@@ -88,12 +95,14 @@ public class Position : EntityCore, ICreator, IUpdater
     /// <param name="organizationId"></param>
     /// <param name="name"></param>
     /// <param name="remarks"></param>
+    /// <param name="sort"></param>
     /// <param name="updatedUserId"></param>
-    public void Update(string organizationId, string name, string? remarks, string? updatedUserId)
+    public void Update(string organizationId, string name, string? remarks,int sort, string? updatedUserId)
     {
         OrganizationId = organizationId;
         Name = name;
         Remarks = remarks;
+        Sort = sort;
         UpdatedUserId = updatedUserId;
     }
 
