@@ -109,3 +109,36 @@ export const getFilter = (filter: Record<string, (string | number)[] | null>) =>
   }
   return obj;
 };
+
+/**
+ * 生成文字图片
+ * @param text 文本
+ * @param width 宽
+ * @param height 高
+ * @returns 
+ */
+export const generateTextImage = (text: string, width: number, height: number) => {
+  let size = [width, height];
+  let firstName = text.substring(1, 0);
+  let colors = [
+    "rgb(239,150,26)",
+    "rgb(255,58,201)",
+    "rgb(111,75,255)",
+    "rgb(36,174,34)",
+    "rgb(80,80,80)",
+  ];
+  let cvs = document.createElement("canvas");
+  cvs.setAttribute('width', `${size[0]}`);
+  cvs.setAttribute('height', `${size[1]}`);
+  let ctx = cvs.getContext("2d");
+  if (ctx === null) return;
+  ctx.fillStyle = colors[Math.floor(Math.random() * (colors.length))];
+  ctx.fillRect(0, 0, size[0], size[1]);
+  ctx.fillStyle = 'rgb(255,255,255)';
+  ctx.font = size[0] * 0.6 + "px Arial";
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "center";
+  ctx.fillText(firstName, size[0] / 2, size[1] / 2);
+
+  return cvs.toDataURL('image/jpeg', 1);
+};

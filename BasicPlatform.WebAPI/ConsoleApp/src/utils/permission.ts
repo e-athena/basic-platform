@@ -1,7 +1,7 @@
 export default {
   /** 组织架构管理 */
   organization: {
-    /** 读取分页列表 */
+    /** 读取列表 */
     getPagingAsync: 'OrganizationController_GetPagingAsync',
     /** 详情 */
     getAsync: 'OrganizationController_GetAsync',
@@ -9,10 +9,23 @@ export default {
     postAsync: 'OrganizationController_PostAsync',
     /** 编辑 */
     putAsync: 'OrganizationController_PutAsync',
-    /** 切换状态 */
+    /** 状态变更 */
     statusChangeAsync: 'OrganizationController_StatusChangeAsync',
     /** 读取树形列表 */
     getTreeListAsync: 'OrganizationController_GetTreeListAsync',
+  },
+  /** 职位管理 */
+  position: {
+    /** 读取列表 */
+    getPagingAsync: 'PositionController_GetPagingAsync',
+    /** 详情 */
+    getAsync: 'role:detail',
+    /** 创建 */
+    postAsync: 'PositionController_PostAsync',
+    /** 更新 */
+    putAsync: 'PositionController_PutAsync',
+    /** 状态变更 */
+    statusChangeAsync: 'PositionController_StatusChangeAsync',
   },
   /** 资源管理 */
   resource: {
@@ -33,6 +46,11 @@ export default {
     putAsync: 'RoleController_PutAsync',
     /** 状态变更 */
     statusChangeAsync: 'RoleController_StatusChangeAsync',
+  },
+  /** 服务器信息 */
+  server: {
+    /** 读取服务器信息 */
+    get: 'ServerController_Get',
   },
   /** 用户管理 */
   user: {

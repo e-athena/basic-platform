@@ -3,10 +3,11 @@ declare namespace API {
   type CreateUserRequest = {
     userName: string;
     password: string;
+    avatar?: string;
     realName: string;
     phoneNumber?: string;
     email?: string;
-    organizationIds: string[];
+    organizationId: string;
     roleIds: string[];
     resources: ResourceModel[];
   };
@@ -32,7 +33,7 @@ declare namespace API {
   /** 详情 */
   type UserDetailInfo = {
     resources: ResourceModel[];
-    organizationIds: string[];
+    organizationId: string;
     roleIds: string[];
   } & Partial<UserListItem>;
 
@@ -52,7 +53,7 @@ declare namespace API {
    */
   type UserPagingParams = {
     name?: string;
-    organizationId?: string;
+    organizationId: string | null;
     roleId?: string;
     status?: Status[];
   } & Partial<Record<string, any>>

@@ -3,27 +3,26 @@ import {
   ProFormText,
   ProFormTextArea,
   ModalForm,
+  ProForm,
   ProFormTreeSelect,
-  ProFormSelect,
   ProFormSwitch
 } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
-import { roleList } from '@/services/ant-design-pro/system/role'
-import { orgTreeSelectForSelf } from '@/services/ant-design-pro/system/org'
+import { orgTreeSelect } from '@/services/ant-design-pro/system/org';
 
 type CreateOrUpdateFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
   open: boolean;
-  values?: API.OrgDetailItem;
+  values?: API.PositionDetailItem;
 };
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   return (
     <ModalForm
       width={600}
-      title={props.values?.id === undefined ? '创建组织/部门' : '更新组织/部门'}
+      title={props.values === undefined ? '创建职位' : '更新职位'}
       open={props.open}
       modalProps={{
         onCancel: () => {
@@ -32,15 +31,15 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         bodyStyle: { padding: '32px 40px 48px' },
         destroyOnClose: true,
       }}
-      onFinish={async (values: API.UpdateOrgRequest) => {
-        const isUpdate = props.values?.id !== undefined;
+      onFinish={async (values: API.UpdatePositionItem) => {
+        const isUpdate = props.values !== undefined;
         let succeed;
         if (isUpdate) {
           values.id = props.values!.id!;
           succeed = await submitHandle(update, values);
         } else {
           values.status = values.status ? 1 : 2;
-          succeed = await submitHandle(create, (values as API.CreateOrgRequest));
+          succeed = await submitHandle(create, values as API.CreatePositionItem);
         }
         if (succeed) {
           props.onSuccess();
@@ -51,40 +50,37 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         status: props.values?.id === undefined ? true : props.values?.status === 1,
       }}
     >
-      <ProFormTreeSelect
-        name="parentId"
-        label="上级组织/部门"
-        fieldProps={{
-          showSearch: true,
-        }}
-        placeholder="默认为顶级组织"
-        request={async () => {
-          const { data } = await orgTreeSelectForSelf();
-          return data || [];
-        }}
-      />
-      <ProFormText
-        name="name"
-        label={'名称'}
-        rules={[
-          {
-            required: true,
-            message: '请输入名称',
-          },
-        ]}
-      />
-      <ProFormSelect
-        name="roleIds"
-        label="角色"
-        showSearch
-        request={async () => {
-          const { data } = await roleList();
-          return data || [];
-        }}
-        fieldProps={{
-          mode: 'multiple',
-        }}
-      />
+      <ProForm.Group>
+        <ProFormText
+          name="name"
+          label={'名称'}
+          width="sm"
+          rules={[
+            {
+              required: true,
+              message: '请输入职位名称',
+            },
+          ]}
+        />
+        <ProFormTreeSelect
+          name="organizationId"
+          label="部门"
+          fieldProps={{
+            showSearch: true,
+          }}
+          width="sm"
+          request={async () => {
+            const { data } = await orgTreeSelect();
+            return data || [];
+          }}
+          rules={[
+            {
+              required: true,
+              message: '请选择',
+            },
+          ]}
+        />
+      </ProForm.Group>
       <ProFormTextArea
         name="remarks"
         label={'描述'}

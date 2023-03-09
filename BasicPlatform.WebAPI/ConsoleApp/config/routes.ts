@@ -57,13 +57,19 @@ export default [
       {
         path: '/organization/org',
         name: '组织架构',
-        component: './System/Org',
+        component: './Organization/Org',
+        access: 'routeFilter',
+      },
+      {
+        path: '/organization/position',
+        name: '职位管理',
+        component: './Organization/Position',
         access: 'routeFilter',
       },
       {
         path: '/organization/user',
         name: '用户管理',
-        component: './System/User',
+        component: './Organization/User',
         access: 'routeFilter'
       },
     ],
@@ -80,13 +86,13 @@ export default [
       {
         path: '/permission/role',
         name: '角色管理',
-        component: './System/Role',
+        component: './Permission/Role',
         access: 'routeFilter'
       },
       {
         path: '/permission/resource',
         name: '资源管理',
-        component: './System/Resource',
+        component: './Permission/Resource',
         access: 'routeFilter'
       },
     ],

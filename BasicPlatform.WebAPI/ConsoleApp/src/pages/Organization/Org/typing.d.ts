@@ -4,6 +4,7 @@ declare namespace API {
     parentId?: string;
     name: string;
     remarks?: string;
+    leaderId?: string;
     status: Status;
     roleIds: string[];
   };
@@ -19,6 +20,7 @@ declare namespace API {
     parentId?: string;
     name?: string;
     parentPath?: string;
+    leaderId?: string;
     remarks?: string;
     status?: Status;
   } & Partial<CreatedItem> &

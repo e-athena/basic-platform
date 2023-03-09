@@ -1,5 +1,5 @@
-import { query, detail, statusChange } from './service';
-import { PlusOutlined, FormOutlined } from '@ant-design/icons';
+import { query, detail, queryResourceCodeInfo, statusChange } from './service';
+import { PlusOutlined, FormOutlined, SafetyOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -11,37 +11,96 @@ import { Button, Drawer, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission } from '@/utils/utils';
+import { canAccessible, getSorter, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
+import AuthorizationForm from './components/AuthorizationForm';
 import OrganizationTree from '@/components/OrganizationTree';
-
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
+  const [authorizationModalOpen, handleAuthorizationModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.OrgListItem>();
-  // const [selectedRowsState, setSelectedRows] = useState<API.OrgListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.UserDetailInfo>();
+  const [currentResourceCodeRow, setCurrentResourceCodeRow] = useState<API.UserResourceCodeInfo>({
+    roleResources: [],
+    userResources: []
+  });
+  // const [selectedRowsState, setSelectedRows] = useState<API.UserListItem[]>([]);
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
   const hideInTable: boolean = !hasPermission([
-    permission.organization.postAsync,
-    permission.organization.putAsync
+    permission.user.putAsync,
+    permission.user.assignResourcesAsync
   ], resource);
 
-  const columns: ProColumns<API.OrgListItem>[] = [
+
+  const columns: ProColumns<API.UserListItem>[] = [
     {
-      title: '名称',
-      dataIndex: 'name',
+      title: '头像',
+      dataIndex: 'avatar',
       hideInSearch: true,
-      width: 150,
+      width: 50,
+      align: 'center',
+      valueType: 'avatar'
     },
     {
-      title: '备注',
-      dataIndex: 'remarks',
+      title: '登录名',
+      dataIndex: 'userName',
       hideInSearch: true,
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '姓名',
+      dataIndex: 'realName',
+      hideInSearch: true,
+      ellipsis: true,
+      width: 100,
+    },
+    {
+      title: '性别',
+      dataIndex: 'gender',
+      hideInSearch: true,
+      ellipsis: true,
+      width: 80,
+      align: 'center',
+      sorter: true,
+      filters: true,
+      valueEnum: {
+        0: {
+          status: 'Default',
+          text: '保密',
+        },
+        1: {
+          status: 'Success',
+          text: '男',
+        },
+        2: {
+          status: 'Error',
+          text: '女',
+        },
+      }
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phoneNumber',
+      width: 110,
+      hideInSearch: true,
+    },
+    {
+      title: '组织',
+      dataIndex: 'organizationName',
+      hideInSearch: true,
+      ellipsis: true,
+    },
+    {
+      title: '职位',
+      dataIndex: 'positionName',
+      hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: '状态',
@@ -49,8 +108,9 @@ const TableList: React.FC = () => {
       width: 90,
       hideInSearch: true,
       align: 'center',
+      sorter: true,
       render(_, entity) {
-        if (canAccessible(permission.organization.statusChangeAsync, resource)) {
+        if (canAccessible(permission.user.statusChangeAsync, resource)) {
           return <Switch
             checkedChildren="启用"
             unCheckedChildren="禁用"
@@ -59,7 +119,7 @@ const TableList: React.FC = () => {
               const statusName = entity.status === 1 ? '禁用' : '启用';
               Modal.confirm({
                 title: '操作提示',
-                content: `确定${statusName}{${entity.name}}吗？`,
+                content: `确定${statusName}{${entity.realName}}吗？`,
                 onOk: async () => {
                   const hide = message.loading(`正在${statusName}`);
                   const res = await statusChange(entity.id!);
@@ -77,35 +137,35 @@ const TableList: React.FC = () => {
         return <IconStatus status={entity.status === 1} />;
       },
     },
-    {
-      title: '更新人',
-      dataIndex: 'updatedUserName',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updatedOn',
-      width: 170,
-      hideInSearch: true,
-      valueType: 'dateTime',
-    },
+    // {
+    //   title: '更新人',
+    //   dataIndex: 'updatedUserName',
+    //   width: 100,
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '更新时间',
+    //   dataIndex: 'updatedOn',
+    //   width: 170,
+    //   hideInSearch: true,
+    //   valueType: 'dateTime',
+    //   sorter: true,
+    // },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 95,
       hideInTable: hideInTable,
       render(_, entity) {
         return [
-          <Access key={'edit'} accessible={canAccessible(permission.organization.putAsync, resource)}>
+          <Access key={'edit'} accessible={canAccessible(permission.user.putAsync, resource)}>
             <Button
               shape="circle"
               type={'link'}
               icon={<FormOutlined />}
               onClick={async () => {
                 const hide = message.loading('正在查询');
-                const res = await detail(entity.id!);
+                const res = await detail(entity.id);
                 hide();
                 if (res.success) {
                   setCurrentRow(res.data);
@@ -117,18 +177,26 @@ const TableList: React.FC = () => {
               编辑
             </Button>
           </Access>,
-          <Access key={'create'} accessible={canAccessible(permission.organization.postAsync, resource)}>
+          <Access key={'auth'} accessible={canAccessible(permission.user.assignResourcesAsync, resource)}>
             <Button
               shape="circle"
               type={'link'}
-              icon={<FormOutlined />}
-              onClick={() => {
-                setCurrentRow({ parentId: entity.id });
-                handleCreateOrUpdateModalOpen(true);
+              icon={<SafetyOutlined />}
+              onClick={async () => {
+                const hide = message.loading('正在查询');
+                const res = await queryResourceCodeInfo(entity.id);
+                hide();
+                if (res.success) {
+                  setCurrentResourceCodeRow(res.data!)
+                  setCurrentRow(entity as API.UserDetailInfo);
+                  handleAuthorizationModalOpen(true);
+                  return;
+                }
+                message.error(res.message);
               }}>
-              添加子组织
+              授权
             </Button>
-          </Access>,
+          </Access >,
         ];
       },
     },
@@ -141,24 +209,25 @@ const TableList: React.FC = () => {
       children: resource?.description
     }}>
       <ProCard split="vertical">
-        <ProCard colSpan="280px">
-          <OrganizationTree onSelect={(key) => {
-            setParentId(key);
-          }} />
+        <ProCard colSpan="270px">
+          <OrganizationTree
+            onSelect={(key) => {
+              setParentId(key);
+            }} />
         </ProCard>
         <ProCard>
-          <ProTable<API.OrgListItem, API.OrgPagingParams>
+          <ProTable<API.UserListItem, API.UserPagingParams>
             headerTitle={'查询表格'}
             actionRef={actionRef}
             rowKey="id"
             search={false}
             options={{
               search: {
-                placeholder: '请输入名称',
+                placeholder: '关健字搜索',
               }
             }}
             toolBarRender={() => [
-              <Access key={'add'} accessible={canAccessible(permission.organization.postAsync, resource)}>
+              <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
                 <Button
                   type="primary"
                   onClick={() => {
@@ -171,14 +240,14 @@ const TableList: React.FC = () => {
               </Access>,
             ]}
             params={{
-              parentId: parentId,
+              organizationId: parentId,
             }}
-            request={async (params: API.OrgPagingParams) => {
-              const res = await query(params);
+            request={async (params, sorter) => {
+              const res = await query({ ...params, ...getSorter(sorter, 'a') });
               return {
                 data: res.data?.items || [],
-                // success: res.success,
-                total: res.data?.totalPages || 0,
+                success: res.success,
+                total: res.data?.totalItems || 0,
               }
             }}
             columns={columns}
@@ -204,6 +273,23 @@ const TableList: React.FC = () => {
         open={createOrUpdateModalOpen}
         values={currentRow}
       />
+      <AuthorizationForm
+        onCancel={() => {
+          handleAuthorizationModalOpen(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        onSuccess={() => {
+          handleAuthorizationModalOpen(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        open={authorizationModalOpen}
+        values={currentRow}
+        resourceCodeInfo={currentResourceCodeRow}
+      />
       <Drawer
         width={600}
         open={showDetail}
@@ -213,17 +299,17 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.name && (
-          <ProDescriptions<API.OrgListItem>
+        {currentRow?.userName && (
+          <ProDescriptions<API.UserListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.userName}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.OrgListItem>[]}
+            columns={columns as ProDescriptionsItemProps<API.UserListItem>[]}
           />
         )}
       </Drawer>
