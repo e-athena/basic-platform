@@ -79,6 +79,38 @@ public class OrganizationTest : TestBase
                 dict.Add(ip, address);
             }
         }
+
         Assert.That(dict.Count, Is.EqualTo(ipList.Count));
+    }
+
+    [Test]
+    public void Test1()
+    {
+        var a = bool.TryParse("TRUE", out var b);
+        Assert.Multiple(() =>
+        {
+            Assert.That(a, Is.True);
+            Assert.That(b, Is.True);
+        });
+        var c = bool.TryParse("FALSE", out var d);
+        Assert.Multiple(() =>
+        {
+            Assert.That(c, Is.True);
+            Assert.That(d, Is.False);
+        });
+
+        var e = bool.TryParse("true", out var f);
+        Assert.Multiple(() =>
+        {
+            Assert.That(e, Is.True);
+            Assert.That(f, Is.True);
+        });
+
+        var g = bool.TryParse("false", out var h);
+        Assert.Multiple(() =>
+        {
+            Assert.That(g, Is.True);
+            Assert.That(h, Is.False);
+        });
     }
 }

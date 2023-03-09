@@ -192,6 +192,7 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [AllowAnonymous]
     [ApiPermission(ApiPermissionConstant.UserResourceCodeInfo, IsVisible = false)]
     public Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync([FromQuery] string id)
     {
