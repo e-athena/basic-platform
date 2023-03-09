@@ -14,7 +14,7 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleIcon = "ApartmentOutlined",
     ModuleRoutePath = "/organization",
     RoutePath = "/organization/user",
-    Sort = 1,
+    Sort = 2,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class UserController : CustomControllerBase
@@ -69,6 +69,12 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.PositionSelectList,
+        ApiPermissionConstant.OrgTreeSelectList,
+        ApiPermissionConstant.RoleSelectList
+    })]
     public Task<string> PostAsync([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -83,6 +89,7 @@ public class UserController : CustomControllerBase
     [HttpPut]
     [ApiPermission(AdditionalRules = new[]
     {
+        ApiPermissionConstant.PositionSelectList,
         ApiPermissionConstant.OrgTreeSelectList,
         ApiPermissionConstant.RoleSelectList,
         ApiPermissionConstant.UserDetail
@@ -125,12 +132,13 @@ public class UserController : CustomControllerBase
     /// <summary>
     /// 下拉列表
     /// </summary>
+    /// <param name="organizationId">组织Id</param>
     /// <returns></returns>
     [HttpGet]
     [ApiPermission(ApiPermissionConstant.UserSelectList, IsVisible = false)]
-    public Task<List<SelectViewModel>> GetSelectListAsync()
+    public Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId = null)
     {
-        return _queryService.GetSelectListAsync();
+        return _queryService.GetSelectListAsync(organizationId);
     }
 
 

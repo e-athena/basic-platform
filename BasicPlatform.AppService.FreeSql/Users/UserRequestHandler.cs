@@ -40,21 +40,17 @@ public class UserRequestHandler : AppServiceBase<User>,
         var entity = new User(
             request.UserName,
             request.Password,
+            request.Avatar,
             request.RealName,
+            request.Gender,
+            request.NickName,
             request.PhoneNumber,
             request.Email,
+            request.OrganizationId,
+            request.PositionId,
             UserId
         );
         await RegisterNewAsync(entity, cancellationToken);
-        // 新增关联数据
-        if (request.OrganizationIds.Count > 0)
-        {
-            var organizationUsers = request
-                .OrganizationIds
-                .Select(orgId => new OrganizationUser(orgId, entity.Id))
-                .ToList();
-            await RegisterNewRangeValueObjectAsync(organizationUsers, cancellationToken);
-        }
 
         // 新增关联数据
         if (request.RoleIds.Count > 0)
@@ -98,31 +94,17 @@ public class UserRequestHandler : AppServiceBase<User>,
         entity.Update(
             request.UserName,
             request.Password,
+            request.Avatar,
             request.RealName,
+            request.Gender,
+            request.NickName,
             request.PhoneNumber,
             request.Email,
+            request.OrganizationId,
+            request.PositionId,
             UserId,
             IsRoot
         );
-
-        #region 组织架构用户
-
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<OrganizationUser>(
-            p => p.UserId == entity.Id, cancellationToken
-        );
-
-        // 新增关联数据
-        if (request.OrganizationIds.Count > 0)
-        {
-            var organizationUsers = request
-                .OrganizationIds
-                .Select(orgId => new OrganizationUser(orgId, entity.Id))
-                .ToList();
-            await RegisterNewRangeValueObjectAsync(organizationUsers, cancellationToken);
-        }
-
-        #endregion
 
         #region 用户角色
 

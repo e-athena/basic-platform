@@ -34,6 +34,11 @@ public class AppServiceBase<T> : ServiceBase<T> where T : EntityCore, new()
     /// 租户ID
     /// </summary>
     protected string? TenantId => _accessor.TenantId;
+    
+    /// <summary>
+    /// IP地址
+    /// </summary>
+    protected string IpAddress => _accessor.IpAddress;
 
     /// <summary>
     /// 读取信息

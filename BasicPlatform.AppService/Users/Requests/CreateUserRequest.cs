@@ -1,3 +1,5 @@
+using BasicPlatform.Infrastructure.Enums;
+
 namespace BasicPlatform.AppService.Users.Requests;
 
 /// <summary>
@@ -18,10 +20,26 @@ public class CreateUserRequest : ITxRequest<string>
     public string Password { get; set; } = null!;
 
     /// <summary>
+    /// 头像
+    /// </summary>
+    public string? Avatar { get; set; }
+
+    /// <summary>
     /// 真实姓名
     /// </summary>
     [MaxLength(16)]
     public string RealName { get; set; } = null!;
+
+    /// <summary>
+    /// 性别
+    /// </summary>
+    public Gender Gender { get; set; }
+
+    /// <summary>
+    /// 昵称
+    /// </summary>
+    [MaxLength(16)]
+    public string? NickName { get; set; }
 
     /// <summary>
     /// 手机号
@@ -38,9 +56,16 @@ public class CreateUserRequest : ITxRequest<string>
     public string? Email { get; set; }
 
     /// <summary>
-    /// 组织架构Ids
+    /// 所属组织ID
     /// </summary>
-    public IList<string> OrganizationIds { get; set; } = new List<string>();
+    [MaxLength(36)]
+    public string OrganizationId { get; set; } = null!;
+
+    /// <summary>
+    /// 所属职位ID
+    /// </summary>
+    [MaxLength(36)]
+    public string PositionId { get; set; } = null!;
 
     /// <summary>
     /// 角色Ids

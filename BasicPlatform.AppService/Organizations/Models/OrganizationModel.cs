@@ -16,6 +16,12 @@ public class OrganizationModel : ViewModelBase
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// 部门负责人Id
+    /// </summary>
+    [MaxLength(36)]
+    public string? LeaderId { get; set; }
+
+    /// <summary>
     /// 路径
     /// </summary>
     public string ParentPath { get; set; } = string.Empty;

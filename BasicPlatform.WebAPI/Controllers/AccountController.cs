@@ -134,26 +134,12 @@ public class AccountController : ControllerBase
         return await Task.FromResult(new
         {
             user.Id,
-            Avatar = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
+            Avatar = user.Avatar ?? "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
             user.Email,
             user.PhoneNumber,
             user.RealName,
-            user.UserName,
-            Roles = "admin",
-            Access = "admin"
+            user.UserName
         });
-        // return await Task.FromResult(new
-        // {
-        //     Id = 1,
-        //     Avatar = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
-        //     Email = "5fd2@c1xa4mje.com.cn",
-        //     PhoneNumber = "13979442544",
-        //     RealName = "锺国贤",
-        //     UserName = "admin",
-        //     Name = "锺国贤",
-        //     Roles = "admin",
-        //     Access = "admin"
-        // });
     }
 
     /// <summary>

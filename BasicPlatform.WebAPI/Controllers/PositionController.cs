@@ -1,32 +1,33 @@
-using BasicPlatform.AppService.Roles;
-using BasicPlatform.AppService.Roles.Requests;
-using BasicPlatform.AppService.Roles.Responses;
+using BasicPlatform.AppService.Positions;
+using BasicPlatform.AppService.Positions.Requests;
+using BasicPlatform.AppService.Positions.Responses;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
 /// <summary>
-/// 角色管理
+/// 职位管理
 /// </summary>
-[Menu("角色管理",
-    ModuleCode = "permission",
-    ModuleName = "权限管理",
-    ModuleIcon = "SafetyOutlined",
-    ModuleRoutePath = "/permission",
-    RoutePath = "/permission/role",
-    Sort = 2,
-    Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
+[Menu("职位管理",
+    ModuleCode = "organization",
+    ModuleName = "组织架构",
+    ModuleIcon = "ApartmentOutlined",
+    ModuleRoutePath = "/organization",
+    RoutePath = "/organization/position",
+    Code = "position",
+    Sort = 1,
+    Description = "员工职位，如总经理、销售经理、销售员等"
 )]
-public class RoleController : CustomControllerBase
+public class PositionController : CustomControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IRoleQueryService _service;
+    private readonly IPositionQueryService _service;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="service"></param>
-    public RoleController(IMediator mediator, IRoleQueryService service)
+    public PositionController(IMediator mediator, IPositionQueryService service)
     {
         _mediator = mediator;
         _service = service;
@@ -40,7 +41,7 @@ public class RoleController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public Task<Paging<GetRolePagingResponse>> GetPagingAsync([FromBody] GetRolePagingRequest request)
+    public Task<Paging<GetPositionPagingResponse>> GetPagingAsync([FromBody] GetPositionPagingRequest request)
     {
         return _service.GetPagingAsync(request);
     }
@@ -51,8 +52,8 @@ public class RoleController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(ApiPermissionConstant.RoleDetail, DisplayName = "详情")]
-    public Task<GetRoleByIdResponse> GetAsync([FromQuery] string id)
+    [ApiPermission("role:detail", DisplayName = "详情")]
+    public Task<GetPositionByIdResponse> GetAsync([FromQuery] string id)
     {
         return _service.GetAsync(id);
     }
@@ -64,7 +65,11 @@ public class RoleController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
-    public Task<string> PostAsync([FromBody] CreateRoleRequest request, CancellationToken cancellationToken)
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.OrgTreeSelectList
+    })]
+    public Task<string> PostAsync([FromBody] CreatePositionRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
     }
@@ -76,8 +81,12 @@ public class RoleController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    [ApiPermission(AdditionalRules = new[] {ApiPermissionConstant.RoleDetail})]
-    public Task<string> PutAsync([FromBody] UpdateRoleRequest request, CancellationToken cancellationToken)
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.OrgTreeSelectList,
+        ApiPermissionConstant.PositionDetail
+    })]
+    public Task<string> PutAsync([FromBody] UpdatePositionRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
     }
@@ -89,7 +98,7 @@ public class RoleController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    public Task<string> StatusChangeAsync([FromBody] RoleStatusChangeRequest request,
+    public Task<string> StatusChangeAsync([FromBody] PositionStatusChangeRequest request,
         CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -104,10 +113,10 @@ public class RoleController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(ApiPermissionConstant.RoleSelectList, IsVisible = false)]
-    public Task<List<SelectViewModel>> GetSelectListAsync()
+    [ApiPermission(ApiPermissionConstant.PositionSelectList, IsVisible = false)]
+    public Task<List<SelectViewModel>> GetSelectListAsync([FromQuery] string? organizationId = null)
     {
-        return _service.GetSelectListAsync();
+        return _service.GetSelectListAsync(organizationId);
     }
 
     #endregion

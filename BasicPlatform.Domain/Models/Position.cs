@@ -1,27 +1,21 @@
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>
-/// 组织机构
+/// 职位
 /// </summary>
-[Table("authority_organizations")]
-// ReSharper disable once ClassNeverInstantiated.Global
-public class Organization : EntityCore, ICreator, IUpdater
+[Table("authority_positions")]
+public class Position : EntityCore, ICreator, IUpdater
 {
     /// <summary>
-    /// 所属上级Id
+    /// 组织架构ID
     /// </summary>
     [MaxLength(36)]
-    public string? ParentId { get; set; }
+    public string OrganizationId { get; set; } = null!;
 
     /// <summary>
-    /// 所属上级
+    /// 组织架构
     /// </summary>
-    public virtual Organization? Parent { get; set; }
-
-    /// <summary>
-    /// 上级路径，用逗号分割，用于快速检索
-    /// </summary>
-    public string ParentPath { get; set; } = string.Empty;
+    public virtual Organization Organization { get; set; } = null!;
 
     /// <summary>
     /// 名称
@@ -40,17 +34,6 @@ public class Organization : EntityCore, ICreator, IUpdater
     /// 状态
     /// </summary>
     public Status Status { get; set; } = Status.Enabled;
-
-    /// <summary>
-    /// 部门负责人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LeaderId { get; set; }
-
-    /// <summary>
-    /// 部门负责人
-    /// </summary>
-    public virtual User? Leader { get; set; }
 
     /// <summary>
     /// 创建人Id
@@ -74,47 +57,44 @@ public class Organization : EntityCore, ICreator, IUpdater
     /// </summary>
     public virtual User? UpdatedUser { get; set; }
 
+
     /// <summary>
     /// 
     /// </summary>
-    public Organization()
+    public Position()
     {
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="parentId"></param>
+    /// <param name="organizationId"></param>
     /// <param name="name"></param>
-    /// <param name="leaderId"></param>
     /// <param name="remarks"></param>
     /// <param name="status"></param>
-    /// <param name="userId"></param>
-    public Organization(string? parentId, string name, string? leaderId, string? remarks, Status status, string? userId)
+    /// <param name="createdUserId"></param>
+    public Position(string organizationId, string name, string? remarks, Status status, string? createdUserId)
     {
-        ParentId = parentId;
+        OrganizationId = organizationId;
         Name = name;
-        LeaderId = leaderId;
         Remarks = remarks;
         Status = status;
-        CreatedUserId = userId;
+        CreatedUserId = createdUserId;
     }
 
     /// <summary>
     /// 更新
     /// </summary>
-    /// <param name="parentId"></param>
+    /// <param name="organizationId"></param>
     /// <param name="name"></param>
-    /// <param name="leaderId"></param>
     /// <param name="remarks"></param>
-    /// <param name="userId"></param>
-    public void Update(string? parentId, string name, string? leaderId, string? remarks, string? userId)
+    /// <param name="updatedUserId"></param>
+    public void Update(string organizationId, string name, string? remarks, string? updatedUserId)
     {
-        ParentId = parentId;
+        OrganizationId = organizationId;
         Name = name;
-        LeaderId = leaderId;
         Remarks = remarks;
-        UpdatedUserId = userId;
+        UpdatedUserId = updatedUserId;
     }
 
     /// <summary>

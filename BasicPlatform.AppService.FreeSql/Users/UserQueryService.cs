@@ -30,10 +30,13 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// <returns></returns>
     public async Task<Paging<GetUserPagingResponse>> GetPagingAsync(GetUserPagingRequest request)
     {
-        List<string>? organizationUserIds = null;
+        ISelect<Organization>? organizationQuery = null;
         if (request.OrganizationId != null)
         {
-            organizationUserIds = await GetOrganizationUserIdTreeAsync(request.OrganizationId);
+            organizationQuery = QueryNoTracking<Organization>()
+                .As("o")
+                // 当前组织架构及下级组织架构
+                .Where(p => p.ParentPath.Contains(request.OrganizationId!) || p.Id == request.OrganizationId);
         }
 
         ISelect<RoleUser>? userRoleQuery = null;
@@ -52,12 +55,14 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 p.Email!.Contains(request.Keyword!)
             )
             .HasWhere(request.Status, p => request.Status!.Contains(p.Status))
-            .HasWhere(organizationUserIds, p => organizationUserIds!.Contains(p.Id))
+            .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
             .HasWhere(userRoleQuery, p => userRoleQuery!.Any(d => d.UserId == p.Id))
             .ToPagingAsync(request, p => new GetUserPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName
+                UpdatedUserName = p.UpdatedUser!.RealName,
+                OrganizationName = p.Organization!.Name,
+                PositionName = p.Position!.Name
             });
 
         return result;
@@ -85,18 +90,11 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         }
 
         // 读取角色
-        var roles = await Query<RoleUser>()
+        var roleIds = await Query<RoleUser>()
             .Where(p => p.UserId == id)
             .ToListAsync(p => p.RoleId, cancellationToken);
 
-        result.RoleIds.AddRange(roles);
-        // 组织架构
-        var organizations = await Query<OrganizationUser>()
-            .Where(p => p.UserId == id)
-            .ToListAsync(p => p.OrganizationId, cancellationToken);
-
-        result.OrganizationIds.AddRange(organizations);
-
+        result.RoleIds.AddRange(roleIds);
 
         return result;
     }
@@ -233,15 +231,26 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// 读取树形选择框数据列表(系统用户)
     /// </summary>
     /// <returns></returns>
-    public async Task<List<SelectViewModel>> GetSelectListAsync()
+    public async Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId)
     {
+        ISelect<Organization>? organizationQuery = null;
+        if (organizationId != null)
+        {
+            organizationQuery = QueryNoTracking<Organization>()
+                .As("o")
+                // 当前组织架构及下级组织架构
+                .Where(p => p.ParentPath.Contains(organizationId) || p.Id == organizationId);
+        }
+
         var result = await Queryable
             .Where(p => p.Status == Status.Enabled)
+            .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
             .ToListAsync(t1 => new SelectViewModel
             {
                 Label = t1.RealName,
                 Value = t1.Id,
                 Disabled = t1.Status == Status.Disabled,
+                Extend = t1.UserName
             });
 
         return result;

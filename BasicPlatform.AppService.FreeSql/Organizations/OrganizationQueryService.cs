@@ -24,14 +24,24 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     public async Task<Paging<GetOrganizationPagingResponse>> GetPagingAsync(
         GetOrganizationPagingRequest request)
     {
+        ISelect<Organization>? organizationQuery = null;
+        if (request.ParentId != null)
+        {
+            organizationQuery = QueryNoTracking<Organization>()
+                .As("o")
+                // 当前组织架构及下级组织架构
+                .Where(p => p.ParentPath.Contains(request.ParentId!) || p.Id == request.ParentId);
+        }
+
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
-            .HasWhere(request.ParentId, p => p.ParentId == request.ParentId)
+            .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.ParentId))
             .HasWhere(request.Status, p => request.Status!.Contains(p.Status))
             .ToPagingAsync(request, p => new GetOrganizationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName
+                UpdatedUserName = p.UpdatedUser!.RealName,
+                LeaderName = p.Leader!.RealName
             });
 
         return result;
@@ -46,7 +56,10 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     {
         var result = await QueryableNoTracking
             .Where(p => p.Id == id)
-            .ToOneAsync<GetOrganizationByIdResponse>();
+            .ToOneAsync(p => new GetOrganizationByIdResponse
+            {
+                LeaderName = p.Leader!.RealName
+            });
 
         // 组织架构角色
         var roleIds = await Query<OrganizationRole>()

@@ -55,7 +55,7 @@ public class OrganizationController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(DisplayName = "详情")]
+    [ApiPermission(ApiPermissionConstant.OrgDetail, DisplayName = "详情")]
     public Task<GetOrganizationByIdResponse?> GetAsync([FromQuery] string id)
     {
         return _queryService.GetAsync(id);
@@ -69,6 +69,11 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.UserSelectList,
+        ApiPermissionConstant.OrgTreeList
+    })]
     public Task<string> PostAsync([FromBody] CreateOrganizationRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
@@ -81,7 +86,12 @@ public class OrganizationController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    [ApiPermission(DisplayName = "编辑")]
+    [ApiPermission(DisplayName = "编辑", AdditionalRules = new[]
+    {
+        ApiPermissionConstant.UserSelectList,
+        ApiPermissionConstant.OrgTreeList,
+        ApiPermissionConstant.OrgDetail
+    })]
     public Task<string> PutAsync([FromBody] UpdateOrganizationRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);

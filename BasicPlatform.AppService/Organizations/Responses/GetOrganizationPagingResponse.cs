@@ -21,4 +21,9 @@ public class GetOrganizationPagingResponse : OrganizationModel
     /// 更新人
     /// </summary>
     public string? UpdatedUserName { get; set; }
+
+    /// <summary>
+    /// 部门负责人
+    /// </summary>
+    public string? LeaderName { get; set; }
 }

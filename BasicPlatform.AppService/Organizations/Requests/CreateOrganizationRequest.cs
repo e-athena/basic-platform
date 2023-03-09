@@ -13,7 +13,12 @@ public class CreateOrganizationRequest : ITxRequest<string>
     /// <summary>
     /// 名称
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = null!;
+
+    /// <summary>
+    /// 部门负责人Id
+    /// </summary>
+    public string? LeaderId { get; set; }
 
     /// <summary>
     /// 备注

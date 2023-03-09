@@ -27,6 +27,7 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
         var entity = new Organization(
             request.ParentId,
             request.Name,
+            request.LeaderId,
             request.Remarks,
             request.Status,
             UserId
@@ -73,7 +74,7 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
         }
 
         // 更新
-        entity.Update(request.ParentId, request.Name, request.Remarks, UserId);
+        entity.Update(request.ParentId, request.Name, request.LeaderId, request.Remarks, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<OrganizationRole>(p => p.OrganizationId == entity.Id, cancellationToken);

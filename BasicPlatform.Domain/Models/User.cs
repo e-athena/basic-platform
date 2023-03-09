@@ -21,10 +21,27 @@ public class User : EntityCore, ICreator, IUpdater
     public string Password { get; set; } = null!;
 
     /// <summary>
+    /// 头像
+    /// </summary>
+    [MaxLength(-1)]
+    public string? Avatar { get; set; }
+
+    /// <summary>
     /// 真实姓名
     /// </summary>
     [MaxLength(16)]
     public string RealName { get; set; } = null!;
+
+    /// <summary>
+    /// 性别
+    /// </summary>
+    public Gender Gender { get; set; } = Gender.Unknown;
+
+    /// <summary>
+    /// 昵称
+    /// </summary>
+    [MaxLength(16)]
+    public string? NickName { get; set; }
 
     /// <summary>
     /// 手机号
@@ -39,6 +56,28 @@ public class User : EntityCore, ICreator, IUpdater
     [MaxLength(256)]
     [EmailAddress]
     public string? Email { get; set; }
+
+    /// <summary>
+    /// 所属组织ID
+    /// </summary>
+    [MaxLength(36)]
+    public string OrganizationId { get; set; } = null!;
+
+    /// <summary>
+    /// 所属组织
+    /// </summary>
+    public virtual Organization? Organization { get; set; }
+
+    /// <summary>
+    /// 所属职位ID
+    /// </summary>
+    [MaxLength(36)]
+    public string PositionId { get; set; } = null!;
+
+    /// <summary>
+    /// 所属职位
+    /// </summary>
+    public virtual Position? Position { get; set; }
 
     /// <summary>
     /// 状态
@@ -93,24 +132,33 @@ public class User : EntityCore, ICreator, IUpdater
     }
 
     /// <summary>
-    /// 创建
+    /// 
     /// </summary>
     /// <param name="userName">用户名</param>
     /// <param name="password">密码</param>
-    /// <param name="realName">真实姓名</param>
-    /// <param name="phoneNumber">手机号</param>
-    /// <param name="email">电子邮箱</param>
+    /// <param name="avatar">头像</param>
+    /// <param name="realName">姓名</param>
+    /// <param name="gender">性别</param>
+    /// <param name="nickName">昵称</param>
+    /// <param name="phoneNumber">手机呈</param>
+    /// <param name="email">邮箱</param>
+    /// <param name="organizationId">所属组织ID</param>
+    /// <param name="positionId">所属职位ID</param>
     /// <param name="createdUserId">创建人</param>
-    public User(string userName, string password, string realName, string? phoneNumber, string? email,
-        string? createdUserId)
+    public User(string userName, string password, string? avatar, string realName, Gender gender, string? nickName,
+        string? phoneNumber, string? email, string organizationId, string positionId, string? createdUserId)
     {
         UserName = userName;
         Password = PasswordHash.CreateHash(password);
+        Avatar = avatar;
         RealName = realName;
+        Gender = gender;
+        NickName = nickName;
         PhoneNumber = phoneNumber;
         Email = email;
+        OrganizationId = organizationId;
+        PositionId = positionId;
         CreatedUserId = createdUserId;
-        UpdatedUserId = createdUserId;
 
         // 添加集成事件
         AddIntegrationEvent(new UserCreatedEvent
@@ -119,7 +167,6 @@ public class User : EntityCore, ICreator, IUpdater
             UserName = UserName
         });
     }
-
 
     /// <summary>
     /// 状态变更
@@ -149,14 +196,20 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     /// <param name="userName"></param>
     /// <param name="password"></param>
+    /// <param name="avatar"></param>
     /// <param name="realName"></param>
+    /// <param name="nickName"></param>
     /// <param name="phoneNumber"></param>
     /// <param name="email"></param>
+    /// <param name="positionId"></param>
     /// <param name="updatedUserId"></param>
     /// <param name="isRoot"></param>
-    public void Update(
-        string userName, string password, string realName, string? phoneNumber,
-        string? email, string? updatedUserId, bool isRoot)
+    /// <param name="gender"></param>
+    /// <param name="organizationId"></param>
+    public void Update(string userName, string password, string? avatar, string realName, Gender gender,
+        string? nickName,
+        string? phoneNumber, string? email, string organizationId, string positionId, string? updatedUserId,
+        bool isRoot)
     {
         // 密码为空时不修改
         if (!string.IsNullOrEmpty(password))
@@ -171,9 +224,14 @@ public class User : EntityCore, ICreator, IUpdater
         }
 
         UserName = userName;
+        Avatar = avatar;
         RealName = realName;
+        Gender = gender;
+        NickName = nickName;
         PhoneNumber = phoneNumber;
         Email = email;
+        OrganizationId = organizationId;
+        PositionId = positionId;
         UpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
     }

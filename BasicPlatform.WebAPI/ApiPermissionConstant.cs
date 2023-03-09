@@ -12,6 +12,11 @@ public static class ApiPermissionConstant
     /// </summary>
     public const string RoleSelectList = "role:select";
 
+    /// <summary>
+    /// 角色下拉列表
+    /// </summary>
+    public const string RoleDetail = "role:detail";
+
     #endregion
 
     #region 用户
@@ -41,6 +46,11 @@ public static class ApiPermissionConstant
     #region 组织架构
 
     /// <summary>
+    /// 组织详情
+    /// </summary>
+    public const string OrgDetail = "org:detail";
+
+    /// <summary>
     /// 组织架构树形列表
     /// </summary>
     public const string OrgTreeList = "org:tree";
@@ -54,6 +64,20 @@ public static class ApiPermissionConstant
     /// 组织架构树形下拉列表(包含自己及下级)
     /// </summary>
     public const string OrgTreeSelectListForSelf = "org:treeSelectForSelf";
+
+    #endregion
+
+    #region 职位
+
+    /// <summary>
+    /// 职位下拉列表
+    /// </summary>
+    public const string PositionSelectList = "position:select";
+
+    /// <summary>
+    /// 职位下拉列表
+    /// </summary>
+    public const string PositionDetail = "position:detail";
 
     #endregion
 }

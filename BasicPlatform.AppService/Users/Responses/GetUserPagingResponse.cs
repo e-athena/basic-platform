@@ -17,7 +17,6 @@ public class GetUserPagingResponse : UserModel
     /// </summary>
     public string? CreatedUserName { get; set; }
 
-
     /// <summary>
     /// 更新人ID
     /// </summary>
@@ -27,4 +26,14 @@ public class GetUserPagingResponse : UserModel
     /// 更新人
     /// </summary>
     public string? UpdatedUserName { get; set; }
+
+    /// <summary>
+    /// 组织名称
+    /// </summary>
+    public string? OrganizationName { get; set; }
+
+    /// <summary>
+    /// 职位名称
+    /// </summary>
+    public string? PositionName { get; set; }
 }

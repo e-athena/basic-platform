@@ -47,7 +47,7 @@ public interface IUserQueryService
     /// 读取用户数据
     /// </summary>
     /// <returns></returns>
-    Task<List<SelectViewModel>> GetSelectListAsync();
+    Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId);
 
     /// <summary>
     /// 读取组织架构用户树形列表

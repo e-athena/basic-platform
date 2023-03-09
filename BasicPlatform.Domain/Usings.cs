@@ -5,3 +5,4 @@ global using Athena.Infrastructure.Enums;
 global using Athena.Infrastructure.Exceptions;
 global using Athena.Infrastructure.Securities;
 global using Athena.Infrastructure.Domain.Events;
+global using BasicPlatform.Infrastructure.Enums;

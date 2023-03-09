@@ -11,10 +11,4 @@ public class GetUserByIdResponse : UserModel
     /// 角色
     /// </summary>
     public List<string> RoleIds { get; set; } = new();
-
-    /// <summary>
-    /// 组织架构
-    /// </summary>
-    public List<string> OrganizationIds { get; set; } = new();
-
 }

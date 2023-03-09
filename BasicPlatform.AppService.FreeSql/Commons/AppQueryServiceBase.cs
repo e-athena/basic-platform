@@ -52,24 +52,4 @@ public class AppQueryServiceBase<T> : QueryServiceBase<T> where T : EntityCore, 
             .ToListAsync(p => p.UserId);
         return list.GroupBy(p => p).Select(p => p.Key).ToList();
     }
-
-    /// <summary>
-    /// 读取信息
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="FriendlyException"></exception>
-    protected async Task<T> GetForEditAsync(string? id)
-    {
-        var entity = await Queryable
-            .Where(p => p.Id == id)
-            .ToOneAsync();
-
-        if (entity == null)
-        {
-            throw FriendlyException.Of("无权限操作");
-        }
-
-        return entity;
-    }
 }
