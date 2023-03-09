@@ -11,7 +11,6 @@ type UserModalProps = {
 } & Partial<TransferFormProps>
 
 const App: React.FC<UserModalProps> = (props) => {
-  console.log(props);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [selectedRows, setSelectedRows] = useState<TransferUserInfo[]>([]);

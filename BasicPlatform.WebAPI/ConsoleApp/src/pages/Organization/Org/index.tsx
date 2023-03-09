@@ -13,7 +13,7 @@ import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
-import OrganizationTree from '@/components/OrganizationTree';
+import OrganizationTree, { OrganizationTreeInstance } from '@/components/OrganizationTree';
 
 
 const TableList: React.FC = () => {
@@ -49,6 +49,14 @@ const TableList: React.FC = () => {
       title: '备注',
       dataIndex: 'remarks',
       hideInSearch: true,
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
+      align: 'center',
+      sorter: true,
+      width: 70,
     },
     {
       title: '状态',
@@ -143,6 +151,7 @@ const TableList: React.FC = () => {
     },
   ];
   const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const orgActionRef = useRef<OrganizationTreeInstance>();
 
   return (
     <PageContainer header={{
@@ -151,9 +160,12 @@ const TableList: React.FC = () => {
     }}>
       <ProCard split="vertical">
         <ProCard colSpan="270px">
-          <OrganizationTree onSelect={(key) => {
-            setOrganizationId(key);
-          }} />
+          <OrganizationTree
+            ref={orgActionRef}
+            onSelect={(key) => {
+              setOrganizationId(key);
+            }}
+          />
         </ProCard>
         <ProCard>
           <ProTable<API.OrgListItem, API.OrgPagingParams>
@@ -208,6 +220,9 @@ const TableList: React.FC = () => {
           }
           if (actionRef.current) {
             actionRef.current.reload();
+          }
+          if (orgActionRef.current) {
+            orgActionRef.current.reload();
           }
         }}
         open={createOrUpdateModalOpen}

@@ -11,7 +11,7 @@ import { Button, Drawer, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, getSorter, hasPermission } from '@/utils/utils';
+import { canAccessible, getSorter, getFilter, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import AuthorizationForm from './components/AuthorizationForm';
 import OrganizationTree from '@/components/OrganizationTree';
@@ -137,20 +137,22 @@ const TableList: React.FC = () => {
         return <IconStatus status={entity.status === 1} />;
       },
     },
-    // {
-    //   title: '更新人',
-    //   dataIndex: 'updatedUserName',
-    //   width: 100,
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '更新时间',
-    //   dataIndex: 'updatedOn',
-    //   width: 170,
-    //   hideInSearch: true,
-    //   valueType: 'dateTime',
-    //   sorter: true,
-    // },
+    {
+      title: '更新人',
+      dataIndex: 'updatedUserName',
+      width: 100,
+      hideInSearch: true,
+      hideInTable: true
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updatedOn',
+      width: 170,
+      hideInSearch: true,
+      valueType: 'dateTime',
+      sorter: true,
+      hideInTable: true
+    },
     {
       title: '操作',
       dataIndex: 'option',
@@ -242,8 +244,8 @@ const TableList: React.FC = () => {
             params={{
               organizationId: parentId,
             }}
-            request={async (params, sorter) => {
-              const res = await query({ ...params, ...getSorter(sorter, 'a') });
+            request={async (params, sorter, filter) => {
+              const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
               return {
                 data: res.data?.items || [],
                 success: res.success,

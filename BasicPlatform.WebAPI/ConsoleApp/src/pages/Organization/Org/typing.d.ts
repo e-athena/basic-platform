@@ -6,6 +6,7 @@ declare namespace API {
     remarks?: string;
     leaderId?: string;
     status: Status;
+    sort: number;
     roleIds: string[];
   };
   /** 更新 */
@@ -23,6 +24,7 @@ declare namespace API {
     leaderId?: string;
     remarks?: string;
     status?: Status;
+    sort?: number;
   } & Partial<CreatedItem> &
     Partial<UpdatedItem>;
 

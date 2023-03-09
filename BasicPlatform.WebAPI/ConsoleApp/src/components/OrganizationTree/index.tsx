@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle, memo } from 'react';
 import { Skeleton, Tree } from 'antd';
 import { orgTree } from '@/services/ant-design-pro/system/org';
 
+export type OrganizationTreeInstance = {
+  reload: () => void;
+}
 type OrganizationTreeProps = {
   onSelect?: (key: string | null) => void;
 };
-const App: React.FC<OrganizationTreeProps> = (props) => {
+const App = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
   const [dataSource, setDataSource] = useState<API.TreeInfo[]>();
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -19,6 +22,14 @@ const App: React.FC<OrganizationTreeProps> = (props) => {
     }
   }, [loading]);
 
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      reload: () => {
+        setLoading(true);
+      }
+    };
+  });
+
   return (
     <div style={{ margin: 10 }}>
       {loading ? <Skeleton active /> :
@@ -26,7 +37,7 @@ const App: React.FC<OrganizationTreeProps> = (props) => {
           showLine={{
             showLeafIcon: false
           }}
-          showIcon={false}
+          // showIcon={true}
           defaultExpandAll={true}
           onSelect={(selectedKeys: React.Key[]) => {
             props.onSelect?.(selectedKeys.length > 0 ? selectedKeys[0] as string : null);
@@ -35,6 +46,6 @@ const App: React.FC<OrganizationTreeProps> = (props) => {
         />}
     </div>
   );
-};
+});
 
-export default App;
+export default memo(App);

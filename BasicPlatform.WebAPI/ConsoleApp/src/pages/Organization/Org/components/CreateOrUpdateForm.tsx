@@ -6,7 +6,8 @@ import {
   ProFormTreeSelect,
   ProFormSelect,
   ProFormSwitch,
-  ProFormInstance
+  ProFormInstance,
+  ProFormDigit
 } from '@ant-design/pro-components';
 import React, { useState } from 'react';
 import { update, create } from '../service';
@@ -102,6 +103,11 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             icon={<SelectOutlined />}
           >选择</Button>}
         disabled
+      />
+      <ProFormDigit
+        name="sort"
+        label={'排序'}
+        min={0}
       />
       <ProFormSelect
         name="roleIds"

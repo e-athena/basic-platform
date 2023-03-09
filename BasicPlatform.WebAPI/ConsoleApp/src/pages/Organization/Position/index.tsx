@@ -51,6 +51,14 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
+      align: 'center',
+      sorter: true,
+      width: 70,
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       width: 90,
@@ -90,6 +98,7 @@ const TableList: React.FC = () => {
       dataIndex: 'updatedUserName',
       width: 100,
       hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '更新时间',
@@ -98,6 +107,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       valueType: 'dateTime',
       sorter: true,
+      hideInTable: true
     },
     {
       title: '操作',
