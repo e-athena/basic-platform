@@ -58,8 +58,7 @@ public class UserModel : ViewModelBase
     /// 所属职位ID
     /// </summary>
     public string PositionId { get; set; } = null!;
-
-
+    
     /// <summary>
     /// 状态
     /// </summary>

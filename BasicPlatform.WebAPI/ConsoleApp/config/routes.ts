@@ -95,6 +95,12 @@ export default [
         component: './Permission/Resource',
         access: 'routeFilter'
       },
+      {
+        path: '/permission/external-page',
+        name: '外部页面',
+        component: './Permission/ExternalPage',
+        access: 'routeFilter'
+      },
     ],
   },
   {
@@ -123,6 +129,13 @@ export default [
   {
     path: '/',
     component: './Welcome',
+    // wappers: [
+    //   '@/wrappers/check'
+    // ],
+  },
+  {
+    path: '/external/:id',
+    component: './ExternalPages',
   },
   {
     path: '*',

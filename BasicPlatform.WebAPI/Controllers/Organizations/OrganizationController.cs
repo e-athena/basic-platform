@@ -2,7 +2,7 @@ using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Organizations.Requests;
 using BasicPlatform.AppService.Organizations.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers;
+namespace BasicPlatform.WebAPI.Controllers.Organizations;
 
 /// <summary>
 /// 组织架构管理
@@ -12,6 +12,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "组织架构",
     ModuleIcon = "ApartmentOutlined",
     ModuleRoutePath = "/organization",
+    ModuleSort = 1,
+    
     RoutePath = "/organization/org",
     Code = "org",
     Description = "组织机构,部门，多级树状结构"

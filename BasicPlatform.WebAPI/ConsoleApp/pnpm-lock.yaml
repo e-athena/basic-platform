@@ -18,6 +18,7 @@ specifiers:
   '@umijs/lint': ^4.0.52
   '@umijs/max': ^4.0.52
   '@umijs/route-utils': ^2.2.2
+  ahooks: ^3.7.5
   antd: ^5.2.2
   classnames: ^2.3.2
   cross-env: ^7.0.3
@@ -39,6 +40,7 @@ specifiers:
   react-dev-inspector: ^1.8.4
   react-dom: ^18.2.0
   react-helmet-async: ^1.3.0
+  react-iframe: ^1.8.5
   swagger-ui-dist: ^4.15.5
   ts-node: ^10.9.1
   typescript: ^4.9.5
@@ -49,6 +51,7 @@ dependencies:
   '@ant-design/pro-components': 2.3.57_xan5c2tkf4stwpqcwacropitz4
   '@ant-design/use-emotion-css': 1.0.4_xan5c2tkf4stwpqcwacropitz4
   '@umijs/route-utils': 2.2.2
+  ahooks: 3.7.5_react@18.2.0
   antd: 5.2.2_jb42yyeu5qxbfieyxjks6malva
   classnames: 2.3.2
   lodash: 4.17.21
@@ -60,6 +63,7 @@ dependencies:
   react-dev-inspector: 1.8.4_km5ddj7uwb23cqeymeyvzjsfb4
   react-dom: 18.2.0_react@18.2.0
   react-helmet-async: 1.3.0_biqbaboplfbrettd7655fr4n2y
+  react-iframe: 1.8.5_react@18.2.0
 
 devDependencies:
   '@ant-design/pro-cli': 2.1.5
@@ -126,7 +130,7 @@ packages:
       '@umijs/bundler-utils': 4.0.42
       '@umijs/plugins': 4.0.42_d27qsjlvwifosjanw3qieypnj4
       '@umijs/utils': 4.0.42
-      ahooks: 3.7.4_react@18.2.0
+      ahooks: 3.7.5_react@18.2.0
       antd-mobile-alita: 2.3.4_biqbaboplfbrettd7655fr4n2y
       antd-mobile-icons: 0.2.2
       babel-plugin-import: 1.13.6
@@ -4136,7 +4140,6 @@ packages:
 
   /@types/js-cookie/2.2.7:
     resolution: {integrity: sha512-aLkWa0C0vO5b4Sr798E26QgOkss68Un0bLjs7u9qxzPT5CG+8DuNTffWES58YzJs3hrVAOs1wonycqEBqNJubA==}
-    dev: true
 
   /@types/jsdom/20.0.1:
     resolution: {integrity: sha512-d0r18sZPmMQr1eG35u12FZfhIXNrnsPU/g5wvRKCUf/tOGilKKwYMYGqh33BNR6ba+2gkHw1EUiHoN3mn7E5IQ==}
@@ -5484,10 +5487,9 @@ packages:
 
   /ahooks-v3-count/1.0.0:
     resolution: {integrity: sha512-V7uUvAwnimu6eh/PED4mCDjE7tokeZQLKlxg9lCTMPhN+NjsSbtdacByVlR1oluXQzD3MOw55wylDmQo4+S9ZQ==}
-    dev: true
 
-  /ahooks/3.7.4_react@18.2.0:
-    resolution: {integrity: sha512-hvgdqzPUKXn95mK3cGlDCi/ZZqv+FRibCUCFT8zW3hCwLGvixVfnHrIW2/2lgzPdLo8mLjp/XOdIJvcPvE2lgQ==}
+  /ahooks/3.7.5_react@18.2.0:
+    resolution: {integrity: sha512-RWkJYK5xj9ZXROj9jABRDqdpTBimkY1tlyeJQ8Ci7MAl1sC5xzSzwO20ydk6BjtdbWt56DPCYZhq4lGu3O2Zwg==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -5502,7 +5504,6 @@ packages:
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
       tslib: 2.5.0
-    dev: true
 
   /ajv-keywords/3.5.2_ajv@6.12.6:
     resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
@@ -9610,7 +9611,6 @@ packages:
 
   /intersection-observer/0.12.2:
     resolution: {integrity: sha512-7m1vEcPCxXYI8HqnL8CKI6siDyD+eIWSwgB3DZA+ZTogxk9I4CDnj4wilt9x/+/QbHI4YG5YZNmC6458/e9Ktg==}
-    dev: true
 
   /intl-format-cache/4.3.1:
     resolution: {integrity: sha512-OEUYNA7D06agqPOYhbTkl0T8HA3QKSuwWh1HiClEnpd9vw7N+3XsQt5iZ0GUEchp5CW1fQk/tary+NsbF3yQ1Q==}
@@ -10567,7 +10567,6 @@ packages:
 
   /js-cookie/2.2.1:
     resolution: {integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==}
-    dev: true
 
   /js-sdsl/4.3.0:
     resolution: {integrity: sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ==}
@@ -14171,6 +14170,15 @@ packages:
       shallowequal: 1.1.0
     dev: true
 
+  /react-iframe/1.8.5_react@18.2.0:
+    resolution: {integrity: sha512-F4cQJGs3ydaG6fJWfuz9yLwOU0Trzl6kttXuUG+vYwosH8enOOFxZWEDQCSbNVO8ayjfYZeqLxEvdvcsSy4GvA==}
+    peerDependencies:
+      react: '>=16.x.x'
+    dependencies:
+      object-assign: 4.1.1
+      react: 18.2.0
+    dev: false
+
   /react-intl/3.12.1_react@18.2.0:
     resolution: {integrity: sha512-cgumW29mwROIqyp8NXStYsoIm27+8FqnxykiLSawWjOxGIBeLuN/+p2srei5SRIumcJefOkOIHP+NDck05RgHg==}
     peerDependencies:
@@ -14993,7 +15001,6 @@ packages:
   /screenfull/5.2.0:
     resolution: {integrity: sha512-9BakfsO2aUQN2K9Fdbj87RJIEZ82Q9IGim7FqM5OsebfoFC6ZHXgDq/KvniuLTPdeM8wY2o6Dj3WQ7KeQCj3cA==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /scroll-into-view-if-needed/2.2.31:
     resolution: {integrity: sha512-dGCXy99wZQivjmjIqihaBQNjryrz5rueJY7eHfTdyWEiR4ttYpsajb14rn9s5d4DY4EcY6+4+U/maARBXJedkA==}
@@ -16074,7 +16081,6 @@ packages:
 
   /tslib/2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
-    dev: true
 
   /tsutils/3.21.0_typescript@4.9.5:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}

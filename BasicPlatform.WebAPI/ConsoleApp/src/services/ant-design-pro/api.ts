@@ -84,7 +84,14 @@ export async function removeRule(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
-/** 查询菜单 GET /Admin/Index/GetMenuTree */
+/** 查询外部页面 GET /api/User/GetExternalPages */
+export async function queryExternalPages(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ExternalPage[]>>('/api/User/GetExternalPages', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+/** 查询菜单 GET /api/User/GetResources */
 export async function queryUserResources(options?: { [key: string]: any }) {
   return request<ApiResponse<API.ResourceInfo[]>>('/api/User/GetResources', {
     method: 'GET',
@@ -92,7 +99,7 @@ export async function queryUserResources(options?: { [key: string]: any }) {
   });
 }
 
-/** 查询菜单 GET /Admin/Index/GetMenuTree */
+/** 查询菜单 GET /api/ApiPermission/GetMenuResources */
 export async function queryMenus(options?: { [key: string]: any }) {
   return request<ApiResponse<API.ResourceInfo[]>>('/api/ApiPermission/GetMenuResources', {
     method: 'GET',

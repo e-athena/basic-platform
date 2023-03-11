@@ -133,12 +133,45 @@ public class AccountController : ControllerBase
 
         return await Task.FromResult(new
         {
-            user.Id,
+            UserId = user.Id,
             Avatar = user.Avatar ?? "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
             user.Email,
             user.PhoneNumber,
             user.RealName,
-            user.UserName
+            user.UserName,
+            Group = user.OrganizationName,
+            Title = user.PositionName,
+            Country = "中国",
+            Signature = "无个性，不签名。",
+            Geographic = new
+            {
+                Province = new
+                {
+                    Label = "广东省",
+                    Value = "440000"
+                },
+                City = new
+                {
+                    Label = "广州市",
+                    Value = "440100"
+                }
+            },
+            Address = "广东省广州市",
+            NotifyCount = 12,
+            UnreadCount = 11,
+            Tags = new List<dynamic>
+            {
+                new
+                {
+                    Label = "设计师",
+                    Value = "设计师"
+                },
+                new
+                {
+                    Label = "程序员",
+                    Value = "程序员"
+                }
+            }
         });
     }
 

@@ -39,6 +39,19 @@ export async function post<T, TR>(url: string, data: T): Promise<ApiResponse<TR>
 }
 
 /**
+ * DELETE请求
+ * @param url 
+ * @param params 
+ * @returns 
+ */
+export async function deleteObj<T>(url: string, data?: { [key: string]: any }): Promise<ApiResponse<T>> {
+  return request(url, {
+    method: 'DELETE',
+    data
+  });
+}
+
+/**
  * PUT请求
  * @param url 地址
  * @param data 数据

@@ -7,7 +7,7 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser, queryUserResources, addUserAccessRecord } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser, queryUserResources, queryExternalPages, addUserAccessRecord } from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
@@ -23,9 +23,11 @@ export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
-  fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   fetchMenuData?: () => Promise<MenuDataItem[]>;
+  fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   apiResources?: API.ResourceInfo[];
+  fetchExternalPages?: () => Promise<API.ExternalPage[]>;
+  externalPages?: API.ExternalPage[];
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -42,22 +44,28 @@ export async function getInitialState(): Promise<{
     const res = await queryUserResources();
     return res.data || [];
   };
+  const fetchExternalPages = async () => {
+    const res = await queryExternalPages();
+    return res.data || [];
+  };
   const fetchMenuData = async () => {
     const data = await fetchApiResources();
     return recursionMenu(data);
   };
-
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
+    const externalPages = await fetchExternalPages();
     return {
       fetchMenuData,
       fetchUserInfo,
       fetchApiResources,
+      fetchExternalPages,
       currentUser,
       apiResources,
+      externalPages,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
@@ -70,6 +78,7 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+  // console.log(initialState?.settings)
   return {
     actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
     avatarProps: {
@@ -80,16 +89,84 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       },
     },
     menuDataRender(menuData) {
+      // console.log(menuData);
+      // layout: top side mix
+      menuData.push({
+        path: 'https://ahooks.js.org/zh-CN/hooks/use-raf-state',
+        name: '外部链接(新窗口打开)',
+        icon: 'LinkOutlined',
+        // layout: 'top'
+      });
       return fixMenuItemIcon(menuData);
     },
     menu: {
       locale: false,
-      // params: initialState,
+      params: initialState,
       request: async () => {
         // return initialState?.fetchMenuData?.() || [];
-        return initialState?.apiResources === undefined ?
-          (initialState?.fetchMenuData?.() || []) :
-          recursionMenu(initialState?.apiResources);
+        let basicMenus: API.ResourceInfo[] = [];
+        if (initialState?.apiResources === undefined) {
+          basicMenus = await initialState?.fetchApiResources?.() || [];
+          setInitialState({
+            ...initialState,
+            apiResources: basicMenus,
+          });
+        } else {
+          basicMenus = initialState?.apiResources;
+        }
+        // 读取外部页面列表
+        let externalPages: API.ExternalPage[] = [];
+        if (initialState?.externalPages === undefined) {
+          externalPages = await initialState?.fetchExternalPages?.() || [];
+        } else {
+          externalPages = initialState?.externalPages;
+        }
+        // 排序
+        const parentExternalPages = externalPages.filter(p => p.parentId === null).sort((a, b) => a.sort - b.sort);
+        const externalMenus = [];
+        for (let i = 0; i < parentExternalPages.length; i += 1) {
+          const page = parentExternalPages[i];
+          let info: API.ResourceInfo = {
+            path: page.type === 2 ? `/external/${encodeURIComponent(page.path)}` : page.path,
+            name: page.name,
+            icon: page.icon,
+            footerRender: false,
+            isAuth: true,
+            isVisible: true,
+            sort: page.sort,
+          };
+          if (page.layout !== 'default') {
+            info = {
+              ...info,
+              layout: page.layout
+            }
+          }
+          const children = externalPages.filter(p => p.parentId === page.id).sort((a, b) => a.sort - b.sort);
+          if (children.length > 0) {
+            info.children = [];
+            for (let j = 0; j < children.length; j += 1) {
+              const child = children[j];
+              let info1: API.ResourceInfo = {
+                path: child.type === 2 ? `/external/${encodeURIComponent(child.path)}` : child.path,
+                name: child.name,
+                icon: child.icon,
+                footerRender: false,
+                isAuth: true,
+                isVisible: true,
+                sort: child.sort,
+              };
+              if (child.layout !== 'default') {
+                info1 = {
+                  ...info1,
+                  layout: child.layout
+                }
+              }
+              info.children.push(info1);
+            }
+          }
+          externalMenus.push(info);
+        }
+        return recursionMenu([...basicMenus, ...externalMenus]);
       },
     },
     waterMarkProps: {

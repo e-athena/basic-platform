@@ -2,7 +2,7 @@ using BasicPlatform.AppService.Positions;
 using BasicPlatform.AppService.Positions.Requests;
 using BasicPlatform.AppService.Positions.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers;
+namespace BasicPlatform.WebAPI.Controllers.Organizations;
 
 /// <summary>
 /// 职位管理
@@ -12,8 +12,9 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "组织架构",
     ModuleIcon = "ApartmentOutlined",
     ModuleRoutePath = "/organization",
+    ModuleSort = 1,
+    
     RoutePath = "/organization/position",
-    Code = "position",
     Sort = 1,
     Description = "员工职位，如总经理、销售经理、销售员等"
 )]
@@ -52,7 +53,7 @@ public class PositionController : CustomControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission("role:detail", DisplayName = "详情")]
+    [ApiPermission(ApiPermissionConstant.PositionDetail, DisplayName = "详情")]
     public Task<GetPositionByIdResponse> GetAsync([FromQuery] string id)
     {
         return _service.GetAsync(id);

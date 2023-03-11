@@ -43,6 +43,24 @@ public static class ApiPermissionConstant
 
     #endregion
 
+    #region 外部页面
+
+    /// <summary>
+    /// 外部页面详情
+    /// </summary>
+    public const string ExternalPageDetail = "externalPage:detail";
+
+    /// <summary>
+    /// 外部页面下拉列表
+    /// </summary>
+    public const string ExternalPageSelectList = "externalPage:select";
+    
+    /// <summary>
+    /// 外部页面树形列表
+    /// </summary>
+    public const string ExternalPageTreeList = "externalPage:tree";
+
+    #endregion
     #region 组织架构
 
     /// <summary>

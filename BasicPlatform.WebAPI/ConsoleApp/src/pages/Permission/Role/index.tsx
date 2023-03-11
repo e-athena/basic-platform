@@ -143,8 +143,11 @@ const TableList: React.FC = () => {
         headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
+        search={false}
+        options={{
+          search: {
+            placeholder: '关健字搜索',
+          }
         }}
         toolBarRender={() => [
           <Access key={'add'} accessible={canAccessible(permission.role.postAsync, resource)}>

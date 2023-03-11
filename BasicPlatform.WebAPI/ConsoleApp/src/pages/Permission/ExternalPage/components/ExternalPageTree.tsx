@@ -1,19 +1,19 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { Skeleton, Tree } from 'antd';
-import { orgTree } from '@/services/ant-design-pro/system/org';
+import { treeList } from '../service';
 
-export type OrganizationTreeInstance = {
+export type ExternalPageTreeInstance = {
   reload: () => void;
 }
-type OrganizationTreeProps = {
+type ExternalPageTreeProps = {
   onSelect?: (key: string | null) => void;
 };
-const App = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
+const App = forwardRef((props: ExternalPageTreeProps, forwardedRef: any) => {
   const [dataSource, setDataSource] = useState<API.TreeInfo[]>();
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     const fetch = async () => {
-      const res = await orgTree();
+      const res = await treeList();
       setDataSource(res.success ? res.data! : []);
       setLoading(false);
     }

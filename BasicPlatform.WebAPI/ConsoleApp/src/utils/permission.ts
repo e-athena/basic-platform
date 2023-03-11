@@ -1,10 +1,23 @@
 export default {
+  /** 外部页面管理 */
+  externalPage: {
+    /** 读取列表 */
+    getPagingAsync: 'ExternalPageController_GetPagingAsync',
+    /** 详情 */
+    getAsync: 'externalPage:detail',
+    /** 创建 */
+    postAsync: 'ExternalPageController_PostAsync',
+    /** 编辑 */
+    putAsync: 'ExternalPageController_PutAsync',
+    /** 删除 */
+    deleteAsync: 'ExternalPageController_DeleteAsync',
+  },
   /** 组织架构管理 */
   organization: {
     /** 读取列表 */
     getPagingAsync: 'OrganizationController_GetPagingAsync',
     /** 详情 */
-    getAsync: 'OrganizationController_GetAsync',
+    getAsync: 'org:detail',
     /** 创建 */
     postAsync: 'OrganizationController_PostAsync',
     /** 编辑 */

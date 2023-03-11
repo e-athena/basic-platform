@@ -6,7 +6,7 @@ declare namespace API {
     userName?: string;
     realName?: string;
     avatar?: string;
-    userid?: string;
+    userId?: string;
     email?: string;
     signature?: string;
     title?: string;
@@ -15,13 +15,12 @@ declare namespace API {
     notifyCount?: number;
     unreadCount?: number;
     country?: string;
-    access?: string;
     geographic?: {
       province?: { label?: string; key?: string };
       city?: { label?: string; key?: string };
     };
     address?: string;
-    phone?: string;
+    phoneNumber?: string;
   };
 
   type LoginResult = {
@@ -81,18 +80,19 @@ declare namespace API {
 
 
   type ResourceInfo = {
-    parentCode: string;
+    parentCode?: string;
     path: string;
     name: string;
     description?: string;
-    code: string;
+    code?: string;
     icon: string;
     isVisible: boolean;
     isAuth: boolean;
     sort: number;
     id?: number;
     functions?: FunctionInfo[];
-    children: ResourceInfo[];
+    children?: ResourceInfo[];
+    [key: string]: any;
   };
 
   type FunctionInfo = {
@@ -103,6 +103,19 @@ declare namespace API {
     values: string[],
     description?: string
   }
+
+  type ExternalPage = {
+    id: string;
+    type: number;
+    parentId?: string;
+    name: string;
+    path: string;
+    icon: string;
+    layout: string;
+    sort: number;
+    remarks?: string;
+  } & Partial<CreatedItem> &
+    Partial<UpdatedItem>;
 
   /**
    * 下拉列表

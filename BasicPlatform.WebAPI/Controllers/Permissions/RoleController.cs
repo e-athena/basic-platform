@@ -2,7 +2,7 @@ using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers;
+namespace BasicPlatform.WebAPI.Controllers.Permissions;
 
 /// <summary>
 /// 角色管理
@@ -12,8 +12,10 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "权限管理",
     ModuleIcon = "SafetyOutlined",
     ModuleRoutePath = "/permission",
+    ModuleSort = 2,
+    
     RoutePath = "/permission/role",
-    Sort = 2,
+    Sort = 0,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class RoleController : CustomControllerBase

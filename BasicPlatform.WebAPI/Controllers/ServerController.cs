@@ -9,6 +9,7 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleCode = "system",
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
+    ModuleSort = 3,
     RoutePath = "/system/server-info",
     Sort = 6
 )]

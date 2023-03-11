@@ -1,3 +1,4 @@
+using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Users;
@@ -215,7 +216,11 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 
         var result = await QueryableNoTracking
             .Where(p => p.Id == UserId)
-            .ToOneAsync<GetCurrentUserResponse>();
+            .ToOneAsync(p=>new GetCurrentUserResponse
+            {
+                OrganizationName = p.Organization!.Name,
+                PositionName = p.Position!.Name
+            });
 
         if (result == null)
         {
@@ -360,6 +365,19 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .RoleResources
             .Union(result.UserResources)
             .ToList();
+    }
+
+    /// <summary>
+    /// 读取当前登录用户外部页面列表
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IList<ExternalPageModel>> GetCurrentUserExternalPagesAsync()
+    {
+        // 读取公共的和自己创建的
+        var result = await QueryNoTracking<ExternalPage>()
+            .Where(p => p.OwnerId == null || p.OwnerId == UserId)
+            .ToListAsync<ExternalPageModel>();
+        return result;
     }
 
     /// <summary>

@@ -1,9 +1,9 @@
-using Athena.Infrastructure.Jwt;
+using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers;
+namespace BasicPlatform.WebAPI.Controllers.Organizations;
 
 /// <summary>
 /// 用户管理
@@ -13,6 +13,8 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "组织架构",
     ModuleIcon = "ApartmentOutlined",
     ModuleRoutePath = "/organization",
+    ModuleSort = 1,
+    
     RoutePath = "/organization/user",
     Sort = 2,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
@@ -184,7 +186,20 @@ public class UserController : CustomControllerBase
         var resources = await _queryService.GetUserResourceAsync(null);
         var keys = resources.Select(p => p.Key).ToList();
         var result = service.GetPermissionMenuResources(assembly, keys);
+
         return await Task.FromResult(result);
+    }
+
+    /// <summary>
+    /// 读取外部页面列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(IsVisible = false)]
+    [AllowAnonymous]
+    public Task<IList<ExternalPageModel>> GetExternalPagesAsync()
+    {
+        return _queryService.GetCurrentUserExternalPagesAsync();
     }
 
     /// <summary>

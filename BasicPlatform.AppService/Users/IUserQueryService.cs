@@ -1,3 +1,4 @@
+using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
@@ -69,12 +70,18 @@ public interface IUserQueryService
     Task<List<ResourceModel>> GetUserResourceAsync(string? userId);
 
     /// <summary>
+    /// 读取当前登录用户外部页面列表
+    /// </summary>
+    /// <returns></returns>
+    Task<IList<ExternalPageModel>> GetCurrentUserExternalPagesAsync();
+
+    /// <summary>
     /// 读取用户拥有的资源信息
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
     Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync(string userId);
-    
+
     /// <summary>
     /// 读取用户拥有的资源代码列表
     /// </summary>
