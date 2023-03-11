@@ -95,12 +95,6 @@ export default [
         component: './Permission/Resource',
         access: 'routeFilter'
       },
-      {
-        path: '/permission/external-page',
-        name: '外部页面',
-        component: './Permission/ExternalPage',
-        access: 'routeFilter'
-      },
     ],
   },
   {
@@ -116,6 +110,12 @@ export default [
         path: '/system/server-info',
         name: '服务器信息',
         component: './System/ServerInfo',
+        access: 'routeFilter'
+      },
+      {
+        path: '/system/external-page',
+        name: '外部页面',
+        component: './System/ExternalPage',
         access: 'routeFilter'
       },
     ],

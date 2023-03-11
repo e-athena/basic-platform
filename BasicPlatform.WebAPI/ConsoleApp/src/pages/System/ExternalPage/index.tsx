@@ -111,7 +111,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      // width: 180,
+      width: 130,
       hideInTable: hideInTable,
       render(_, entity) {
         return [
@@ -133,19 +133,6 @@ const TableList: React.FC = () => {
                 message.error(res.message);
               }}>
               编辑
-            </Button>
-          </Access>,
-          <Access key={'create'} accessible={canAccessible(permission.externalPage.postAsync, resource)}>
-            <Button
-              shape="circle"
-              type={'link'}
-              icon={<FormOutlined />}
-              disabled={entity.isPublic && !isRoot}
-              onClick={() => {
-                setCurrentRow({ parentId: entity.id });
-                handleCreateOrUpdateModalOpen(true);
-              }}>
-              添加子页面
             </Button>
           </Access>,
           <Access key={'delete'} accessible={canAccessible(permission.externalPage.deleteAsync, resource)}>

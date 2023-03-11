@@ -2,19 +2,18 @@ using BasicPlatform.AppService.ExternalPages;
 using BasicPlatform.AppService.ExternalPages.Requests;
 using BasicPlatform.AppService.ExternalPages.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Permissions;
+namespace BasicPlatform.WebAPI.Controllers.Systems;
 
 /// <summary>
 /// 外部页面管理
 /// </summary>
 [Menu("外部页面",
-    ModuleCode = "permission",
-    ModuleName = "权限管理",
-    ModuleIcon = "SafetyOutlined",
-    ModuleRoutePath = "/permission",
-    ModuleSort = 2,
+    ModuleCode = "system",
+    ModuleName = "系统模块",
+    ModuleRoutePath = "/system",
+    ModuleSort = 3,
     
-    RoutePath = "/permission/external-page",
+    RoutePath = "/system/external-page",
     Sort = 3,
     Description = "可用于添加外部页面，如：https://www.baidu.com"
 )]

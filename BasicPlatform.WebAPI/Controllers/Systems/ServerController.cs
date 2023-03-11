@@ -1,6 +1,6 @@
 using Athena.Infrastructure.Status;
 
-namespace BasicPlatform.WebAPI.Controllers;
+namespace BasicPlatform.WebAPI.Controllers.Systems;
 
 /// <summary>
 /// 服务器信息
@@ -10,6 +10,7 @@ namespace BasicPlatform.WebAPI.Controllers;
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
     ModuleSort = 3,
+    
     RoutePath = "/system/server-info",
     Sort = 6
 )]
