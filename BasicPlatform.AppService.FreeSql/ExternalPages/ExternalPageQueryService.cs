@@ -49,6 +49,14 @@ public class ExternalPageQueryService : AppQueryServiceBase<ExternalPage>, IExte
             .HasWhere(!IsRoot, p => p.OwnerId == UserId || string.IsNullOrEmpty(p.OwnerId))
             .ToOneAsync<GetExternalPageByIdResponse>();
 
+        // 如果为一级页面
+        if (string.IsNullOrEmpty(result.ParentId))
+        {
+            // 如果有子页面，则为分组
+            result.IsGroup = await QueryableNoTracking
+                .AnyAsync(p => p.ParentId == result.Id);
+        }
+
         return result;
     }
 

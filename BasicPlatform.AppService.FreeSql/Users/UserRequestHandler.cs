@@ -93,7 +93,6 @@ public class UserRequestHandler : AppServiceBase<User>,
         // 更新
         entity.Update(
             request.UserName,
-            request.Password,
             request.Avatar,
             request.RealName,
             request.Gender,

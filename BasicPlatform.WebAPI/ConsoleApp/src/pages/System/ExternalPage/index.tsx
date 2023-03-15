@@ -1,5 +1,5 @@
 import { query, detail, remove } from './service';
-import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, FormOutlined, DeleteOutlined, ScissorOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -7,7 +7,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Drawer, message, Modal } from 'antd';
+import { Button, Drawer, message, Modal, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission } from '@/utils/utils';
@@ -217,6 +217,25 @@ const TableList: React.FC = () => {
               }
             }}
             columns={columns}
+            tableAlertRender={({ selectedRowKeys }) => {
+              return (<>
+                <Space size={24}>
+                  <span>已选择{selectedRowKeys.length}条记录</span>
+                  <Button
+                    icon={<ScissorOutlined />}
+                    type={'link'} onClick={() => {
+                      console.log(selectedRowKeys);
+                    }}>批量移动</Button>
+                </Space>
+              </>)
+            }}
+            rowSelection={{
+              getCheckboxProps(record) {
+                return {
+                  disabled: record.parentId === null,
+                }
+              },
+            }}
           />
         </ProCard>
       </ProCard>

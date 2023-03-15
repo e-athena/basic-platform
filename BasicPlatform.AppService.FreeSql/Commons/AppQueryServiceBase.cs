@@ -1,6 +1,3 @@
-using Athena.Infrastructure.Caching;
-using Athena.Infrastructure.Domain;
-
 namespace BasicPlatform.AppService.FreeSql.Commons;
 
 /// <summary>

@@ -27,6 +27,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   const formRef = React.useRef<ProFormInstance>();
   const { initialState } = useModel('@@initialState');
   const isRoot = initialState?.currentUser?.userName === 'root';
+  const canSelectGroup = !(props.values?.id !== undefined && props.values.isGroup);
   return <>
     <ModalForm
       width={600}
@@ -64,8 +65,11 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       <ProForm.Group>
         <ProFormSelect
           name="parentId"
-          label="页面分组"
+          label="所属分组"
           width={'sm'}
+          tooltip={canSelectGroup ? undefined : '如果想变成二级页面，则需要先把自身子页面全部删除或移动到其他分组'}
+          placeholder={'默认为一级页面'}
+          disabled={!canSelectGroup}
           showSearch
           request={async () => {
             const { data } = await selectList();

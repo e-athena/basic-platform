@@ -145,9 +145,10 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="organizationId">所属组织ID</param>
     /// <param name="positionId">所属职位ID</param>
     /// <param name="createdUserId">创建人</param>
-    public User(string userName, string password, string? avatar, string realName, Gender gender, string? nickName,
+    public User(string userName, string? password, string? avatar, string realName, Gender gender, string? nickName,
         string? phoneNumber, string? email, string organizationId, string positionId, string? createdUserId)
     {
+        password ??= "123456";
         UserName = userName;
         Password = PasswordHash.CreateHash(password);
         Avatar = avatar;
@@ -195,7 +196,6 @@ public class User : EntityCore, ICreator, IUpdater
     /// 修改
     /// </summary>
     /// <param name="userName"></param>
-    /// <param name="password"></param>
     /// <param name="avatar"></param>
     /// <param name="realName"></param>
     /// <param name="nickName"></param>
@@ -206,22 +206,22 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="isRoot"></param>
     /// <param name="gender"></param>
     /// <param name="organizationId"></param>
-    public void Update(string userName, string password, string? avatar, string realName, Gender gender,
+    public void Update(string userName, string? avatar, string realName, Gender gender,
         string? nickName,
         string? phoneNumber, string? email, string organizationId, string positionId, string? updatedUserId,
         bool isRoot)
     {
-        // 密码为空时不修改
-        if (!string.IsNullOrEmpty(password))
-        {
-            Password = PasswordHash.CreateHash(password);
-        }
-
-        // 非开发者帐号不能修改开发者帐号的密码
-        if (UserName == "root" && !isRoot && !string.IsNullOrEmpty(password))
-        {
-            throw FriendlyException.Of("非开发者帐号不能修改开发者帐号的密码");
-        }
+        // // 密码为空时不修改
+        // if (!string.IsNullOrEmpty(password))
+        // {
+        //     Password = PasswordHash.CreateHash(password);
+        // }
+        //
+        // // 非开发者帐号不能修改开发者帐号的密码
+        // if (UserName == "root" && !isRoot && !string.IsNullOrEmpty(password))
+        // {
+        //     throw FriendlyException.Of("非开发者帐号不能修改开发者帐号的密码");
+        // }
 
         UserName = userName;
         Avatar = avatar;

@@ -1,7 +1,9 @@
+using BasicPlatform.AppService;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
+using BasicPlatform.Infrastructure.Tables;
 
 namespace BasicPlatform.WebAPI.Controllers.Organizations;
 
@@ -14,7 +16,6 @@ namespace BasicPlatform.WebAPI.Controllers.Organizations;
     ModuleIcon = "ApartmentOutlined",
     ModuleRoutePath = "/organization",
     ModuleSort = 1,
-    
     RoutePath = "/organization/user",
     Sort = 2,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
@@ -36,6 +37,19 @@ public class UserController : CustomControllerBase
     }
 
     #region 基础接口
+
+    /// <summary>
+    /// 读取数据列
+    /// </summary>
+    /// <param name="commonService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    [ApiPermission(IsVisible = false)]
+    public IList<TableColumnInfo> GetColumns([FromServices] ICommonService commonService)
+    {
+        return commonService.GetColumns<GetUserPagingResponse>();
+    }
 
     /// <summary>
     /// 读取列表

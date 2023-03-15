@@ -1,5 +1,10 @@
 import { get, paging, post, put } from '@/utils/request';
 
+/** 数据列 */
+export function queryColumns() {
+  return get<API.TableColumnItem[]>('/api/User/GetColumns');
+}
+
 /** 列表 */
 export function query(params: API.UserPagingParams) {
   return paging<API.UserListItem>('/api/User/GetPaging', params);

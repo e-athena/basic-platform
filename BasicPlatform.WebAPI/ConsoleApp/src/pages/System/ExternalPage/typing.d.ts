@@ -34,7 +34,7 @@ declare namespace API {
 
   /** 详情 */
   type ExternalPageDetailItem = {
-    roleIds?: string[];
+    isGroup?: boolean;
   } & Partial<ExternalPageListItem>;
 
   /**

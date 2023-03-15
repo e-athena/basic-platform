@@ -52,17 +52,6 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       }}
     >
       <ProForm.Group>
-        <ProFormText
-          name="name"
-          label={'名称'}
-          width="sm"
-          rules={[
-            {
-              required: true,
-              message: '请输入职位名称',
-            },
-          ]}
-        />
         <ProFormTreeSelect
           name="organizationId"
           label="部门"
@@ -78,6 +67,17 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             {
               required: true,
               message: '请选择',
+            },
+          ]}
+        />
+        <ProFormText
+          name="name"
+          label={'名称'}
+          width="sm"
+          rules={[
+            {
+              required: true,
+              message: '请输入职位名称',
             },
           ]}
         />

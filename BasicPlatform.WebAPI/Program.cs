@@ -1,5 +1,3 @@
-using Athena.Infrastructure.Mvc.Middlewares.AuditLogs;
-
 SelfLog.Enable(Console.Error);
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +49,7 @@ services.AddControllers(options =>
     options.AddCustomApiResultFilter();
     options.AddCustomApiExceptionFilter();
 }).AddNewtonsoftJson();
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
