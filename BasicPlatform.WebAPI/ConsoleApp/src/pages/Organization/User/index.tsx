@@ -192,7 +192,7 @@ const TableList: React.FC = () => {
   setDefaultModelName('User');
   setDefaultColumns(defaultColumns);
 
-  const [parentId, setParentId] = useState<string | null>(null);
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [advancedSearchFilter, setAdvancedSearchFilter] = useState<FilterGroupItem[]>([]);
 
   return (
@@ -204,7 +204,7 @@ const TableList: React.FC = () => {
         <ProCard colSpan="270px">
           <OrganizationTree
             onSelect={(key) => {
-              setParentId(key);
+              setOrganizationId(key);
             }} />
         </ProCard>
         <ProCard>
@@ -219,7 +219,8 @@ const TableList: React.FC = () => {
                 search: {
                   placeholder: '关健字搜索',
                 },
-                setting: false
+                setting: false,
+                fullScreen: true
               }}
               toolBarRender={() => [
                 <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
@@ -250,14 +251,14 @@ const TableList: React.FC = () => {
                 >
                   <EditTableColumnForm
                     data={columnData}
-                    onOk={(d) => {
-                      setColumnData(d);
+                    onOk={(list) => {
+                      setColumnData(list);
                       setColumnLoading(true);
                     }} />
                 </Tooltip>,
               ]}
               params={{
-                organizationId: parentId,
+                organizationId: organizationId,
                 filterGroups: advancedSearchFilter
               }}
               request={async (params, sorter, filter) => {

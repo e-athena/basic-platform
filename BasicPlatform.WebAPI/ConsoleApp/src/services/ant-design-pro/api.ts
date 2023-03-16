@@ -121,3 +121,11 @@ export function queryColumns(modelName: string) {
     method: 'GET',
   });
 }
+
+/** 更新数据列 */
+export function updateUserCustomColumns(body: any,) {
+  return request<ApiResponse<number>>('/api/user/updateUserCustomColumns', {
+    method: 'POST',
+    data: body,
+  });
+}

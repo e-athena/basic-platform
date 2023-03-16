@@ -1,3 +1,4 @@
+using BasicPlatform.AppService.Users;
 using BasicPlatform.Infrastructure.Tables;
 
 namespace BasicPlatform.AppService.FreeSql;
@@ -8,24 +9,43 @@ namespace BasicPlatform.AppService.FreeSql;
 [Component]
 public class CommonService : ICommonService
 {
+    private readonly IUserQueryService _userQueryService;
+
+    public CommonService(IUserQueryService userQueryService)
+    {
+        _userQueryService = userQueryService;
+    }
+
     /// <summary>
     /// 读取表格列信息
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public IList<TableColumnInfo> GetColumns<T>() where T : class
+    public async Task<IList<TableColumnInfo>> GetColumnsAsync<T>() where T : class
     {
-        return TableColumnReader.GetTableColumns(typeof(T));
-    }
+        var sources = TableColumnReader.GetTableColumns(typeof(T));
+        var userCustoms = await _userQueryService.GetCurrentUserCustomColumnsAsync(typeof(T).Name);
+        if (userCustoms.Count == 0)
+        {
+            return sources;
+        }
 
-    /// <summary>
-    /// 读取表格列信息
-    /// </summary>
-    /// <param name="type">类型</param>
-    /// <returns></returns>
-    public IList<TableColumnInfo> GetColumns(Type type)
-    {
-        return TableColumnReader.GetTableColumns(type);
+        foreach (var source in sources)
+        {
+            var item = userCustoms.FirstOrDefault(p => p.DataIndex == source.DataIndex);
+            if (item == null)
+            {
+                continue;
+            }
+
+            source.DataIndex = item.DataIndex;
+            source.Width = item.Width;
+            source.Show = item.Show;
+            source.Fixed = item.Fixed;
+            source.Sort = item.Sort;
+        }
+
+        return sources.OrderBy(p => p.Sort).ToList();
     }
 }

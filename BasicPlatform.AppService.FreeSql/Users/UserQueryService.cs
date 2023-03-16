@@ -2,6 +2,7 @@ using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Users;
+using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
@@ -437,6 +438,19 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         }
 
         return list;
+    }
+
+    /// <summary>
+    /// 读取当前用户自定表格列列表
+    /// </summary>
+    /// <param name="moduleName">模块名</param>
+    /// <returns></returns>
+    public Task<List<UserCustomColumnModel>> GetCurrentUserCustomColumnsAsync(string moduleName)
+    {
+        return QueryNoTracking<UserCustomColumn>()
+            .Where(p => p.ModuleName == moduleName)
+            .Where(p => p.UserId == UserId)
+            .ToListAsync<UserCustomColumnModel>();
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.ExternalPages.Models;
+using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
@@ -88,4 +89,11 @@ public interface IUserQueryService
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
     Task<List<string>> GetResourceCodesAsync(string userId);
+    
+    /// <summary>
+    /// 读取当前用户自定表格列列表
+    /// </summary>
+    /// <param name="moduleName">模块名</param>
+    /// <returns></returns>
+    Task<List<UserCustomColumnModel>> GetCurrentUserCustomColumnsAsync(string moduleName);
 }

@@ -1,9 +1,11 @@
-import { queryColumns } from '@/services/ant-design-pro/api';
+import { queryColumns, updateUserCustomColumns } from '@/services/ant-design-pro/api';
 import { ProColumns } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
+import { cloneDeep } from 'lodash';
 
 /** 动态列 */
 export default () => {
+  const [historyColumnData, setHistoryColumnData] = useState<API.TableColumnItem[]>([]);
   const [columnData, setColumnData] = useState<API.TableColumnItem[]>([]);
   const [columnLoading, setColumnLoading] = useState<boolean>(true);
   const [tableWidth, setTableWidth] = useState<number | undefined>();
@@ -30,6 +32,7 @@ export default () => {
           } as API.TableColumnItem);
         }
         setColumnData(list);
+        setHistoryColumnData(cloneDeep(list));
       }
       const result: ProColumns<any>[] = [];
       // 按sort排序
@@ -41,6 +44,7 @@ export default () => {
           find.hideInTable = !item.show;
           find.width = item.width || find.width;
           find.fixed = (item.fixed !== 'left' && item.fixed !== 'right') ? undefined : item.fixed;
+          find.index = item.sort || i;
           result.push(find);
           continue;
         }
@@ -48,6 +52,7 @@ export default () => {
           ...item,
           hideInTable: !item.show,
           ellipsis: item.ellipsis || true,
+          index: item.sort || i,
         } as ProColumns<API.UserListItem>);
       }
       // 计算宽度
@@ -61,6 +66,52 @@ export default () => {
       }
       setTableWidth(width);
       setColumns(result);
+      // 检查数据是否有更新
+      let isUpdate = false;
+      if (list.length !== historyColumnData.length) {
+        // 初始化都是0，所以为0时不处理
+        if (historyColumnData.length !== 0) {
+          isUpdate = true;
+        }
+      } else {
+        for (let i = 0; i < list.length; i++) {
+          const item = list[i];
+          const find = historyColumnData[i];
+          if (find.dataIndex !== item.dataIndex) {
+            isUpdate = true;
+            break;
+          }
+          if (find.show !== item.show) {
+            isUpdate = true;
+            break;
+          }
+          if (find.width !== item.width) {
+            isUpdate = true;
+            break;
+          }
+          if (find.fixed !== item.fixed && find.fixed !== undefined) {
+            isUpdate = true;
+            break;
+          }
+          if (find.sort !== item.sort) {
+            isUpdate = true;
+            break;
+          }
+        }
+      }
+      // 如果数据有更新，则更新列数据
+      if (isUpdate) {
+        // 更新列数据
+        updateUserCustomColumns({
+          columns: list.filter(p => p.dataIndex !== 'option').map(x => ({
+            dataIndex: x.dataIndex,
+            show: x.show,
+            width: x.width,
+            fixed: x.fixed,
+            sort: x.sort
+          }))
+        });
+      }
     }
     if (columnLoading && columns.length > 0 && modelName !== undefined) {
       fetch();

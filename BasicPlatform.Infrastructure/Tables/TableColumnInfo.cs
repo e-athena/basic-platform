@@ -18,7 +18,7 @@ public class TableColumnInfo
     /// <summary>
     /// 列宽度
     /// </summary>
-    public int Width { get; set; } = 200;
+    public int? Width { get; set; } = 200;
 
     /// <summary>
     /// 是否显示

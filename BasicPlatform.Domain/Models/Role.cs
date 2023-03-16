@@ -26,7 +26,7 @@ public class Role : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id
+    /// 创建人Id 用户自定义列 User Custom Columns
     /// </summary>
     [MaxLength(36)]
     public string? CreatedUserId { get; set; }

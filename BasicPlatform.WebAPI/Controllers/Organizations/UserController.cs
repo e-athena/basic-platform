@@ -46,9 +46,10 @@ public class UserController : CustomControllerBase
     [HttpGet]
     [AllowAnonymous]
     [ApiPermission(IsVisible = false)]
-    public IList<TableColumnInfo> GetColumns([FromServices] ICommonService commonService)
+    public Task<IList<TableColumnInfo>> GetColumnsAsync(
+        [FromServices] ICommonService commonService)
     {
-        return commonService.GetColumns<GetUserPagingResponse>();
+        return commonService.GetColumnsAsync<GetUserPagingResponse>();
     }
 
     /// <summary>
@@ -138,6 +139,22 @@ public class UserController : CustomControllerBase
     public Task<string> AssignResourcesAsync([FromBody] AssignUserResourcesRequest request,
         CancellationToken cancellationToken)
     {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 更新表格列表信息
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [ApiPermission(IsVisible = false)]
+    [AllowAnonymous]
+    public Task<long> UpdateUserCustomColumnsAsync([FromBody] UpdateUserCustomColumnsRequest request,
+        CancellationToken cancellationToken)
+    {
+        request.ModuleName = nameof(GetUserPagingResponse);
         return _mediator.SendAsync(request, cancellationToken);
     }
 

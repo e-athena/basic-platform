@@ -11,7 +11,8 @@ public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<UserStatusChangeRequest, string>,
     IRequestHandler<AssignUserResourcesRequest, string>,
     IRequestHandler<UpdateUserLoginInfoRequest, bool>,
-    IRequestHandler<AddUserAccessRecordRequest, long>
+    IRequestHandler<AddUserAccessRecordRequest, long>,
+    IRequestHandler<UpdateUserCustomColumnsRequest, long>
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
@@ -213,5 +214,43 @@ public class UserRequestHandler : AppServiceBase<User>,
         var entity = new UserAccessRecord(UserId, _contextAccessor.IpAddress, request.AccessUrl);
         await RegisterNewValueObjectAsync(entity, cancellationToken);
         return entity.Id;
+    }
+
+    /// <summary>
+    /// 更新用户自定义列
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<long> Handle(UpdateUserCustomColumnsRequest request, CancellationToken cancellationToken)
+    {
+        // 未登录
+        if (string.IsNullOrEmpty(UserId))
+        {
+            return -1;
+        }
+
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<UserCustomColumn>(
+            p => p.UserId == UserId, cancellationToken
+        );
+
+        // 新增新数据
+        var userCustomColumns = request
+            .Columns
+            .Select(p => new UserCustomColumn(
+                UserId,
+                request.ModuleName!,
+                p.DataIndex,
+                p.Width,
+                p.Show,
+                p.Fixed,
+                p.Sort)
+            )
+            .ToList();
+
+        var rows = await RegisterNewRangeValueObjectAsync(userCustomColumns, cancellationToken);
+        return rows.Count;
     }
 }
