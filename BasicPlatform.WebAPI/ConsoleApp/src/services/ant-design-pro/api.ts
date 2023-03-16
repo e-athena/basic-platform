@@ -114,3 +114,10 @@ export async function addUserAccessRecord(data: API.AddUserAccessRecordParams) {
     data
   });
 }
+
+/** 数据列 */
+export function queryColumns(modelName: string) {
+  return request<ApiResponse<API.TableColumnItem[]>>(`/api/${modelName}/GetColumns`, {
+    method: 'GET',
+  });
+}

@@ -29,9 +29,4 @@ public class GetUserPagingRequest : GetPagingRequestBase
     /// 排序值
     /// </summary>
     public override string? Sorter { get; set; } = "a.CreatedOn DESC";
-
-    /// <summary>
-    /// 高级查询对象
-    /// </summary>
-    public List<FilterGroup>? FilterGroups { get; set; }
 }

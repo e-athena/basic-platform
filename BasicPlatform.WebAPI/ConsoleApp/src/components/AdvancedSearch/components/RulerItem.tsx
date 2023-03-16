@@ -239,6 +239,10 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         }}
       />);
     }
+    // // 如果是用户类型
+    // if (item.key?.includes('UserId')) {
+    //   return <span>aaaa</span>
+    // }
     // 如果是枚举类型
     if (item.propertyType === 'enum') {
       let mode: string | undefined = 'tags';
@@ -269,7 +273,6 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         placeholder="请选择"
         value={value}
         onChange={(value) => {
-          console.log(value);
           const newItem = { ...item };
           if (value) {
             if (item.operator === '==') {

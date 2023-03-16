@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Models;
@@ -49,47 +48,6 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 .Where(p => p.RoleId == request.RoleId);
         }
 
-        var filterGroups = request.FilterGroups;
-
-        Expression<Func<GetUserPagingResponse, bool>>? filterGroupWhere = null;
-        if (filterGroups is {Count: > 0})
-        {
-            var parameter = Expression.Parameter(typeof(GetUserPagingResponse), "p");
-
-            for (var i = 0; i < filterGroups.Count; i++)
-            {
-                var group = filterGroups[i];
-
-                Expression<Func<GetUserPagingResponse, bool>>? groupLambda = null;
-                foreach (var filter in group.Filters)
-                {
-                    // 生成表达式
-                    var lambda = parameter.GenerateLambda<GetUserPagingResponse>(filter);
-                    groupLambda = filter.XOR switch
-                    {
-                        "or" => groupLambda.Or(lambda),
-                        "and" => groupLambda.And(lambda),
-                        _ => groupLambda
-                    };
-                }
-
-                if (i > 0)
-                {
-                    filterGroupWhere = group.XOR switch
-                    {
-                        "or" => filterGroupWhere.Or(groupLambda),
-                        "and" => filterGroupWhere.And(groupLambda),
-                        _ => groupLambda
-                    };
-                }
-                else
-                {
-                    filterGroupWhere = groupLambda;
-                }
-            }
-        }
-        // QueryableNoTracking
-
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p =>
                 p.UserName.Contains(request.Keyword!) ||
@@ -101,23 +59,13 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .HasWhere(request.Gender, p => request.Gender!.Contains(p.Gender))
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
             .HasWhere(userRoleQuery, p => userRoleQuery!.Any(d => d.UserId == p.Id))
-            .Select(p => new GetUserPagingResponse
+            .ToPagingAsync(request, p => new GetUserPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.UpdatedUser!.RealName,
                 OrganizationName = p.Organization!.Name,
-                PositionName = p.Position!.Name,
-            })
-            .HasWhere(filterGroupWhere, filterGroupWhere!)
-            .ToPagingAsync(request);
-
-        // .ToPagingAsync(request, p => new GetUserPagingResponse
-        // {
-        //     CreatedUserName = p.CreatedUser!.RealName,
-        //     UpdatedUserName = p.UpdatedUser!.RealName,
-        //     OrganizationName = p.Organization!.Name,
-        //     PositionName = p.Position!.Name
-        // });
+                PositionName = p.Position!.Name
+            });
 
         return result;
     }

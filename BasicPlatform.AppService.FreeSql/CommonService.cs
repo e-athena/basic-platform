@@ -18,4 +18,14 @@ public class CommonService : ICommonService
     {
         return TableColumnReader.GetTableColumns(typeof(T));
     }
+
+    /// <summary>
+    /// 读取表格列信息
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <returns></returns>
+    public IList<TableColumnInfo> GetColumns(Type type)
+    {
+        return TableColumnReader.GetTableColumns(type);
+    }
 }

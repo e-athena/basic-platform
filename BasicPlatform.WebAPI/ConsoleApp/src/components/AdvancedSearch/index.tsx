@@ -6,18 +6,24 @@ import RulerItem, { ColSelectItem, FilterGroupItem } from './components/RulerIte
 
 type EditTableColumnFormProps = {
   onCancel?: () => void;
-  onOk: (data: FilterGroupItem[]) => void;
-  open: boolean;
+  onSearch: (data: FilterGroupItem[]) => void;
+  open?: boolean;
   data: API.TableColumnItem[];
   historyFilters?: FilterGroupItem[];
 }
 
-const App: React.FC<EditTableColumnFormProps> = (props) => {
-  const { open, onCancel, onOk, data, historyFilters } = props;
+/**
+ * 自定义查询
+ * @param props 
+ * @returns 
+ */
+const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
+  const { open, onCancel, onSearch, data, historyFilters } = props;
+  const [selfOpen, setSelfOpen] = useState<boolean>(false);
   const [filterGroups, setFilterGroups] = useState<FilterGroupItem[]>(historyFilters || []);
 
   useEffect(() => {
-    if (open) {
+    if (open || selfOpen) {
       // 如果分组为空，添加一个默认分组
       if (filterGroups.length === 0) {
         setFilterGroups([{
@@ -30,12 +36,20 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
         }]);
       }
     }
-  }, [open]);
+  }, [open, selfOpen]);
   return (
     <>
+      {props.open === undefined &&
+        <Button
+          type={'link'}
+          style={{ color: '#1f1f1f' }}
+          icon={<SearchOutlined />}
+          onClick={() => setSelfOpen(true)}
+        />
+      }
       <Modal
-        title="高级查询"
-        open={open}
+        title="自定义查询"
+        open={open || selfOpen}
         width={1000}
         bodyStyle={{
           maxHeight: 'calc(100vh - 400px)',
@@ -44,7 +58,10 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
           paddingTop: 15
         }}
         destroyOnClose
-        onCancel={onCancel}
+        onCancel={() => {
+          onCancel?.();
+          setSelfOpen(false);
+        }}
         footer={[
           <Button
             key={'add'}
@@ -66,7 +83,8 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
             onClick={() => {
               // 重置
               setFilterGroups([]);
-              onOk([]);
+              setSelfOpen(false);
+              onSearch([]);
             }}
           >
             重置
@@ -98,7 +116,8 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
                   return;
                 }
               }
-              onOk(filterGroups);
+              setSelfOpen(false);
+              onSearch(filterGroups);
             }}>
             搜索
           </Button>,
@@ -212,4 +231,4 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
   );
 };
 
-export default App;
+export default AdvancedSearch;

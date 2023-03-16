@@ -1,7 +1,7 @@
 namespace BasicPlatform.AppService;
 
 /// <summary>
-/// 
+/// 自定义查询过滤器
 /// </summary>
 public class Filter
 {
@@ -21,7 +21,7 @@ public class Filter
     public string Operator { get; set; } = null!;
 
     /// <summary>
-    /// or or and
+    /// 与或，or or and
     /// </summary>
     public string XOR { get; set; } = null!;
 }

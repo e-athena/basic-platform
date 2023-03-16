@@ -1,4 +1,5 @@
 using Athena.Infrastructure.DataPermission;
+using BasicPlatform.AppService.Users.Responses;
 
 namespace BasicPlatform.Test;
 
@@ -50,6 +51,15 @@ public class Test1
             Console.WriteLine("=====================================");
         }
 
+        Assert.IsTrue(true);
+    }
+
+    [Test]
+    public void Test4()
+    {
+        var type = Type.GetType("BasicPlatform.AppService.Users.Responses.GetUserPagingResponse, BasicPlatform.AppService");
+
+        Assert.Equals(type, typeof(GetUserPagingResponse));
         Assert.IsTrue(true);
     }
 }

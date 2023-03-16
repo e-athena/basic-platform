@@ -17,7 +17,7 @@ type AuthorizationFormProps = {
   resourceCodeInfo: API.UserResourceCodeInfo;
 };
 
-const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
+const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
   const [resources, setResources] = React.useState<ResourceModel[]>([]);
   return (
     <ModalForm
@@ -73,4 +73,4 @@ const CreateOrUpdateForm: React.FC<AuthorizationFormProps> = (props) => {
   );
 };
 
-export default CreateOrUpdateForm;
+export default AuthorizationForm;

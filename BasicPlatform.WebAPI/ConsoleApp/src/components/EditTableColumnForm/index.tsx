@@ -1,13 +1,13 @@
-import { DownOutlined, DragOutlined } from '@ant-design/icons';
+import { DownOutlined, DragOutlined, SettingOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
 import { DragSortTable } from '@ant-design/pro-components';
-import { Checkbox, Dropdown, InputNumber, message, Modal, Space, Tooltip } from 'antd';
+import { Button, Checkbox, Dropdown, InputNumber, message, Modal, Space, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 
 type EditTableColumnFormProps = {
   onCancel?: () => void;
   onOk: (data: API.TableColumnItem[]) => void;
-  open: boolean;
+  open?: boolean;
   data: API.TableColumnItem[];
 }
 
@@ -16,14 +16,15 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
   const [leftDataSource, setLeftDataSource] = useState<API.TableColumnItem[]>([]);
   const [rightDataSource, setRightDataSource] = useState<API.TableColumnItem[]>([]);
   const [dataSource, setDataSource] = useState<API.TableColumnItem[]>([]);
+  const [selfOpen, setSelfOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (open) {
+    if (open || selfOpen) {
       setLeftDataSource(data.filter((item) => item.fixed === 'left'));
       setRightDataSource(data.filter((item) => item.fixed === 'right'));
       setDataSource(data.filter((item) => item.fixed !== 'left' && item.fixed !== 'right'));
     }
-  }, [open]);
+  }, [open, selfOpen]);
 
   const columns: ProColumns<API.TableColumnItem>[] = [
     {
@@ -182,13 +183,24 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
 
   return (
     <>
+      {props.open === undefined &&
+        <Button
+          type={'link'}
+          style={{ color: '#1f1f1f' }}
+          icon={<SettingOutlined />}
+          onClick={() => setSelfOpen(true)}
+        />
+      }
       <Modal
         title="自定义列，勾选需要显示的列，拖动列名进行排序。"
-        open={open}
+        open={open || selfOpen}
         width={800}
         bodyStyle={{ paddingTop: 32 }}
         destroyOnClose
-        onCancel={onCancel}
+        onCancel={() => {
+          onCancel?.();
+          setSelfOpen(false);
+        }}
         onOk={() => {
           // 按组合数据并重置排序值
           let sort = 0;
@@ -197,8 +209,8 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
             sort++;
             return item;
           });
+          setSelfOpen(false);
           onOk(newData);
-          console.log(newData);
         }}
       >
         {leftDataSource.length > 0 && <DragSortTable<API.TableColumnItem>
