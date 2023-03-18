@@ -8,9 +8,9 @@ using BasicPlatform.Infrastructure.Tables;
 namespace BasicPlatform.WebAPI.Controllers.Organizations;
 
 /// <summary>
-/// 用户管理
+/// 员工管理
 /// </summary>
-[Menu("用户管理",
+[Menu("员工管理",
     ModuleCode = "organization",
     ModuleName = "组织架构",
     ModuleIcon = "ApartmentOutlined",

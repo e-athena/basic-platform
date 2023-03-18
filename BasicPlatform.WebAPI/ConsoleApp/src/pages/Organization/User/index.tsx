@@ -1,13 +1,12 @@
 import { query, detail, queryResourceCodeInfo, statusChange } from './service';
 import { PlusOutlined, FormOutlined, SafetyOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
-  ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Drawer, message, Modal, Switch, Tooltip } from 'antd';
+import { Button, message, Modal, Switch, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 // import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
@@ -23,10 +22,9 @@ import { FilterGroupItem } from '@/components/AdvancedSearch/components/RulerIte
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
   const [authorizationModalOpen, handleAuthorizationModalOpen] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
 
-  const tableRef = useRef(null);
-  const tableSize = useSize(tableRef);
+  // 获取card的宽度，用于计算表格的宽度
+  const tableSize = useSize(document.getElementsByClassName('ant-pro-card-body')[0]);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.UserDetailInfo>();
@@ -208,85 +206,79 @@ const TableList: React.FC = () => {
             }} />
         </ProCard>
         <ProCard>
-          <div ref={tableRef}>
-            <ProTable<API.UserListItem, API.UserPagingParams>
-              headerTitle={'查询表格'}
-              actionRef={actionRef}
-              style={{ maxWidth: tableSize?.width }}
-              rowKey="id"
-              search={false}
-              options={{
-                search: {
-                  placeholder: '关健字搜索',
-                },
-                setting: false,
-                fullScreen: true
-              }}
-              toolBarRender={() => [
-                <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      handleCreateOrUpdateModalOpen(true);
-                    }}
-                    icon={<PlusOutlined />}
-                  >
-                    <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-                  </Button>
-                </Access>,
-                <Tooltip
-                  key={'advancedSearch'}
-                  title={'自定义查询'}
+          <ProTable<API.UserListItem, API.UserPagingParams>
+            headerTitle={'查询表格'}
+            actionRef={actionRef}
+            style={tableSize?.width ? {
+              maxWidth: tableSize?.width - 270 - 24
+            } : {}}
+            rowKey="id"
+            search={false}
+            options={{
+              search: {
+                placeholder: '关健字搜索',
+              },
+              setting: false,
+              fullScreen: true
+            }}
+            toolBarRender={() => [
+              <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    handleCreateOrUpdateModalOpen(true);
+                  }}
+                  icon={<PlusOutlined />}
                 >
-                  <AdvancedSearch
-                    data={columnData.filter(d => d.dataIndex !== 'option')}
-                    historyFilters={advancedSearchFilter}
-                    onSearch={(d) => {
-                      setAdvancedSearchFilter(d);
-                    }} />
-                </Tooltip>,
-                <Tooltip
-                  key={'editTableColumn'}
-                  title={'自定义表格'}
-                >
-                  <EditTableColumnForm
-                    data={columnData}
-                    onOk={(list) => {
-                      setColumnData(list);
-                      setColumnLoading(true);
-                    }} />
-                </Tooltip>,
-              ]}
-              params={{
-                organizationId: organizationId,
-                filterGroups: advancedSearchFilter
-              }}
-              request={async (params, sorter, filter) => {
-                const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
-                return {
-                  data: res.data?.items || [],
-                  success: res.success,
-                  total: res.data?.totalItems || 0,
-                }
-              }}
-              scroll={{ x: tableWidth || 1000 }}
-              columns={columnLoading ? [] : columns}
-            />
-          </div>
+                  <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+                </Button>
+              </Access>,
+              <Tooltip
+                key={'advancedSearch'}
+                title={'自定义查询'}
+              >
+                <AdvancedSearch
+                  data={columnData.filter(d => d.dataIndex !== 'option')}
+                  historyFilters={advancedSearchFilter}
+                  onSearch={(d) => {
+                    setAdvancedSearchFilter(d);
+                  }} />
+              </Tooltip>,
+              <Tooltip
+                key={'editTableColumn'}
+                title={'自定义表格'}
+              >
+                <EditTableColumnForm
+                  data={columnData}
+                  onOk={(list) => {
+                    setColumnData(list);
+                    setColumnLoading(true);
+                  }} />
+              </Tooltip>,
+            ]}
+            params={{
+              organizationId: organizationId,
+              filterGroups: advancedSearchFilter
+            }}
+            request={async (params, sorter, filter) => {
+              const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
+              return {
+                data: res.data?.items || [],
+                success: res.success,
+                total: res.data?.totalItems || 0,
+              }
+            }}
+            scroll={{ x: tableWidth || 1000 }}
+            columns={columnLoading ? [] : columns}
+          />
         </ProCard>
       </ProCard>
       <CreateOrUpdateForm
         onCancel={() => {
           handleCreateOrUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
         }}
         onSuccess={() => {
           handleCreateOrUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -297,43 +289,14 @@ const TableList: React.FC = () => {
       <AuthorizationForm
         onCancel={() => {
           handleAuthorizationModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
         }}
         onSuccess={() => {
           handleAuthorizationModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
         }}
         open={authorizationModalOpen}
         values={currentRow}
         resourceCodeInfo={currentResourceCodeRow}
       />
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.userName && (
-          <ProDescriptions<API.UserListItem>
-            column={2}
-            title={currentRow?.userName}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.id,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.UserListItem>[]}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };

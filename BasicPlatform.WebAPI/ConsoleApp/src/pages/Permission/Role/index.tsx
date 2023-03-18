@@ -147,7 +147,9 @@ const TableList: React.FC = () => {
         options={{
           search: {
             placeholder: '关健字搜索',
-          }
+          },
+          setting: false,
+          fullScreen: true
         }}
         toolBarRender={() => [
           <Access key={'add'} accessible={canAccessible(permission.role.postAsync, resource)}>

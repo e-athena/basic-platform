@@ -7,16 +7,20 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>bin\Debug\net6.0\BasicPlatform.AppService.xml</DocumentationFile>
+        <DocumentationFile>bin\Debug\net6.0\BasicPlatform.AppService.xml</DocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <DocumentationFile>bin\Release\net6.0\BasicPlatform.AppService.xml</DocumentationFile>
+        <DocumentationFile>bin\Release\net6.0\BasicPlatform.AppService.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Athena.Infrastructure.DataPermission\Athena.Infrastructure.DataPermission.csproj" />
-      <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj" />
+        <PackageReference Include="UAParser" Version="3.1.47"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Athena.Infrastructure.DataPermission\Athena.Infrastructure.DataPermission.csproj"/>
+        <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

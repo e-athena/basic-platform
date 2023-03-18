@@ -40,6 +40,11 @@ public class UserAccessRecord : ValueObject
     [MaxLength(200)]
     public string AccessUrl { get; set; } = null!;
 
+    /// <summary>
+    /// 用户代理
+    /// </summary>
+    public string? UserAgent { get; set; }
+
     public UserAccessRecord()
     {
     }
@@ -50,12 +55,17 @@ public class UserAccessRecord : ValueObject
     /// <param name="userId"></param>
     /// <param name="accessIp"></param>
     /// <param name="accessUrl"></param>
-    public UserAccessRecord(string userId, string accessIp, string accessUrl)
+    /// <param name="userAgent"></param>
+    public UserAccessRecord(string userId, string accessIp, string accessUrl, string? userAgent)
     {
         UserId = userId;
         AccessTime = DateTime.Now;
-        AccessIp = accessIp;
-        AccessPhysicalAddress = NewLife.IP.Ip.GetAddress(accessIp);
         AccessUrl = accessUrl;
+        AccessIp = accessIp;
+        UserAgent = userAgent;
+        if (!string.IsNullOrEmpty(accessIp))
+        {
+            AccessPhysicalAddress = NewLife.IP.Ip.GetAddress(accessIp);
+        }
     }
 }

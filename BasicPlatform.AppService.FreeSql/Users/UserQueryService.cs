@@ -71,6 +71,28 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         return result;
     }
 
+    /// <summary>
+    /// 读取访问记录分页列表
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<Paging<GetUserAccessRecordPagingResponse>> GetAccessRecordPagingAsync(
+        GetCommonPagingRequest request)
+    {
+        var result = await QueryNoTracking<UserAccessRecord>()
+            .HasWhere(request.Keyword, p =>
+                p.AccessUrl.Contains(request.Keyword!) ||
+                p.User.RealName.Contains(request.Keyword!)
+            )
+            .OrderByPropertyNameIf(request.Sorter == null, "a.AccessTime", false)
+            .ToPagingAsync(request, p => new GetUserAccessRecordPagingResponse
+            {
+                UserRealName = p.User.RealName
+            });
+        return result;
+    }
+
 
     /// <summary>
     /// 读取信息

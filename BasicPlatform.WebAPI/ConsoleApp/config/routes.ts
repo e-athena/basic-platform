@@ -72,6 +72,12 @@ export default [
         component: './Organization/User',
         access: 'routeFilter'
       },
+      {
+        path: '/organization/user-access-record',
+        name: '员工访问记录',
+        component: './Organization/UserAccessRecord',
+        access: 'routeFilter'
+      },
     ],
   },
   {

@@ -206,12 +206,19 @@ public class UserRequestHandler : AppServiceBase<User>,
     public async Task<long> Handle(AddUserAccessRecordRequest request, CancellationToken cancellationToken)
     {
         // 未登录
-        if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(request.AccessUrl))
+        if (string.IsNullOrEmpty(UserId) ||
+            string.IsNullOrEmpty(request.AccessUrl) ||
+            string.IsNullOrEmpty(_contextAccessor.IpAddress))
         {
             return -1;
         }
 
-        var entity = new UserAccessRecord(UserId, _contextAccessor.IpAddress, request.AccessUrl);
+        var entity = new UserAccessRecord(
+            UserId,
+            _contextAccessor.IpAddress,
+            request.AccessUrl,
+            _contextAccessor.UserAgent
+        );
         await RegisterNewValueObjectAsync(entity, cancellationToken);
         return entity.Id;
     }

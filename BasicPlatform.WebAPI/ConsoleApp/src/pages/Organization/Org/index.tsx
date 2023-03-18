@@ -111,7 +111,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 180,
+      width: 160,
       hideInTable: hideInTable,
       render(_, entity) {
         return [
@@ -138,7 +138,6 @@ const TableList: React.FC = () => {
             <Button
               shape="circle"
               type={'link'}
-              icon={<FormOutlined />}
               onClick={() => {
                 setCurrentRow({ parentId: entity.id });
                 handleCreateOrUpdateModalOpen(true);
@@ -175,8 +174,10 @@ const TableList: React.FC = () => {
             search={false}
             options={{
               search: {
-                placeholder: '请输入名称',
-              }
+                placeholder: '关健字搜索',
+              },
+              setting: false,
+              fullScreen: true
             }}
             toolBarRender={() => [
               <Access key={'add'} accessible={canAccessible(permission.organization.postAsync, resource)}>

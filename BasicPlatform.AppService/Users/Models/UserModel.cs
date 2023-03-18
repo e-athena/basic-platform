@@ -71,13 +71,13 @@ public class UserModel : ModelBase
     /// 状态
     /// </summary>
     /// <value></value>
-    [TableColumn(Sort = 9, Width = 90, Required = false)]
+    [TableColumn(Sort = 9, Width = 90, Required = false, Filters = true)]
     public Status Status { get; set; }
 
     /// <summary>
     /// 是否启用
     /// </summary>
-    [TableColumn(Show=false,Ignore = true)]
+    [TableColumn(Show = false, Ignore = true)]
     public bool IsEnabled => Status == Status.Enabled;
 
     /// <summary>

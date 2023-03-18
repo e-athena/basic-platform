@@ -25,12 +25,14 @@ public class CommonService : ICommonService
     public async Task<IList<TableColumnInfo>> GetColumnsAsync<T>() where T : class
     {
         var sources = TableColumnReader.GetTableColumns(typeof(T));
+        // 读取用户保存的数据
         var userCustoms = await _userQueryService.GetCurrentUserCustomColumnsAsync(typeof(T).Name);
         if (userCustoms.Count == 0)
         {
             return sources;
         }
 
+        // 合并数据,以用户的为主
         foreach (var source in sources)
         {
             var item = userCustoms.FirstOrDefault(p => p.DataIndex == source.DataIndex);

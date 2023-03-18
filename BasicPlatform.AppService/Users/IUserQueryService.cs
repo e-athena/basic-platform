@@ -18,6 +18,13 @@ public interface IUserQueryService
     Task<Paging<GetUserPagingResponse>> GetPagingAsync(GetUserPagingRequest request);
 
     /// <summary>
+    /// 读取分页列表
+    /// </summary>
+    /// <param name="request">请求类</param>
+    /// <returns></returns>
+    Task<Paging<GetUserAccessRecordPagingResponse>> GetAccessRecordPagingAsync(GetCommonPagingRequest request);
+
+    /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="id">Id</param>
@@ -89,7 +96,7 @@ public interface IUserQueryService
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
     Task<List<string>> GetResourceCodesAsync(string userId);
-    
+
     /// <summary>
     /// 读取当前用户自定表格列列表
     /// </summary>

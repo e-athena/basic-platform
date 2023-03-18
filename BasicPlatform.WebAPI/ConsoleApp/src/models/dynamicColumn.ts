@@ -45,6 +45,11 @@ export default () => {
           find.width = item.width || find.width;
           find.fixed = (item.fixed !== 'left' && item.fixed !== 'right') ? undefined : item.fixed;
           find.index = item.sort || i;
+          // 以下属性如果为ture时则不覆盖
+          find.sorter = find.sorter ? find.sorter : item.sorter;
+          find.filters = find.filters ? find.filters : item.filters;
+          find.ellipsis = find.ellipsis ? find.ellipsis : item.ellipsis;
+          find.valueEnum = find.valueEnum ? find.valueEnum : item.valueEnum;
           result.push(find);
           continue;
         }
