@@ -16,7 +16,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
+import { FormattedMessage, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
@@ -140,7 +140,8 @@ const Login: React.FC = () => {
         await fetchUserInfo();
         await fetchApiResources();
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        // history.push(urlParams.get('redirect') || '/');
+        location.href = urlParams.get('redirect') || '/';
         return;
       }
       // 如果失败去设置用户错误信息

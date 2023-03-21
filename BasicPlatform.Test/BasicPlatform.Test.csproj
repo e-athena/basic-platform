@@ -21,22 +21,17 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.1" />
-        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.9" />
-        <PackageReference Include="Athena.Infrastructure.Permission" Version="6.0.4" />
-        <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
         <PackageReference Include="UAParser" Version="3.1.47" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\BasicPlatform.AppService.FreeSql\BasicPlatform.AppService.FreeSql.csproj" />
-        <ProjectReference Include="..\BasicPlatform.IntegratedEventHandler\BasicPlatform.IntegratedEventHandler.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <None Update="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BasicPlatform.WebAPI\BasicPlatform.WebAPI.csproj" />
     </ItemGroup>
 
 </Project>

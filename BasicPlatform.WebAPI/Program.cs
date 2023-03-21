@@ -23,7 +23,7 @@ services.AddCustomServiceComponent(
     Assembly.Load("BasicPlatform.Infrastructure")
 );
 services.AddCustomSwaggerGen(configuration);
-services.AddCustomFreeSqlWithMySql(configuration, builder.Environment, aop =>
+services.AddCustomFreeSql(configuration, builder.Environment, aop =>
 {
     aop.CurdAfter += (_, e) =>
     {

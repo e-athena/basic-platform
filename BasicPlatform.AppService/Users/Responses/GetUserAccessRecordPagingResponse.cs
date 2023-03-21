@@ -74,38 +74,17 @@ public class GetUserAccessRecordPagingResponse
     }
 
     /// <summary>
-    /// 浏览器名称
+    /// 浏览器
     /// </summary>
-    public string? BrowserName
-    {
-        get => UserAgentInfo?.UA.Family;
-        set => value = UserAgentInfo?.UA.Family;
-    }
+    public string? Browser => UserAgentInfo?.UA.ToString();
 
     /// <summary>
-    /// 浏览器版本号
+    /// 操作系统
     /// </summary>
-    public string? BrowserVersion
-    {
-        get => $"{UserAgentInfo?.UA.Major}.{UserAgentInfo?.UA.Minor}.{UserAgentInfo?.UA.Patch}";
-        set => value = $"{UserAgentInfo?.UA.Major}.{UserAgentInfo?.UA.Minor}.{UserAgentInfo?.UA.Patch}";
-    }
+    public string? Os => UserAgentInfo?.OS.ToString();
 
     /// <summary>
-    /// 操作系统名称
+    /// 设备
     /// </summary>
-    public string? OsName
-    {
-        get => UserAgentInfo?.OS.Family;
-        set => value = UserAgentInfo?.OS.Family;
-    }
-
-    /// <summary>
-    /// 操作系统版本号
-    /// </summary>
-    public string? OsVersion
-    {
-        get => $"{UserAgentInfo?.OS.Major}.{UserAgentInfo?.OS.Minor}.{UserAgentInfo?.OS.Patch}";
-        set => value = $"{UserAgentInfo?.OS.Major}.{UserAgentInfo?.OS.Minor}.{UserAgentInfo?.OS.Patch}";
-    }
+    public string? Device => UserAgentInfo?.Device.ToString();
 }

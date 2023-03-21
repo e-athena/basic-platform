@@ -154,7 +154,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         placeholder={'请输入'}
       />
       {isRoot && (
-        <ProFormSwitch name="isPublic" label="通用页面" />)
+        <ProFormSwitch name="isPublic" label="通用页面" tooltip={'为true时其他用户也能看到'} />)
       }
     </ModalForm >
   </>

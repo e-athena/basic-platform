@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Athena.Infrastructure.DataPermission;
 using BasicPlatform.AppService.Users.Responses;
 
@@ -55,11 +56,80 @@ public class Test1
     }
 
     [Test]
-    public void Test4()
+    public void Test5()
     {
-        var type = Type.GetType("BasicPlatform.AppService.Users.Responses.GetUserPagingResponse, BasicPlatform.AppService");
+        var list = GetMonthList(DateTime.Parse("2022-1-3"), DateTime.Parse("2023-7-4"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(list[0], Is.EqualTo("2022-01"));
+            Assert.That(list[1], Is.EqualTo("2022-02"));
+        });
+        Assert.IsTrue(true);
+    }
 
-        Assert.Equals(type, typeof(GetUserPagingResponse));
+    // 根据开始和结束时间获取月份列表
+    private static List<string> GetMonthList(DateTime startTime, DateTime endTime)
+    {
+        var list = new List<string>();
+        var startMonth = startTime.ToString("yyyy-MM");
+        var endMonth = endTime.ToString("yyyy-MM");
+        if (startMonth == endMonth)
+        {
+            list.Add(startMonth);
+            return list;
+        }
+
+        var startYear = startTime.Year;
+        var startMonthNum = startTime.Month;
+        var endYear = endTime.Year;
+        var endMonthNum = endTime.Month;
+        for (var i = startYear; i <= endYear; i++)
+        {
+            var start = i == startYear ? startMonthNum : 1;
+            var end = i == endYear ? endMonthNum : 12;
+            for (var j = start; j <= end; j++)
+            {
+                list.Add($"{i}-{j:D2}");
+            }
+        }
+
+        return list;
+    }
+
+    [Test]
+    public void Test6()
+    {
+        string connectionString1 =
+            "data source=rm-bp1rr35xj61hyv709ko.mysql.rds.aliyuncs.com;port=3306;database=test_db; uid=athena_test;pwd=123123123;charset=utf8mb4;ssl mode=none;";
+        string connectionString2 =
+            "Server=183.6.120.119;Initial Catalog=ResumeSystem;User ID=sa;Password=Dianmi123;MultipleActiveResultSets=true;";
+
+        // 使用正则表达式判断数据库类型
+        if (Regex.IsMatch(connectionString1, @"\b(MySQL|MariaDB)\b", RegexOptions.IgnoreCase))
+        {
+            Console.WriteLine("连接字符串1对应的数据库类型是 MySQL 或 MariaDB");
+        }
+        else if (Regex.IsMatch(connectionString1, @"\b(Data Source|Server)\b", RegexOptions.IgnoreCase))
+        {
+            Console.WriteLine("连接字符串1对应的数据库类型是 Microsoft SQL Server");
+        }
+        else
+        {
+            Console.WriteLine("连接字符串1对应的数据库类型未知");
+        }
+
+        if (Regex.IsMatch(connectionString2, @"\b(Data Source|Server)\b", RegexOptions.IgnoreCase))
+        {
+            Console.WriteLine("连接字符串2对应的数据库类型是 Microsoft SQL Server");
+        }
+        else if (Regex.IsMatch(connectionString2, @"\b(MySQL|MariaDB)\b", RegexOptions.IgnoreCase))
+        {
+            Console.WriteLine("连接字符串2对应的数据库类型是 MySQL 或 MariaDB");
+        }
+        else
+        {
+            Console.WriteLine("连接字符串2对应的数据库类型未知");
+        }
         Assert.IsTrue(true);
     }
 }

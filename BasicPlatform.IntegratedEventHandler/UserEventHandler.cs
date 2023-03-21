@@ -1,17 +1,20 @@
-using Athena.Infrastructure.FreeSql.Bases;
+using Athena.Infrastructure.FreeSql.Tenants;
 using BasicPlatform.Domain.Models;
-using Microsoft.Extensions.Logging;
 
 namespace BasicPlatform.IntegratedEventHandler;
 
 /// <summary>
 /// 
 /// </summary>
-public class UserEventHandler : QueryServiceBase<User>, IIntegratedEventHandler
+public class UserEventHandler : TenantQueryServiceBase<User>,
+    IIntegratedEventHandler<UserCreatedEvent>
 {
     private readonly ILogger<UserEventHandler> _logger;
 
-    public UserEventHandler(IFreeSql freeSql, ILoggerFactory loggerFactory) : base(freeSql)
+    public UserEventHandler(
+        FreeSqlMultiTenancy multiTenancy,
+        ITenantService tenantService,
+        ILoggerFactory loggerFactory) : base(multiTenancy, tenantService)
     {
         _logger = loggerFactory.CreateLogger<UserEventHandler>();
     }
@@ -19,13 +22,13 @@ public class UserEventHandler : QueryServiceBase<User>, IIntegratedEventHandler
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="obj"></param>
+    /// <param name="payload"></param>
     /// <param name="cancellationToken"></param>
-    /// <returns></returns>
     [IntegratedEventSubscribe(nameof(UserCreatedEvent))]
-    public async Task TestAsync(UserCreatedEvent obj, CancellationToken cancellationToken = default)
+    public async Task Handle(UserCreatedEvent payload, CancellationToken cancellationToken = default)
     {
-        var res = await QueryableNoTracking.Where(p => p.Id == obj.Id)
+        ChangeTenant(payload.TenantId);
+        var res = await QueryableNoTracking.Where(p => p.Id == payload.Id)
             .FirstAsync(cancellationToken);
 
         Console.WriteLine(res?.PhoneNumber);
