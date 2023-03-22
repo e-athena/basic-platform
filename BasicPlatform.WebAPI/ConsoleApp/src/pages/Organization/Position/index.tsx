@@ -1,25 +1,26 @@
 import { query, detail, statusChange } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
-  ProDescriptions,
-  ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Drawer, message, Modal, Switch } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, getSorter, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import OrganizationTree from '@/components/OrganizationTree';
+import { useSize } from 'ahooks';
+import ProTablePlus from '@/components/ProTablePlus';
 
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
 
+  // 获取card的宽度，用于计算表格的宽度
+  const tableSize = useSize(document.getElementsByClassName('ant-pro-card-body')[0]);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.PositionDetailItem>();
   // const [selectedRowsState, setSelectedRows] = useState<API.PositionListItem[]>([]);
@@ -30,34 +31,7 @@ const TableList: React.FC = () => {
     permission.position.putAsync
   ], resource);
 
-  const columns: ProColumns<API.PositionListItem>[] = [
-    {
-      title: '组织/部门',
-      dataIndex: 'organizationName',
-      hideInSearch: true,
-      ellipsis: true,
-      width: 150,
-    },
-    {
-      title: '名称',
-      dataIndex: 'name',
-      hideInSearch: true,
-      ellipsis: true,
-      width: 150,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remarks',
-      hideInSearch: true,
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      hideInSearch: true,
-      align: 'center',
-      sorter: true,
-      width: 70,
-    },
+  const [defaultColumns] = useState<ProColumns<API.PositionListItem>[]>([
     {
       title: '状态',
       dataIndex: 'status',
@@ -94,22 +68,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '更新人',
-      dataIndex: 'updatedUserName',
-      width: 100,
-      hideInSearch: true,
-      hideInTable: true
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updatedOn',
-      width: 170,
-      hideInSearch: true,
-      valueType: 'dateTime',
-      sorter: true,
-      hideInTable: true
-    },
-    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -139,20 +97,8 @@ const TableList: React.FC = () => {
         ];
       },
     },
-    {
-      title: '关键字',
-      dataIndex: 'keyword',
-      hideInTable: true,
-      hideInForm: true,
-      hideInDescriptions: true,
-      hideInSearch: false,
-      hideInSetting: true,
-      fieldProps: {
-        placeholder: '搜索关键字',
-      },
-    },
-  ];
-  const [parentId, setParentId] = useState<string | null>(null);
+  ]);
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
 
   return (
     <PageContainer header={{
@@ -162,21 +108,20 @@ const TableList: React.FC = () => {
       <ProCard split="vertical">
         <ProCard colSpan="270px">
           <OrganizationTree onSelect={(key) => {
-            setParentId(key);
+            setOrganizationId(key);
           }} />
         </ProCard>
         <ProCard>
-          <ProTable<API.PositionListItem, API.PositionPagingParams>
-            headerTitle={'查询表格'}
+          <ProTablePlus<API.PositionListItem, API.PositionPagingParams>
             actionRef={actionRef}
-            rowKey="id"
-            search={false}
-            options={{
-              search: {
-                placeholder: '关健字搜索',
-              },
-              setting: false,
-              fullScreen: true
+            style={tableSize?.width ? {
+              maxWidth: tableSize?.width - 270 - 24
+            } : {}}
+            defaultColumns={defaultColumns}
+            query={query}
+            moduleName={'Position'}
+            params={{
+              organizationId: organizationId,
             }}
             toolBarRender={() => [
               <Access key={'add'} accessible={canAccessible(permission.position.postAsync, resource)}>
@@ -191,33 +136,17 @@ const TableList: React.FC = () => {
                 </Button>
               </Access>,
             ]}
-            params={{
-              organizationId: parentId
-            }}
-            request={async (params, sorter) => {
-              const res = await query({ ...params, ...getSorter(sorter, 'a') });
-              return {
-                data: res.data?.items || [],
-                success: res.success,
-                total: res.data?.totalItems || 0,
-              }
-            }}
-            columns={columns}
           />
         </ProCard>
       </ProCard>
       <CreateOrUpdateForm
         onCancel={() => {
           handleCreateOrUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
+          setCurrentRow(undefined);
         }}
         onSuccess={() => {
           handleCreateOrUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
+          setCurrentRow(undefined);
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -225,29 +154,6 @@ const TableList: React.FC = () => {
         open={createOrUpdateModalOpen}
         values={currentRow}
       />
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.PositionListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.PositionListItem>[]}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };

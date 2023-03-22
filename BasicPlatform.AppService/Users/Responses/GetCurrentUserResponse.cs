@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Users.Responses;
 /// <summary>
 /// 读取当前用户响应类
 /// </summary>
-public class GetCurrentUserResponse : UserModel
+public class GetCurrentUserResponse : UserQueryModel
 {
     /// <summary>
     /// 资源编码列表

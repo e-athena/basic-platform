@@ -22,6 +22,15 @@ declare namespace API {
     /** 禁用 */
     Disabled = 2,
   }
+
+  /** 表格列响应信息 */
+  type TableColumnResponse = {
+    /** 模块名 */
+    moduleName: string;
+    /** 列信息 */
+    columns: TableColumnItem[];
+  }
+
   type TableColumnItem = {
     /** 列名 */
     dataIndex: string;

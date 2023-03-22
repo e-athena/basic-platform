@@ -13,7 +13,6 @@ namespace BasicPlatform.WebAPI.Controllers.Organizations;
     ModuleIcon = "ApartmentOutlined",
     ModuleRoutePath = "/organization",
     ModuleSort = 1,
-    
     RoutePath = "/organization/org",
     Code = "org",
     Description = "组织机构,部门，多级树状结构"
@@ -35,6 +34,20 @@ public class OrganizationController : CustomControllerBase
     }
 
     #region 基础接口
+
+    /// <summary>
+    /// 读取数据列
+    /// </summary>
+    /// <param name="commonService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    [ApiPermission(IsVisible = false)]
+    public Task<GetTableColumnsResponse> GetColumnsAsync(
+        [FromServices] ICommonService commonService)
+    {
+        return commonService.GetColumnsAsync<GetOrganizationPagingResponse>();
+    }
 
     /// <summary>
     /// 读取列表

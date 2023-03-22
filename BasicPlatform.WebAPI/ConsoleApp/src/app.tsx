@@ -89,14 +89,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       },
     },
     menuDataRender(menuData) {
-      // console.log(menuData);
-      // layout: top side mix
-      menuData.push({
-        path: 'https://ahooks.js.org/zh-CN/hooks/use-raf-state',
-        name: '外部链接(新窗口打开)',
-        icon: 'LinkOutlined',
-        // layout: 'top'
-      });
       return fixMenuItemIcon(menuData);
     },
     menu: {

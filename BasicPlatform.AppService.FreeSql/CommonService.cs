@@ -1,3 +1,4 @@
+using BasicPlatform.AppService.TableColumns;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.Infrastructure.Tables;
 
@@ -22,14 +23,19 @@ public class CommonService : ICommonService
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<IList<TableColumnInfo>> GetColumnsAsync<T>() where T : class
+    public async Task<GetTableColumnsResponse> GetColumnsAsync<T>() where T : class
     {
+        var moduleName = typeof(T).Name;
         var sources = TableColumnReader.GetTableColumns(typeof(T));
         // 读取用户保存的数据
         var userCustoms = await _userQueryService.GetCurrentUserCustomColumnsAsync(typeof(T).Name);
         if (userCustoms.Count == 0)
         {
-            return sources;
+            return new GetTableColumnsResponse
+            {
+                ModuleName = moduleName,
+                Columns = sources.OrderBy(p => p.Sort).ToList()
+            };
         }
 
         // 合并数据,以用户的为主
@@ -48,6 +54,10 @@ public class CommonService : ICommonService
             source.Sort = item.Sort;
         }
 
-        return sources.OrderBy(p => p.Sort).ToList();
+        return new GetTableColumnsResponse
+        {
+            ModuleName = moduleName,
+            Columns = sources.OrderBy(p => p.Sort).ToList()
+        };
     }
 }

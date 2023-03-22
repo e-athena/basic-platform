@@ -1,4 +1,4 @@
-using BasicPlatform.Infrastructure.Tables;
+using BasicPlatform.AppService.TableColumns;
 
 namespace BasicPlatform.AppService;
 
@@ -12,5 +12,5 @@ public interface ICommonService
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    Task<IList<TableColumnInfo>> GetColumnsAsync<T>() where T : class;
+    Task<GetTableColumnsResponse> GetColumnsAsync<T>() where T : class;
 }

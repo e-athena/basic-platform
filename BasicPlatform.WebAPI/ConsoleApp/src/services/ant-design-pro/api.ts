@@ -117,7 +117,7 @@ export async function addUserAccessRecord(data: API.AddUserAccessRecordParams) {
 
 /** 数据列 */
 export function queryColumns(modelName: string) {
-  return request<ApiResponse<API.TableColumnItem[]>>(`/api/${modelName}/GetColumns`, {
+  return request<ApiResponse<API.TableColumnResponse>>(`/api/${modelName}/GetColumns`, {
     method: 'GET',
   });
 }

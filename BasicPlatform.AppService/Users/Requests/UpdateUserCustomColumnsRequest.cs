@@ -11,7 +11,7 @@ public class UpdateUserCustomColumnsRequest : ITxRequest<long>
     /// 所属模块
     /// </summary>
     [MaxLength(128)]
-    public string? ModuleName { get; set; }
+    public string ModuleName { get; set; } = null!;
 
     /// <summary>
     /// 表格列列表

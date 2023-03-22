@@ -1,9 +1,7 @@
-using BasicPlatform.AppService;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
-using BasicPlatform.Infrastructure.Tables;
 
 namespace BasicPlatform.WebAPI.Controllers.Organizations;
 
@@ -46,7 +44,7 @@ public class UserController : CustomControllerBase
     [HttpGet]
     [AllowAnonymous]
     [ApiPermission(IsVisible = false)]
-    public Task<IList<TableColumnInfo>> GetColumnsAsync(
+    public Task<GetTableColumnsResponse> GetColumnsAsync(
         [FromServices] ICommonService commonService)
     {
         return commonService.GetColumnsAsync<GetUserPagingResponse>();
@@ -154,7 +152,6 @@ public class UserController : CustomControllerBase
     public Task<long> UpdateUserCustomColumnsAsync([FromBody] UpdateUserCustomColumnsRequest request,
         CancellationToken cancellationToken)
     {
-        request.ModuleName = nameof(GetUserPagingResponse);
         return _mediator.SendAsync(request, cancellationToken);
     }
 

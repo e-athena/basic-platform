@@ -1,6 +1,7 @@
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
+using BasicPlatform.AppService.TableColumns;
 
 namespace BasicPlatform.WebAPI.Controllers.Permissions;
 
@@ -13,7 +14,6 @@ namespace BasicPlatform.WebAPI.Controllers.Permissions;
     ModuleIcon = "SafetyOutlined",
     ModuleRoutePath = "/permission",
     ModuleSort = 2,
-    
     RoutePath = "/permission/role",
     Sort = 0,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
@@ -35,6 +35,20 @@ public class RoleController : CustomControllerBase
     }
 
     #region 基础接口
+
+    /// <summary>
+    /// 读取数据列
+    /// </summary>
+    /// <param name="commonService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    [ApiPermission(IsVisible = false)]
+    public Task<GetTableColumnsResponse> GetColumnsAsync(
+        [FromServices] ICommonService commonService)
+    {
+        return commonService.GetColumnsAsync<GetRolePagingResponse>();
+    }
 
     /// <summary>
     /// 读取列表

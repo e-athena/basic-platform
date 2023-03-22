@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Users.Responses;
 /// <summary>
 /// 
 /// </summary>
-public class GetUserByIdResponse : UserModel
+public class GetUserByIdResponse : UserQueryModel
 {
     /// <summary>
     /// 角色

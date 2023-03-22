@@ -3,7 +3,7 @@ namespace BasicPlatform.AppService.Positions.Models;
 /// <summary>
 /// 职位模型
 /// </summary>
-public class PositionModel : ModelBase
+public class PositionQueryModel : QueryModelBase
 {
     /// <summary>
     /// 组织架构ID

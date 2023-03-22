@@ -1,26 +1,27 @@
 import { query, detail, statusChange } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
-  ProDescriptions,
-  ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Drawer, message, Modal, Switch } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import OrganizationTree, { OrganizationTreeInstance } from '@/components/OrganizationTree';
+import { useSize } from 'ahooks';
+import ProTablePlus from '@/components/ProTablePlus';
 
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
+  // 获取card的宽度，用于计算表格的宽度
+  const tableSize = useSize(document.getElementsByClassName('ant-pro-card-body')[0]);
   const [currentRow, setCurrentRow] = useState<API.OrgListItem>();
   // const [selectedRowsState, setSelectedRows] = useState<API.OrgListItem[]>([]);
   const { getResource } = useModel('resource');
@@ -31,33 +32,7 @@ const TableList: React.FC = () => {
     permission.organization.putAsync
   ], resource);
 
-  const columns: ProColumns<API.OrgListItem>[] = [
-    {
-      title: '名称',
-      dataIndex: 'name',
-      hideInSearch: true,
-      width: 150,
-    },
-    {
-      title: '负责人',
-      dataIndex: 'leaderName',
-      hideInSearch: true,
-      ellipsis: true,
-      width: 120,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remarks',
-      hideInSearch: true,
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      hideInSearch: true,
-      align: 'center',
-      sorter: true,
-      width: 70,
-    },
+  const [defaultColumns] = useState<ProColumns<API.OrgListItem>[]>([
     {
       title: '状态',
       dataIndex: 'status',
@@ -91,21 +66,6 @@ const TableList: React.FC = () => {
         }
         return <IconStatus status={entity.status === 1} />;
       },
-    },
-    {
-      title: '更新人',
-      dataIndex: 'updatedUserName',
-      width: 100,
-      hideInSearch: true,
-      hideInTable: true
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updatedOn',
-      width: 170,
-      hideInSearch: true,
-      valueType: 'dateTime',
-      hideInTable: true
     },
     {
       title: '操作',
@@ -148,7 +108,7 @@ const TableList: React.FC = () => {
         ];
       },
     },
-  ];
+  ]);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const orgActionRef = useRef<OrganizationTreeInstance>();
 
@@ -167,17 +127,16 @@ const TableList: React.FC = () => {
           />
         </ProCard>
         <ProCard>
-          <ProTable<API.OrgListItem, API.OrgPagingParams>
-            headerTitle={'查询表格'}
+          <ProTablePlus<API.OrgListItem, API.OrgPagingParams>
             actionRef={actionRef}
-            rowKey="id"
-            search={false}
-            options={{
-              search: {
-                placeholder: '关健字搜索',
-              },
-              setting: false,
-              fullScreen: true
+            style={tableSize?.width ? {
+              maxWidth: tableSize?.width - 270 - 24
+            } : {}}
+            defaultColumns={defaultColumns}
+            query={query}
+            moduleName={'Organization'}
+            params={{
+              parentId: organizationId,
             }}
             toolBarRender={() => [
               <Access key={'add'} accessible={canAccessible(permission.organization.postAsync, resource)}>
@@ -192,33 +151,17 @@ const TableList: React.FC = () => {
                 </Button>
               </Access>,
             ]}
-            params={{
-              parentId: organizationId,
-            }}
-            request={async (params: API.OrgPagingParams) => {
-              const res = await query(params);
-              return {
-                data: res.data?.items || [],
-                // success: res.success,
-                total: res.data?.totalPages || 0,
-              }
-            }}
-            columns={columns}
           />
         </ProCard>
       </ProCard>
       <CreateOrUpdateForm
         onCancel={() => {
           handleCreateOrUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
+          setCurrentRow(undefined);
         }}
         onSuccess={() => {
           handleCreateOrUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
+          setCurrentRow(undefined);
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -229,29 +172,6 @@ const TableList: React.FC = () => {
         open={createOrUpdateModalOpen}
         values={currentRow}
       />
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.OrgListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.OrgListItem>[]}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };

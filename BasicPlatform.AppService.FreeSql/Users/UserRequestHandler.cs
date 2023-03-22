@@ -240,7 +240,7 @@ public class UserRequestHandler : AppServiceBase<User>,
 
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserCustomColumn>(
-            p => p.UserId == UserId, cancellationToken
+            p => p.UserId == UserId && p.ModuleName == request.ModuleName, cancellationToken
         );
 
         // 新增新数据
@@ -248,7 +248,7 @@ public class UserRequestHandler : AppServiceBase<User>,
             .Columns
             .Select(p => new UserCustomColumn(
                 UserId,
-                request.ModuleName!,
+                request.ModuleName,
                 p.DataIndex,
                 p.Width,
                 p.Show,

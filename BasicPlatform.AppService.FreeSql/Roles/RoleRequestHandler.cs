@@ -51,7 +51,7 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(UpdateRoleRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetForUpdateAsync(request.Id!, cancellationToken);
         // 删除旧的资源
         await RegisterDeleteValueObjectAsync<RoleResource>(p => p.RoleId == request.Id, cancellationToken);
         entity.Update(request.Name, request.Remarks, UserId);

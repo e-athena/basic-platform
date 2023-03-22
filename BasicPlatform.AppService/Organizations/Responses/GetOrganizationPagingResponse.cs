@@ -5,25 +5,11 @@ namespace BasicPlatform.AppService.Organizations.Responses;
 /// <summary>
 /// 组织架构分页返回值
 /// </summary>
-public class GetOrganizationPagingResponse : OrganizationModel
+public class GetOrganizationPagingResponse : OrganizationQueryModel
 {
-    /// <summary>
-    /// 创建人Id  
-    /// </summary>
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
-    /// 创建人
-    /// </summary>
-    public string? CreatedUserName { get; set; }
-
-    /// <summary>
-    /// 更新人
-    /// </summary>
-    public string? UpdatedUserName { get; set; }
-
     /// <summary>
     /// 部门负责人
     /// </summary>
+    [TableColumn(Sort = 1, Width = 120)]
     public string? LeaderName { get; set; }
 }

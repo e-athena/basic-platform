@@ -3,21 +3,18 @@ import { PlusOutlined, FormOutlined, SafetyOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
-  ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, message, Modal, Switch, Tooltip } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 // import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, getSorter, getFilter, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import AuthorizationForm from './components/AuthorizationForm';
 import OrganizationTree from '@/components/OrganizationTree';
-import EditTableColumnForm from '@/components/EditTableColumnForm';
-import AdvancedSearch from '@/components/AdvancedSearch';
 import { useSize } from 'ahooks';
-import { FilterGroupItem } from '@/components/AdvancedSearch/components/RulerItem';
+import ProTablePlus from '@/components/ProTablePlus';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
@@ -177,21 +174,7 @@ const TableList: React.FC = () => {
     },
   ]);
 
-  const {
-    columns,
-    setDefaultColumns,
-    columnData,
-    setColumnData,
-    columnLoading,
-    setColumnLoading,
-    tableWidth,
-    setDefaultModelName
-  } = useModel('dynamicColumn');
-  setDefaultModelName('User');
-  setDefaultColumns(defaultColumns);
-
   const [organizationId, setOrganizationId] = useState<string | null>(null);
-  const [advancedSearchFilter, setAdvancedSearchFilter] = useState<FilterGroupItem[]>([]);
 
   return (
     <PageContainer header={{
@@ -206,20 +189,16 @@ const TableList: React.FC = () => {
             }} />
         </ProCard>
         <ProCard>
-          <ProTable<API.UserListItem, API.UserPagingParams>
-            headerTitle={'查询表格'}
+          <ProTablePlus<API.UserListItem, API.UserPagingParams>
             actionRef={actionRef}
             style={tableSize?.width ? {
               maxWidth: tableSize?.width - 270 - 24
             } : {}}
-            rowKey="id"
-            search={false}
-            options={{
-              search: {
-                placeholder: '关健字搜索',
-              },
-              setting: false,
-              fullScreen: true
+            defaultColumns={defaultColumns}
+            query={query}
+            moduleName={'User'}
+            params={{
+              organizationId: organizationId,
             }}
             toolBarRender={() => [
               <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
@@ -233,52 +212,18 @@ const TableList: React.FC = () => {
                   <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
                 </Button>
               </Access>,
-              <Tooltip
-                key={'advancedSearch'}
-                title={'自定义查询'}
-              >
-                <AdvancedSearch
-                  data={columnData.filter(d => d.dataIndex !== 'option')}
-                  historyFilters={advancedSearchFilter}
-                  onSearch={(d) => {
-                    setAdvancedSearchFilter(d);
-                  }} />
-              </Tooltip>,
-              <Tooltip
-                key={'editTableColumn'}
-                title={'自定义表格'}
-              >
-                <EditTableColumnForm
-                  data={columnData}
-                  onOk={(list) => {
-                    setColumnData(list);
-                    setColumnLoading(true);
-                  }} />
-              </Tooltip>,
             ]}
-            params={{
-              organizationId: organizationId,
-              filterGroups: advancedSearchFilter
-            }}
-            request={async (params, sorter, filter) => {
-              const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
-              return {
-                data: res.data?.items || [],
-                success: res.success,
-                total: res.data?.totalItems || 0,
-              }
-            }}
-            scroll={{ x: tableWidth || 1000 }}
-            columns={columnLoading ? [] : columns}
           />
         </ProCard>
       </ProCard>
       <CreateOrUpdateForm
         onCancel={() => {
           handleCreateOrUpdateModalOpen(false);
+          setCurrentRow(undefined);
         }}
         onSuccess={() => {
           handleCreateOrUpdateModalOpen(false);
+          setCurrentRow(undefined);
           if (actionRef.current) {
             actionRef.current.reload();
           }

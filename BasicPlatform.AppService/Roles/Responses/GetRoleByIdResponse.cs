@@ -5,14 +5,8 @@ namespace BasicPlatform.AppService.Roles.Responses;
 /// <summary>
 /// 读取角色信息
 /// </summary>
-public class GetRoleByIdResponse : RoleModel
+public class GetRoleByIdResponse : RoleQueryModel
 {
-    /// <summary>
-    /// 状态
-    /// </summary>
-    /// <value></value>
-    public Status Status { get; set; }
-
     /// <summary>
     /// 资源代码
     /// </summary>

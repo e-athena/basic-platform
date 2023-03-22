@@ -26,7 +26,19 @@ public class Role : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id 用户自定义列 User Custom Columns
+    /// 数据访问范围
+    /// </summary>
+    public RoleDataScope DataScope { get; set; } = RoleDataScope.All;
+
+    /// <summary>
+    /// 自定义数据访问范围(组织Id)
+    /// <remarks>多个组织使用逗号分割</remarks>
+    /// </summary>
+    [MaxLength(-1)]
+    public string? DataScopeCustom { get; set; }
+
+    /// <summary>
+    /// 创建人Id
     /// </summary>
     [MaxLength(36)]
     public string? CreatedUserId { get; set; }
@@ -66,7 +78,7 @@ public class Role : EntityCore, ICreator, IUpdater
         Remarks = remarks;
         CreatedUserId = createdUserId;
     }
-    
+
     /// <summary>
     /// 更新
     /// </summary>
@@ -92,12 +104,23 @@ public class Role : EntityCore, ICreator, IUpdater
     }
 
     /// <summary>
-    /// 分配权限
+    /// 数据权限授权
     /// </summary>
+    /// <param name="dataScope">范围</param>
+    /// <param name="customIds">自定义授权的组织Id列表</param>
     /// <param name="updatedUserId"></param>
-    public void AssignPermissions(string? updatedUserId)
+    public void DataScopeAssign(RoleDataScope dataScope, IList<string>? customIds, string? updatedUserId)
     {
+        DataScope = dataScope;
+        if (dataScope == RoleDataScope.Custom && customIds != null && customIds.Count > 0)
+        {
+            DataScopeCustom = string.Join(",", customIds);
+        }
+        else
+        {
+            DataScopeCustom = null;
+        }
+
         UpdatedUserId = updatedUserId;
-        UpdatedOn = DateTime.Now;
     }
 }

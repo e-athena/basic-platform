@@ -55,7 +55,7 @@ public abstract class TableColumnReader
                         continue;
                     }
 
-                    tableColumnInfo.Width = attribute.Width;
+                    tableColumnInfo.Width = attribute.Width == -1 ? null : attribute.Width;
                     tableColumnInfo.Show = attribute.Show;
                     tableColumnInfo.Required = attribute.Required;
                     tableColumnInfo.Fixed = attribute.Fixed;

@@ -19,7 +19,7 @@ public class TableColumnAttribute : Attribute
     /// <summary>
     /// 列宽度
     /// </summary>
-    public int Width { get; set; } = 100;
+    public int Width { get; set; } = -1;
 
     /// <summary>
     /// 是否显示

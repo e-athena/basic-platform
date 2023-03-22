@@ -3,7 +3,7 @@ namespace BasicPlatform.AppService.Roles.Models;
 /// <summary>
 /// 角色模型
 /// </summary>
-public class RoleModel : ModelBase
+public class RoleQueryModel : QueryModelBase
 {
     /// <summary>
     /// 名称
@@ -33,4 +33,11 @@ public class RoleModel : ModelBase
     [MaxLength(1024)]
     [TableColumn(Width = 150, Sort = 3)]
     public string? Remarks { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    /// <value></value>
+    [TableColumn(Width = 90, Sort = 4)]
+    public Status Status { get; set; }
 }

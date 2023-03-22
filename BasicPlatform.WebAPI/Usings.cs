@@ -14,3 +14,5 @@ global using Serilog;
 global using Serilog.Debugging;
 global using System.Text;
 global using Athena.Infrastructure.Jwt;
+global using BasicPlatform.AppService;
+global using BasicPlatform.AppService.TableColumns;

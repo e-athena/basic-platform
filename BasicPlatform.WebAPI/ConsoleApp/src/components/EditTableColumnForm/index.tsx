@@ -58,6 +58,7 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
             min={50}
             max={400}
             value={entity.width}
+            placeholder={'auto'}
             addonBefore={'宽度'}
             addonAfter={'px'}
             onChange={(value) => {

@@ -3,7 +3,7 @@ namespace BasicPlatform.AppService.Organizations.Models;
 /// <summary>
 /// 组织架构Dto
 /// </summary>
-public class OrganizationModel : ModelBase
+public class OrganizationQueryModel : QueryModelBase
 {
     /// <summary>
     /// 父级Id
@@ -14,7 +14,7 @@ public class OrganizationModel : ModelBase
     /// <summary>
     /// 名称
     /// </summary>
-    [TableColumn(Sort = 0, Width = 150)]
+    [TableColumn(Sort = 0, Width = 150, Fixed = "left")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -45,6 +45,6 @@ public class OrganizationModel : ModelBase
     /// <summary>
     /// 排序
     /// </summary>
-    [TableColumn(Sort = 3)]
+    [TableColumn(Sort = 3, Width = 70)]
     public int Sort { get; set; }
 }

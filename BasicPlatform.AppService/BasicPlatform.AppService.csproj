@@ -15,12 +15,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="UAParser" Version="3.1.47"/>
+        <PackageReference Include="UAParser" Version="3.1.47" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Athena.Infrastructure.DataPermission\Athena.Infrastructure.DataPermission.csproj"/>
-        <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj"/>
+        <ProjectReference Include="..\Athena.Infrastructure.DataPermission\Athena.Infrastructure.DataPermission.csproj" />
+        <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj" />
     </ItemGroup>
 
 </Project>

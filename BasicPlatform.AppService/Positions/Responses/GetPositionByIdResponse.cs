@@ -5,6 +5,6 @@ namespace BasicPlatform.AppService.Positions.Responses;
 /// <summary>
 /// 读取角色信息
 /// </summary>
-public class GetPositionByIdResponse : PositionModel
+public class GetPositionByIdResponse : PositionQueryModel
 {
 }
