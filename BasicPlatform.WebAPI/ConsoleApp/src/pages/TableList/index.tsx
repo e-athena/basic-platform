@@ -22,7 +22,7 @@ import UpdateForm from './components/UpdateForm';
  * @param fields
  */
 const handleAdd = async (fields: API.RuleListItem) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('正在添加', 0);
   try {
     await addRule({ ...fields });
     hide();
@@ -42,7 +42,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Configuring', 0);
   try {
     await updateRule({
       name: fields.name,
@@ -67,7 +67,7 @@ const handleUpdate = async (fields: FormValueType) => {
  * @param selectedRows
  */
 const handleRemove = async (selectedRows: API.RuleListItem[]) => {
-  const hide = message.loading('正在删除');
+  const hide = message.loading('正在删除', 0);
   if (!selectedRows) return true;
   try {
     await removeRule({

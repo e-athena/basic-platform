@@ -174,7 +174,7 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
     <div style={{ position: 'relative' }}>
       <div style={{
         cursor: 'move',
-        width: row.width ?? 100,
+        width: row.width ?? 200,
         backgroundColor: '#f2f2f2'
       }}>
         <DragOutlined />&nbsp;{row.title}

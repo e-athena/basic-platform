@@ -34,24 +34,25 @@ export const hasPermission = (keys: string[], resource: API.ResourceInfo | null)
  * @param {*} func
  * @param {*} fields
  */
-export async function submitHandle<T>(func: (values: T) => Promise<ApiResponse<boolean | string>>, fields: T): Promise<boolean> {
-  const hide = message.loading('处理中');
+export async function submitHandle<T>(func: (values: T) => Promise<ApiResponse<boolean | string>>, fields: T, tips?: string): Promise<boolean> {
+  const aTips = tips || '处理';
+  const hide = message.loading(`${aTips}中`, 0);
   try {
     const res = await func(fields);
     hide();
     if (res.success) {
-      message.success('处理成功');
+      message.success(`${aTips}成功`);
       return true;
     }
     Modal.error({
-      title: '处理失败',
+      title: `${aTips}失败`,
       content: res.message,
     });
     return false;
   } catch (error) {
     hide();
     Modal.error({
-      title: '处理失败',
+      title: `${aTips}失败`,
       content: '请重试或联系管理员！',
     });
     return false;

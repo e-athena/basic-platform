@@ -31,6 +31,7 @@ public class PositionQueryService : QueryServiceBase<Position>, IPositionQuerySe
                 // 当前组织架构及下级组织架构
                 .Where(p => p.ParentPath.Contains(request.OrganizationId!) || p.Id == request.OrganizationId);
         }
+
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
@@ -38,7 +39,7 @@ public class PositionQueryService : QueryServiceBase<Position>, IPositionQuerySe
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.UpdatedUser!.RealName,
-                OrganizationName = p.Organization.Name
+                OrganizationName = p.Organization!.Name
             }, cancellationToken);
         return result;
     }
@@ -68,16 +69,13 @@ public class PositionQueryService : QueryServiceBase<Position>, IPositionQuerySe
     /// <param name="organizationId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId,
-        CancellationToken cancellationToken = default)
+    public async Task<List<SelectViewModel>> GetSelectListAsync(
+        string? organizationId,
+        CancellationToken cancellationToken = default
+    )
     {
-        if (organizationId == null)
-        {
-            return new List<SelectViewModel>();
-        }
-
         return await QueryableNoTracking
-            .Where(p => p.OrganizationId == organizationId)
+            .Where(p => p.OrganizationId == organizationId || string.IsNullOrEmpty(p.OrganizationId))
             .ToListAsync(p => new SelectViewModel
             {
                 Disabled = p.Status == Status.Disabled,

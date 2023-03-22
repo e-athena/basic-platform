@@ -59,16 +59,12 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             showSearch: true,
           }}
           width="sm"
+          tooltip={'为空时全部可用'}
           request={async () => {
             const { data } = await orgTreeSelect();
             return data || [];
           }}
-          rules={[
-            {
-              required: true,
-              message: '请选择',
-            },
-          ]}
+          placeholder={'请选择'}
         />
         <ProFormText
           name="name"

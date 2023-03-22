@@ -9,9 +9,8 @@ public class PositionModel : ModelBase
     /// 组织架构ID
     /// </summary>
     [MaxLength(36)]
-    [Required]
     [TableColumn(Show = false)]
-    public string OrganizationId { get; set; } = null!;
+    public string? OrganizationId { get; set; }
 
     /// <summary>
     /// 名称

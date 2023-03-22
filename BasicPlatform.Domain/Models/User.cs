@@ -127,6 +127,11 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     public int LoginCount { get; set; }
 
+    /// <summary>
+    /// 是否初始密码
+    /// </summary>
+    public bool IsInitPassword { get; set; } = true;
+
     public User()
     {
     }
@@ -278,5 +283,22 @@ public class User : EntityCore, ICreator, IUpdater
         LastLoginIp = ip;
         LoginCount++;
         LastLoginAddress = NewLife.IP.Ip.GetAddress(ip);
+    }
+
+    /// <summary>
+    /// 重置密码
+    /// </summary>
+    /// <param name="newPassword"></param>
+    /// <param name="updatedUserId"></param>
+    public void ResetPassword(string newPassword, string? updatedUserId)
+    {
+        if (UserName == "root")
+        {
+            throw FriendlyException.Of("不能重置开发者帐号的密码");
+        }
+
+        Password = PasswordHash.CreateHash(newPassword);
+        IsInitPassword = true;
+        UpdatedUserId = updatedUserId;
     }
 }

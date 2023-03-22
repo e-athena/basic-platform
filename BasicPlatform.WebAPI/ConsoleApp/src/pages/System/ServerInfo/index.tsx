@@ -43,7 +43,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetch = async () => {
       setLoading(false);
-      const hide = message.loading('正在加载');
+      const hide = message.loading('正在加载', 0);
       const res = await query();
       setDataSource(res.data);
       setStartTime(res.data?.startTime);

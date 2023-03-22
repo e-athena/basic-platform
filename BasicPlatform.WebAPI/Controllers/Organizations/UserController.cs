@@ -155,6 +155,19 @@ public class UserController : CustomControllerBase
         return _mediator.SendAsync(request, cancellationToken);
     }
 
+    /// <summary>
+    /// 重置密码
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>新密码</returns>
+    [HttpPost]
+    public Task<string> ResetPasswordAsync([FromBody] ResetUserPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
     #endregion
 
     #region 扩展接口

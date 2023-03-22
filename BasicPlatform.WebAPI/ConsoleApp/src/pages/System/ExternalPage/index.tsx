@@ -122,7 +122,7 @@ const TableList: React.FC = () => {
               icon={<FormOutlined />}
               disabled={entity.isPublic && !isRoot}
               onClick={async () => {
-                const hide = message.loading('正在查询');
+                const hide = message.loading('正在查询', 0);
                 const res = await detail(entity.id!);
                 hide();
                 if (res.success) {
@@ -146,7 +146,7 @@ const TableList: React.FC = () => {
                   title: '操作提示',
                   content: `确定删除{${entity.name}}吗？`,
                   onOk: async () => {
-                    const hide = message.loading(`正在删除`);
+                    const hide = message.loading(`正在删除`, 0);
                     const res = await remove(entity.id!);
                     hide();
                     if (res.success) {

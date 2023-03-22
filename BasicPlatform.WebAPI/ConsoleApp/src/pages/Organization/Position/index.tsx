@@ -51,7 +51,7 @@ const TableList: React.FC = () => {
                 title: '操作提示',
                 content: `确定${statusName}{${entity.name}}吗？`,
                 onOk: async () => {
-                  const hide = message.loading(`正在${statusName}`);
+                  const hide = message.loading(`正在${statusName}`, 0);
                   const res = await statusChange(entity.id!);
                   hide();
                   if (res.success) {
@@ -81,7 +81,7 @@ const TableList: React.FC = () => {
               type={'link'}
               icon={<FormOutlined />}
               onClick={async () => {
-                const hide = message.loading('正在查询');
+                const hide = message.loading('正在查询', 0);
                 const res = await detail(entity.id);
                 hide();
                 if (res.success) {

@@ -92,7 +92,7 @@ const TableList: React.FC = () => {
             <Button
               type="primary"
               onClick={async () => {
-                const hide = message.loading('正在同步');
+                const hide = message.loading('正在同步', 0);
                 const res = await sync();
                 hide();
                 if (res.success) {
@@ -112,7 +112,7 @@ const TableList: React.FC = () => {
               type="primary"
               danger
               onClick={async () => {
-                const hide = message.loading('正在重置');
+                const hide = message.loading('正在重置', 0);
                 const res = await reinitialize();
                 hide();
                 if (res.success) {

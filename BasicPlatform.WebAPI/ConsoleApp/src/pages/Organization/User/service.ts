@@ -39,3 +39,8 @@ export function assignResources(data: API.AssignUserResourcesRequest) {
 export function statusChange(id: string) {
   return put('/api/User/StatusChange', { id });
 }
+
+/** 重置密码 */
+export function resetPassword(id: string): Promise<ApiResponse<string>> {
+  return post('/api/User/ResetPassword', { id });
+}

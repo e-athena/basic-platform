@@ -69,12 +69,19 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           result.push(find);
           continue;
         }
-        result.push({
+        const nItem: ProColumns<T, ValueType> = {
           ...item,
           hideInTable: !item.show,
           ellipsis: item.ellipsis || true,
-          index: item.sort || i,
-        } as ProColumns<T, ValueType>);
+          index: item.sort || i
+        } as ProColumns<T, ValueType>;
+        if (item.propertyType === 'boolean') {
+          nItem.valueEnum = {
+            false: { text: '否', status: 'Default' },
+            true: { text: '是', status: 'Success' }
+          };
+        }
+        result.push(nItem);
       }
       // 计算宽度
       let width: number = 0;

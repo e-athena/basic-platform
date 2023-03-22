@@ -75,6 +75,12 @@ public class UserQueryModel : QueryModelBase
     public Status Status { get; set; }
 
     /// <summary>
+    /// 是否初始密码
+    /// </summary>
+    [TableColumn(Show = false)]
+    public bool IsInitPassword { get; set; }
+
+    /// <summary>
     /// 是否启用
     /// </summary>
     [TableColumn(Show = false, Ignore = true)]

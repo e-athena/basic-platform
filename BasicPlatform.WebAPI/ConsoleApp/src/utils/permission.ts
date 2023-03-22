@@ -84,5 +84,7 @@ export default {
     statusChangeAsync: 'UserController_StatusChangeAsync',
     /** 分配资源 */
     assignResourcesAsync: 'UserController_AssignResourcesAsync',
+    /** 重置密码 */
+    resetPasswordAsync: 'UserController_ResetPasswordAsync',
   },
 };

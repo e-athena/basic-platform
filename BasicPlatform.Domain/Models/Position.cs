@@ -8,14 +8,15 @@ public class Position : EntityCore, ICreator, IUpdater
 {
     /// <summary>
     /// 组织架构ID
+    /// <remarks>为空时为通用职位</remarks>
     /// </summary>
     [MaxLength(36)]
-    public string OrganizationId { get; set; } = null!;
+    public string? OrganizationId { get; set; }
 
     /// <summary>
     /// 组织架构
     /// </summary>
-    public virtual Organization Organization { get; set; } = null!;
+    public virtual Organization? Organization { get; set; }
 
     /// <summary>
     /// 名称
@@ -79,7 +80,7 @@ public class Position : EntityCore, ICreator, IUpdater
     /// <param name="status"></param>
     /// <param name="sort"></param>
     /// <param name="createdUserId"></param>
-    public Position(string organizationId, string name, string? remarks, Status status, int sort, string? createdUserId)
+    public Position(string? organizationId, string name, string? remarks, Status status, int sort, string? createdUserId)
     {
         OrganizationId = organizationId;
         Name = name;
@@ -97,7 +98,7 @@ public class Position : EntityCore, ICreator, IUpdater
     /// <param name="remarks"></param>
     /// <param name="sort"></param>
     /// <param name="updatedUserId"></param>
-    public void Update(string organizationId, string name, string? remarks,int sort, string? updatedUserId)
+    public void Update(string? organizationId, string name, string? remarks,int sort, string? updatedUserId)
     {
         OrganizationId = organizationId;
         Name = name;

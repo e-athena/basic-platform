@@ -1,3 +1,4 @@
+using Athena.Infrastructure;
 using BasicPlatform.AppService.Users.Requests;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
@@ -12,7 +13,8 @@ public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<AssignUserResourcesRequest, string>,
     IRequestHandler<UpdateUserLoginInfoRequest, bool>,
     IRequestHandler<AddUserAccessRecordRequest, long>,
-    IRequestHandler<UpdateUserCustomColumnsRequest, long>
+    IRequestHandler<UpdateUserCustomColumnsRequest, long>,
+    IRequestHandler<ResetUserPasswordRequest, string>
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
@@ -259,5 +261,25 @@ public class UserRequestHandler : AppServiceBase<User>,
 
         var rows = await RegisterNewRangeValueObjectAsync(userCustomColumns, cancellationToken);
         return rows.Count;
+    }
+
+    /// <summary>
+    /// 重置密码
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Handle(ResetUserPasswordRequest request, CancellationToken cancellationToken)
+    {
+        if (UserId == request.Id)
+        {
+            throw FriendlyException.Of("不能重置自己的密码，请使用修改密码功能");
+        }
+
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var newPassword = StringGenerator.Generate(10);
+        entity.ResetPassword(newPassword, UserId);
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return newPassword;
     }
 }

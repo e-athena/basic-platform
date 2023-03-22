@@ -1,11 +1,11 @@
-import { query, detail, queryResourceCodeInfo, statusChange } from './service';
-import { PlusOutlined, FormOutlined, SafetyOutlined } from '@ant-design/icons';
+import { query, detail, queryResourceCodeInfo, statusChange, resetPassword } from './service';
+import { PlusOutlined, FormOutlined, SafetyOutlined, MoreOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, message, Modal, Switch } from 'antd';
+import { Button, Dropdown, message, Modal, Switch, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 // import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
@@ -15,6 +15,8 @@ import AuthorizationForm from './components/AuthorizationForm';
 import OrganizationTree from '@/components/OrganizationTree';
 import { useSize } from 'ahooks';
 import ProTablePlus from '@/components/ProTablePlus';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
+const { Paragraph } = Typography;
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
@@ -34,7 +36,12 @@ const TableList: React.FC = () => {
   const resource = getResource(location.pathname);
   const hideInTable: boolean = !hasPermission([
     permission.user.putAsync,
-    permission.user.assignResourcesAsync
+    permission.user.assignResourcesAsync,
+    permission.user.resetPasswordAsync
+  ], resource);
+  const showMoreOption: boolean = hasPermission([
+    permission.user.assignResourcesAsync,
+    permission.user.resetPasswordAsync
   ], resource);
 
   /**需要重写的Column */
@@ -90,7 +97,7 @@ const TableList: React.FC = () => {
                 title: '操作提示',
                 content: `确定${statusName}{${entity.realName}}吗？`,
                 onOk: async () => {
-                  const hide = message.loading(`正在${statusName}`);
+                  const hide = message.loading(`正在${statusName}`, 0);
                   const res = await statusChange(entity.id!);
                   hide();
                   if (res.success) {
@@ -103,7 +110,7 @@ const TableList: React.FC = () => {
             }}
           />
         }
-        return dom; // <IconStatus status={entity.status === 1} />;
+        return dom;
       },
     },
     {
@@ -129,6 +136,21 @@ const TableList: React.FC = () => {
       hideInTable: hideInTable,
       width: 130,
       render(_, entity) {
+        const moreItems: ItemType[] = [];
+        if (canAccessible(permission.user.assignResourcesAsync, resource)) {
+          moreItems.push({
+            key: 'auth',
+            icon: <SafetyOutlined />,
+            label: '资源授权',
+          });
+        }
+        if (canAccessible(permission.user.resetPasswordAsync, resource)) {
+          moreItems.push({
+            key: 'resetPassword',
+            icon: <ReloadOutlined />,
+            label: '重置密码',
+          });
+        }
         return [
           <Access key={'edit'} accessible={canAccessible(permission.user.putAsync, resource)}>
             <Button
@@ -136,7 +158,7 @@ const TableList: React.FC = () => {
               type={'link'}
               icon={<FormOutlined />}
               onClick={async () => {
-                const hide = message.loading('正在查询');
+                const hide = message.loading('正在查询', 0);
                 const res = await detail(entity.id);
                 hide();
                 if (res.success) {
@@ -149,26 +171,54 @@ const TableList: React.FC = () => {
               编辑
             </Button>
           </Access>,
-          <Access key={'auth'} accessible={canAccessible(permission.user.assignResourcesAsync, resource)}>
-            <Button
-              shape="circle"
-              type={'link'}
-              icon={<SafetyOutlined />}
-              onClick={async () => {
-                const hide = message.loading('正在查询');
-                const res = await queryResourceCodeInfo(entity.id);
-                hide();
-                if (res.success) {
-                  setCurrentResourceCodeRow(res.data!)
-                  setCurrentRow(entity as API.UserDetailInfo);
-                  handleAuthorizationModalOpen(true);
-                  return;
+          <Access key={'more'} accessible={showMoreOption}>
+            <Dropdown menu={{
+              items: moreItems,
+              onClick: async ({ key }) => {
+                if (key === 'auth') {
+                  const hide = message.loading('正在查询', 0);
+                  const res = await queryResourceCodeInfo(entity.id);
+                  hide();
+                  if (res.success) {
+                    setCurrentResourceCodeRow(res.data!)
+                    setCurrentRow(entity as API.UserDetailInfo);
+                    handleAuthorizationModalOpen(true);
+                    return;
+                  }
+                  message.error(res.message);
                 }
-                message.error(res.message);
-              }}>
-              授权
-            </Button>
-          </Access >,
+                if (key === 'resetPassword') {
+                  Modal.confirm({
+                    title: '操作提示',
+                    content: `确定重置{${entity.realName}}的密码吗？`,
+                    onOk: async () => {
+                      const hide = message.loading('正在重置', 0);
+                      const res = await resetPassword(entity.id!);
+                      hide();
+                      if (res.success) {
+                        Modal.success({
+                          title: '重置成功，请复制新密码并保存好。',
+                          content: (
+                            <div style={{ marginTop: 50, marginLeft: 55 }}>
+                              <Paragraph copyable style={{ fontSize: 28 }} type={'danger'}>{res.data!}</Paragraph>
+                            </div>
+                          ),
+                          okText: '我已复制好'
+                        });
+                        return;
+                      }
+                      message.error(res.message);
+                    }
+                  });
+                }
+              }
+            }} placement="bottom">
+              <Button
+                shape="circle"
+                type={'link'}
+                icon={<MoreOutlined />} />
+            </Dropdown>
+          </Access>,
         ];
       },
     },

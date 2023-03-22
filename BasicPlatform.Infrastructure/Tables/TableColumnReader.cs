@@ -69,7 +69,7 @@ public abstract class TableColumnReader
                 }
             }
 
-            var propertyType = "";
+            string propertyType;
             var valueType = "text";
             var enumOptions = new List<dynamic>();
             var valueEnumDict = new Dictionary<int, dynamic>();
