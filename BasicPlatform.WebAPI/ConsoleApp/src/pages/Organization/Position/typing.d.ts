@@ -30,5 +30,5 @@ declare namespace API {
    */
   type PositionPagingParams = {
     name?: string;
-  } & Partial<Record<string, any>>
+  } & Partial<Record<string, any>>;
 }

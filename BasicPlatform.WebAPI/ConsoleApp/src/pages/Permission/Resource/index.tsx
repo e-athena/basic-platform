@@ -62,7 +62,7 @@ const TableList: React.FC = () => {
       align: 'center',
       render(_, entity) {
         // @ts-ignore
-        return <FixIcon name={entity.icon} />
+        return <FixIcon name={entity.icon} />;
       },
     },
     {
@@ -70,18 +70,27 @@ const TableList: React.FC = () => {
       dataIndex: 'functions',
       hideInSearch: true,
       render(_, entity) {
-        return entity.functions?.map((item) => (<Tag style={{
-          marginTop: 5
-        }} key={item.value}>{item.label}</Tag>));
-      }
-    }
+        return entity.functions?.map((item) => (
+          <Tag
+            style={{
+              marginTop: 5,
+            }}
+            key={item.value}
+          >
+            {item.label}
+          </Tag>
+        ));
+      },
+    },
   ];
 
   return (
-    <PageContainer header={{
-      title: resource?.name,
-      children: resource?.description
-    }}>
+    <PageContainer
+      header={{
+        title: resource?.name,
+        children: resource?.description,
+      }}
+    >
       <ProTable<API.ResourceInfo, API.PageParams>
         headerTitle={'资源列表'}
         actionRef={actionRef}
@@ -107,7 +116,10 @@ const TableList: React.FC = () => {
               同步资源
             </Button>
           </Access>,
-          <Access key={'reset'} accessible={canAccessible(permission.resource.reinitializeAsync, resource)}>
+          <Access
+            key={'reset'}
+            accessible={canAccessible(permission.resource.reinitializeAsync, resource)}
+          >
             <Button
               type="primary"
               danger
@@ -131,16 +143,16 @@ const TableList: React.FC = () => {
         request={async () => {
           const res = await query();
           if (res.success) {
-            setExpandedRowKeys(res.data!.map(item => item.code));
+            setExpandedRowKeys(res.data!.map((item) => item.code));
           }
           return {
             data: res.data || [],
             success: res.success,
             total: 0,
-          }
+          };
         }}
         expandable={{
-          expandedRowKeys: expandedRowKeys
+          expandedRowKeys: expandedRowKeys,
         }}
         columns={columns}
         rowSelection={false}

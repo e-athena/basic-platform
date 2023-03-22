@@ -27,7 +27,7 @@ declare namespace API {
     status?: string;
     type?: string;
     currentAuthority?: string;
-    errorMessage?: string
+    errorMessage?: string;
   };
 
   type PageParams = {
@@ -78,13 +78,12 @@ declare namespace API {
     type?: NoticeIconItemType;
   };
 
-
   type ResourceInfo = {
     parentCode?: string;
     path: string;
     name: string;
     description?: string;
-    code?: string;
+    code: string;
     icon: string;
     isVisible: boolean;
     isAuth: boolean;
@@ -98,11 +97,11 @@ declare namespace API {
   type FunctionInfo = {
     parentCode: string;
     key: string;
-    label: string,
-    value: string,
-    values: string[],
-    description?: string
-  }
+    label: string;
+    value: string;
+    values: string[];
+    description?: string;
+  };
 
   type ExternalPage = {
     id: string;
@@ -125,7 +124,7 @@ declare namespace API {
     value: string;
     disabled: boolean;
     extend?: string;
-  }
+  };
   /**
    * 树形下拉列表
    */
@@ -139,7 +138,7 @@ declare namespace API {
     checked: boolean;
     children?: TreeSelectInfo[];
     extend?: string;
-  }
+  };
   /**
    * 树形列表
    */
@@ -148,9 +147,9 @@ declare namespace API {
     title: string;
     disabled: boolean;
     children?: TreeInfo[];
-  }
+  };
 
   type AddUserAccessRecordParams = {
     accessUrl: string;
-  }
+  };
 }

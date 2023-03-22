@@ -1,4 +1,15 @@
-import { Button, Col, Row, Select, TreeSelect, Tooltip, DatePicker, Radio, InputNumber, Input } from 'antd';
+import {
+  Button,
+  Col,
+  Row,
+  Select,
+  TreeSelect,
+  Tooltip,
+  DatePicker,
+  Radio,
+  InputNumber,
+  Input,
+} from 'antd';
 import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
@@ -6,7 +17,7 @@ const { RangePicker } = DatePicker;
 export type FilterGroupItem = {
   xor: string;
   filters: FilterItem[];
-}
+};
 export type FilterItem = {
   key?: string;
   propertyType?: string;
@@ -14,22 +25,22 @@ export type FilterItem = {
   value?: any;
   xor?: string;
   operator?: string;
-  groupIndex: number,
-  index?: number,
-}
+  groupIndex: number;
+  index?: number;
+};
 type RulerItemProps = {
   item: FilterItem;
   colSelect: ColSelectItem[];
   onChange: (value: FilterItem) => void;
   onRemoveItem?: () => void;
-}
+};
 
 export type ColSelectItem = {
   label: string;
   value: string;
   propertyType: string;
   enumOptions: any[];
-}
+};
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
   const rulerSelect = [
@@ -171,7 +182,8 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           {
             label: '等于',
             value: '==',
-          }];
+          },
+        ];
       case 'enum':
         return [
           {
@@ -181,7 +193,8 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           {
             label: '属于',
             value: 'in',
-          },];
+          },
+        ];
 
       default:
         return rulerSelect;
@@ -190,54 +203,59 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
 
   const getValueDom = () => {
     if (item.key === 'OrganizationIds') {
-      return (<Tooltip placement={'top'} title="组织架构和指定策略二选一">
-        <TreeSelect
+      return (
+        <Tooltip placement={'top'} title="组织架构和指定策略二选一">
+          <TreeSelect
+            style={{ width: '350px' }}
+            value={item.value === undefined || item.value === '' ? [] : item.value.split(',')}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={getOptions()}
+            placeholder="请选择组织架构或别名"
+            multiple
+            treeLine={{
+              showLeafIcon: true,
+            }}
+            treeDefaultExpandAll
+            treeCheckable
+            showCheckedStrategy="SHOW_ALL"
+            onChange={(value) => {
+              const newItem = { ...item };
+              if (value.length === 0) {
+                newItem.value = undefined;
+              } else {
+                if (value.includes('{OrganizationIds}')) {
+                  newItem.value = '{OrganizationIds}';
+                } else {
+                  newItem.value = value.join(','); // value[value.length - 1];
+                }
+              }
+              onChange(newItem);
+            }}
+          />
+        </Tooltip>
+      );
+    }
+    const options = getOptions();
+    if (options.length > 0) {
+      return (
+        <Select
+          autoClearSearchValue
+          options={getOptions()}
+          mode="tags"
           style={{ width: '350px' }}
-          value={item.value === undefined || item.value === '' ? [] : item.value.split(',')}
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          treeData={getOptions()}
-          placeholder="请选择组织架构或别名"
-          multiple
-          treeLine={{
-            showLeafIcon: true
-          }}
-          treeDefaultExpandAll
-          treeCheckable
-          showCheckedStrategy='SHOW_ALL'
+          placeholder="请选择"
+          value={item.value === undefined || item.value === '' ? [] : [item.value]}
           onChange={(value) => {
             const newItem = { ...item };
             if (value.length === 0) {
               newItem.value = undefined;
             } else {
-              if (value.includes('{OrganizationIds}')) {
-                newItem.value = '{OrganizationIds}';
-              } else {
-                newItem.value = value.join(','); // value[value.length - 1];
-              }
+              newItem.value = value[value.length - 1];
             }
             onChange(newItem);
           }}
-        /></Tooltip>);
-    }
-    const options = getOptions();
-    if (options.length > 0) {
-      return (<Select
-        autoClearSearchValue
-        options={getOptions()}
-        mode="tags"
-        style={{ width: '350px' }}
-        placeholder="请选择"
-        value={item.value === undefined || item.value === '' ? [] : [item.value]}
-        onChange={(value) => {
-          const newItem = { ...item };
-          if (value.length === 0) {
-            newItem.value = undefined;
-          } else {
-            newItem.value = value[value.length - 1];
-          }
-          onChange(newItem);
-        }}
-      />);
+        />
+      );
     }
     // // 如果是用户类型
     // if (item.key?.includes('UserId')) {
@@ -259,33 +277,35 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
       } else {
         if (item.operator === '==') {
           // 如果上一个值是数组，那么就取第一个
-          const arr = item.value.split(',')
+          const arr = item.value.split(',');
           value = arr.length > 0 ? arr[0] : item.value;
         } else {
           value = item.value.split(',');
         }
       }
-      return (<Select
-        autoClearSearchValue
-        options={colSelect.find(p => p.value === item.key)?.enumOptions}
-        mode={mode as 'tags' | undefined}
-        style={{ width: '350px' }}
-        placeholder="请选择"
-        value={value}
-        onChange={(value) => {
-          const newItem = { ...item };
-          if (value) {
-            if (item.operator === '==') {
-              newItem.value = value as string;
+      return (
+        <Select
+          autoClearSearchValue
+          options={colSelect.find((p) => p.value === item.key)?.enumOptions}
+          mode={mode as 'tags' | undefined}
+          style={{ width: '350px' }}
+          placeholder="请选择"
+          value={value}
+          onChange={(value) => {
+            const newItem = { ...item };
+            if (value) {
+              if (item.operator === '==') {
+                newItem.value = value as string;
+              } else {
+                newItem.value = (value as string[]).join(',');
+              }
             } else {
-              newItem.value = (value as string[]).join(',');
+              newItem.value = value;
             }
-          } else {
-            newItem.value = value;
-          }
-          onChange(newItem);
-        }}
-      />);
+            onChange(newItem);
+          }}
+        />
+      );
     }
     // 如果是时间类型
     if (item.propertyType === 'dateTime') {
@@ -294,18 +314,24 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           <RangePicker
             style={{ width: '350px' }}
             placeholder={['开始时间', '结束时间']}
-            value={item.value === '' || item.value === undefined || item.value?.split(',')?.length !== 2 ? null :
-              [dayjs(item.value.split(',')[0]), dayjs(item.value.split(',')[1])]}
+            value={
+              item.value === '' || item.value === undefined || item.value?.split(',')?.length !== 2
+                ? null
+                : [dayjs(item.value.split(',')[0]), dayjs(item.value.split(',')[1])]
+            }
             onChange={(values) => {
               const newItem = { ...item };
               if (values?.length === 2) {
-                newItem.value = `${values[0]!.format('YYYY-MM-DD')},${values[1]!.format('YYYY-MM-DD')}`;
+                newItem.value = `${values[0]!.format('YYYY-MM-DD')},${values[1]!.format(
+                  'YYYY-MM-DD',
+                )}`;
               } else {
                 newItem.value = undefined;
               }
               onChange(newItem);
             }}
-          />);
+          />
+        );
       }
       return (
         <DatePicker
@@ -322,7 +348,8 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
             }
             onChange(newItem);
           }}
-        />);
+        />
+      );
     }
     // 如果是布尔类型
     if (item.propertyType === 'boolean') {
@@ -356,18 +383,20 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         />
       );
     }
-    return (<Input
-      allowClear
-      placeholder="请输入内容"
-      style={{ width: '350px' }}
-      value={item.value}
-      onChange={(e) => {
-        const newItem = { ...item };
-        newItem.value = e.target.value;
-        onChange(newItem);
-      }}
-    />);
-  }
+    return (
+      <Input
+        allowClear
+        placeholder="请输入关键字"
+        style={{ width: '350px' }}
+        value={item.value}
+        onChange={(e) => {
+          const newItem = { ...item };
+          newItem.value = e.target.value;
+          onChange(newItem);
+        }}
+      />
+    );
+  };
   if (item.operator === '' && item.key !== '') {
     const newItem = { ...item };
     newItem.operator = getRulerSelect()[0]?.value;
@@ -377,23 +406,30 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
     <div style={{ margin: '5px 0', border: '1px solid #f2f2f2', padding: '5px 10px' }}>
       <Row gutter={[24, 24]}>
         <Col span={90}>
-          {item.index && item.index > 0 ? <Select
-            style={{ width: 90 }}
-            placeholder="与或"
-            options={[{
-              label: '与(&&)',
-              value: 'and'
-            }, {
-              label: '或(||)',
-              value: 'or'
-            }]}
-            value={item.xor}
-            onChange={(value) => {
-              const newItem = { ...item };
-              newItem.xor = value;
-              onChange(newItem);
-            }}
-          /> : <div style={{ width: 90 }}></div>}
+          {item.index && item.index > 0 ? (
+            <Select
+              style={{ width: 90 }}
+              placeholder="与或"
+              options={[
+                {
+                  label: '与(&&)',
+                  value: 'and',
+                },
+                {
+                  label: '或(||)',
+                  value: 'or',
+                },
+              ]}
+              value={item.xor}
+              onChange={(value) => {
+                const newItem = { ...item };
+                newItem.xor = value;
+                onChange(newItem);
+              }}
+            />
+          ) : (
+            <div style={{ width: 90 }}></div>
+          )}
         </Col>
         <Col span={'200px'}>
           <Select
@@ -409,7 +445,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
               newItem.value = undefined;
               // 字段变更，重置规则
               newItem.operator = undefined;
-              newItem.propertyType = colSelect.find(p => p.value === value)!.propertyType;
+              newItem.propertyType = colSelect.find((p) => p.value === value)!.propertyType;
               onChange(newItem);
             }}
           />
@@ -429,9 +465,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
             }}
           />
         </Col>
-        <Col span={'180px'}>
-          {getValueDom()}
-        </Col>
+        <Col span={'180px'}>{getValueDom()}</Col>
         <Col span={'80px'} style={{ paddingTop: 5 }}>
           <Button
             size={'small'}

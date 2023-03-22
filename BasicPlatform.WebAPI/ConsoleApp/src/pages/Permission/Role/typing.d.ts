@@ -13,5 +13,5 @@ declare namespace API {
     browserVersion: string;
     osName: string;
     osVersion: string;
-  }
+  };
 }

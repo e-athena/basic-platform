@@ -1,11 +1,12 @@
 import { query, detail, remove } from './service';
 import { PlusOutlined, FormOutlined, DeleteOutlined, ScissorOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
-  PageContainer,
-  ProDescriptions,
-  ProTable,
+  ActionType,
+  ProCard,
+  ProColumns,
+  ProDescriptionsItemProps,
 } from '@ant-design/pro-components';
+import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
 import { Button, Drawer, message, Modal, Space } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -14,7 +15,6 @@ import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ExternalPageTree, { ExternalPageTreeInstance } from './components/ExternalPageTree';
 import FixIcon from '@/components/FixIcon';
-
 
 const TableList: React.FC = () => {
   const { initialState } = useModel('@@initialState');
@@ -29,10 +29,10 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const hideInTable: boolean = !hasPermission([
-    permission.externalPage.postAsync,
-    permission.externalPage.putAsync
-  ], resource);
+  const hideInTable: boolean = !hasPermission(
+    [permission.externalPage.postAsync, permission.externalPage.putAsync],
+    resource,
+  );
 
   const columns: ProColumns<API.ExternalPageListItem>[] = [
     {
@@ -62,7 +62,7 @@ const TableList: React.FC = () => {
           text: '内部链接',
           status: 'Default',
         },
-      }
+      },
     },
     {
       title: '布局',
@@ -81,8 +81,8 @@ const TableList: React.FC = () => {
       align: 'center',
       render(_, entity) {
         // @ts-ignore
-        return <FixIcon key={'icon'} name={entity.icon} />
-      }
+        return <FixIcon key={'icon'} name={entity.icon} />;
+      },
     },
     {
       title: '排序',
@@ -97,7 +97,7 @@ const TableList: React.FC = () => {
       dataIndex: 'updatedUserName',
       width: 100,
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '更新时间',
@@ -105,7 +105,7 @@ const TableList: React.FC = () => {
       width: 170,
       hideInSearch: true,
       valueType: 'dateTime',
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '操作',
@@ -115,7 +115,10 @@ const TableList: React.FC = () => {
       hideInTable: hideInTable,
       render(_, entity) {
         return [
-          <Access key={'edit'} accessible={canAccessible(permission.externalPage.putAsync, resource)}>
+          <Access
+            key={'edit'}
+            accessible={canAccessible(permission.externalPage.putAsync, resource)}
+          >
             <Button
               shape="circle"
               type={'link'}
@@ -131,11 +134,15 @@ const TableList: React.FC = () => {
                   return;
                 }
                 message.error(res.message);
-              }}>
+              }}
+            >
               编辑
             </Button>
           </Access>,
-          <Access key={'delete'} accessible={canAccessible(permission.externalPage.deleteAsync, resource)}>
+          <Access
+            key={'delete'}
+            accessible={canAccessible(permission.externalPage.deleteAsync, resource)}
+          >
             <Button
               shape="circle"
               type={'link'}
@@ -155,9 +162,10 @@ const TableList: React.FC = () => {
                       return;
                     }
                     message.error(res.message);
-                  }
+                  },
                 });
-              }}>
+              }}
+            >
               删除
             </Button>
           </Access>,
@@ -168,10 +176,12 @@ const TableList: React.FC = () => {
   const [parentId, setParentId] = useState<string | null>(null);
 
   return (
-    <PageContainer header={{
-      title: resource?.name,
-      children: resource?.description
-    }}>
+    <PageContainer
+      header={{
+        title: resource?.name,
+        children: resource?.description,
+      }}
+    >
       <ProCard split="vertical">
         <ProCard colSpan="270px">
           <ExternalPageTree
@@ -190,10 +200,13 @@ const TableList: React.FC = () => {
             options={{
               search: {
                 placeholder: '请输入名称',
-              }
+              },
             }}
             toolBarRender={() => [
-              <Access key={'add'} accessible={canAccessible(permission.externalPage.postAsync, resource)}>
+              <Access
+                key={'add'}
+                accessible={canAccessible(permission.externalPage.postAsync, resource)}
+              >
                 <Button
                   type="primary"
                   onClick={() => {
@@ -214,26 +227,32 @@ const TableList: React.FC = () => {
                 data: res.data?.items || [],
                 // success: res.success,
                 total: res.data?.totalPages || 0,
-              }
+              };
             }}
             columns={columns}
             tableAlertRender={({ selectedRowKeys }) => {
-              return (<>
-                <Space size={24}>
-                  <span>已选择{selectedRowKeys.length}条记录</span>
-                  <Button
-                    icon={<ScissorOutlined />}
-                    type={'link'} onClick={() => {
-                      console.log(selectedRowKeys);
-                    }}>批量移动</Button>
-                </Space>
-              </>)
+              return (
+                <>
+                  <Space size={24}>
+                    <span>已选择{selectedRowKeys.length}条记录</span>
+                    <Button
+                      icon={<ScissorOutlined />}
+                      type={'link'}
+                      onClick={() => {
+                        console.log(selectedRowKeys);
+                      }}
+                    >
+                      批量移动
+                    </Button>
+                  </Space>
+                </>
+              );
             }}
             rowSelection={{
               getCheckboxProps(record) {
                 return {
                   disabled: record.parentId === null,
-                }
+                };
               },
             }}
           />

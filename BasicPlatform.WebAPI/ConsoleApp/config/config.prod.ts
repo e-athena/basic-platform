@@ -4,7 +4,7 @@ export default defineConfig({
   // 打包后输入目录
   outputPath: '../wwwroot',
   history: {
-    type: 'hash'
+    type: 'hash',
   },
 
   define: {

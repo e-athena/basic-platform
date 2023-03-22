@@ -1,11 +1,11 @@
-import { message, Modal } from "antd";
-import { SortOrder } from "antd/es/table/interface";
+import { message, Modal } from 'antd';
+import { SortOrder } from 'antd/es/table/interface';
 
 /**
  * 是否有权限
  * @param key 权限代码
  * @param resource API资源
- * @returns 
+ * @returns
  */
 export const canAccessible = (key: string, resource: API.ResourceInfo | null): boolean => {
   if (resource === null || resource?.functions === null || resource?.functions?.length === 0) {
@@ -13,13 +13,13 @@ export const canAccessible = (key: string, resource: API.ResourceInfo | null): b
   }
   const permissions = resource?.functions?.map((p) => p.key);
   return permissions?.includes(key) || false;
-}
+};
 
 /**
  * 是否有权限
  * @param keys 权限代码
  * @param resource API资源
- * @returns 
+ * @returns
  */
 export const hasPermission = (keys: string[], resource: API.ResourceInfo | null): boolean => {
   if (resource === null || resource?.functions === null || resource?.functions?.length === 0) {
@@ -27,14 +27,18 @@ export const hasPermission = (keys: string[], resource: API.ResourceInfo | null)
   }
   const permissions = resource?.functions?.map((p) => p.key);
   return keys.some((p) => permissions?.includes(p));
-}
+};
 
 /**
  * 提交处理
  * @param {*} func
  * @param {*} fields
  */
-export async function submitHandle<T>(func: (values: T) => Promise<ApiResponse<boolean | string>>, fields: T, tips?: string): Promise<boolean> {
+export async function submitHandle<T>(
+  func: (values: T) => Promise<ApiResponse<boolean | string>>,
+  fields: T,
+  tips?: string,
+): Promise<boolean> {
   const aTips = tips || '处理';
   const hide = message.loading(`${aTips}中`, 0);
   try {
@@ -57,8 +61,7 @@ export async function submitHandle<T>(func: (values: T) => Promise<ApiResponse<b
     });
     return false;
   }
-};
-
+}
 
 /**
  * 获取Sorter
@@ -116,29 +119,29 @@ export const getFilter = (filter: Record<string, (string | number)[] | null>) =>
  * @param text 文本
  * @param width 宽
  * @param height 高
- * @returns 
+ * @returns
  */
 export const generateTextImage = (text: string, width: number, height: number) => {
   let size = [width, height];
   let firstName = text.substring(1, 0);
   let colors = [
-    "rgb(239,150,26)",
-    "rgb(255,58,201)",
-    "rgb(111,75,255)",
-    "rgb(36,174,34)",
-    "rgb(80,80,80)",
+    'rgb(239,150,26)',
+    'rgb(255,58,201)',
+    'rgb(111,75,255)',
+    'rgb(36,174,34)',
+    'rgb(80,80,80)',
   ];
-  let cvs = document.createElement("canvas");
+  let cvs = document.createElement('canvas');
   cvs.setAttribute('width', `${size[0]}`);
   cvs.setAttribute('height', `${size[1]}`);
-  let ctx = cvs.getContext("2d");
+  let ctx = cvs.getContext('2d');
   if (ctx === null) return;
-  ctx.fillStyle = colors[Math.floor(Math.random() * (colors.length))];
+  ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
   ctx.fillRect(0, 0, size[0], size[1]);
   ctx.fillStyle = 'rgb(255,255,255)';
-  ctx.font = size[0] * 0.6 + "px Arial";
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "center";
+  ctx.font = size[0] * 0.6 + 'px Arial';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
   ctx.fillText(firstName, size[0] / 2, size[1] / 2);
 
   return cvs.toDataURL('image/jpeg', 1);

@@ -20,6 +20,6 @@ declare namespace API {
     userProcessorTime: string;
     environments: {
       [key: string]: string;
-    }
-  }
+    };
+  };
 }

@@ -36,33 +36,42 @@ const App: React.FC = () => {
     }
   }, [url.id, lastUrl]);
 
-  return (<>
-    <PageContainer extra={
-      <Button icon={< LinkOutlined />} onClick={() => {
-        // 新窗口打开
-        window.open(url.id!);
-      }}>新窗口打开</Button>
-    }>
-      <Spin spinning={loading}>
-        <Iframe
-          url={url.id!}
-          width="100%"
-          height={`${state.height - 90}px`}
-          // id="iframe"
-          className=""
-          sandbox={["allow-same-origin", "allow-scripts"]}
-          display="block"
-          position="relative"
-          styles={{ border: 'none' }}
-          allowFullScreen
-          onLoad={() => {
-            setLoading(false);
-            setLastUrl(url.id!);
-          }}
-        />
-      </Spin>
-    </PageContainer>
-  </>);
+  return (
+    <>
+      <PageContainer
+        extra={
+          <Button
+            icon={<LinkOutlined />}
+            onClick={() => {
+              // 新窗口打开
+              window.open(url.id!);
+            }}
+          >
+            新窗口打开
+          </Button>
+        }
+      >
+        <Spin spinning={loading}>
+          <Iframe
+            url={url.id!}
+            width="100%"
+            height={`${state.height - 90}px`}
+            // id="iframe"
+            className=""
+            sandbox={['allow-same-origin', 'allow-scripts']}
+            display="block"
+            position="relative"
+            styles={{ border: 'none' }}
+            allowFullScreen
+            onLoad={() => {
+              setLoading(false);
+              setLastUrl(url.id!);
+            }}
+          />
+        </Spin>
+      </PageContainer>
+    </>
+  );
 };
 
 export default App;

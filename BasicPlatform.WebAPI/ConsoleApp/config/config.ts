@@ -138,7 +138,7 @@ export default defineConfig({
     {
       requestLibPath: "import { request } from '@umijs/max'",
       // 或者使用在线的版本
-      schemaPath: "http://localhost:5078/swagger/v1/swagger.json",
+      schemaPath: 'http://localhost:5078/swagger/v1/swagger.json',
       // schemaPath: join(__dirname, 'oneapi.json'),
       mock: false,
     },
@@ -154,6 +154,6 @@ export default defineConfig({
   requestRecord: {},
   define: {
     API_URL: '',
-    APP_TOKEN_KEY: 'basic_platform_token'
+    APP_TOKEN_KEY: 'basic_platform_token',
   },
 });

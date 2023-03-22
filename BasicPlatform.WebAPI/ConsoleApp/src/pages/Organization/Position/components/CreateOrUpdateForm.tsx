@@ -6,7 +6,7 @@ import {
   ProForm,
   ProFormTreeSelect,
   ProFormSwitch,
-  ProFormDigit
+  ProFormDigit,
 } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
@@ -78,20 +78,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           ]}
         />
       </ProForm.Group>
-      <ProFormDigit
-        name="sort"
-        label={'排序'}
-        min={0}
-      />
-      <ProFormTextArea
-        name="remarks"
-        label={'描述'}
-        placeholder={'请输入'}
-      />
-      {props.values?.id === undefined && (
-        <ProFormSwitch name="status" label="启用" />)
-      }
-    </ModalForm >
+      <ProFormDigit name="sort" label={'排序'} min={0} />
+      <ProFormTextArea name="remarks" label={'描述'} placeholder={'请输入'} />
+      {props.values?.id === undefined && <ProFormSwitch name="status" label="启用" />}
+    </ModalForm>
   );
 };
 

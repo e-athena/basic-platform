@@ -21,7 +21,10 @@ export async function outLogin(options?: { [key: string]: any }) {
 }
 
 /** 登录接口 POST /api/login/account */
-export async function login(body: API.LoginParams, options?: { [key: string]: any }): Promise<ApiResponse<API.LoginResult>> {
+export async function login(
+  body: API.LoginParams,
+  options?: { [key: string]: any },
+): Promise<ApiResponse<API.LoginResult>> {
   return request<ApiResponse<API.LoginResult>>('/api/account/login', {
     method: 'POST',
     headers: {
@@ -111,7 +114,7 @@ export async function queryMenus(options?: { [key: string]: any }) {
 export async function addUserAccessRecord(data: API.AddUserAccessRecordParams) {
   return request<number>('/api/account/addUserAccessRecord', {
     method: 'POST',
-    data
+    data,
   });
 }
 
@@ -123,7 +126,7 @@ export function queryColumns(modelName: string) {
 }
 
 /** 更新数据列 */
-export function updateUserCustomColumns(body: any,) {
+export function updateUserCustomColumns(body: any) {
   return request<ApiResponse<number>>('/api/user/updateUserCustomColumns', {
     method: 'POST',
     data: body,

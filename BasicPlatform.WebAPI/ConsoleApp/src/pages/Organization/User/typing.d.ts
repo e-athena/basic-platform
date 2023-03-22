@@ -47,7 +47,7 @@ declare namespace API {
     id: string;
     resources: ResourceModel[];
     expireAt?: string;
-  }
+  };
   /**
    * 分页请求参数
    */
@@ -56,5 +56,5 @@ declare namespace API {
     organizationId: string | null;
     roleId?: string;
     status?: Status[];
-  } & Partial<Record<string, any>>
+  } & Partial<Record<string, any>>;
 }

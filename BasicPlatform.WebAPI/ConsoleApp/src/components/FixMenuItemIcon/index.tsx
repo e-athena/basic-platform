@@ -11,7 +11,7 @@ const fixMenuItemIcon = (menus: MenuDataItem[], iconType = 'Outlined'): MenuData
       item.icon = <FixIcon name={icon} type={iconType} />;
     }
     if (children && children.length > 0) {
-      item.children = fixMenuItemIcon(children)
+      item.children = fixMenuItemIcon(children);
     }
   });
   return menus;

@@ -1,16 +1,11 @@
 import { query } from './service';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import {
-  PageContainer,
-  ProTable,
-} from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useModel, useLocation } from '@umijs/max';
 import React, { useRef } from 'react';
 import { getSorter } from '@/utils/utils';
 
-
 const TableList: React.FC = () => {
-
   const actionRef = useRef<ActionType>();
   const { getResource } = useModel('resource');
   const location = useLocation();
@@ -77,10 +72,12 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer header={{
-      title: resource?.name,
-      children: resource?.description
-    }}>
+    <PageContainer
+      header={{
+        title: resource?.name,
+        children: resource?.description,
+      }}
+    >
       <ProTable<API.UserAccessRecordListItem>
         headerTitle={'查询表格'}
         actionRef={actionRef}
@@ -91,7 +88,7 @@ const TableList: React.FC = () => {
             placeholder: '关健字搜索',
           },
           setting: false,
-          fullScreen: true
+          fullScreen: true,
         }}
         request={async (params, sorter) => {
           const res = await query({ ...params, ...getSorter(sorter, 'a') });
@@ -99,7 +96,7 @@ const TableList: React.FC = () => {
             data: res.data?.items || [],
             success: res.success,
             total: res.data?.totalItems || 0,
-          }
+          };
         }}
         columns={columns}
       />

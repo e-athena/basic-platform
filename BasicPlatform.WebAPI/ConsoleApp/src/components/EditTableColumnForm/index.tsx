@@ -9,7 +9,7 @@ type EditTableColumnFormProps = {
   onOk: (data: API.TableColumnItem[]) => void;
   open?: boolean;
   data: API.TableColumnItem[];
-}
+};
 
 const App: React.FC<EditTableColumnFormProps> = (props) => {
   const { open, onCancel, onOk, data } = props;
@@ -33,14 +33,16 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
       width: 50,
       align: 'center',
       render(_, entity) {
-        return <Checkbox
-          checked={!entity.hideInTable}
-          disabled={entity.required}
-          onChange={(e) => {
-            entity.hideInTable = !e.target.checked;
-            setDataSource([...dataSource]);
-          }}
-        />;
+        return (
+          <Checkbox
+            checked={!entity.hideInTable}
+            disabled={entity.required}
+            onChange={(e) => {
+              entity.hideInTable = !e.target.checked;
+              setDataSource([...dataSource]);
+            }}
+          />
+        );
       },
     },
     {
@@ -53,21 +55,23 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
       tooltip: '为空时，自动适应宽度',
       width: 170,
       render(_, entity) {
-        return <Tooltip placement="top" title={'为空时，自动适应宽度'}>
-          <InputNumber
-            min={50}
-            max={400}
-            value={entity.width}
-            placeholder={'auto'}
-            addonBefore={'宽度'}
-            addonAfter={'px'}
-            onChange={(value) => {
-              entity.width = value;
-              setDataSource([...dataSource]);
-            }}
-          />
-        </Tooltip>;
-      }
+        return (
+          <Tooltip placement="top" title={'为空时，自动适应宽度'}>
+            <InputNumber
+              min={50}
+              max={400}
+              value={entity.width}
+              placeholder={'auto'}
+              addonBefore={'宽度'}
+              addonAfter={'px'}
+              onChange={(value) => {
+                entity.width = value;
+                setDataSource([...dataSource]);
+              }}
+            />
+          </Tooltip>
+        );
+      },
     },
     {
       title: '操作',
@@ -82,7 +86,7 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
         if (entity.fixed === 'left') {
           items = [
             { key: 0, label: '取消固定' },
-            { key: 2, label: '固定到右则' }
+            { key: 2, label: '固定到右则' },
           ];
         }
         if (entity.fixed === 'right') {
@@ -103,8 +107,12 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
                     // 更新为空
                     entity.fixed = '';
                     // 更新数据源
-                    setLeftDataSource(leftDataSource.filter((item) => item.dataIndex !== entity.dataIndex));
-                    setRightDataSource(rightDataSource.filter((item) => item.dataIndex !== entity.dataIndex));
+                    setLeftDataSource(
+                      leftDataSource.filter((item) => item.dataIndex !== entity.dataIndex),
+                    );
+                    setRightDataSource(
+                      rightDataSource.filter((item) => item.dataIndex !== entity.dataIndex),
+                    );
                     // 更新数据源
                     setDataSource([...dataSource, entity]);
                   }
@@ -116,7 +124,9 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
                       return;
                     }
                     if (entity.fixed === 'right') {
-                      setRightDataSource(rightDataSource.filter((item) => item.dataIndex !== entity.dataIndex));
+                      setRightDataSource(
+                        rightDataSource.filter((item) => item.dataIndex !== entity.dataIndex),
+                      );
                     }
                     // 更新为left
                     entity.fixed = 'left';
@@ -132,7 +142,9 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
                       return;
                     }
                     if (entity.fixed === 'left') {
-                      setLeftDataSource(leftDataSource.filter((item) => item.dataIndex !== entity.dataIndex));
+                      setLeftDataSource(
+                        leftDataSource.filter((item) => item.dataIndex !== entity.dataIndex),
+                      );
                     }
                     // 更新为right
                     entity.fixed = 'right';
@@ -153,8 +165,8 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
             </Dropdown>
           </>
         );
-      }
-    }
+      },
+    },
   ];
 
   const handleDragSortEndLeft = (newDataSource: any) => {
@@ -172,26 +184,29 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
 
   const dragHandleRender = (row: API.TableColumnItem) => (
     <div style={{ position: 'relative' }}>
-      <div style={{
-        cursor: 'move',
-        width: row.width ?? 200,
-        backgroundColor: '#f2f2f2'
-      }}>
-        <DragOutlined />&nbsp;{row.title}
+      <div
+        style={{
+          cursor: 'move',
+          width: row.width ?? 200,
+          backgroundColor: '#f2f2f2',
+        }}
+      >
+        <DragOutlined />
+        &nbsp;{row.title}
       </div>
     </div>
   );
 
   return (
     <>
-      {props.open === undefined &&
+      {props.open === undefined && (
         <Button
           type={'link'}
           style={{ color: '#1f1f1f' }}
           icon={<SettingOutlined />}
           onClick={() => setSelfOpen(true)}
         />
-      }
+      )}
       <Modal
         title="自定义列，勾选需要显示的列，拖动列名进行排序。"
         open={open || selfOpen}
@@ -214,22 +229,24 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
           onOk(newData);
         }}
       >
-        {leftDataSource.length > 0 && <DragSortTable<API.TableColumnItem>
-          showHeader={false}
-          bordered
-          cardProps={{ bodyStyle: { padding: 0 } }}
-          style={{ marginBottom: 16 }}
-          headerTitle={false}
-          columns={columns}
-          rowKey="dataIndex"
-          options={false}
-          search={false}
-          pagination={false}
-          dataSource={leftDataSource}
-          dragSortKey="sort"
-          dragSortHandlerRender={dragHandleRender}
-          onDragSortEnd={handleDragSortEndLeft}
-        />}
+        {leftDataSource.length > 0 && (
+          <DragSortTable<API.TableColumnItem>
+            showHeader={false}
+            bordered
+            cardProps={{ bodyStyle: { padding: 0 } }}
+            style={{ marginBottom: 16 }}
+            headerTitle={false}
+            columns={columns}
+            rowKey="dataIndex"
+            options={false}
+            search={false}
+            pagination={false}
+            dataSource={leftDataSource}
+            dragSortKey="sort"
+            dragSortHandlerRender={dragHandleRender}
+            onDragSortEnd={handleDragSortEndLeft}
+          />
+        )}
         <DragSortTable<API.TableColumnItem>
           showHeader={false}
           bordered
@@ -247,22 +264,24 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
           dragSortHandlerRender={dragHandleRender}
           onDragSortEnd={handleDragSortEndMid}
         />
-        {rightDataSource.length > 0 && <DragSortTable<API.TableColumnItem>
-          showHeader={false}
-          bordered
-          cardProps={{ bodyStyle: { padding: 0 } }}
-          style={{ marginTop: 16 }}
-          headerTitle={false}
-          columns={columns}
-          rowKey="dataIndex"
-          options={false}
-          search={false}
-          pagination={false}
-          dataSource={rightDataSource}
-          dragSortKey="sort"
-          dragSortHandlerRender={dragHandleRender}
-          onDragSortEnd={handleDragSortEndRight}
-        />}
+        {rightDataSource.length > 0 && (
+          <DragSortTable<API.TableColumnItem>
+            showHeader={false}
+            bordered
+            cardProps={{ bodyStyle: { padding: 0 } }}
+            style={{ marginTop: 16 }}
+            headerTitle={false}
+            columns={columns}
+            rowKey="dataIndex"
+            options={false}
+            search={false}
+            pagination={false}
+            dataSource={rightDataSource}
+            dragSortKey="sort"
+            dragSortHandlerRender={dragHandleRender}
+            onDragSortEnd={handleDragSortEndRight}
+          />
+        )}
       </Modal>
     </>
   );

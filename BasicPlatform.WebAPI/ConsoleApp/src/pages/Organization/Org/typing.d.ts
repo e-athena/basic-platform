@@ -29,11 +29,11 @@ declare namespace API {
     Partial<UpdatedItem>;
 
   /**
-  * 树形列表
-  */
+   * 树形列表
+   */
   type OrgTreeListItem = {
     children: OrgTreeListItem[];
-  } & Partial<OrgListItem>
+  } & Partial<OrgListItem>;
 
   /** 详情 */
   type OrgDetailItem = {
@@ -45,19 +45,19 @@ declare namespace API {
    */
   type OrgPagingParams = {
     name?: string;
-    status?: Status[]
-  } & Partial<Record<string, any>>
+    status?: Status[];
+  } & Partial<Record<string, any>>;
 
   /**
    * 分页请求参数
    */
   type OrgPagingParams = {
-    status?: Status[]
-  } & Partial<Record<string, any>>
+    status?: Status[];
+  } & Partial<Record<string, any>>;
   /**
    * 树形请求参数
    */
   type OrgTreeListParams = {
-    status?: Status[]
-  } & Partial<Record<string, any>>
+    status?: Status[];
+  } & Partial<Record<string, any>>;
 }

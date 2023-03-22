@@ -1,9 +1,7 @@
 import { query, detail, statusChange } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
-import {
-  PageContainer,
-} from '@ant-design/pro-components';
+import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
 import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -14,7 +12,6 @@ import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import OrganizationTree from '@/components/OrganizationTree';
 import { useSize } from 'ahooks';
 import ProTablePlus from '@/components/ProTablePlus';
-
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
@@ -27,9 +24,7 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const hideInTable: boolean = !hasPermission([
-    permission.position.putAsync
-  ], resource);
+  const hideInTable: boolean = !hasPermission([permission.position.putAsync], resource);
 
   const [defaultColumns] = useState<ProColumns<API.PositionListItem>[]>([
     {
@@ -41,28 +36,30 @@ const TableList: React.FC = () => {
       sorter: true,
       render(_, entity) {
         if (canAccessible(permission.position.statusChangeAsync, resource)) {
-          return <Switch
-            checkedChildren="启用"
-            unCheckedChildren="禁用"
-            checked={entity.status === 1}
-            onClick={async () => {
-              const statusName = entity.status === 1 ? '禁用' : '启用';
-              Modal.confirm({
-                title: '操作提示',
-                content: `确定${statusName}{${entity.name}}吗？`,
-                onOk: async () => {
-                  const hide = message.loading(`正在${statusName}`, 0);
-                  const res = await statusChange(entity.id!);
-                  hide();
-                  if (res.success) {
-                    actionRef.current?.reload();
-                    return;
-                  }
-                  message.error(res.message);
-                }
-              });
-            }}
-          />
+          return (
+            <Switch
+              checkedChildren="启用"
+              unCheckedChildren="禁用"
+              checked={entity.status === 1}
+              onClick={async () => {
+                const statusName = entity.status === 1 ? '禁用' : '启用';
+                Modal.confirm({
+                  title: '操作提示',
+                  content: `确定${statusName}{${entity.name}}吗？`,
+                  onOk: async () => {
+                    const hide = message.loading(`正在${statusName}`, 0);
+                    const res = await statusChange(entity.id!);
+                    hide();
+                    if (res.success) {
+                      actionRef.current?.reload();
+                      return;
+                    }
+                    message.error(res.message);
+                  },
+                });
+              }}
+            />
+          );
         }
         return <IconStatus status={entity.status === 1} />;
       },
@@ -90,10 +87,11 @@ const TableList: React.FC = () => {
                   return;
                 }
                 message.error(res.message);
-              }}>
+              }}
+            >
               编辑
             </Button>
-          </Access>
+          </Access>,
         ];
       },
     },
@@ -101,22 +99,30 @@ const TableList: React.FC = () => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
 
   return (
-    <PageContainer header={{
-      title: resource?.name,
-      children: resource?.description
-    }}>
+    <PageContainer
+      header={{
+        title: resource?.name,
+        children: resource?.description,
+      }}
+    >
       <ProCard split="vertical">
         <ProCard colSpan="270px">
-          <OrganizationTree onSelect={(key) => {
-            setOrganizationId(key);
-          }} />
+          <OrganizationTree
+            onSelect={(key) => {
+              setOrganizationId(key);
+            }}
+          />
         </ProCard>
         <ProCard>
           <ProTablePlus<API.PositionListItem, API.PositionPagingParams>
             actionRef={actionRef}
-            style={tableSize?.width ? {
-              maxWidth: tableSize?.width - 270 - 24
-            } : {}}
+            style={
+              tableSize?.width
+                ? {
+                    maxWidth: tableSize?.width - 270 - 24,
+                  }
+                : {}
+            }
             defaultColumns={defaultColumns}
             query={query}
             moduleName={'Position'}
@@ -124,7 +130,10 @@ const TableList: React.FC = () => {
               organizationId: organizationId,
             }}
             toolBarRender={() => [
-              <Access key={'add'} accessible={canAccessible(permission.position.postAsync, resource)}>
+              <Access
+                key={'add'}
+                accessible={canAccessible(permission.position.postAsync, resource)}
+              >
                 <Button
                   type="primary"
                   onClick={() => {

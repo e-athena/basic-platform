@@ -33,5 +33,5 @@ declare namespace API {
    */
   type RolePagingParams = {
     name?: string;
-  } & Partial<Record<string, any>>
+  } & Partial<Record<string, any>>;
 }

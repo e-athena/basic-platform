@@ -7,7 +7,12 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser, queryUserResources, queryExternalPages, addUserAccessRecord } from './services/ant-design-pro/api';
+import {
+  currentUser as queryCurrentUser,
+  queryUserResources,
+  queryExternalPages,
+  addUserAccessRecord,
+} from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
@@ -98,7 +103,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         // return initialState?.fetchMenuData?.() || [];
         let basicMenus: API.ResourceInfo[] = [];
         if (initialState?.apiResources === undefined) {
-          basicMenus = await initialState?.fetchApiResources?.() || [];
+          basicMenus = (await initialState?.fetchApiResources?.()) || [];
           setInitialState({
             ...initialState,
             apiResources: basicMenus,
@@ -109,12 +114,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         // 读取外部页面列表
         let externalPages: API.ExternalPage[] = [];
         if (initialState?.externalPages === undefined) {
-          externalPages = await initialState?.fetchExternalPages?.() || [];
+          externalPages = (await initialState?.fetchExternalPages?.()) || [];
         } else {
           externalPages = initialState?.externalPages;
         }
         // 排序
-        const parentExternalPages = externalPages.filter(p => p.parentId === null).sort((a, b) => a.sort - b.sort);
+        const parentExternalPages = externalPages
+          .filter((p) => p.parentId === null)
+          .sort((a, b) => a.sort - b.sort);
         const externalMenus = [];
         for (let i = 0; i < parentExternalPages.length; i += 1) {
           const page = parentExternalPages[i];
@@ -126,14 +133,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             isAuth: true,
             isVisible: true,
             sort: page.sort,
+            code: page.id,
           };
           if (page.layout !== 'default') {
             info = {
               ...info,
-              layout: page.layout
-            }
+              layout: page.layout,
+            };
           }
-          const children = externalPages.filter(p => p.parentId === page.id).sort((a, b) => a.sort - b.sort);
+          const children = externalPages
+            .filter((p) => p.parentId === page.id)
+            .sort((a, b) => a.sort - b.sort);
           if (children.length > 0) {
             info.children = [];
             for (let j = 0; j < children.length; j += 1) {
@@ -146,12 +156,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
                 isAuth: true,
                 isVisible: true,
                 sort: child.sort,
+                code: child.id,
               };
               if (child.layout !== 'default') {
                 info1 = {
                   ...info1,
-                  layout: child.layout
-                }
+                  layout: child.layout,
+                };
               }
               info.children.push(info1);
             }

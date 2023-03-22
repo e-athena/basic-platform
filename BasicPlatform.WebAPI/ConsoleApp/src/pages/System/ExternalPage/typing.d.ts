@@ -42,5 +42,5 @@ declare namespace API {
    */
   type ExternalPagePagingParams = {
     parentId?: string | null;
-  } & Partial<Record<string, any>>
+  } & Partial<Record<string, any>>;
 }

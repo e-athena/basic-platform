@@ -14,7 +14,7 @@ export async function sync(): Promise<ApiResponse<boolean>> {
 
 /**
  * 重置资源
- * @returns 
+ * @returns
  */
 export async function reinitialize(): Promise<ApiResponse<boolean>> {
   return get('/api/Resource/Reinitialize');

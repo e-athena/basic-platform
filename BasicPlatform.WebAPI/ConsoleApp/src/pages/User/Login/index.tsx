@@ -148,7 +148,7 @@ const Login: React.FC = () => {
       setUserLoginState({
         status: 'error',
         type,
-        errorMessage: res.message
+        errorMessage: res.message,
       });
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
@@ -225,10 +225,13 @@ const Login: React.FC = () => {
 
           {status === 'error' && loginType === 'account' && (
             <LoginMessage
-              content={errorMessage || intl.formatMessage({
-                id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: '账户或密码错误(admin/ant.design)',
-              })}
+              content={
+                errorMessage ||
+                intl.formatMessage({
+                  id: 'pages.login.accountLogin.errorMessage',
+                  defaultMessage: '账户或密码错误(admin/ant.design)',
+                })
+              }
             />
           )}
           {type === 'account' && (

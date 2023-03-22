@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from '@umijs/max'
+import { Navigate, Outlet } from '@umijs/max';
 
 const App: React.FC = (props) => {
   // const { isLogin } = useAuth();
@@ -8,5 +8,5 @@ const App: React.FC = (props) => {
   } else {
     return <Navigate to="/login" />;
   }
-}
+};
 export default App;

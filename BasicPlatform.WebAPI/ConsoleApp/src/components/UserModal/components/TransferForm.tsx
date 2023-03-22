@@ -79,20 +79,19 @@ const rightTableColumns: ColumnsType<Pick<TransferItem, 'title'>> = [
   },
 ];
 
-
 /** 用户信息 */
 export type TransferUserInfo = {
   id: string;
   realName: string;
   userName: string;
-}
+};
 
 export type TransferFormProps = {
   onChange?: (keys: string[], rows: TransferUserInfo[]) => void;
   organizationId?: string;
   mode?: 'multiple' | 'single';
   defaultSelectedKeys?: string[];
-}
+};
 
 const App: React.FC<TransferFormProps> = (props) => {
   const [targetKeys, setTargetKeys] = useState<string[]>(props.defaultSelectedKeys || []);
@@ -108,13 +107,17 @@ const App: React.FC<TransferFormProps> = (props) => {
   useEffect(() => {
     const fetch = async () => {
       const res = await userList(props.organizationId);
-      setDataSource(res.success ? res.data!.map((item: API.SelectInfo) => ({
-        key: item.value,
-        title: item.label,
-        description: item.extend,
-      })) : []);
+      setDataSource(
+        res.success
+          ? res.data!.map((item: API.SelectInfo) => ({
+              key: item.value,
+              title: item.label,
+              description: item.extend,
+            }))
+          : [],
+      );
       setLoading(false);
-    }
+    };
     if (loading) {
       fetch();
     }
@@ -126,13 +129,15 @@ const App: React.FC<TransferFormProps> = (props) => {
       return;
     }
     setTargetKeys(nextTargetKeys);
-    props.onChange?.(nextTargetKeys, dataSource
-      .filter((item) => nextTargetKeys.includes(item.key!))
-      .map((item) => ({
-        id: item.key!,
-        realName: item.title!,
-        userName: item.description!,
-      }))
+    props.onChange?.(
+      nextTargetKeys,
+      dataSource
+        .filter((item) => nextTargetKeys.includes(item.key!))
+        .map((item) => ({
+          id: item.key!,
+          realName: item.title!,
+          userName: item.description!,
+        })),
     );
   };
 

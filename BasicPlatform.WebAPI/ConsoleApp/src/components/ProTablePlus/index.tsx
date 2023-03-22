@@ -1,12 +1,12 @@
-import { queryColumns, updateUserCustomColumns } from "@/services/ant-design-pro/api";
-import { getFilter, getSorter } from "@/utils/utils";
-import { ParamsType, ProColumns, ProTable, ProTableProps } from "@ant-design/pro-components";
-import { Tooltip } from "antd";
-import { cloneDeep } from "lodash";
-import { useEffect, useState } from "react";
-import AdvancedSearch from "../AdvancedSearch";
-import { FilterGroupItem } from "../AdvancedSearch/components/RulerItem";
-import EditTableColumnForm from "../EditTableColumnForm";
+import { queryColumns, updateUserCustomColumns } from '@/services/ant-design-pro/api';
+import { getFilter, getSorter } from '@/utils/utils';
+import { ParamsType, ProColumns, ProTable, ProTableProps } from '@ant-design/pro-components';
+import { Tooltip } from 'antd';
+import { cloneDeep } from 'lodash';
+import { useEffect, useState } from 'react';
+import AdvancedSearch from '../AdvancedSearch';
+import { FilterGroupItem } from '../AdvancedSearch/components/RulerItem';
+import EditTableColumnForm from '../EditTableColumnForm';
 
 type ProTablePlusProps<T, U, ValueType = 'text'> = {
   /** 重写的Column */
@@ -14,10 +14,11 @@ type ProTablePlusProps<T, U, ValueType = 'text'> = {
   query: (params: U) => Promise<ApiPagingResponse<T>>;
   moduleName: string;
   // actionRef?: React.MutableRefObject<ActionType | undefined>;
-} & Partial<ProTableProps<T, U, ValueType>>
+} & Partial<ProTableProps<T, U, ValueType>>;
 
-function ProTablePlus<T extends Record<string, any>, U extends ParamsType, ValueType = 'text'>(props: ProTablePlusProps<T, U, ValueType>) {
-
+function ProTablePlus<T extends Record<string, any>, U extends ParamsType, ValueType = 'text'>(
+  props: ProTablePlusProps<T, U, ValueType>,
+) {
   const [historyColumnData, setHistoryColumnData] = useState<API.TableColumnItem[]>([]);
   const [columnData, setColumnData] = useState<API.TableColumnItem[]>([]);
   const [columnLoading, setColumnLoading] = useState<boolean>(true);
@@ -35,8 +36,8 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           list = res.data!?.columns;
           setRemoteModuleName(res.data?.moduleName);
         }
-        const option = columns.find(x => x.dataIndex === 'option');
-        if (option !== undefined && list.find(x => x.dataIndex === 'option') === undefined) {
+        const option = columns.find((x) => x.dataIndex === 'option');
+        if (option !== undefined && list.find((x) => x.dataIndex === 'option') === undefined) {
           list.push({
             title: '操作',
             dataIndex: 'option',
@@ -44,7 +45,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
             width: option.width,
             hideInTable: false,
             sort: 999,
-            required: true
+            required: true,
           } as API.TableColumnItem);
         }
         setColumnData(list);
@@ -55,11 +56,11 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
       list.sort((a, b) => a.sort - b.sort);
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        const find = columns.find(x => x.dataIndex === item.dataIndex);
+        const find = columns.find((x) => x.dataIndex === item.dataIndex);
         if (find !== undefined) {
           find.hideInTable = item.hideInTable;
           find.width = item.width || find.width;
-          find.fixed = (item.fixed !== 'left' && item.fixed !== 'right') ? undefined : item.fixed;
+          find.fixed = item.fixed !== 'left' && item.fixed !== 'right' ? undefined : item.fixed;
           find.index = item.sort || i;
           // 以下属性如果为ture时则不覆盖
           find.sorter = find.sorter ? find.sorter : item.sorter;
@@ -73,12 +74,12 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           ...item,
           hideInTable: item.hideInTable,
           ellipsis: item.ellipsis || true,
-          index: item.sort || i
+          index: item.sort || i,
         } as ProColumns<T, ValueType>;
         if (item.propertyType === 'boolean') {
           nItem.valueEnum = {
             false: { text: '否', status: 'Default' },
-            true: { text: '是', status: 'Success' }
+            true: { text: '是', status: 'Success' },
           };
         }
         result.push(nItem);
@@ -132,78 +133,78 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         // 更新列数据
         updateUserCustomColumns({
           moduleName: remoteModuleName,
-          columns: list.filter(p => p.dataIndex !== 'option').map(x => ({
-            dataIndex: x.dataIndex,
-            show: !x.hideInTable,
-            width: x.width,
-            fixed: x.fixed,
-            sort: x.sort
-          }))
+          columns: list
+            .filter((p) => p.dataIndex !== 'option')
+            .map((x) => ({
+              dataIndex: x.dataIndex,
+              show: !x.hideInTable,
+              width: x.width,
+              fixed: x.fixed,
+              sort: x.sort,
+            })),
         });
       }
-    }
+    };
     if (columnLoading && columns.length > 0) {
       fetch();
     }
   }, [columnLoading, columns]);
 
-
   const [advancedSearchFilter, setAdvancedSearchFilter] = useState<FilterGroupItem[]>([]);
   const { query } = props;
-  return <ProTable<T, U, ValueType>
-    headerTitle={'查询表格'}
-    rowKey="id"
-    search={false}
-    options={{
-      search: {
-        placeholder: '关健字搜索',
-      },
-      setting: false,
-      fullScreen: true
-    }}
-    {...props}
-    toolBarRender={(action, rows) => [
-      ...(props.toolBarRender ? props.toolBarRender(action, rows) : []),
-      ...[
-        <Tooltip
-          key={'advancedSearch'}
-          title={'自定义查询'}
-        >
-          <AdvancedSearch
-            data={columnData.filter(d => d.dataIndex !== 'option')}
-            historyFilters={advancedSearchFilter}
-            onSearch={(d) => {
-              setAdvancedSearchFilter(d);
-            }} />
-        </Tooltip>,
-        <Tooltip
-          key={'editTableColumn'}
-          title={'自定义表格'}
-        >
-          <EditTableColumnForm
-            data={columnData}
-            onOk={(list) => {
-              setColumnData(list);
-              setColumnLoading(true);
-            }} />
-        </Tooltip>,
-      ]]}
-    // @ts-ignore
-    params={{
-      filterGroups: advancedSearchFilter,
-      ...props.params
-    }}
-    request={async (params, sorter, filter) => {
-      const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
-      return {
-        data: res.data?.items || [],
-        success: res.success,
-        total: res.data?.totalItems || 0,
-      }
-    }}
-    scroll={{ x: tableWidth || 1000 }}
-    columns={columnLoading ? [] : columns}
-  />;
+  return (
+    <ProTable<T, U, ValueType>
+      headerTitle={'查询表格'}
+      rowKey="id"
+      search={false}
+      options={{
+        search: {
+          placeholder: '关健字搜索',
+        },
+        setting: false,
+        fullScreen: true,
+      }}
+      {...props}
+      toolBarRender={(action, rows) => [
+        ...(props.toolBarRender ? props.toolBarRender(action, rows) : []),
+        ...[
+          <Tooltip key={'advancedSearch'} title={'自定义查询'}>
+            <AdvancedSearch
+              data={columnData.filter((d) => d.dataIndex !== 'option')}
+              historyFilters={advancedSearchFilter}
+              onSearch={(d) => {
+                setAdvancedSearchFilter(d);
+              }}
+            />
+          </Tooltip>,
+          <Tooltip key={'editTableColumn'} title={'自定义表格'}>
+            <EditTableColumnForm
+              data={columnData}
+              onOk={(list) => {
+                setColumnData(list);
+                setColumnLoading(true);
+              }}
+            />
+          </Tooltip>,
+        ],
+      ]}
+      // @ts-ignore
+      params={{
+        filterGroups: advancedSearchFilter,
+        ...props.params,
+      }}
+      request={async (params, sorter, filter) => {
+        const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
+        return {
+          data: res.data?.items || [],
+          success: res.success,
+          total: res.data?.totalItems || 0,
+        };
+      }}
+      scroll={{ x: tableWidth || 1000 }}
+      columns={columnLoading ? [] : columns}
+    />
+  );
 }
 
 export default ProTablePlus;

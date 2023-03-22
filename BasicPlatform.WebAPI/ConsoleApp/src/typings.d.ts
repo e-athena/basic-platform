@@ -29,31 +29,31 @@ declare interface Paging<T = any> {
   /**
    * 数据集
    */
-  items?: T[],
+  items?: T[];
   /**
    * 当前页码
    */
-  currentPage: number,
+  currentPage: number;
   /**
    * 总页数
    */
-  totalPages: number,
+  totalPages: number;
   /**
    * 总记录数
    */
-  totalItems: number,
+  totalItems: number;
   /**
    * 每页的记录数
    */
-  itemsPerPage: number,
+  itemsPerPage: number;
   /**
    * 是否为第一页
    */
-  isFirstPage: boolean,
+  isFirstPage: boolean;
   /**
    * 是否为最后一页
    */
-  isLastPage: boolean,
+  isLastPage: boolean;
 }
 /**
  * 分页请求返回结构

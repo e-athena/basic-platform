@@ -70,13 +70,13 @@ export default [
         path: '/organization/user',
         name: '用户管理',
         component: './Organization/User',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
       {
         path: '/organization/user-access-record',
         name: '员工访问记录',
         component: './Organization/UserAccessRecord',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
     ],
   },
@@ -93,13 +93,13 @@ export default [
         path: '/permission/role',
         name: '角色管理',
         component: './Permission/Role',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
       {
         path: '/permission/resource',
         name: '资源管理',
         component: './Permission/Resource',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
     ],
   },
@@ -116,13 +116,13 @@ export default [
         path: '/system/server-info',
         name: '服务器信息',
         component: './System/ServerInfo',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
       {
         path: '/system/external-page',
         name: '外部页面',
         component: './System/ExternalPage',
-        access: 'routeFilter'
+        access: 'routeFilter',
       },
     ],
   },

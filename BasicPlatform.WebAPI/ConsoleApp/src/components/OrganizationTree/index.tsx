@@ -4,7 +4,7 @@ import { orgTree } from '@/services/ant-design-pro/system/org';
 
 export type OrganizationTreeInstance = {
   reload: () => void;
-}
+};
 type OrganizationTreeProps = {
   onSelect?: (key: string | null) => void;
 };
@@ -16,7 +16,7 @@ const App = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
       const res = await orgTree();
       setDataSource(res.success ? res.data! : []);
       setLoading(false);
-    }
+    };
     if (loading) {
       fetch();
     }
@@ -26,24 +26,27 @@ const App = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
     return {
       reload: () => {
         setLoading(true);
-      }
+      },
     };
   });
 
   return (
     <div style={{ margin: 10 }}>
-      {loading ? <Skeleton active /> :
+      {loading ? (
+        <Skeleton active />
+      ) : (
         <Tree
           showLine={{
-            showLeafIcon: false
+            showLeafIcon: false,
           }}
           // showIcon={true}
           defaultExpandAll={true}
           onSelect={(selectedKeys: React.Key[]) => {
-            props.onSelect?.(selectedKeys.length > 0 ? selectedKeys[0] as string : null);
+            props.onSelect?.(selectedKeys.length > 0 ? (selectedKeys[0] as string) : null);
           }}
           treeData={dataSource}
-        />}
+        />
+      )}
     </div>
   );
 });

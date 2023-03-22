@@ -1,5 +1,4 @@
 declare namespace API {
-
   type RuleListItem = {
     key?: number;
     disabled?: boolean;
@@ -15,12 +14,10 @@ declare namespace API {
     progress?: number;
   };
 
-
   type RuleList = {
     data?: RuleListItem[];
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
   };
-
 }

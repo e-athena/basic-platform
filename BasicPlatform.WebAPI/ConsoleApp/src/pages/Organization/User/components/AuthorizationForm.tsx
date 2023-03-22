@@ -1,9 +1,5 @@
 import { submitHandle } from '@/utils/utils';
-import {
-  ModalForm,
-  ProDescriptions,
-  ProFormDateTimePicker
-} from '@ant-design/pro-components';
+import { ModalForm, ProDescriptions, ProFormDateTimePicker } from '@ant-design/pro-components';
 import React from 'react';
 import { assignResources } from '../service';
 import Authorization from '@/components/Authorization';
@@ -36,7 +32,7 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
           id: props.values!.id!,
           resources: resources,
           expireAt: values.expireAt,
-        })
+        });
         if (succeed) {
           props.onSuccess();
         }
@@ -45,17 +41,24 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
         ...props.values,
       }}
     >
-      <Alert message="禁用的资源是角色自带的，用户已经拥有，其他可选的是用户可分配的额外资源权限。" type="warning" />
+      <Alert
+        message="禁用的资源是角色自带的，用户已经拥有，其他可选的是用户可分配的额外资源权限。"
+        type="warning"
+      />
       <ProDescriptions
         style={{ marginTop: 24 }}
-        columns={[{
-          title: '登录名',
-          dataIndex: 'userName'
-        }, {
-          title: '姓名',
-          dataIndex: 'realName'
-        }]
-        } column={2} dataSource={props.values}
+        columns={[
+          {
+            title: '登录名',
+            dataIndex: 'userName',
+          },
+          {
+            title: '姓名',
+            dataIndex: 'realName',
+          },
+        ]}
+        column={2}
+        dataSource={props.values}
       />
       <ProFormDateTimePicker
         name="expireAt"
@@ -64,11 +67,15 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
         placeholder={'请选择'}
       />
       <Authorization
-        resources={[...props.resourceCodeInfo.roleResources, ...props.resourceCodeInfo.userResources]}
-        disabledResourceKeys={props.resourceCodeInfo.roleResources.map(r => r.key)}
+        resources={[
+          ...props.resourceCodeInfo.roleResources,
+          ...props.resourceCodeInfo.userResources,
+        ]}
+        disabledResourceKeys={props.resourceCodeInfo.roleResources.map((r) => r.key)}
         onChange={(_, currentCodes) => {
           setResources(currentCodes || []);
-        }} />
+        }}
+      />
     </ModalForm>
   );
 };

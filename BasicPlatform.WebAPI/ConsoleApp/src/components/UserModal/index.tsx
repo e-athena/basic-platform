@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import { ProCard } from '@ant-design/pro-components';
 import OrganizationTree from '../OrganizationTree';
-import TransferForm, { TransferFormProps, TransferUserInfo } from './components/TransferForm'
+import TransferForm, { TransferFormProps, TransferUserInfo } from './components/TransferForm';
 
 type UserModalProps = {
   onCancel?: () => void;
   onOk?: (keys: string[], rows: TransferUserInfo[]) => void;
   open: boolean;
-} & Partial<TransferFormProps>
+} & Partial<TransferFormProps>;
 
 const App: React.FC<UserModalProps> = (props) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
@@ -34,7 +34,8 @@ const App: React.FC<UserModalProps> = (props) => {
             <OrganizationTree
               onSelect={(key) => {
                 setOrganizationId(key);
-              }} />
+              }}
+            />
           </ProCard>
           <ProCard>
             <TransferForm

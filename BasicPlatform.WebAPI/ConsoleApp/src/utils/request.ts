@@ -6,22 +6,28 @@ import { request } from '@umijs/max';
  * @param data 参数
  * @returns 结果集
  */
-export async function paging<T>(url: string, data: Record<string, object>): Promise<ApiPagingResponse<T>> {
+export async function paging<T>(
+  url: string,
+  data: Record<string, object>,
+): Promise<ApiPagingResponse<T>> {
   return request(url, {
     method: 'POST',
-    data
+    data,
   });
 }
 /**
  * GET请求
- * @param url 
- * @param params 
- * @returns 
+ * @param url
+ * @param params
+ * @returns
  */
-export async function get<T>(url: string, params?: { [key: string]: any }): Promise<ApiResponse<T>> {
+export async function get<T>(
+  url: string,
+  params?: { [key: string]: any },
+): Promise<ApiResponse<T>> {
   return request(url, {
     method: 'GET',
-    params: params || {}
+    params: params || {},
   });
 }
 
@@ -34,20 +40,23 @@ export async function get<T>(url: string, params?: { [key: string]: any }): Prom
 export async function post<T, TR>(url: string, data: T): Promise<ApiResponse<TR>> {
   return request(url, {
     method: 'POST',
-    data
+    data,
   });
 }
 
 /**
  * DELETE请求
- * @param url 
- * @param params 
- * @returns 
+ * @param url
+ * @param params
+ * @returns
  */
-export async function deleteObj<T>(url: string, data?: { [key: string]: any }): Promise<ApiResponse<T>> {
+export async function deleteObj<T>(
+  url: string,
+  data?: { [key: string]: any },
+): Promise<ApiResponse<T>> {
   return request(url, {
     method: 'DELETE',
-    data
+    data,
   });
 }
 
@@ -60,8 +69,6 @@ export async function deleteObj<T>(url: string, data?: { [key: string]: any }): 
 export async function put<T, TR>(url: string, data?: T): Promise<ApiResponse<TR>> {
   return request(url, {
     method: 'PUT',
-    data: data || {}
+    data: data || {},
   });
 }
-
-

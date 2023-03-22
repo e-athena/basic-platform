@@ -6,7 +6,7 @@ import {
   ProForm,
   ProFormSelect,
   ProFormTreeSelect,
-  ProFormRadio
+  ProFormRadio,
 } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
@@ -45,7 +45,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         if (isUpdate) {
           succeed = await submitHandle(update, values);
         } else {
-          succeed = await submitHandle(create, (values as API.CreateUserRequest));
+          succeed = await submitHandle(create, values as API.CreateUserRequest);
         }
         if (succeed) {
           props.onSuccess();
@@ -97,11 +97,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           />} */}
       </ProForm.Group>
       <ProForm.Group>
-        <ProFormText
-          name="NickName"
-          label={'昵称'}
-          width="sm"
-        />
+        <ProFormText name="NickName" label={'昵称'} width="sm" />
         <ProFormRadio.Group
           name="gender"
           label="性别"
@@ -122,19 +118,23 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           name="phoneNumber"
           label={'手机号'}
           width="sm"
-          rules={[{
-            message: '请输入正确的手机号!',
-            pattern: pattern.mobile
-          }]}
+          rules={[
+            {
+              message: '请输入正确的手机号!',
+              pattern: pattern.mobile,
+            },
+          ]}
         />
         <ProFormText
           name="email"
           label={'邮箱'}
           width="sm"
-          rules={[{
-            message: '请输入正确的邮箱!',
-            pattern: pattern.email
-          }]}
+          rules={[
+            {
+              message: '请输入正确的邮箱!',
+              pattern: pattern.email,
+            },
+          ]}
         />
       </ProForm.Group>
       <ProForm.Group>
@@ -145,7 +145,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             showSearch: true,
             onChange: (value: string) => {
               setOrganizationId(value);
-            }
+            },
           }}
           width="sm"
           request={async () => {
@@ -166,7 +166,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           width="sm"
           placeholder="请先选择组织/部门"
           params={{
-            organizationId: organizationId || props.values?.organizationId
+            organizationId: organizationId || props.values?.organizationId,
           }}
           request={async (params: { organizationId?: string }) => {
             const { data } = await positionList(params.organizationId);

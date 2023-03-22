@@ -1,9 +1,9 @@
-import { MenuDataItem } from "@ant-design/pro-components";
+import { MenuDataItem } from '@ant-design/pro-components';
 
 /**
  * 递归处理菜单
- * @param menu 
- * @returns 
+ * @param menu
+ * @returns
  */
 export const recursionMenu = (menu: API.ResourceInfo[]): MenuDataItem[] => {
   return menu.map((item) => {

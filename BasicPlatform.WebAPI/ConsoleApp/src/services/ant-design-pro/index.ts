@@ -10,5 +10,5 @@ export default {
   api,
   login,
   org,
-  role
+  role,
 };

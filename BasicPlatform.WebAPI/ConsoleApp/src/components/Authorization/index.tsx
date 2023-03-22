@@ -11,16 +11,20 @@ type AuthorizationProps = {
   disabledResourceKeys?: string[];
 };
 const Authorization: React.FC<AuthorizationProps> = (props) => {
-
   const actionRef = useRef<ActionType>();
   const { initialState } = useModel('@@initialState');
-  const [selectedResources, setSelectedResources] = useState<ResourceModel[]>(props.resources || []);
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+  const [selectedResources, setSelectedResources] = useState<ResourceModel[]>(
+    props.resources || [],
+  );
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>();
   useEffect(() => {
     if (props.onChange !== undefined) {
-      props.onChange(selectedResources, selectedResources.filter(p => !props.disabledResourceKeys?.includes(p.key)));
+      props.onChange(
+        selectedResources,
+        selectedResources.filter((p) => !props.disabledResourceKeys?.includes(p.key)),
+      );
     }
-  }, [selectedResources])
+  }, [selectedResources]);
 
   const columns: ProColumns<API.ResourceInfo>[] = [
     {
@@ -36,89 +40,118 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       hideInSearch: true,
       align: 'center',
       render(_, entity) {
-        return <Checkbox
-          checked={selectedResources.map(p => p.key).includes(entity.code)}
-          disabled={props.disabledResourceKeys?.includes(entity.code)}
-          onChange={(e) => {
-            let infos = [{ key: entity.code, code: entity.code }];
-            if (entity.parentCode === null) {
-              infos = [{ key: entity.code, code: entity.code }, ...(entity.children || []).map(p => ({ key: p.code, code: p.code }))];
-            }
-            const { checked } = e.target;
-            if (checked) {
-              setSelectedResources([...selectedResources, ...infos]);
-            } else {
-              setSelectedResources(selectedResources.filter(c => !infos.map(p => p.key).includes(c.key)));
-            }
-          }}
-        />;
-      }
+        return (
+          <Checkbox
+            checked={selectedResources.map((p) => p.key).includes(entity.code)}
+            disabled={props.disabledResourceKeys?.includes(entity.code)}
+            onChange={(e) => {
+              let infos = [{ key: entity.code, code: entity.code }];
+              if (entity.parentCode === null) {
+                infos = [
+                  { key: entity.code, code: entity.code },
+                  ...(entity.children || []).map((p) => ({ key: p.code, code: p.code })),
+                ];
+              }
+              const { checked } = e.target;
+              if (checked) {
+                setSelectedResources([...selectedResources, ...infos]);
+              } else {
+                setSelectedResources(
+                  selectedResources.filter((c) => !infos.map((p) => p.key).includes(c.key)),
+                );
+              }
+            }}
+          />
+        );
+      },
     },
     {
       title: '功能',
       dataIndex: 'functions',
       hideInSearch: true,
       render(_, entity) {
-        if (entity.parentCode === null && entity.children?.filter(p => p.isAuth).length > 0) {
+        if (
+          entity.parentCode === null &&
+          entity.children !== undefined &&
+          entity.children?.filter((p) => p.isAuth).length > 0
+        ) {
           return [
             { label: '只读', value: 'readonly' },
-            { label: '全部', value: 'all' }
-          ].map((item) => (<Checkbox
-            key={item.value}
-            onChange={(e) => {
-              const { checked } = e.target;
+            { label: '全部', value: 'all' },
+          ].map((item) => (
+            <Checkbox
+              key={item.value}
+              onChange={(e) => {
+                const { checked } = e.target;
 
-              let funcKeys: ResourceModel[][] = [];
-              if (item.value === 'all') {
-                funcKeys = entity.children.map((child) => {
-                  return (child.functions || [])?.map((func): ResourceModel => ({
-                    key: func.key,
-                    code: func.value
-                  }));
-                });
-              } else {
-                funcKeys = entity.children.map((child) => {
-                  // 包含"读取","查询","查看","详情"的都是读取的权限
-                  return (child.functions || []).filter(p =>
-                    p.label.includes('读取') ||
-                    p.label.includes('查询') ||
-                    p.label.includes('查看') ||
-                    p.label.includes('详情') ||
-                    p.label.includes('列表')
-                  ).map((func) => ({
-                    key: func.key,
-                    code: func.value
-                  }));
-                });
-              }
-              // 二维数组转一维数组
-              let funcKeys2: ResourceModel[] = [...new Set(funcKeys.flat())];
-              // 禁用的不处理
-              if (props.disabledResourceKeys !== undefined && props.disabledResourceKeys?.length > 0) {
-                funcKeys2 = funcKeys2.filter(p => !props.disabledResourceKeys?.includes(p.key));
-              }
-              if (checked) {
-                setSelectedResources([...selectedResources, ...(funcKeys2 || [])]);
-              } else {
-                setSelectedResources(selectedResources.filter((c => !funcKeys2.map(p => p.key).includes(c.key))));
-              }
-            }}>{item.label}</Checkbox>));
+                let funcKeys: ResourceModel[][] = [];
+                if (item.value === 'all') {
+                  funcKeys = entity.children!.map((child) => {
+                    return (child.functions || [])?.map(
+                      (func): ResourceModel => ({
+                        key: func.key,
+                        code: func.value,
+                      }),
+                    );
+                  });
+                } else {
+                  funcKeys = entity.children!.map((child) => {
+                    // 包含"读取","查询","查看","详情"的都是读取的权限
+                    return (child.functions || [])
+                      .filter(
+                        (p) =>
+                          p.label.includes('读取') ||
+                          p.label.includes('查询') ||
+                          p.label.includes('查看') ||
+                          p.label.includes('详情') ||
+                          p.label.includes('列表'),
+                      )
+                      .map((func) => ({
+                        key: func.key,
+                        code: func.value,
+                      }));
+                  });
+                }
+                // 二维数组转一维数组
+                let funcKeys2: ResourceModel[] = [...new Set(funcKeys.flat())];
+                // 禁用的不处理
+                if (
+                  props.disabledResourceKeys !== undefined &&
+                  props.disabledResourceKeys?.length > 0
+                ) {
+                  funcKeys2 = funcKeys2.filter((p) => !props.disabledResourceKeys?.includes(p.key));
+                }
+                if (checked) {
+                  setSelectedResources([...selectedResources, ...(funcKeys2 || [])]);
+                } else {
+                  setSelectedResources(
+                    selectedResources.filter((c) => !funcKeys2.map((p) => p.key).includes(c.key)),
+                  );
+                }
+              }}
+            >
+              {item.label}
+            </Checkbox>
+          ));
         }
         return entity.functions?.map((item) => (
           <Checkbox
             key={item.key}
-            checked={selectedResources.map(p => p.key).includes(item.key)}
+            checked={selectedResources.map((p) => p.key).includes(item.key)}
             disabled={props.disabledResourceKeys?.includes(item.key)}
             onChange={(e) => {
               const { checked } = e.target;
               if (checked) {
                 setSelectedResources([...selectedResources, { key: item.key, code: item.value }]);
               } else {
-                setSelectedResources(selectedResources.filter(c => c.key !== item.key));
+                setSelectedResources(selectedResources.filter((c) => c.key !== item.key));
               }
-            }}>{item.label}</Checkbox>
+            }}
+          >
+            {item.label}
+          </Checkbox>
         ));
-      }
+      },
     },
   ];
 
@@ -132,16 +165,18 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       // dataSource={initialState?.apiResources?.filter(p => p.children?.filter(c => c.isAuth).length > 0) || []}
       request={async () => {
         const data = await initialState?.fetchApiResources?.();
-        const list = (data || []).filter(p => p.children?.filter(c => c.isAuth).length > 0);
-        setExpandedRowKeys(list!.map(item => item.code));
+        const list = (data || []).filter(
+          (p) => p.children !== undefined && p.children?.filter((c) => c.isAuth).length > 0,
+        );
+        setExpandedRowKeys(list.map((item) => item.code));
         return {
           data: list,
           success: true,
           total: 0,
-        }
+        };
       }}
       expandable={{
-        expandedRowKeys: expandedRowKeys
+        expandedRowKeys: expandedRowKeys,
       }}
       columns={columns}
       scroll={{ x: 730, y: 400 }}

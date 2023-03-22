@@ -23,8 +23,7 @@ public class RoleQueryModel : QueryModelBase
     /// 自定义数据访问范围(组织Id)
     /// <remarks>多个组织使用逗号分割</remarks>
     /// </summary>
-    [MaxLength(-1)]
-    [TableColumn(Width = 150, Sort = 1, HideInTable = true)]
+    [TableColumn(Title = "自定义数据访问范围", Width = 150, Sort = 1, HideInTable = true, HideInSearch = true)]
     public string? DataScopeCustom { get; set; }
 
     /// <summary>

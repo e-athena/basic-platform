@@ -29,7 +29,7 @@ declare namespace API {
     moduleName: string;
     /** 列信息 */
     columns: TableColumnItem[];
-  }
+  };
 
   type TableColumnItem = {
     /** 列名 */
@@ -59,7 +59,7 @@ declare namespace API {
     /** 是否可筛选 */
     filters?: boolean;
     /** 数据类型 */
-    valueType?: any,
+    valueType?: any;
     /** 枚举值类型 */
     valueEnum?: any;
     /** 属性类型 */
@@ -67,6 +67,6 @@ declare namespace API {
     /** 属性名称 */
     propertyName: string;
     /** 枚举 */
-    enumOptions?: any[]
-  }
+    enumOptions?: any[];
+  };
 }

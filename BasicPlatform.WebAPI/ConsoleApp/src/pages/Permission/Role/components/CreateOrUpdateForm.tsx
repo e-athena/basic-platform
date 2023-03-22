@@ -1,10 +1,5 @@
 import { submitHandle } from '@/utils/utils';
-import {
-  ProFormText,
-  ProFormTextArea,
-  ModalForm,
-  ProForm,
-} from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea, ModalForm, ProForm } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
 import Authorization from '@/components/Authorization';
@@ -27,7 +22,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         onCancel: () => {
           props.onCancel();
         },
-        bodyStyle: { padding: '32px 40px 48px' },
+        bodyStyle: { padding: '32px 40px 8px' },
         destroyOnClose: true,
       }}
       onFinish={async (values: API.UpdateRoleItem) => {
@@ -59,21 +54,17 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             },
           ]}
         />
-        <ProFormTextArea
-          name="remarks"
-          width="md"
-          label={'描述'}
-          placeholder={'请输入'}
-        />
+        <ProFormTextArea name="remarks" width="md" label={'描述'} placeholder={'请输入'} />
       </ProForm.Group>
       <ProForm.Item label={'资源授权'}>
         <Authorization
           resources={props.values?.resources}
           onChange={(codes) => {
             setResources(codes);
-          }} />
+          }}
+        />
       </ProForm.Item>
-    </ModalForm >
+    </ModalForm>
   );
 };
 

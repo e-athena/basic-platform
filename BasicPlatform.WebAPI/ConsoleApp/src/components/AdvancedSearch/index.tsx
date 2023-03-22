@@ -10,12 +10,12 @@ type EditTableColumnFormProps = {
   open?: boolean;
   data: API.TableColumnItem[];
   historyFilters?: FilterGroupItem[];
-}
+};
 
 /**
  * 自定义查询
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
   const { open, onCancel, onSearch, data, historyFilters } = props;
@@ -26,27 +26,31 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
     if (open || selfOpen) {
       // 如果分组为空，添加一个默认分组
       if (filterGroups.length === 0) {
-        setFilterGroups([{
-          xor: 'and',
-          filters: [{
-            groupIndex: 0,
-            index: 0,
+        setFilterGroups([
+          {
             xor: 'and',
-          }]
-        }]);
+            filters: [
+              {
+                groupIndex: 0,
+                index: 0,
+                xor: 'and',
+              },
+            ],
+          },
+        ]);
       }
     }
   }, [open, selfOpen]);
   return (
     <>
-      {props.open === undefined &&
+      {props.open === undefined && (
         <Button
           type={'link'}
           style={{ color: '#1f1f1f' }}
           icon={<SearchOutlined />}
           onClick={() => setSelfOpen(true)}
         />
-      }
+      )}
       <Modal
         title="自定义查询"
         open={open || selfOpen}
@@ -55,7 +59,7 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
           maxHeight: 'calc(100vh - 400px)',
           overflow: 'auto',
           minHeight: 400,
-          paddingTop: 15
+          paddingTop: 15,
         }}
         destroyOnClose
         onCancel={() => {
@@ -67,15 +71,23 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
             key={'add'}
             type={'dashed'}
             onClick={() => {
-              setFilterGroups([...filterGroups, {
-                xor: 'and',
-                filters: [{
-                  groupIndex: filterGroups.length,
-                  index: 0,
+              setFilterGroups([
+                ...filterGroups,
+                {
                   xor: 'and',
-                }]
-              }]);
-            }}>添加分组</Button>,
+                  filters: [
+                    {
+                      groupIndex: filterGroups.length,
+                      index: 0,
+                      xor: 'and',
+                    },
+                  ],
+                },
+              ]);
+            }}
+          >
+            添加分组
+          </Button>,
           <Button
             key="link"
             danger
@@ -118,54 +130,69 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
               }
               setSelfOpen(false);
               onSearch(filterGroups);
-            }}>
+            }}
+          >
             搜索
           </Button>,
         ]}
       >
-        {filterGroups.length === 0 && <Empty
-          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-          imageStyle={{ height: 70 }}
-          style={{ marginBottom: 100, marginTop: 100 }}
-          description={
-            <span>
-              暂无查询条件
-            </span>
-          }
-        >
-          <Button type="primary" onClick={() => {
-            setFilterGroups([...filterGroups, {
-              xor: 'and',
-              filters: [{
-                groupIndex: filterGroups.length,
-                index: 0,
-                xor: 'and',
-              }]
-            }]);
-          }}>添加分组</Button>
-        </Empty>}
+        {filterGroups.length === 0 && (
+          <Empty
+            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            imageStyle={{ height: 70 }}
+            style={{ marginBottom: 100, marginTop: 100 }}
+            description={<span>暂无查询条件</span>}
+          >
+            <Button
+              type="primary"
+              onClick={() => {
+                setFilterGroups([
+                  ...filterGroups,
+                  {
+                    xor: 'and',
+                    filters: [
+                      {
+                        groupIndex: filterGroups.length,
+                        index: 0,
+                        xor: 'and',
+                      },
+                    ],
+                  },
+                ]);
+              }}
+            >
+              添加分组
+            </Button>
+          </Empty>
+        )}
         {filterGroups.map((group, groupIndex) => (
           <ProCard
-            title={<Space>
-              <span>第{groupIndex + 1}组</span>
-              {groupIndex > 0 && (<Select
-                style={{ width: '100px' }}
-                placeholder="请选择"
-                options={[{
-                  label: '与(&&)',
-                  value: 'and'
-                }, {
-                  label: '或(||)',
-                  value: 'or'
-                }]}
-                value={group.xor}
-                onChange={(value) => {
-                  // 更新
-                  group.xor = value;
-                  setFilterGroups([...filterGroups]);
-                }}
-              />)}
-            </Space>
+            title={
+              <Space>
+                <span>第{groupIndex + 1}组</span>
+                {groupIndex > 0 && (
+                  <Select
+                    style={{ width: '100px' }}
+                    placeholder="请选择"
+                    options={[
+                      {
+                        label: '与(&&)',
+                        value: 'and',
+                      },
+                      {
+                        label: '或(||)',
+                        value: 'or',
+                      },
+                    ]}
+                    value={group.xor}
+                    onChange={(value) => {
+                      // 更新
+                      group.xor = value;
+                      setFilterGroups([...filterGroups]);
+                    }}
+                  />
+                )}
+              </Space>
             }
             key={groupIndex}
             headerBordered
@@ -181,7 +208,10 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                       xor: 'and',
                     });
                     setFilterGroups([...filterGroups]);
-                  }}>添加条件</Button>
+                  }}
+                >
+                  添加条件
+                </Button>
                 {groupIndex > 0 && (
                   <Button
                     type={'link'}
@@ -190,7 +220,10 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                       // 删除分组
                       filterGroups.splice(groupIndex, 1);
                       setFilterGroups([...filterGroups]);
-                    }}>删除分组</Button>
+                    }}
+                  >
+                    删除分组
+                  </Button>
                 )}
               </Space>
             }
@@ -200,12 +233,17 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                 <RulerItem
                   key={index}
                   item={{ ...item, groupIndex, index }}
-                  colSelect={data.filter(p => !p.hideInSearch).map(p => ({
-                    label: p.title,
-                    value: p.propertyName,
-                    propertyType: p.propertyType,
-                    enumOptions: p.enumOptions
-                  } as ColSelectItem))}
+                  colSelect={data
+                    .filter((p) => !p.hideInSearch)
+                    .map(
+                      (p) =>
+                        ({
+                          label: p.title,
+                          value: p.propertyName,
+                          propertyType: p.propertyType,
+                          enumOptions: p.enumOptions,
+                        } as ColSelectItem),
+                    )}
                   onChange={(value) => {
                     // 更新
                     group.filters[index] = value;
@@ -222,10 +260,11 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                     group.filters.splice(index, 1);
                     setFilterGroups([...filterGroups]);
                   }}
-                />))}
+                />
+              ))}
             </div>
-          </ProCard>)
-        )}
+          </ProCard>
+        ))}
       </Modal>
     </>
   );
