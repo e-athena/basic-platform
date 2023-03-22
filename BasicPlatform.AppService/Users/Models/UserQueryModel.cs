@@ -38,7 +38,7 @@ public class UserQueryModel : QueryModelBase
     /// <summary>
     /// 昵称
     /// </summary>
-    [TableColumn(Show = false, Sort = 8, Width = 100, Required = false)]
+    [TableColumn(HideInTable = true, Sort = 8, Width = 100, Required = false)]
     public string? NickName { get; set; }
 
 
@@ -52,19 +52,19 @@ public class UserQueryModel : QueryModelBase
     /// 电子邮箱
     /// </summary>
     /// <value></value>
-    [TableColumn(Show = false, Sort = 10, Width = 115, Required = false)]
+    [TableColumn(HideInTable = true, Sort = 10, Width = 115, Required = false)]
     public string? Email { get; set; }
 
     /// <summary>
     /// 所属组织ID
     /// </summary>
-    [TableColumn(Show = false)]
+    [TableColumn(HideInTable = true)]
     public string OrganizationId { get; set; } = null!;
 
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    [TableColumn(Show = false)]
+    [TableColumn(HideInTable = true)]
     public string PositionId { get; set; } = null!;
 
     /// <summary>
@@ -77,13 +77,13 @@ public class UserQueryModel : QueryModelBase
     /// <summary>
     /// 是否初始密码
     /// </summary>
-    [TableColumn(Show = false)]
+    [TableColumn(HideInTable = true)]
     public bool IsInitPassword { get; set; }
 
     /// <summary>
     /// 是否启用
     /// </summary>
-    [TableColumn(Show = false, Ignore = true)]
+    [TableColumn(HideInTable = true, Ignore = true)]
     public bool IsEnabled => Status == Status.Enabled;
 
     /// <summary>

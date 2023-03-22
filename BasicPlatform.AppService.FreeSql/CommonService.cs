@@ -49,7 +49,7 @@ public class CommonService : ICommonService
 
             source.DataIndex = item.DataIndex;
             source.Width = item.Width;
-            source.Show = item.Show;
+            source.HideInTable = !item.Show;
             source.Fixed = item.Fixed;
             source.Sort = item.Sort;
         }

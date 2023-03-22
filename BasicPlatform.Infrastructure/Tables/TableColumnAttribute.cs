@@ -22,11 +22,6 @@ public class TableColumnAttribute : Attribute
     public int Width { get; set; } = -1;
 
     /// <summary>
-    /// 是否显示
-    /// </summary>
-    public bool Show { get; set; } = true;
-
-    /// <summary>
     /// 是否必须
     /// <remarks>为true时用户不能关掉</remarks>
     /// </summary>
@@ -73,4 +68,14 @@ public class TableColumnAttribute : Attribute
     /// <remarks>为true时将不会读取</remarks>
     /// </summary>
     public bool Ignore { get; set; }
+
+    /// <summary>
+    /// 是否显示
+    /// </summary>
+    public bool HideInTable { get; set; }
+
+    /// <summary>
+    /// 在搜索中隐藏
+    /// </summary>
+    public bool HideInSearch { get; set; }
 }

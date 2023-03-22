@@ -34,10 +34,10 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
       align: 'center',
       render(_, entity) {
         return <Checkbox
-          checked={entity.show}
+          checked={!entity.hideInTable}
           disabled={entity.required}
           onChange={(e) => {
-            entity.show = e.target.checked;
+            entity.hideInTable = !e.target.checked;
             setDataSource([...dataSource]);
           }}
         />;

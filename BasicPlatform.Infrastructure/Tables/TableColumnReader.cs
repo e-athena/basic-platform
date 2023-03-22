@@ -56,7 +56,8 @@ public abstract class TableColumnReader
                     }
 
                     tableColumnInfo.Width = attribute.Width == -1 ? null : attribute.Width;
-                    tableColumnInfo.Show = attribute.Show;
+                    tableColumnInfo.HideInTable = attribute.HideInTable;
+                    tableColumnInfo.HideInSearch = attribute.HideInSearch;
                     tableColumnInfo.Required = attribute.Required;
                     tableColumnInfo.Fixed = attribute.Fixed;
                     tableColumnInfo.Sort = attribute.Sort;

@@ -200,7 +200,7 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                 <RulerItem
                   key={index}
                   item={{ ...item, groupIndex, index }}
-                  colSelect={data.map(p => ({
+                  colSelect={data.filter(p => !p.hideInSearch).map(p => ({
                     label: p.title,
                     value: p.propertyName,
                     propertyType: p.propertyType,

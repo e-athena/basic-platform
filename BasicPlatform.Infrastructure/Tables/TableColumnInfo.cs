@@ -21,9 +21,14 @@ public class TableColumnInfo
     public int? Width { get; set; } = 200;
 
     /// <summary>
-    /// 是否显示
+    /// 在表格中隐藏
     /// </summary>
-    public bool Show { get; set; } = true;
+    public bool HideInTable { get; set; }
+
+    /// <summary>
+    /// 在搜索中隐藏
+    /// </summary>
+    public bool HideInSearch { get; set; }
 
     /// <summary>
     /// 是否必须

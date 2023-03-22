@@ -38,8 +38,10 @@ declare namespace API {
     title: string;
     /** 列宽度 */
     width: number | null;
-    /** 是否显示 */
-    show: boolean;
+    /** 在表格中隐藏 */
+    hideInTable: boolean;
+    /** 在搜索中隐藏 */
+    hideInSearch: boolean;
     /** 是否必须 */
     required: boolean;
     /** 固定到左侧 */

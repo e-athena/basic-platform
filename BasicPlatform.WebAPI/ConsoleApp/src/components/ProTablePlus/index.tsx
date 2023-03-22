@@ -42,7 +42,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
             dataIndex: 'option',
             fixed: 'right',
             width: option.width,
-            show: true,
+            hideInTable: false,
             sort: 999,
             required: true
           } as API.TableColumnItem);
@@ -57,7 +57,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         const item = list[i];
         const find = columns.find(x => x.dataIndex === item.dataIndex);
         if (find !== undefined) {
-          find.hideInTable = !item.show;
+          find.hideInTable = item.hideInTable;
           find.width = item.width || find.width;
           find.fixed = (item.fixed !== 'left' && item.fixed !== 'right') ? undefined : item.fixed;
           find.index = item.sort || i;
@@ -71,7 +71,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         }
         const nItem: ProColumns<T, ValueType> = {
           ...item,
-          hideInTable: !item.show,
+          hideInTable: item.hideInTable,
           ellipsis: item.ellipsis || true,
           index: item.sort || i
         } as ProColumns<T, ValueType>;
@@ -87,7 +87,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
       let width: number = 0;
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        if (!item.show) {
+        if (item.hideInTable) {
           continue;
         }
         width += item.width || 200;
@@ -109,7 +109,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
             isUpdate = true;
             break;
           }
-          if (find.show !== item.show) {
+          if (find.hideInTable !== item.hideInTable) {
             isUpdate = true;
             break;
           }
@@ -134,7 +134,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           moduleName: remoteModuleName,
           columns: list.filter(p => p.dataIndex !== 'option').map(x => ({
             dataIndex: x.dataIndex,
-            show: x.show,
+            show: !x.hideInTable,
             width: x.width,
             fixed: x.fixed,
             sort: x.sort

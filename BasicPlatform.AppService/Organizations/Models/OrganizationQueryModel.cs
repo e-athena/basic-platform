@@ -8,7 +8,7 @@ public class OrganizationQueryModel : QueryModelBase
     /// <summary>
     /// 父级Id
     /// </summary>
-    [TableColumn(Show = false)]
+    [TableColumn(HideInTable = true)]
     public string? ParentId { get; set; }
 
     /// <summary>
@@ -21,13 +21,13 @@ public class OrganizationQueryModel : QueryModelBase
     /// 部门负责人Id
     /// </summary>
     [MaxLength(36)]
-    [TableColumn(Show = false)]
+    [TableColumn(HideInTable = true)]
     public string? LeaderId { get; set; }
 
     /// <summary>
     /// 路径
     /// </summary>
-    [TableColumn(Show = false)]
+    [TableColumn(HideInTable = true)]
     public string ParentPath { get; set; } = string.Empty;
 
     /// <summary>
