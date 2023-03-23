@@ -23,3 +23,8 @@ export function update(data: API.UpdateRoleItem) {
 export function statusChange(id: string) {
   return put('/api/Role/StatusChange', { id });
 }
+
+/** 分配资源 */
+export function assignResources(data: API.AssignRoleResourcesRequest) {
+  return put<API.AssignRoleResourcesRequest, string>('/api/Role/AssignResources', data);
+}

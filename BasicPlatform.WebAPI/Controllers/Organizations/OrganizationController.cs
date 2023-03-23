@@ -186,6 +186,18 @@ public class OrganizationController : CustomControllerBase
     {
         return _queryService.GetCascaderListAsync();
     }
+    
+    /// <summary>
+    /// 下拉列表
+    /// </summary>
+    /// <param name="parentId">上级组织Id</param>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(ApiPermissionConstant.OrgSelectList, IsVisible = false)]
+    public Task<List<SelectViewModel>> GetSelectListAsync(string? parentId = null)
+    {
+        return _queryService.GetSelectListAsync(parentId);
+    }
 
     #endregion
 }

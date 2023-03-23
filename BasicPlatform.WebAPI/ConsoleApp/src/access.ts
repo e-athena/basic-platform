@@ -4,9 +4,9 @@
 export default function access(
   initialState:
     | {
-      currentUser?: API.CurrentUser;
-      apiResources?: API.ResourceInfo[];
-    }
+        currentUser?: API.CurrentUser;
+        apiResources?: API.ResourceInfo[];
+      }
     | undefined,
 ) {
   const { currentUser, apiResources } = initialState ?? {};

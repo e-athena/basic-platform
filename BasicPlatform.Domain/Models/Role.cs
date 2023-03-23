@@ -70,11 +70,16 @@ public class Role : EntityCore, ICreator, IUpdater
     /// 
     /// </summary>
     /// <param name="name"></param>
+    /// <param name="dataScope"></param>
+    /// <param name="dataScopeCustom"></param>
     /// <param name="remarks"></param>
     /// <param name="createdUserId"></param>
-    public Role(string name, string? remarks, string? createdUserId)
+    public Role(string name, RoleDataScope dataScope, string? dataScopeCustom, string? remarks,
+        string? createdUserId)
     {
         Name = name;
+        DataScope = dataScope;
+        DataScopeCustom = dataScopeCustom;
         Remarks = remarks;
         CreatedUserId = createdUserId;
     }
@@ -83,11 +88,16 @@ public class Role : EntityCore, ICreator, IUpdater
     /// 更新
     /// </summary>
     /// <param name="name"></param>
+    /// <param name="dataScope"></param>
+    /// <param name="dataScopeCustom"></param>
     /// <param name="remarks"></param>
     /// <param name="updatedUserId"></param>
-    public void Update(string name, string? remarks, string? updatedUserId)
+    public void Update(string name, RoleDataScope dataScope, string? dataScopeCustom, string? remarks,
+        string? updatedUserId)
     {
         Name = name;
+        DataScope = dataScope;
+        DataScopeCustom = dataScopeCustom;
         Remarks = remarks;
         UpdatedUserId = updatedUserId;
     }

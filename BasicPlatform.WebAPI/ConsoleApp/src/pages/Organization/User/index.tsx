@@ -63,6 +63,11 @@ const TableList: React.FC = () => {
       valueType: 'avatar',
     },
     {
+      title: '用户名',
+      dataIndex: 'userName',
+      copyable: true
+    },
+    {
       title: '性别',
       dataIndex: 'gender',
       hideInSearch: true,
@@ -143,7 +148,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: hideInTable,
-      width: 130,
+      width: 95,
       render(_, entity) {
         const moreItems: ItemType[] = [];
         if (canAccessible(permission.user.assignResourcesAsync, resource)) {
@@ -259,8 +264,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                    maxWidth: tableSize?.width - 270 - 24,
-                  }
+                  maxWidth: tableSize?.width - 270 - 24,
+                }
                 : {}
             }
             defaultColumns={defaultColumns}

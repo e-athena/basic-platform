@@ -1,26 +1,32 @@
 import { query, detail, statusChange } from './service';
-import { PlusOutlined, FormOutlined } from '@ant-design/icons';
+import { PlusOutlined, FormOutlined, SafetyOutlined, MoreOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, message, Modal, Switch } from 'antd';
+import { Button, Dropdown, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ProTablePlus from '@/components/ProTablePlus';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import AuthorizationForm from './components/AuthorizationForm';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
+  const [authorizationModalOpen, handleAuthorizationModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RoleDetailItem>();
-  // const [selectedRowsState, setSelectedRows] = useState<API.RoleListItem[]>([]);
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
   const hideInTable: boolean = !hasPermission([permission.role.putAsync], resource);
+  const showMoreOption: boolean = hasPermission(
+    [permission.role.assignResourcesAsync],
+    resource,
+  );
 
   /**需要重写的Column */
   const [defaultColumns] = useState<ProColumns<API.RoleListItem>[]>([
@@ -68,6 +74,14 @@ const TableList: React.FC = () => {
       hideInTable: hideInTable,
       width: 95,
       render(_, entity) {
+        const moreItems: ItemType[] = [];
+        if (canAccessible(permission.role.assignResourcesAsync, resource)) {
+          moreItems.push({
+            key: 'auth',
+            icon: <SafetyOutlined />,
+            label: '资源授权',
+          });
+        }
         return [
           <Access key={'edit'} accessible={canAccessible(permission.role.putAsync, resource)}>
             <Button
@@ -88,6 +102,29 @@ const TableList: React.FC = () => {
             >
               编辑
             </Button>
+          </Access>,
+          <Access key={'more'} accessible={showMoreOption}>
+            <Dropdown
+              menu={{
+                items: moreItems,
+                onClick: async ({ key }) => {
+                  if (key === 'auth') {
+                    const hide = message.loading('正在查询', 0);
+                    const res = await detail(entity.id);
+                    hide();
+                    if (res.success) {
+                      setCurrentRow(res.data);
+                      handleAuthorizationModalOpen(true);
+                      return;
+                    }
+                    message.error(res.message);
+                  }
+                },
+              }}
+              placement="bottom"
+            >
+              <Button shape="circle" type={'link'} icon={<MoreOutlined />} />
+            </Dropdown>
           </Access>,
         ];
       },
@@ -135,6 +172,17 @@ const TableList: React.FC = () => {
         open={createOrUpdateModalOpen}
         values={currentRow}
       />
+      {authorizationModalOpen && (<AuthorizationForm
+        onCancel={() => {
+          handleAuthorizationModalOpen(false);
+        }}
+        onSuccess={() => {
+          handleAuthorizationModalOpen(false);
+        }}
+        open={authorizationModalOpen}
+        roleResources={currentRow!.resources}
+        roleId={currentRow!.id!}
+      />)}
     </PageContainer>
   );
 };

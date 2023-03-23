@@ -1,6 +1,7 @@
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
+using BasicPlatform.Infrastructure.Enums;
 
 namespace BasicPlatform.AppService.FreeSql.Roles;
 
@@ -57,6 +58,19 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
                 Key = p.ResourceKey,
                 Code = p.ResourceCode
             }, cancellationToken);
+
+        if (entity is {DataScope: RoleDataScope.Custom, DataScopeCustomList.Count: > 0})
+        {
+            // 读取自定义数据访问范围
+            entity.DataScopeCustomSelectList = await QueryNoTracking<Organization>()
+                .Where(p => entity.DataScopeCustomList.Contains(p.Id))
+                .ToListAsync(p => new SelectViewModel
+                {
+                    Label = p.Name,
+                    Value = p.Id,
+                    Disabled = false
+                }, cancellationToken);
+        }
 
         return entity;
     }

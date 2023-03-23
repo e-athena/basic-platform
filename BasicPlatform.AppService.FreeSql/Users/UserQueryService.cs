@@ -258,7 +258,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
-    /// 读取树形选择框数据列表(系统用户)
+    /// 读取下拉选择框数据列表
     /// </summary>
     /// <returns></returns>
     public async Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId)

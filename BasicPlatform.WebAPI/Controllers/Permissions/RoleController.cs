@@ -110,6 +110,19 @@ public class RoleController : CustomControllerBase
     {
         return _mediator.SendAsync(request, cancellationToken);
     }
+    
+    /// <summary>
+    /// 资源授权
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    public Task<string> AssignResourcesAsync([FromBody] AssignRoleResourcesRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
 
     #endregion
 

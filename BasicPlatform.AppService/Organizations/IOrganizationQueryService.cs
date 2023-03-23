@@ -52,4 +52,10 @@ public interface IOrganizationQueryService
     /// </summary>
     /// <returns></returns>
     Task<List<CascaderViewModel>> GetCascaderListAsync();
+    
+    /// <summary>
+    /// 读取组织/部门数据
+    /// </summary>
+    /// <returns></returns>
+    Task<List<SelectViewModel>> GetSelectListAsync(string? parentId);
 }

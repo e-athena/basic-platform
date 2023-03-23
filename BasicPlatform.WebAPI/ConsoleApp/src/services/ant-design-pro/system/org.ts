@@ -14,3 +14,9 @@ export function orgTreeSelect() {
 export function orgTree() {
   return get<API.TreeInfo[]>('/api/Organization/GetTreeList');
 }
+/** 组织/部门下拉列表 */
+export function orgList(parentId?: string) {
+  return get<API.SelectInfo[]>('/api/Organization/GetSelectList', {
+    parentId: parentId || null,
+  });
+}

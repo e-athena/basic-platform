@@ -175,6 +175,34 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
         return result;
     }
 
+    /// <summary>
+    /// 读取选择框数据列表
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<SelectViewModel>> GetSelectListAsync(string? parentId)
+    {
+        ISelect<Organization>? organizationQuery = null;
+        if (parentId != null)
+        {
+            organizationQuery = QueryNoTracking<Organization>()
+                .As("o")
+                // 当前组织架构及下级组织架构
+                .Where(p => p.ParentPath.Contains(parentId) || p.Id == parentId);
+        }
+
+        var result = await Queryable
+            .Where(p => p.Status == Status.Enabled)
+            .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.ParentId))
+            .ToListAsync(t1 => new SelectViewModel
+            {
+                Label = t1.Name,
+                Value = t1.Id,
+                Disabled = t1.Status == Status.Disabled
+            });
+
+        return result;
+    }
+
     #region 私有方法
 
     /// <summary>

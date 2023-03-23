@@ -27,6 +27,12 @@ public class RoleQueryModel : QueryModelBase
     public string? DataScopeCustom { get; set; }
 
     /// <summary>
+    /// 自定义数据访问范围列表
+    /// </summary>
+    [TableColumn(Ignore = true)]
+    public IList<string> DataScopeCustomList => DataScopeCustom?.Split(',').ToList() ?? new List<string>();
+
+    /// <summary>
     /// 备注
     /// </summary>
     [MaxLength(1024)]

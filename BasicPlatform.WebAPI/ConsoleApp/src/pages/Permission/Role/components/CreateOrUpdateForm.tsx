@@ -1,8 +1,16 @@
 import { submitHandle } from '@/utils/utils';
-import { ProFormText, ProFormTextArea, ModalForm, ProForm } from '@ant-design/pro-components';
-import React from 'react';
+import {
+  ProFormText,
+  ProFormTextArea,
+  ModalForm,
+  ProFormSelect,
+  ProFormDependency
+} from '@ant-design/pro-components';
+import { Button, FormInstance } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import { update, create } from '../service';
-import Authorization from '@/components/Authorization';
+import OrgModal from '@/components/OrgModal';
+import { TransferOrgInfo } from '@/components/OrgModal/components/TransferForm';
 
 type CreateOrUpdateFormProps = {
   onCancel: () => void;
@@ -12,22 +20,29 @@ type CreateOrUpdateFormProps = {
 };
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
-  const [resources, setResources] = React.useState<ResourceModel[]>([]);
+  const [orgModalOpen, setOrgModalOpen] = useState<boolean>(false);
+  const [dataScopeCustomOptions, setDataScopeCustomOptions] = useState<API.SelectInfo[]>([]);
+  const formRef = useRef<FormInstance>();
+  useEffect(() => {
+    if (props.open && props.values !== undefined) {
+      setDataScopeCustomOptions(props.values.dataScopeCustomSelectList || []);
+    }
+  }, [props.values, props.open]);
   return (
     <ModalForm
-      width={860}
+      width={530}
+      formRef={formRef}
       title={props.values === undefined ? '创建角色' : '更新角色'}
       open={props.open}
       modalProps={{
         onCancel: () => {
           props.onCancel();
         },
-        bodyStyle: { padding: '32px 40px 8px' },
+        bodyStyle: { padding: '32px 40px 48px' },
         destroyOnClose: true,
       }}
       onFinish={async (values: API.UpdateRoleItem) => {
         const isUpdate = props.values !== undefined;
-        values.resources = resources;
         if (isUpdate) {
           values.id = props.values!.id!;
         }
@@ -38,33 +53,106 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         }
       }}
       initialValues={{
-        name: props.values?.name,
-        remarks: props.values?.remarks,
+        ...props?.values,
       }}
     >
-      <ProForm.Group>
-        <ProFormText
-          name="name"
-          label={'名称'}
-          width="md"
-          rules={[
-            {
-              required: true,
-              message: '请输入角色名称',
-            },
-          ]}
-        />
-        <ProFormTextArea name="remarks" width="md" label={'描述'} placeholder={'请输入'} />
-      </ProForm.Group>
-      <ProForm.Item label={'资源授权'}>
-        <Authorization
-          resources={props.values?.resources}
-          onChange={(codes) => {
-            setResources(codes);
-          }}
-        />
-      </ProForm.Item>
-    </ModalForm>
+      <ProFormText
+        name="name"
+        label={'名称'}
+        // width="md"
+        rules={[
+          {
+            required: true,
+            message: '请输入角色名称',
+          },
+        ]}
+      />
+      <ProFormSelect
+        label={'数据访问范围'}
+        name="dataScope"
+        showSearch
+        allowClear
+        options={[{
+          value: 0,
+          label: '全部'
+        }, {
+          value: 1,
+          label: '本人'
+        }, {
+          value: 2,
+          label: '本部门'
+        }, {
+          value: 3,
+          label: '本部门及下属部门'
+        }, {
+          value: 4,
+          label: '自定义'
+        }]}
+      />
+      <ProFormDependency name={['dataScope']}>
+        {({ dataScope }) => {
+          return (
+            <>
+              {dataScope === 4 && (
+                <ProFormSelect
+                  name="dataScopeCustomList"
+                  disabled
+                  label={'自定义数据访问范围'}
+                  placeholder={'请选择'}
+                  mode={'tags'}
+                  width="md"
+                  allowClear
+                  options={dataScopeCustomOptions || props.values?.dataScopeCustomSelectList || []}
+                  fieldProps={{
+                    style: {
+                      backgroundColor: '#ffffff',
+                    },
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: '请选择自定义数据访问范围',
+                    },
+                  ]}
+                  addonAfter={<Button onClick={() => {
+                    setOrgModalOpen(true);
+                  }}>选择</Button>}
+                />
+              )}
+            </>
+          );
+        }}
+      </ProFormDependency>
+      <ProFormTextArea
+        name="remarks"
+        // width="md"
+        label={'描述'}
+        placeholder={'请输入'}
+      />
+      <OrgModal
+        mode={'multiple'}
+        open={orgModalOpen}
+        onCancel={() => {
+          setOrgModalOpen(false);
+        }}
+        onOk={(keys: string[], rows: TransferOrgInfo[]) => {
+          setDataScopeCustomOptions(rows.map((item) => {
+            return {
+              label: item.name,
+              value: item.id,
+              disabled: false
+            }
+          }));
+          formRef.current?.setFieldsValue({
+            dataScopeCustomList: keys,
+          });
+          setOrgModalOpen(false);
+        }}
+        defaultSelectedKeys={
+          dataScopeCustomOptions.length > 0 ? dataScopeCustomOptions.map(p => p.value) : []
+        }
+      />
+    </ModalForm >
   );
 };
 

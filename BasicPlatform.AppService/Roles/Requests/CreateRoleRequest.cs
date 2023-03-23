@@ -7,8 +7,4 @@ namespace BasicPlatform.AppService.Roles.Requests;
 /// </summary>
 public class CreateRoleRequest : RoleModel, ITxRequest<string>
 {
-    /// <summary>
-    /// 资源列表
-    /// </summary>
-    public IList<ResourceModel>? Resources { get; set; }
 }

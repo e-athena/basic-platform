@@ -54,13 +54,14 @@ public static class ApiPermissionConstant
     /// 外部页面下拉列表
     /// </summary>
     public const string ExternalPageSelectList = "externalPage:select";
-    
+
     /// <summary>
     /// 外部页面树形列表
     /// </summary>
     public const string ExternalPageTreeList = "externalPage:tree";
 
     #endregion
+
     #region 组织架构
 
     /// <summary>
@@ -82,6 +83,11 @@ public static class ApiPermissionConstant
     /// 组织架构树形下拉列表(包含自己及下级)
     /// </summary>
     public const string OrgTreeSelectListForSelf = "org:treeSelectForSelf";
+
+    /// <summary>
+    /// 组织/部门下拉列表
+    /// </summary>
+    public const string OrgSelectList = "org:select";
 
     #endregion
 

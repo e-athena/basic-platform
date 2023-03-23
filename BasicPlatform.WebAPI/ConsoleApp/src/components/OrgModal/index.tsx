@@ -2,29 +2,30 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import { ProCard } from '@ant-design/pro-components';
 import OrganizationTree from '../OrganizationTree';
-import TransferForm, { TransferFormProps, TransferUserInfo } from './components/TransferForm';
+import TransferForm, { TransferFormProps, TransferOrgInfo } from './components/TransferForm';
 
-type UserModalProps = {
+type OrgModalProps = {
   onCancel?: () => void;
-  onOk?: (keys: string[], rows: TransferUserInfo[]) => void;
+  onOk?: (keys: string[], rows: TransferOrgInfo[]) => void;
   open: boolean;
 } & Partial<TransferFormProps>;
 
-const App: React.FC<UserModalProps> = (props) => {
+const App: React.FC<OrgModalProps> = (props) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [selectedRows, setSelectedRows] = useState<TransferUserInfo[]>([]);
+  const [selectedRows, setSelectedRows] = useState<TransferOrgInfo[]>([]);
 
   return (
     <>
       <Modal
         open={props.open}
-        title={'选择用户'}
+        title={'选择组织/机构'}
         onOk={() => {
           if (props.onOk) {
             props.onOk(selectedKeys, selectedRows);
           }
         }}
+        destroyOnClose
         width={1000}
         bodyStyle={{ paddingTop: 20, paddingBottom: 10, minHeight: 500 }}
         onCancel={props.onCancel}
@@ -40,7 +41,7 @@ const App: React.FC<UserModalProps> = (props) => {
           <ProCard>
             <TransferForm
               mode={props.mode}
-              onChange={(keys: string[], rows: TransferUserInfo[]) => {
+              onChange={(keys: string[], rows: TransferOrgInfo[]) => {
                 setSelectedKeys(keys);
                 setSelectedRows(rows);
               }}

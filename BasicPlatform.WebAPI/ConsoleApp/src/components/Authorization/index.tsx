@@ -9,6 +9,7 @@ type AuthorizationProps = {
   resources?: ResourceModel[];
   // 禁用的资源代码
   disabledResourceKeys?: string[];
+  height?: number;
 };
 const Authorization: React.FC<AuthorizationProps> = (props) => {
   const actionRef = useRef<ActionType>();
@@ -39,6 +40,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       width: 70,
       hideInSearch: true,
       align: 'center',
+      tooltip: '左侧菜单，需要授权显示就勾选',
       render(_, entity) {
         return (
           <Checkbox
@@ -69,6 +71,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       title: '功能',
       dataIndex: 'functions',
       hideInSearch: true,
+      tooltip: '功能权限，需要授权操作就勾选',
       render(_, entity) {
         if (
           entity.parentCode === null &&
@@ -136,6 +139,11 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
         }
         return entity.functions?.map((item) => (
           <Checkbox
+            style={{
+              marginTop: 5,
+              marginInlineStart: 0,
+              marginRight: 8
+            }}
             key={item.key}
             checked={selectedResources.map((p) => p.key).includes(item.key)}
             disabled={props.disabledResourceKeys?.includes(item.key)}
@@ -179,7 +187,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
         expandedRowKeys: expandedRowKeys,
       }}
       columns={columns}
-      scroll={{ x: 730, y: 400 }}
+      scroll={{ x: 730, y: props.height || 400 }}
       rowSelection={false}
       pagination={false}
     />
