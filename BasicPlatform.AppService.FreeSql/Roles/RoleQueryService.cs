@@ -26,6 +26,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     {
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
+            .HasWhere(request.DataScope, p => request.DataScope!.Contains(p.DataScope))
             .ToPagingAsync(request, p => new GetRolePagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,

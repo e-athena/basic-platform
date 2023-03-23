@@ -31,6 +31,36 @@ const TableList: React.FC = () => {
   /**需要重写的Column */
   const [defaultColumns] = useState<ProColumns<API.RoleListItem>[]>([
     {
+      // 数据访问范围
+      title: '数据访问范围',
+      dataIndex: 'dataScope',
+      width: 120,
+      hideInSearch: true,
+      sorter: true,
+      valueEnum: {
+        0: {
+          text: '全部',
+          status: 'Default',
+        },
+        1: {
+          text: '本人',
+          status: 'Success',
+        },
+        2: {
+          text: '本部门',
+          status: 'Warning',
+        },
+        3: {
+          text: '本部门及下属',
+          status: 'Error',
+        },
+        4: {
+          text: '自定义',
+          status: 'Processing',
+        },
+      }
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       width: 90,

@@ -59,7 +59,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             showSearch: true,
           }}
           width="sm"
-          tooltip={'为空时全部可用'}
+          tooltip={'为空时为通用职位'}
           request={async () => {
             const { data } = await orgTreeSelect();
             return data || [];

@@ -2,7 +2,7 @@ import { query, sync, reinitialize } from './service';
 import { SyncOutlined, RedoOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message, Tag } from 'antd';
+import { Button, message, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import FixIcon from '@/components/FixIcon';
@@ -70,16 +70,22 @@ const TableList: React.FC = () => {
       dataIndex: 'functions',
       hideInSearch: true,
       render(_, entity) {
-        return entity.functions?.map((item) => (
-          <Tag
+        return entity.functions?.map((item) => {
+          const tagDom = <Tag
             style={{
               marginTop: 5,
             }}
             key={item.value}
           >
             {item.label}
-          </Tag>
-        ));
+          </Tag>;
+          if (item.description) {
+            return <Tooltip key={item.value} placement={'top'} title={item.description}>
+              {tagDom}
+            </Tooltip>
+          }
+          return tagDom;
+        });
       },
     },
   ];

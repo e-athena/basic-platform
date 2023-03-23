@@ -16,7 +16,7 @@ public class RoleQueryModel : QueryModelBase
     /// <summary>
     /// 数据访问范围
     /// </summary>
-    [TableColumn(Width = 150, Sort = 2)]
+    [TableColumn(Width = 145, Sort = 2, Filters = true, Sorter = true)]
     public RoleDataScope DataScope { get; set; }
 
     /// <summary>
