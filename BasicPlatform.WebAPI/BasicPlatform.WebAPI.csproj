@@ -22,7 +22,7 @@
         <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.2.2" />
         <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="6.2.0-pre1.0" />
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.9" />
-        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.10" />
+        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.11" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
         <PackageReference Include="Athena.Serilog.Enrichers.ClientInfo" Version="1.0.0" />
         

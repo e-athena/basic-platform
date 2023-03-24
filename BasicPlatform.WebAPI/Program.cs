@@ -31,7 +31,10 @@ services.AddOpenTelemetry()
         .AddFreeSqlInstrumentation()
         .AddHttpClientInstrumentation()
         .AddAspNetCoreInstrumentation()
-        .AddZipkinExporter()
+        .AddZipkinExporter(o =>
+        {
+            o.Endpoint = new Uri(configuration.GetValue<string>("Zipkin:Endpoint"));
+        })
     );
 // .WithMetrics(providerBuilder => providerBuilder
 //     .AddRuntimeInstrumentation()

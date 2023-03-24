@@ -186,7 +186,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
               }}
             />
           </Tooltip>,
-        ], https://opentelemetry.io/docs/instrumentation/net/getting-started/
+        ],
       ]}
       // @ts-ignore
       params={{

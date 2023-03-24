@@ -1,15 +1,12 @@
 {
   "ReverseProxy": {
     "Routes": {
-      "Identity Service": {
-        "ClusterId": "identityCluster",
+      "Zipkin": {
+        "ClusterId": "zipkin",
         "Match": {
-          "Path": "/api/identity/{**everything}"
+          "Path": "/zipkin/{**everything}"
         },
         "Transforms": [
-          {
-            "PathRemovePrefix": "/api/identity"
-          },
           {
             "RequestHeadersCopy": "true"
           },
@@ -18,23 +15,33 @@
           }
         ]
       },
-      "Ordering Service": {
-        "ClusterId": "orderingCluster",
+      "WebAPI": {
+        "ClusterId": "webApiCluster",
         "Match": {
-          "Path": "/api/ordering/{**everything}"
-        }
+          "Path": "/basic_api/{**everything}"
+        },
+        "Transforms": [
+          {
+            "PathRemovePrefix": "/basic_api"
+          },
+          {
+            "RequestHeadersCopy": "true"
+          },
+          {
+            "RequestHeaderOriginalHost": "true"
+          }
+        ]
       }
     },
     "Clusters": {
-      "identityCluster": {
+      "zipkin": {
         "Destinations": {
           "destination1": {
-            "Address": "http://localhost:5078",
-            "Health": "http://localhost:5078/health"
+            "Address": "http://localhost:9411"
           }
         }
       },
-      "orderingCluster": {
+      "webApiCluster": {
         "Destinations": {
           "destination1": {
             "Address": "http://localhost:5078"
