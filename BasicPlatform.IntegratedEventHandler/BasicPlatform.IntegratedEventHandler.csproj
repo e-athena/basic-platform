@@ -11,6 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.2.4" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.2.5" />
     </ItemGroup>
 </Project>

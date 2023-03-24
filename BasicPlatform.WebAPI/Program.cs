@@ -15,10 +15,10 @@ builder.Host
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+// Add services to the container.
 #region OpenTelemetry
 
 // services.AddSingleton<Instrumentation>();
-// Add services to the container.
 services.AddOpenTelemetry()
     // Build a resource configuration action to set service information.
     .ConfigureResource(r => r.AddService(
