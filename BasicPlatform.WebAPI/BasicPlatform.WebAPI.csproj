@@ -25,6 +25,7 @@
         <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.11" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
         <PackageReference Include="Athena.Serilog.Enrichers.ClientInfo" Version="1.0.0" />
+        <PackageReference Include="Athena.Serilog.Enrichers.OpenTracing" Version="1.0.0" />
         
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />

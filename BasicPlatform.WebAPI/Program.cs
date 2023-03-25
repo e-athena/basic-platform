@@ -16,6 +16,7 @@ builder.Host
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 // Add services to the container.
+
 #region OpenTelemetry
 
 // services.AddSingleton<Instrumentation>();
@@ -33,13 +34,15 @@ services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddZipkinExporter(o =>
         {
+            // Endpoint to send Zipkin traces to.
             o.Endpoint = new Uri(configuration.GetValue<string>("Zipkin:Endpoint"));
         })
     );
 // .WithMetrics(providerBuilder => providerBuilder
-//     .AddRuntimeInstrumentation()
-//     .AddAspNetCoreInstrumentation()
-//     .AddConsoleExporter()
+//         .AddHttpClientInstrumentation()
+//         .AddAspNetCoreInstrumentation()
+//         .AddOtlpExporter()
+//     // .AddConsoleExporter()
 // );
 
 #endregion
