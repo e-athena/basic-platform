@@ -24,8 +24,11 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const hideInTable: boolean = !hasPermission(
-    [permission.organization.postAsync, permission.organization.putAsync],
+  const showOption: boolean = hasPermission(
+    [
+      permission.organization.postAsync,
+      permission.organization.putAsync
+    ],
     resource,
   );
 
@@ -71,7 +74,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 160,
-      hideInTable: hideInTable,
+      hideInTable: !showOption,
       render(_, entity) {
         return [
           <Access
@@ -141,8 +144,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                    maxWidth: tableSize?.width - 270 - 24,
-                  }
+                  maxWidth: tableSize?.width - 270 - 24,
+                }
                 : {}
             }
             defaultColumns={defaultColumns}

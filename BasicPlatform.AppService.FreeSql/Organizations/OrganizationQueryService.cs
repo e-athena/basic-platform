@@ -116,35 +116,8 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     {
         var list = await QueryableNoTracking.ToListAsync();
         var result = new List<TreeSelectViewModel>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
         // 递归读取
-        GetTreeChildrenBySelect(list, result, parentId);
-        return result;
-    }
-
-    /// <summary>
-    /// 读取树形选择框数据列表
-    /// </summary>
-    /// <returns></returns>
-    public async Task<List<TreeSelectViewModel>> GetTreeSelectListForSelfAsync()
-    {
-        var list = await QueryableNoTracking.ToListAsync();
-        if (!IsRoot)
-        {
-            var peerOrganization = await QueryNoTracking<OrganizationUser>()
-                .Where(p => p.UserId == UserId)
-                .OrderBy(p => p.Organization.ParentPath.Length)
-                .ToOneAsync(p => p.Organization);
-            if (peerOrganization != null)
-            {
-                list.Add(peerOrganization);
-            }
-        }
-
-        var result = new List<TreeSelectViewModel>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
-        // 递归读取
-        GetTreeChildrenBySelect(list, result, parentId);
+        GetTreeChildrenBySelect(list, result);
         return result;
     }
 
@@ -260,11 +233,11 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
                 Title = t1.Name,
                 Value = t1.Id,
                 Disabled = t1.Status == Status.Disabled,
-                IsLeaf = !string.IsNullOrEmpty(t1.ParentId)
+                IsLeaf = !string.IsNullOrEmpty(t1.ParentId),
+                Children = new List<TreeSelectViewModel>()
             };
             if (entities.Any(p => p.ParentId == t1.Id))
             {
-                res.Children = new List<TreeSelectViewModel>();
                 GetTreeChildrenBySelect(entities, res.Children, t1.Id);
             }
 

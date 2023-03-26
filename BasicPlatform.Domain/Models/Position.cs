@@ -4,7 +4,7 @@ namespace BasicPlatform.Domain.Models;
 /// 职位
 /// </summary>
 [Table("authority_positions")]
-public class Position : EntityCore, ICreator, IUpdater
+public class Position : FullEntityCore
 {
     /// <summary>
     /// 组织架构ID
@@ -41,22 +41,22 @@ public class Position : EntityCore, ICreator, IUpdater
     /// </summary>
     public int Sort { get; set; }
 
-    /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
+    // /// <summary>
+    // /// 创建人Id
+    // /// </summary>
+    // [MaxLength(36)]
+    // public string? CreatedUserId { get; set; }
 
     /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
 
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    // /// <summary>
+    // /// 最后更新人Id
+    // /// </summary>
+    // [MaxLength(36)]
+    // public string? UpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
@@ -80,7 +80,8 @@ public class Position : EntityCore, ICreator, IUpdater
     /// <param name="status"></param>
     /// <param name="sort"></param>
     /// <param name="createdUserId"></param>
-    public Position(string? organizationId, string name, string? remarks, Status status, int sort, string? createdUserId)
+    public Position(string? organizationId, string name, string? remarks, Status status, int sort,
+        string? createdUserId)
     {
         OrganizationId = organizationId;
         Name = name;
@@ -98,7 +99,7 @@ public class Position : EntityCore, ICreator, IUpdater
     /// <param name="remarks"></param>
     /// <param name="sort"></param>
     /// <param name="updatedUserId"></param>
-    public void Update(string? organizationId, string name, string? remarks,int sort, string? updatedUserId)
+    public void Update(string? organizationId, string name, string? remarks, int sort, string? updatedUserId)
     {
         OrganizationId = organizationId;
         Name = name;

@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.FreeSql.Positions;
 /// <summary>
 /// 职位请求处理程序
 /// </summary>
-public class PositionRequestHandler : AppServiceBase<Position>,
+public class PositionRequestHandler : DataPermissionServiceBase<Position>,
     IRequestHandler<CreatePositionRequest, string>,
     IRequestHandler<UpdatePositionRequest, string>,
     IRequestHandler<PositionStatusChangeRequest, string>

@@ -67,7 +67,7 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
         }
 
         // 封装实体对象
-        var entity = await GetForEditAsync(request.Id);
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(request.ParentId))
         {
@@ -104,7 +104,7 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
     /// <returns></returns>
     public async Task<string> Handle(OrganizationStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForEditAsync(request.Id);
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         // 变更状态
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);

@@ -18,7 +18,7 @@ declare namespace API {
    */
   type OrgListItem = {
     id?: string;
-    parentId?: string;
+    parentId?: string | string[];
     name?: string;
     parentPath?: string;
     leaderId?: string;

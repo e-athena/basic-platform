@@ -1,9 +1,9 @@
 namespace BasicPlatform.AppService.Roles.Requests;
 
 /// <summary>
-/// 分配角色资源请求类
+/// 分配角色用户请求类
 /// </summary>
-public class AssignRoleResourcesRequest : ITxRequest<string>
+public class AssignRoleUsersRequest : ITxRequest<string>
 {
     /// <summary>
     /// 角色ID
@@ -11,7 +11,7 @@ public class AssignRoleResourcesRequest : ITxRequest<string>
     public string Id { get; set; } = null!;
 
     /// <summary>
-    /// 资源列表
+    /// 用户列表
     /// </summary>
-    public IList<ResourceModel> Resources { get; set; } = new List<ResourceModel>();
+    public IList<string> UserIds { get; set; } = new List<string>();
 }

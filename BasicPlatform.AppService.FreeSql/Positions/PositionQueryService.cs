@@ -8,9 +8,9 @@ namespace BasicPlatform.AppService.FreeSql.Positions;
 /// 职位查询服务接口实现类
 /// </summary>
 [Component]
-public class PositionQueryService : QueryServiceBase<Position>, IPositionQueryService
+public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IPositionQueryService
 {
-    public PositionQueryService(IFreeSql freeSql) : base(freeSql)
+    public PositionQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor) : base(freeSql, accessor)
     {
     }
 
@@ -54,11 +54,16 @@ public class PositionQueryService : QueryServiceBase<Position>, IPositionQuerySe
     {
         var entity = await QueryableNoTracking
             .Where(p => p.Id == id)
-            .FirstAsync<GetPositionByIdResponse>(cancellationToken);
+            .FirstAsync(p => new GetPositionByIdResponse
+            {
+                OrganizationPath = p.Organization!.ParentPath
+            }, cancellationToken);
         if (entity is null)
         {
-            throw FriendlyException.Of("角色不存在");
+            throw FriendlyException.Of("职位不存在");
         }
+
+        entity.OrganizationPath = $"{entity.OrganizationPath},{entity.OrganizationId}";
 
         return entity;
     }

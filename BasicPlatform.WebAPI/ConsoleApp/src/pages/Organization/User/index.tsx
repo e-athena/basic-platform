@@ -38,7 +38,7 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const hideInTable: boolean = !hasPermission(
+  const showOption: boolean = hasPermission(
     [
       permission.user.putAsync,
       permission.user.assignResourcesAsync,
@@ -47,7 +47,10 @@ const TableList: React.FC = () => {
     resource,
   );
   const showMoreOption: boolean = hasPermission(
-    [permission.user.assignResourcesAsync, permission.user.resetPasswordAsync],
+    [
+      permission.user.assignResourcesAsync,
+      permission.user.resetPasswordAsync
+    ],
     resource,
   );
 
@@ -147,7 +150,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      hideInTable: hideInTable,
+      hideInTable: !showOption,
       width: 95,
       render(_, entity) {
         const moreItems: ItemType[] = [];

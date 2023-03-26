@@ -148,6 +148,16 @@ declare namespace API {
     disabled: boolean;
     children?: TreeInfo[];
   };
+  /**
+   * 
+   */
+  type CascaderInfo = {
+    value: string | null;
+    label: string;
+    disabled: boolean;
+    children?: TreeInfo[];
+  };
+
 
   type AddUserAccessRecordParams = {
     accessUrl: string;

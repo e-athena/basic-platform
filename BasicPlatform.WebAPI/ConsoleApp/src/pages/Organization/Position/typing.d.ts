@@ -1,7 +1,7 @@
 declare namespace API {
   /** 创建 */
   type CreatePositionItem = {
-    organizationId: string;
+    organizationId: string | string[];
     name: string;
     remarks?: string;
     status: Status;
@@ -23,7 +23,9 @@ declare namespace API {
     Partial<UpdatedItem>;
 
   /** 详情 */
-  type PositionDetailItem = Partial<PositionListItem>;
+  type PositionDetailItem = {
+    organizationPath?: string;
+  } & Partial<PositionListItem>;
 
   /**
    * 分页请求参数

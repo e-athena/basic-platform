@@ -1,7 +1,6 @@
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
-using BasicPlatform.AppService.TableColumns;
 
 namespace BasicPlatform.WebAPI.Controllers.Permissions;
 
@@ -110,15 +109,30 @@ public class RoleController : CustomControllerBase
     {
         return _mediator.SendAsync(request, cancellationToken);
     }
-    
+
     /// <summary>
-    /// 资源授权
+    /// 分配资源
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(AdditionalRules = new[] {ApiPermissionConstant.RoleDetail})]
     public Task<string> AssignResourcesAsync([FromBody] AssignRoleResourcesRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 分配用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [ApiPermission(AdditionalRules = new[] {ApiPermissionConstant.RoleDetail})]
+    public Task<string> AssignUsersAsync([FromBody] AssignRoleUsersRequest request,
         CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);

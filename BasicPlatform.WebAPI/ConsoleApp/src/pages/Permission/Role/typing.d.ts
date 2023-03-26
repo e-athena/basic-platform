@@ -26,6 +26,7 @@ declare namespace API {
   /** 角色详情 */
   type RoleDetailItem = {
     resources: ResourceModel[];
+    users?: API.SelectInfo[];
     dataScopeCustomList: string[];
     dataScopeCustomSelectList: SelectInfo[]
   } & Partial<RoleListItem>;
@@ -41,5 +42,11 @@ declare namespace API {
   type AssignRoleResourcesRequest = {
     id: string;
     resources: ResourceModel[];
+  };
+
+  /** 分配用户 */
+  type AssignRolUsersRequest = {
+    id: string;
+    userIds: string[];
   };
 }

@@ -10,6 +10,6 @@ public class GetPositionPagingResponse : PositionQueryModel
     /// <summary>
     /// 组织/部门
     /// </summary>
-    [TableColumn(Width = 150, Sort = 0)]
+    [TableColumn(Width = 180, Sort = 0)]
     public string? OrganizationName { get; set; }
 }

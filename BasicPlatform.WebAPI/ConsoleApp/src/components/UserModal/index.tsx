@@ -8,9 +8,10 @@ type UserModalProps = {
   onCancel?: () => void;
   onOk?: (keys: string[], rows: TransferUserInfo[]) => void;
   open: boolean;
+  title?: string
 } & Partial<TransferFormProps>;
 
-const App: React.FC<UserModalProps> = (props) => {
+const UserModal: React.FC<UserModalProps> = (props) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [selectedRows, setSelectedRows] = useState<TransferUserInfo[]>([]);
@@ -19,7 +20,7 @@ const App: React.FC<UserModalProps> = (props) => {
     <>
       <Modal
         open={props.open}
-        title={'选择用户'}
+        title={props.title || '选择用户'}
         onOk={() => {
           if (props.onOk) {
             props.onOk(selectedKeys, selectedRows);
@@ -54,4 +55,4 @@ const App: React.FC<UserModalProps> = (props) => {
   );
 };
 
-export default App;
+export default UserModal;

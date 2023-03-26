@@ -24,7 +24,7 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const hideInTable: boolean = !hasPermission([permission.position.putAsync], resource);
+  const showOption: boolean = hasPermission([permission.position.putAsync], resource);
 
   const [defaultColumns] = useState<ProColumns<API.PositionListItem>[]>([
     {
@@ -68,7 +68,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      hideInTable: hideInTable,
+      hideInTable: !showOption,
       width: 95,
       render(_, entity) {
         return [
@@ -119,8 +119,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                    maxWidth: tableSize?.width - 270 - 24,
-                  }
+                  maxWidth: tableSize?.width - 270 - 24,
+                }
                 : {}
             }
             defaultColumns={defaultColumns}

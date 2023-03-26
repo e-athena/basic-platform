@@ -28,3 +28,7 @@ export function statusChange(id: string) {
 export function assignResources(data: API.AssignRoleResourcesRequest) {
   return put<API.AssignRoleResourcesRequest, string>('/api/Role/AssignResources', data);
 }
+/** 分配用户 */
+export function assignUsers(data: API.AssignRolUsersRequest) {
+  return put<API.AssignRolUsersRequest, string>('/api/Role/AssignUsers', data);
+}

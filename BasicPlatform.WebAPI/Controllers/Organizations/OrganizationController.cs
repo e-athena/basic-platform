@@ -87,7 +87,7 @@ public class OrganizationController : CustomControllerBase
     [ApiPermission(AdditionalRules = new[]
     {
         ApiPermissionConstant.UserSelectList,
-        ApiPermissionConstant.OrgTreeList
+        ApiPermissionConstant.OrgCascaderList
     })]
     public Task<string> PostAsync([FromBody] CreateOrganizationRequest request, CancellationToken cancellationToken)
     {
@@ -104,7 +104,7 @@ public class OrganizationController : CustomControllerBase
     [ApiPermission(DisplayName = "编辑", AdditionalRules = new[]
     {
         ApiPermissionConstant.UserSelectList,
-        ApiPermissionConstant.OrgTreeList,
+        ApiPermissionConstant.OrgCascaderList,
         ApiPermissionConstant.OrgDetail
     })]
     public Task<string> PutAsync([FromBody] UpdateOrganizationRequest request, CancellationToken cancellationToken)
@@ -165,28 +165,16 @@ public class OrganizationController : CustomControllerBase
     }
 
     /// <summary>
-    /// 读取树形选择框数据列表
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(ApiPermissionConstant.OrgTreeSelectListForSelf, IsVisible = false)]
-    public Task<List<TreeSelectViewModel>> GetTreeSelectListForSelfAsync()
-    {
-        return _queryService.GetTreeSelectListForSelfAsync();
-    }
-
-
-    /// <summary>
     /// 获取组织架构级联人员信息
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission("org:cascader", IsVisible = false)]
+    [ApiPermission(ApiPermissionConstant.OrgCascaderList, IsVisible = false)]
     public Task<List<CascaderViewModel>> GetCascaderListAsync()
     {
         return _queryService.GetCascaderListAsync();
     }
-    
+
     /// <summary>
     /// 下拉列表
     /// </summary>

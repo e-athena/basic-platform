@@ -29,8 +29,11 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const hideInTable: boolean = !hasPermission(
-    [permission.externalPage.postAsync, permission.externalPage.putAsync],
+  const showOption: boolean = hasPermission(
+    [
+      permission.externalPage.postAsync,
+      permission.externalPage.putAsync
+    ],
     resource,
   );
 
@@ -112,7 +115,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 130,
-      hideInTable: hideInTable,
+      hideInTable: !showOption,
       render(_, entity) {
         return [
           <Access

@@ -3,16 +3,16 @@ import {
   ProFormText,
   ProFormTextArea,
   ModalForm,
-  ProFormTreeSelect,
   ProFormSelect,
   ProFormSwitch,
   ProFormInstance,
   ProFormDigit,
+  ProFormCascader
 } from '@ant-design/pro-components';
 import React, { useState } from 'react';
 import { update, create } from '../service';
 import { roleList } from '@/services/ant-design-pro/system/role';
-import { orgTreeSelectForSelf } from '@/services/ant-design-pro/system/org';
+import { orgCascader } from '@/services/ant-design-pro/system/org';
 import { Button } from 'antd';
 import UserModal from '@/components/UserModal';
 import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
@@ -44,6 +44,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           destroyOnClose: true,
         }}
         onFinish={async (values: API.UpdateOrgRequest) => {
+          if (values.parentId !== undefined && values.parentId.length !== 0) {
+            values.parentId = values.parentId[values.parentId.length - 1];
+          }
           const isUpdate = props.values?.id !== undefined;
           values.leaderId = leaderId;
           let succeed;
@@ -61,18 +64,21 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         initialValues={{
           ...props.values,
           status: props.values?.id === undefined ? true : props.values?.status === 1,
+          parentId: props.values?.parentPath === undefined
+            || props.values?.parentPath === '' ? [] : props.values?.parentPath.split(',')
         }}
       >
-        <ProFormTreeSelect
+        <ProFormCascader
           name="parentId"
           label="上级组织/部门"
           fieldProps={{
             showSearch: true,
+            changeOnSelect: true,
           }}
           placeholder="默认为顶级组织"
           request={async () => {
-            const { data } = await orgTreeSelectForSelf();
-            return data || [];
+            const { data } = await orgCascader();
+            return (data || []) as any;
           }}
         />
         <ProFormText

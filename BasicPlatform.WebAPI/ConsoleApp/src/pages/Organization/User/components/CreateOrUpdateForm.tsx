@@ -7,6 +7,7 @@ import {
   ProFormSelect,
   ProFormTreeSelect,
   ProFormRadio,
+  FormInstance,
 } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
@@ -23,11 +24,13 @@ type CreateOrUpdateFormProps = {
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   const [organizationId, setOrganizationId] = React.useState<string | undefined>();
+  const formRef = React.useRef<FormInstance>();
   return (
     <ModalForm
       width={592}
       title={props.values === undefined ? '创建新用户' : '更新用户'}
       open={props.open}
+      formRef={formRef}
       modalProps={{
         onCancel: () => {
           props.onCancel();
@@ -78,23 +81,6 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             },
           ]}
         />
-        {/* {props.values?.id === undefined ?
-          <ProFormText.Password
-            name="password"
-            label={'密码'}
-            width="sm"
-            rules={[
-              {
-                required: true,
-                message: '请输入密码',
-              },
-            ]}
-          /> : <ProFormText.Password
-            name="password"
-            label={'密码'}
-            width="sm"
-            placeholder={'不修改密码请留空'}
-          />} */}
       </ProForm.Group>
       <ProForm.Group>
         <ProFormText name="NickName" label={'昵称'} width="sm" />
@@ -145,6 +131,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             showSearch: true,
             onChange: (value: string) => {
               setOrganizationId(value);
+              formRef.current?.setFieldsValue({
+                positionId: undefined,
+              });
             },
           }}
           width="sm"

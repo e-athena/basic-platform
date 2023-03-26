@@ -73,6 +73,17 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
                 }, cancellationToken);
         }
 
+        // 读取角色用户
+        entity.Users = await QueryNoTracking<RoleUser>()
+            .Where(p => p.RoleId == id)
+            .ToListAsync(p => new SelectViewModel
+            {
+                Value = p.UserId,
+                Label = p.User.RealName,
+                Disabled = false,
+                Extend = p.User.UserName
+            }, cancellationToken);
+        
         return entity;
     }
 
@@ -81,15 +92,17 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public Task<List<SelectViewModel>> GetSelectListAsync(CancellationToken cancellationToken = default)
+    public async Task<List<SelectViewModel>> GetSelectListAsync(CancellationToken cancellationToken = default)
     {
-        return QueryableNoTracking
-            .ToListAsync(p => new SelectViewModel
+        var list = await QueryNoTracking().ToListAsync(cancellationToken);
+        return list
+            .Select(p => new SelectViewModel
             {
                 Disabled = p.Status == Status.Disabled,
-                Label = p.Name,
+                Label = $"{p.Name}[数据范围:{p.DataScope.ToDescription()}]",
                 Value = p.Id
-            }, cancellationToken);
+            })
+            .ToList();
     }
 
     /// <summary>

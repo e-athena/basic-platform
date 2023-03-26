@@ -9,7 +9,8 @@ type AuthorizationFormProps = {
   onSuccess: () => void;
   open: boolean;
   roleResources: ResourceModel[];
-  roleId: string
+  roleId: string,
+  title?: string,
 };
 
 const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
@@ -17,7 +18,7 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
   return (
     <ModalForm
       width={860}
-      title={'资源授权'}
+      title={props.title || '资源授权'}
       open={props.open}
       modalProps={{
         onCancel: () => {

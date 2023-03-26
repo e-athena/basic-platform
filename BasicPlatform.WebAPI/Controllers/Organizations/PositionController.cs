@@ -55,6 +55,10 @@ public class PositionController : CustomControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.OrgCascaderList
+    })]
     public Task<Paging<GetPositionPagingResponse>> GetPagingAsync([FromBody] GetPositionPagingRequest request)
     {
         return _service.GetPagingAsync(request);

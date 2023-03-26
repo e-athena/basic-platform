@@ -17,4 +17,9 @@ public class GetRoleByIdResponse : RoleQueryModel
     /// </summary>
     [TableColumn(Ignore = true)]
     public IList<SelectViewModel> DataScopeCustomSelectList { get; set; } = new List<SelectViewModel>();
+
+    /// <summary>
+    /// 用户列表
+    /// </summary>
+    public IList<SelectViewModel>? Users { get; set; }
 }

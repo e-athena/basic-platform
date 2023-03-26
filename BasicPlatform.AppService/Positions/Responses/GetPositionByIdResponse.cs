@@ -7,4 +7,8 @@ namespace BasicPlatform.AppService.Positions.Responses;
 /// </summary>
 public class GetPositionByIdResponse : PositionQueryModel
 {
+    /// <summary>
+    /// 组织/部门路径
+    /// </summary>
+    public string? OrganizationPath { get; set; }
 }

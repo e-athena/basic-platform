@@ -9,7 +9,8 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     IRequestHandler<CreateRoleRequest, string>,
     IRequestHandler<UpdateRoleRequest, string>,
     IRequestHandler<RoleStatusChangeRequest, string>,
-    IRequestHandler<AssignRoleResourcesRequest, string>
+    IRequestHandler<AssignRoleResourcesRequest, string>,
+    IRequestHandler<AssignRoleUsersRequest, string>
 {
     public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
@@ -78,11 +79,6 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<string> Handle(AssignRoleResourcesRequest request, CancellationToken cancellationToken)
     {
-        if (request.Id == UserId)
-        {
-            throw FriendlyException.Of("不能给自己分配资源");
-        }
-
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<RoleResource>(
             p => p.RoleId == request.Id, cancellationToken
@@ -96,6 +92,34 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         var roleResources = request
             .Resources
             .Select(p => new RoleResource(request.Id, p.Key, p.Code))
+            .ToList();
+        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
+
+        return request.Id;
+    }
+
+    /// <summary>
+    /// 分配用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<string> Handle(AssignRoleUsersRequest request, CancellationToken cancellationToken)
+    {
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<RoleUser>(
+            p => p.RoleId == request.Id, cancellationToken
+        );
+        if (request.UserIds.Count <= 0)
+        {
+            return request.Id;
+        }
+
+        // 新增新数据
+        var roleResources = request
+            .UserIds
+            .Select(userId => new RoleUser(request.Id, userId))
             .ToList();
         await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
 

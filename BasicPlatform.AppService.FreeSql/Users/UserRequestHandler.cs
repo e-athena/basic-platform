@@ -92,7 +92,7 @@ public class UserRequestHandler : AppServiceBase<User>,
         }
 
         // 封装实体对象
-        var entity = await GetForEditAsync(request.Id);
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         // 更新
         entity.Update(
             request.UserName,
@@ -192,7 +192,7 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <returns></returns>
     public async Task<bool> Handle(UpdateUserLoginInfoRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForEditAsync(request.Id);
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.UpdateLoginInfo(_contextAccessor.IpAddress);
         await RegisterDirtyAsync(entity, cancellationToken);
         return true;

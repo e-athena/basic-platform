@@ -36,8 +36,10 @@ export default {
     putAsync: 'RoleController_PutAsync',
     /** 状态变更 */
     statusChangeAsync: 'RoleController_StatusChangeAsync',
-    /** 资源授权 */
+    /** 分配资源 */
     assignResourcesAsync: 'RoleController_AssignResourcesAsync',
+    /** 分配用户 */
+    assignUsersAsync: 'RoleController_AssignUsersAsync',
   },
   /** 组织架构管理 */
   organization: {
