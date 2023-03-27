@@ -119,8 +119,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                  maxWidth: tableSize?.width - 270 - 24,
-                }
+                    maxWidth: tableSize?.width - 270 - 24,
+                  }
                 : {}
             }
             defaultColumns={defaultColumns}

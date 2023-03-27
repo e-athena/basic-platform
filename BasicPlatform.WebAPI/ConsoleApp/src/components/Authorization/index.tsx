@@ -142,7 +142,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
             style={{
               marginTop: 5,
               marginInlineStart: 0,
-              marginRight: 8
+              marginRight: 8,
             }}
             key={item.key}
             checked={selectedResources.map((p) => p.key).includes(item.key)}

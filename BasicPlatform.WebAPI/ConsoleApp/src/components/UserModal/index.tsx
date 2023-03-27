@@ -8,7 +8,7 @@ type UserModalProps = {
   onCancel?: () => void;
   onOk?: (keys: string[], rows: TransferUserInfo[]) => void;
   open: boolean;
-  title?: string
+  title?: string;
 } & Partial<TransferFormProps>;
 
 const UserModal: React.FC<UserModalProps> = (props) => {

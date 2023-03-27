@@ -9,8 +9,8 @@ type AuthorizationFormProps = {
   onSuccess: () => void;
   open: boolean;
   roleResources: ResourceModel[];
-  roleId: string,
-  title?: string,
+  roleId: string;
+  title?: string;
 };
 
 const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {

@@ -25,10 +25,7 @@ const TableList: React.FC = () => {
   const location = useLocation();
   const resource = getResource(location.pathname);
   const showOption: boolean = hasPermission(
-    [
-      permission.organization.postAsync,
-      permission.organization.putAsync
-    ],
+    [permission.organization.postAsync, permission.organization.putAsync],
     resource,
   );
 
@@ -144,8 +141,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                  maxWidth: tableSize?.width - 270 - 24,
-                }
+                    maxWidth: tableSize?.width - 270 - 24,
+                  }
                 : {}
             }
             defaultColumns={defaultColumns}

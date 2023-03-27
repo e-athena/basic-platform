@@ -6,7 +6,7 @@ import Iframe from 'react-iframe';
 import { useRafState } from 'ahooks';
 import { LinkOutlined } from '@ant-design/icons';
 
-const App: React.FC = () => {
+const ExternalPages: React.FC = () => {
   const url = useParams<{ id: string }>();
 
   const [state, setState] = useRafState({
@@ -28,7 +28,7 @@ const App: React.FC = () => {
       window.removeEventListener('resize', onResize);
     };
   }, []);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [lastUrl, setLastUrl] = useState<string>();
   useEffect(() => {
     if (url.id !== lastUrl) {
@@ -74,4 +74,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default ExternalPages;

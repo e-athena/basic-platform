@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Athena.Infrastructure.QueryFilters;
+using BasicPlatform.AppService.DataPermissions.Models;
 using BasicPlatform.Infrastructure.Enums;
 
 namespace BasicPlatform.AppService.FreeSql.Commons;
@@ -80,22 +81,8 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     /// <returns></returns>
     private ISelect<T1> QueryWithPermission<T1>() where T1 : class
     {
-        // 如果是开发者帐号。则不需要过滤
-        if (IsRoot)
-        {
-            return base.Query<T1>();
-        }
-
-        // 数据访问范围
-        var dataScopeList = GetUserRoleDataScopeListAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        // 如果包含全部的数据。则不需要过滤
-        if (dataScopeList.Any(dataScope => dataScope == RoleDataScope.All))
-        {
-            return base.Query<T1>();
-        }
-
-        var filterWhere = GenerateFilterWhere<T1>(dataScopeList);
-        return _freeSql.Queryable<T1>().HasWhere(filterWhere, filterWhere!);
+        var query = _freeSql.Queryable<T1>();
+        return QueryWithPermission(query);
     }
 
     /// <summary>
@@ -105,25 +92,73 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     /// <returns></returns>
     private ISelect<T1> QueryNoTrackingWithPermission<T1>() where T1 : class
     {
+        var query = _freeSql.Queryable<T1>().NoTracking();
+        return QueryWithPermission(query);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <returns></returns>
+    private ISelect<T1> QueryWithPermission<T1>(ISelect<T1> query) where T1 : class
+    {
         // 如果是开发者帐号。则不需要过滤
         if (IsRoot)
         {
-            return base.QueryNoTracking<T1>();
+            return query;
         }
 
         // 数据访问范围
-        var dataScopeList = GetUserRoleDataScopeListAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        // 如果包含全部的数据。则不需要过滤
-        if (dataScopeList.Any(dataScope => dataScope == RoleDataScope.All))
+        var dataScopeList = GetUserDataScopes();
+        // 读取当前模块的数据访问范围
+        var dataScope = dataScopeList
+            .FirstOrDefault(p => typeof(T1).FullName == p.ResourceKey);
+        // 如果该模块有全部数据的权限则不需要过滤
+        if (dataScope == null)
         {
-            return base.QueryNoTracking<T1>();
+            var emptyResourceKeyDataPermissions = dataScopeList
+                .Where(p => string.IsNullOrEmpty(p.ResourceKey))
+                .Select(p => new DataPermission
+                {
+                    DataScope = p.DataScope,
+                    DataScopeCustom = p.DataScopeCustom
+                })
+                .ToList();
+
+            // 查询通用设置，如果包含全部的数据。则不需要过滤
+            if (emptyResourceKeyDataPermissions.Any(dp => dp.DataScope == RoleDataScope.All))
+            {
+                return query;
+            }
+
+            var filterWhere1 = GenerateFilterWhere<T1>(emptyResourceKeyDataPermissions);
+            // 如果没有任何数据权限，则返回空
+            return query.Where(filterWhere1 ?? (p => false));
         }
 
-        var filterWhere = GenerateFilterWhere<T1>(dataScopeList);
-        return _freeSql.Queryable<T1>().NoTracking().HasWhere(filterWhere, filterWhere!);
+        // 当前模块有全部数据的权限则不需要过滤
+        if (dataScope.DataScope == RoleDataScope.All)
+        {
+            return query;
+        }
+
+        var dataPermissions = new List<DataPermission>
+        {
+            dataScope
+        };
+        var filterWhere = GenerateFilterWhere<T1>(dataPermissions);
+        // 如果没有任何数据权限，则返回空
+        return query.Where(filterWhere ?? (p => false));
     }
 
-    private bool HasProperty<T1>(string propertyName)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <typeparam name="T1"></typeparam>
+    /// <returns></returns>
+    private static bool HasProperty<T1>(string propertyName)
     {
         return typeof(T1).GetProperties().Any(p => p.Name == propertyName);
     }
@@ -131,21 +166,21 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="dataScopeList"></param>
+    /// <param name="dataPermissions"></param>
     /// <typeparam name="TResult"></typeparam>
     /// <returns></returns>
-    private Expression<Func<TResult, bool>>? GenerateFilterWhere<TResult>(ICollection<RoleDataScope> dataScopeList)
+    private Expression<Func<TResult, bool>>? GenerateFilterWhere<TResult>(ICollection<DataPermission> dataPermissions)
     {
-        if (dataScopeList.Count == 0)
+        if (dataPermissions.Count == 0)
         {
             return null;
         }
 
         var filters = new List<QueryFilter>();
         var organizationIds = new List<string>();
-        foreach (var scope in dataScopeList)
+        foreach (var data in dataPermissions)
         {
-            if (scope == RoleDataScope.Self)
+            if (data.DataScope == RoleDataScope.Self)
             {
                 if (!HasProperty<TResult>("CreatedUserId"))
                 {
@@ -167,11 +202,11 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
                 continue;
             }
 
-            var orgIds = scope switch
+            var orgIds = data.DataScope switch
             {
                 RoleDataScope.Department => GetUserOrganizationIds(),
                 RoleDataScope.DepartmentAndSub => GetUserOrganizationIdsTree(),
-                RoleDataScope.Custom => GetUserRoleDataScopeCustomList(),
+                RoleDataScope.Custom => data.DataScopeCustoms,
                 _ => null
             };
 
@@ -278,34 +313,14 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
 
         // 数据去重
         return list.GroupBy(p => p).Select(p => p.Key).ToList();
-        ;
     }
+
 
     /// <summary>
     /// 读取用户角色的数据范围列表
     /// </summary>
     /// <returns></returns>
-    protected async Task<List<RoleDataScope>> GetUserRoleDataScopeListAsync(string? userId = null)
-    {
-        userId ??= UserId;
-        var dataScopeList = await _freeSql.Select<Role>()
-            .Where(p => _freeSql
-                .Select<RoleUser>()
-                .As("c")
-                .Where(c => c.UserId == userId)
-                .Any(c => c.RoleId == p.Id)
-            )
-            .ToListAsync(p => p.DataScope);
-
-        // 去重
-        return dataScopeList.GroupBy(p => p).Select(p => p.Key).ToList();
-    }
-
-    /// <summary>
-    /// 读取用户角色的自定义数据范围列表
-    /// </summary>
-    /// <returns></returns>
-    protected List<string> GetUserRoleDataScopeCustomList(string? userId = null)
+    private List<DataPermission> GetUserDataScopes(string? userId = null)
     {
         userId ??= UserId;
         var dataScopeList = _freeSql.Select<Role>()
@@ -315,19 +330,60 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
                 .Where(c => c.UserId == userId)
                 .Any(c => c.RoleId == p.Id)
             )
-            // 过滤掉空值
-            .Where(p => !string.IsNullOrEmpty(p.DataScopeCustom))
-            .ToList(p => p.DataScopeCustom);
-
-        // 展开DataScopeCustom
-        var list = new List<string>();
-        foreach (var ids in dataScopeList.Select(item => item!.Split(",", StringSplitOptions.RemoveEmptyEntries)))
-        {
-            list.AddRange(ids);
-        }
+            .ToList(p => new
+            {
+                p.DataScope,
+                p.DataScopeCustom,
+            });
 
         // 去重
-        return list.GroupBy(p => p).Select(p => p.Key).ToList();
+        dataScopeList = dataScopeList.GroupBy(p => p).Select(p => p.Key).ToList();
+
+        // 读取用户的角色数据权限
+        var list = _freeSql.Select<RoleDataPermission>()
+            // 读取用户的角色
+            .Where(p => _freeSql
+                .Select<RoleUser>()
+                .As("c")
+                .Where(c => c.UserId == userId)
+                .Any(c => c.RoleId == p.RoleId)
+            )
+            // 启用的
+            .Where(p => p.Enabled)
+            .ToList(p => new DataPermission
+            {
+                ResourceKey = p.ResourceKey,
+                DataScope = p.DataScope,
+            });
+
+        // 读取用户的数据权限
+        var userPermissionList = _freeSql.Select<UserDataPermission>()
+            .Where(p => p.UserId == userId)
+            // 启用的
+            .Where(p => p.Enabled)
+            .ToList(p => new DataPermission
+            {
+                ResourceKey = p.ResourceKey,
+                DataScope = p.DataScope,
+            });
+        list.AddRange(userPermissionList);
+
+        // 去重
+        list = list
+            .GroupBy(p => p.ResourceKey)
+            .Select(p => p.First())
+            .ToList();
+
+        // 添加通用的数据范围
+        foreach (var item in dataScopeList)
+        {
+            list.Add(new DataPermission
+            {
+                DataScope = item.DataScope
+            });
+        }
+
+        return list;
     }
 
     #endregion

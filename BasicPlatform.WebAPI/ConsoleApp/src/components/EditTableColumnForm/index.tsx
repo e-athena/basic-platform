@@ -11,7 +11,7 @@ type EditTableColumnFormProps = {
   data: API.TableColumnItem[];
 };
 
-const App: React.FC<EditTableColumnFormProps> = (props) => {
+const EditTableColumnForm: React.FC<EditTableColumnFormProps> = (props) => {
   const { open, onCancel, onOk, data } = props;
   const [leftDataSource, setLeftDataSource] = useState<API.TableColumnItem[]>([]);
   const [rightDataSource, setRightDataSource] = useState<API.TableColumnItem[]>([]);
@@ -287,4 +287,4 @@ const App: React.FC<EditTableColumnFormProps> = (props) => {
   );
 };
 
-export default App;
+export default EditTableColumnForm;

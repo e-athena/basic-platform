@@ -19,7 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Athena.Infrastructure.DataPermission\Athena.Infrastructure.DataPermission.csproj" />
         <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj" />
     </ItemGroup>
 

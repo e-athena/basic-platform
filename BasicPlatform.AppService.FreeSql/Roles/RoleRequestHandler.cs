@@ -10,7 +10,8 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     IRequestHandler<UpdateRoleRequest, string>,
     IRequestHandler<RoleStatusChangeRequest, string>,
     IRequestHandler<AssignRoleResourcesRequest, string>,
-    IRequestHandler<AssignRoleUsersRequest, string>
+    IRequestHandler<AssignRoleUsersRequest, string>,
+    IRequestHandler<AssignRoleDataPermissionsRequest, string>
 {
     public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
@@ -120,6 +121,33 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         var roleResources = request
             .UserIds
             .Select(userId => new RoleUser(request.Id, userId))
+            .ToList();
+        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
+
+        return request.Id;
+    }
+
+    /// <summary>
+    /// 分配数据权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Handle(AssignRoleDataPermissionsRequest request, CancellationToken cancellationToken)
+    {
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<RoleDataPermission>(
+            p => p.RoleId == request.Id, cancellationToken
+        );
+        if (request.Permissions.Count <= 0)
+        {
+            return request.Id;
+        }
+
+        // 新增新数据
+        var roleResources = request
+            .Permissions
+            .Select(p => new RoleDataPermission(request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled))
             .ToList();
         await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
 

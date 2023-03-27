@@ -32,3 +32,11 @@ export function assignResources(data: API.AssignRoleResourcesRequest) {
 export function assignUsers(data: API.AssignRolUsersRequest) {
   return put<API.AssignRolUsersRequest, string>('/api/Role/AssignUsers', data);
 }
+/** 数据权限列表 */
+export function dataPermission(id: string) {
+  return get<API.RoleDataPermissionGroup[]>('/api/Role/GetDataPermissions', { id });
+}
+/** 分配数据权限 */
+export function assignDataPermissions(data: API.AssignRoleDataPermissionsRequest) {
+  return put<API.AssignRoleDataPermissionsRequest, string>('/api/Role/AssignDataPermissions', data);
+}

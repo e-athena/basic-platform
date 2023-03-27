@@ -1,23 +1,23 @@
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>
-/// 用户数据权限
+/// 角色数据权限
 /// </summary>
-[Table("authority_user_data_permissions")]
-public class UserDataPermission : ValueObject
+[Table("authority_role_data_permissions")]
+public class RoleDataPermission : ValueObject
 {
     /// <summary>
-    /// 用户ID
+    /// 角色ID
     /// </summary>
     /// <value></value>
     [MaxLength(36)]
-    public string UserId { get; set; } = null!;
+    public string RoleId { get; set; } = null!;
 
     /// <summary>
-    /// 用户
+    /// 角色
     /// </summary>
     /// <value></value>
-    public virtual User User { get; set; } = null!;
+    public virtual Role Role { get; set; } = null!;
 
     /// <summary>
     /// 资源Key
@@ -41,14 +41,14 @@ public class UserDataPermission : ValueObject
     /// </summary>
     public bool Enabled { get; set; }
 
-    public UserDataPermission()
+    public RoleDataPermission()
     {
     }
 
-    public UserDataPermission(string userId, string resourceKey, RoleDataScope dataScope, string? dataScopeCustom,
+    public RoleDataPermission(string roleId, string resourceKey, RoleDataScope dataScope, string? dataScopeCustom,
         bool enabled)
     {
-        UserId = userId;
+        RoleId = roleId;
         ResourceKey = resourceKey;
         DataScope = dataScope;
         DataScopeCustom = dataScopeCustom;

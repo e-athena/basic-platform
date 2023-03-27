@@ -57,7 +57,7 @@ public class PositionController : CustomControllerBase
     [HttpPost]
     [ApiPermission(AdditionalRules = new[]
     {
-        ApiPermissionConstant.OrgCascaderList
+        ApiPermissionConstant.OrgTreeList
     })]
     public Task<Paging<GetPositionPagingResponse>> GetPagingAsync([FromBody] GetPositionPagingRequest request)
     {
@@ -85,7 +85,7 @@ public class PositionController : CustomControllerBase
     [HttpPost]
     [ApiPermission(AdditionalRules = new[]
     {
-        ApiPermissionConstant.OrgTreeSelectList
+        ApiPermissionConstant.OrgCascaderList
     })]
     public Task<string> PostAsync([FromBody] CreatePositionRequest request, CancellationToken cancellationToken)
     {
@@ -101,7 +101,7 @@ public class PositionController : CustomControllerBase
     [HttpPut]
     [ApiPermission(AdditionalRules = new[]
     {
-        ApiPermissionConstant.OrgTreeSelectList,
+        ApiPermissionConstant.OrgCascaderList,
         ApiPermissionConstant.PositionDetail
     })]
     public Task<string> PutAsync([FromBody] UpdatePositionRequest request, CancellationToken cancellationToken)

@@ -4,7 +4,7 @@ import { Button, Divider, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { query } from './service';
 
-const App: React.FC = () => {
+const ServerInfo: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
@@ -137,4 +137,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default ServerInfo;

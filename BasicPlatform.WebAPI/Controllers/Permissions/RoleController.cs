@@ -1,3 +1,5 @@
+using BasicPlatform.AppService.DataPermissions;
+using BasicPlatform.AppService.DataPermissions.Models;
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
@@ -125,6 +127,19 @@ public class RoleController : CustomControllerBase
     }
 
     /// <summary>
+    /// 分配权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    public Task<string> AssignDataPermissionsAsync([FromBody] AssignRoleDataPermissionsRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
     /// 分配用户
     /// </summary>
     /// <param name="request"></param>
@@ -151,6 +166,26 @@ public class RoleController : CustomControllerBase
     public Task<List<SelectViewModel>> GetSelectListAsync()
     {
         return _service.GetSelectListAsync();
+    }
+
+    /// <summary>
+    /// 读取数据权限
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
+    {
+        var result = await _service.GetDataPermissionsAsync(id);
+        var assembly = Assembly.Load("BasicPlatform.AppService");
+        return DataPermissionHelper.GetTreeList(
+            assembly,
+            result.Select(p => new DataPermission
+            {
+                ResourceKey = p.ResourceKey,
+                DataScopeCustom = p.DataScopeCustom,
+                DataScope = p.DataScope,
+                Enabled = p.Enabled
+            }).ToList());
     }
 
     #endregion

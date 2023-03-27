@@ -40,4 +40,11 @@ public interface IRoleQueryService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<string>> GetRoleIdsByUserIdAsync(string userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 读取数据权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id);
 }

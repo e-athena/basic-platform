@@ -51,8 +51,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       initialValues={{
         ...props.values,
         status: props.values?.id === undefined ? true : props.values?.status === 1,
-        organizationId: props.values?.organizationPath === undefined
-          || props.values?.organizationPath === '' ? [] : props.values?.organizationPath.split(',')
+        organizationId:
+          props.values?.organizationPath === undefined || props.values?.organizationPath === ''
+            ? []
+            : props.values?.organizationPath.split(','),
       }}
     >
       <ProFormCascader
@@ -65,7 +67,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         tooltip={'为空时为通用职位'}
         request={async () => {
           const { data } = await orgCascader();
-          return data || [] as any;
+          return data || ([] as any);
         }}
         placeholder={'请选择'}
       />

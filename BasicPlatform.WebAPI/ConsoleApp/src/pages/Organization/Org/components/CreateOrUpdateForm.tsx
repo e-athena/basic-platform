@@ -7,7 +7,7 @@ import {
   ProFormSwitch,
   ProFormInstance,
   ProFormDigit,
-  ProFormCascader
+  ProFormCascader,
 } from '@ant-design/pro-components';
 import React, { useState } from 'react';
 import { update, create } from '../service';
@@ -64,8 +64,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         initialValues={{
           ...props.values,
           status: props.values?.id === undefined ? true : props.values?.status === 1,
-          parentId: props.values?.parentPath === undefined
-            || props.values?.parentPath === '' ? [] : props.values?.parentPath.split(',')
+          parentId:
+            props.values?.parentPath === undefined || props.values?.parentPath === ''
+              ? []
+              : props.values?.parentPath.split(','),
         }}
       >
         <ProFormCascader

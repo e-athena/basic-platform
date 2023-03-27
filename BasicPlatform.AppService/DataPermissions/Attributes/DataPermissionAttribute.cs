@@ -1,4 +1,4 @@
-namespace Athena.Infrastructure.DataPermission.Attributes;
+namespace BasicPlatform.AppService.DataPermissions.Attributes;
 
 /// <summary>
 /// 数据权限属性

@@ -8,7 +8,7 @@ export type OrganizationTreeInstance = {
 type OrganizationTreeProps = {
   onSelect?: (key: string | null) => void;
 };
-const App = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
+const OrganizationTree = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
   const [dataSource, setDataSource] = useState<API.TreeInfo[]>();
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -51,4 +51,4 @@ const App = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
   );
 });
 
-export default App;
+export default OrganizationTree;

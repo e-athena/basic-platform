@@ -47,10 +47,7 @@ const TableList: React.FC = () => {
     resource,
   );
   const showMoreOption: boolean = hasPermission(
-    [
-      permission.user.assignResourcesAsync,
-      permission.user.resetPasswordAsync
-    ],
+    [permission.user.assignResourcesAsync, permission.user.resetPasswordAsync],
     resource,
   );
 
@@ -68,7 +65,7 @@ const TableList: React.FC = () => {
     {
       title: '用户名',
       dataIndex: 'userName',
-      copyable: true
+      copyable: true,
     },
     {
       title: '性别',
@@ -267,8 +264,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                  maxWidth: tableSize?.width - 270 - 24,
-                }
+                    maxWidth: tableSize?.width - 270 - 24,
+                  }
                 : {}
             }
             defaultColumns={defaultColumns}

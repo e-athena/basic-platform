@@ -1,5 +1,12 @@
 import { query, detail, statusChange, assignUsers } from './service';
-import { PlusOutlined, FormOutlined, SafetyOutlined, MoreOutlined, ShareAltOutlined, UserAddOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  FormOutlined,
+  SafetyOutlined,
+  MoreOutlined,
+  ShareAltOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
@@ -12,24 +19,28 @@ import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ProTablePlus from '@/components/ProTablePlus';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import AuthorizationForm from './components/AuthorizationForm';
+import DataPermissionForm from './components/DataPermissionForm';
 import UserModal from '@/components/UserModal';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
   const [resourceModalOpen, handleResourceModalOpen] = useState<boolean>(false);
   const [userModalOpen, handleUserModalOpen] = useState<boolean>(false);
-  // const [permissionModalOpen, handlePermissionModalOpen] = useState<boolean>(false);
+  const [permissionModalOpen, handlePermissionModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RoleDetailItem>();
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const showOption: boolean = hasPermission([
-    permission.role.putAsync,
-    permission.role.assignResourcesAsync,
-    permission.role.assignUsersAsync
-  ], resource);
+  const showOption: boolean = hasPermission(
+    [
+      permission.role.putAsync,
+      permission.role.assignResourcesAsync,
+      permission.role.assignUsersAsync,
+    ],
+    resource,
+  );
   const showMoreOption: boolean = hasPermission(
     [permission.role.assignResourcesAsync, permission.role.assignUsersAsync],
     resource,
@@ -65,7 +76,7 @@ const TableList: React.FC = () => {
           text: '自定义',
           status: 'Processing',
         },
-      }
+      },
     },
     {
       title: '状态',
@@ -169,6 +180,12 @@ const TableList: React.FC = () => {
                       return;
                     }
                     message.error(res.message);
+                    return;
+                  }
+                  if (key === 'permission') {
+                    setCurrentRow(entity as any);
+                    handlePermissionModalOpen(true);
+                    return;
                   }
                   if (key === 'user') {
                     const hide = message.loading('正在查询', 0);
@@ -234,33 +251,50 @@ const TableList: React.FC = () => {
         open={createOrUpdateModalOpen}
         values={currentRow}
       />
-      {resourceModalOpen && (<AuthorizationForm
-        title={`${currentRow?.name} - 分配资源`}
-        onCancel={() => {
-          handleResourceModalOpen(false);
-        }}
-        onSuccess={() => {
-          handleResourceModalOpen(false);
-        }}
-        open={resourceModalOpen}
-        roleResources={currentRow!.resources}
-        roleId={currentRow!.id!}
-      />)}
-      {userModalOpen && (<UserModal
-        title={`${currentRow?.name} - 分配用户`}
-        onCancel={() => {
-          handleUserModalOpen(false);
-        }}
-        onOk={async (keys: string[]) => {
-          const succeed = await submitHandle(assignUsers, { id: currentRow!.id!, userIds: keys, });
-          if (succeed) {
+      {resourceModalOpen && (
+        <AuthorizationForm
+          title={`${currentRow?.name} - 分配资源`}
+          onCancel={() => {
+            handleResourceModalOpen(false);
+          }}
+          onSuccess={() => {
+            handleResourceModalOpen(false);
+          }}
+          open={resourceModalOpen}
+          roleResources={currentRow!.resources}
+          roleId={currentRow!.id!}
+        />
+      )}
+      {userModalOpen && (
+        <UserModal
+          title={`${currentRow?.name} - 分配用户`}
+          onCancel={() => {
             handleUserModalOpen(false);
-          }
-        }}
-        mode={'multiple'}
-        open={userModalOpen}
-        defaultSelectedKeys={currentRow!.users?.map(p => p.value) || []}
-      />)}
+          }}
+          onOk={async (keys: string[]) => {
+            const succeed = await submitHandle(assignUsers, { id: currentRow!.id!, userIds: keys });
+            if (succeed) {
+              handleUserModalOpen(false);
+            }
+          }}
+          mode={'multiple'}
+          open={userModalOpen}
+          defaultSelectedKeys={currentRow!.users?.map((p) => p.value) || []}
+        />
+      )}
+      {permissionModalOpen && (
+        <DataPermissionForm
+          title={`${currentRow?.name} - 分配权限`}
+          onCancel={() => {
+            handlePermissionModalOpen(false);
+          }}
+          onSuccess={() => {
+            handlePermissionModalOpen(false);
+          }}
+          open={permissionModalOpen}
+          roleId={currentRow!.id!}
+        />
+      )}
     </PageContainer>
   );
 };

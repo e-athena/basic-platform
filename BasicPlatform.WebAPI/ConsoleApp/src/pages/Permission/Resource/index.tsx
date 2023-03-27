@@ -71,18 +71,22 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render(_, entity) {
         return entity.functions?.map((item) => {
-          const tagDom = <Tag
-            style={{
-              marginTop: 5,
-            }}
-            key={item.value}
-          >
-            {item.label}
-          </Tag>;
+          const tagDom = (
+            <Tag
+              style={{
+                marginTop: 5,
+              }}
+              key={item.value}
+            >
+              {item.label}
+            </Tag>
+          );
           if (item.description) {
-            return <Tooltip key={item.value} placement={'top'} title={item.description}>
-              {tagDom}
-            </Tooltip>
+            return (
+              <Tooltip key={item.value} placement={'top'} title={item.description}>
+                {tagDom}
+              </Tooltip>
+            );
           }
           return tagDom;
         });

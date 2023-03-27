@@ -1,4 +1,3 @@
-using Athena.Infrastructure.DataPermission.Attributes;
 using BasicPlatform.AppService.Users.Models;
 
 namespace BasicPlatform.AppService.Users.Responses;
@@ -6,7 +5,7 @@ namespace BasicPlatform.AppService.Users.Responses;
 /// <summary>
 /// 读取用户分页数据响应类
 /// </summary>
-[DataPermission("用户管理模块")]
+[DataPermission(typeof(User), "用户管理模块")]
 public class GetUserPagingResponse : UserQueryModel
 {
     /// <summary>

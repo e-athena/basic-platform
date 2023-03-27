@@ -93,7 +93,7 @@ export type TransferFormProps = {
   defaultSelectedKeys?: string[];
 };
 
-const App: React.FC<TransferFormProps> = (props) => {
+const TransferForm: React.FC<TransferFormProps> = (props) => {
   const [targetKeys, setTargetKeys] = useState<string[]>(props.defaultSelectedKeys || []);
   const [dataSource, setDataSource] = useState<TransferItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -160,4 +160,4 @@ const App: React.FC<TransferFormProps> = (props) => {
   );
 };
 
-export default App;
+export default TransferForm;

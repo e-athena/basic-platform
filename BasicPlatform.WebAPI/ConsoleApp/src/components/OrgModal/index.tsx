@@ -10,7 +10,7 @@ type OrgModalProps = {
   open: boolean;
 } & Partial<TransferFormProps>;
 
-const App: React.FC<OrgModalProps> = (props) => {
+const OrgModal: React.FC<OrgModalProps> = (props) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [selectedRows, setSelectedRows] = useState<TransferOrgInfo[]>([]);
@@ -55,4 +55,4 @@ const App: React.FC<OrgModalProps> = (props) => {
   );
 };
 
-export default App;
+export default OrgModal;

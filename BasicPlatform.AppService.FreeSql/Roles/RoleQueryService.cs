@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Roles;
+using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
 using BasicPlatform.Infrastructure.Enums;
@@ -83,7 +84,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
                 Disabled = false,
                 Extend = p.User.UserName
             }, cancellationToken);
-        
+
         return entity;
     }
 
@@ -156,5 +157,18 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
             .ToListAsync(p => p.RoleId, cancellationToken);
 
         return roleIds1.Union(roleIds3).ToList();
+    }
+
+    /// <summary>
+    /// 读取角色拥有的权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id)
+    {
+        return QueryNoTracking<RoleDataPermission>()
+            .Where(p => p.RoleId == id)
+            .ToListAsync<RoleDataPermissionModel>();
     }
 }

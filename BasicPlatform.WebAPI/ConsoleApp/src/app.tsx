@@ -148,7 +148,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             info.children = [];
             for (let j = 0; j < children.length; j += 1) {
               const child = children[j];
-              let info1: API.ResourceInfo = {
+              let childInfo: API.ResourceInfo = {
                 path: child.type === 2 ? `/external/${encodeURIComponent(child.path)}` : child.path,
                 name: child.name,
                 icon: child.icon,
@@ -159,12 +159,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
                 code: child.id,
               };
               if (child.layout !== 'default') {
-                info1 = {
-                  ...info1,
+                childInfo = {
+                  ...childInfo,
                   layout: child.layout,
                 };
               }
-              info.children.push(info1);
+              info.children.push(childInfo);
             }
           }
           externalMenus.push(info);

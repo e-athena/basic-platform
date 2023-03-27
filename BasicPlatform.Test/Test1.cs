@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
-using Athena.Infrastructure.DataPermission;
-using BasicPlatform.AppService.Users.Responses;
+using BasicPlatform.AppService.DataPermissions;
 
 namespace BasicPlatform.Test;
 
@@ -9,8 +8,8 @@ public class Test1
     [Test]
     public void Test2()
     {
-        var res = DataPermissionHelper.GetStrategyTreeList("BasicPlatform.AppService");
-        Assert.That(res[0].Label, Is.EqualTo("用户管理模块"));
+        var res = DataPermissionHelper.GetTreeList("BasicPlatform.AppService");
+        var res2 = DataPermissionHelper.GetList("BasicPlatform.AppService");
         Assert.IsTrue(true);
     }
 

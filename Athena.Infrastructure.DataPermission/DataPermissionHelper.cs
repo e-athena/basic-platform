@@ -9,6 +9,108 @@ namespace Athena.Infrastructure.DataPermission;
 
 public abstract class DataPermissionHelper
 {
+    public class DataPermissionGroupInfo
+    {
+        /// <summary>
+        /// 显示名
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// 子项
+        /// </summary>
+        public IList<DataPermissionInfo> Children { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="displayName"></param>
+        /// <param name="children"></param>
+        public DataPermissionGroupInfo(string displayName, IList<DataPermissionInfo> children)
+        {
+            DisplayName = displayName;
+            Children = children;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class DataPermissionInfo
+    {
+        /// <summary>
+        /// 权限名称
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// KEY
+        /// </summary>
+        public string Key { get; set; }
+
+        /// <summary>
+        /// 基础类型
+        /// </summary>
+        public string BaseType { get; set; }
+
+        public DataPermissionInfo(string displayName, string key, string baseType)
+        {
+            DisplayName = displayName;
+            Key = key;
+            BaseType = baseType;
+        }
+    }
+
+    /// <summary>
+    /// 读取数据权限配置树列表
+    /// </summary>
+    /// <returns></returns>
+    public static IEnumerable<DataPermissionGroupInfo> GetDataPermissionTreeList(string assembly)
+    {
+        var asm = Assembly.Load(assembly);
+        var types = asm.GetExportedTypes();
+
+        bool IsMyAttribute(IEnumerable<Attribute> o) => o.OfType<DataPermissionAttribute>().Any();
+        var typeList = types
+            .Where(o => IsMyAttribute(Attribute.GetCustomAttributes(o, false)))
+            .ToList();
+        var attributes = new List<DataPermissionAttribute>();
+        foreach (var type in typeList)
+        {
+            if (type.GetCustomAttributes(typeof(DataPermissionAttribute), false)
+                    .FirstOrDefault() is not DataPermissionAttribute attribute)
+            {
+                continue;
+            }
+
+            attribute.Key = type.Name;
+            if (string.IsNullOrWhiteSpace(attribute.DisplayName))
+            {
+                attribute.DisplayName = GetSummaryName(type, assembly);
+            }
+
+            attributes.Add(attribute);
+        }
+
+        var list = new List<DataPermissionGroupInfo>();
+
+        foreach (var group in attributes.GroupBy(p => p.Group))
+        {
+            var displayName = string.IsNullOrEmpty(group.Key) ? "默认分组" : group.Key;
+            list.Add(new DataPermissionGroupInfo(
+                displayName,
+                group.Select(
+                    c => new DataPermissionInfo(
+                        c.DisplayName!,
+                        c.Key!,
+                        c.BaseType.FullName!
+                    )
+                ).ToList()));
+        }
+        
+        return list;
+    }
+
     /// <summary>
     /// 读取策略树状数据列表
     /// </summary>

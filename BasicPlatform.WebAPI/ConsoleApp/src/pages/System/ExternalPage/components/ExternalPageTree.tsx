@@ -8,7 +8,7 @@ export type ExternalPageTreeInstance = {
 type ExternalPageTreeProps = {
   onSelect?: (key: string | null) => void;
 };
-const App = forwardRef((props: ExternalPageTreeProps, forwardedRef: any) => {
+const ExternalPageTree = forwardRef((props: ExternalPageTreeProps, forwardedRef: any) => {
   const [dataSource, setDataSource] = useState<API.TreeInfo[]>();
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -51,4 +51,4 @@ const App = forwardRef((props: ExternalPageTreeProps, forwardedRef: any) => {
   );
 });
 
-export default App;
+export default ExternalPageTree;

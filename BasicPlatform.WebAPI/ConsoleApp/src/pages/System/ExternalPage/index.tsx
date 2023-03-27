@@ -30,10 +30,7 @@ const TableList: React.FC = () => {
   const location = useLocation();
   const resource = getResource(location.pathname);
   const showOption: boolean = hasPermission(
-    [
-      permission.externalPage.postAsync,
-      permission.externalPage.putAsync
-    ],
+    [permission.externalPage.postAsync, permission.externalPage.putAsync],
     resource,
   );
 

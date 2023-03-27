@@ -4,7 +4,7 @@ import {
   ProFormTextArea,
   ModalForm,
   ProFormSelect,
-  ProFormDependency
+  ProFormDependency,
 } from '@ant-design/pro-components';
 import { Button, FormInstance } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
@@ -68,26 +68,33 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         ]}
       />
       <ProFormSelect
-        label={'数据访问范围'}
+        label={'默认的数据访问范围'}
         name="dataScope"
         showSearch
         allowClear
-        options={[{
-          value: 0,
-          label: '全部'
-        }, {
-          value: 1,
-          label: '本人'
-        }, {
-          value: 2,
-          label: '本部门'
-        }, {
-          value: 3,
-          label: '本部门及下属部门'
-        }, {
-          value: 4,
-          label: '自定义'
-        }]}
+        tooltip={'全局生效，可针对不同模块进行单独设置，详见分配权限功能。'}
+        options={[
+          {
+            value: 0,
+            label: '全部',
+          },
+          {
+            value: 1,
+            label: '本人',
+          },
+          {
+            value: 2,
+            label: '本部门',
+          },
+          {
+            value: 3,
+            label: '本部门及下属部门',
+          },
+          {
+            value: 4,
+            label: '自定义',
+          },
+        ]}
       />
       <ProFormDependency name={['dataScope']}>
         {({ dataScope }) => {
@@ -99,6 +106,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                   disabled
                   label={'自定义数据访问范围'}
                   placeholder={'请选择'}
+                  tooltip={'指定角色可以访问的数据范围。'}
                   mode={'tags'}
                   width="md"
                   allowClear
@@ -114,9 +122,15 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                       message: '请选择自定义数据访问范围',
                     },
                   ]}
-                  addonAfter={<Button onClick={() => {
-                    setOrgModalOpen(true);
-                  }}>选择</Button>}
+                  addonAfter={
+                    <Button
+                      onClick={() => {
+                        setOrgModalOpen(true);
+                      }}
+                    >
+                      选择
+                    </Button>
+                  }
                 />
               )}
             </>
@@ -136,23 +150,25 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           setOrgModalOpen(false);
         }}
         onOk={(keys: string[], rows: TransferOrgInfo[]) => {
-          setDataScopeCustomOptions(rows.map((item) => {
-            return {
-              label: item.name,
-              value: item.id,
-              disabled: false
-            }
-          }));
+          setDataScopeCustomOptions(
+            rows.map((item) => {
+              return {
+                label: item.name,
+                value: item.id,
+                disabled: false,
+              };
+            }),
+          );
           formRef.current?.setFieldsValue({
             dataScopeCustomList: keys,
           });
           setOrgModalOpen(false);
         }}
         defaultSelectedKeys={
-          dataScopeCustomOptions.length > 0 ? dataScopeCustomOptions.map(p => p.value) : []
+          dataScopeCustomOptions.length > 0 ? dataScopeCustomOptions.map((p) => p.value) : []
         }
       />
-    </ModalForm >
+    </ModalForm>
   );
 };
 

@@ -135,9 +135,6 @@ export default [
   {
     path: '/',
     component: './Welcome',
-    // wappers: [
-    //   '@/wrappers/check'
-    // ],
   },
   {
     path: '/external/:id',
