@@ -116,8 +116,8 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     public async Task<List<string>> GetRoleIdsByUserIdAsync(string userId,
         CancellationToken cancellationToken = default)
     {
-        // 读取组织架构用户
-        var organizationIds = await Query<OrganizationUser>()
+        // 读取用户兼任职表
+        var organizationIds = await Query<UserAppointment>()
             .Where(p => p.UserId == userId)
             // 组织架构是启用的
             .Where(p => p.Organization.Status == Status.Enabled)

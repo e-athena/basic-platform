@@ -44,4 +44,9 @@ public class DataPermissionAttribute : Attribute
     /// 分组
     /// </summary>
     public string? Group { get; set; }
+
+    /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
 }

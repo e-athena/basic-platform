@@ -38,8 +38,12 @@ export default {
     statusChangeAsync: 'RoleController_StatusChangeAsync',
     /** 分配资源 */
     assignResourcesAsync: 'RoleController_AssignResourcesAsync',
+    /** 分配权限 */
+    assignDataPermissionsAsync: 'RoleController_AssignDataPermissionsAsync',
     /** 分配用户 */
     assignUsersAsync: 'RoleController_AssignUsersAsync',
+    /** 读取数据权限 */
+    getDataPermissionsAsync: 'RoleController_GetDataPermissionsAsync',
   },
   /** 组织架构管理 */
   organization: {
@@ -88,7 +92,11 @@ export default {
     statusChangeAsync: 'UserController_StatusChangeAsync',
     /** 分配资源 */
     assignResourcesAsync: 'UserController_AssignResourcesAsync',
+    /** 分配权限 */
+    assignDataPermissionsAsync: 'UserController_AssignDataPermissionsAsync',
     /** 重置密码 */
     resetPasswordAsync: 'UserController_ResetPasswordAsync',
+    /** 读取数据权限 */
+    getDataPermissionsAsync: 'UserController_GetDataPermissionsAsync',
   },
 };

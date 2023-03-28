@@ -145,7 +145,7 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
     private List<string> GetUserOrganizationIds()
     {
         // 任职表
-        var orgIds = QueryNoTracking<OrganizationUser>()
+        var orgIds = QueryNoTracking<UserAppointment>()
             .Where(p => p.UserId == UserId)
             .ToList(p => p.OrganizationId);
 

@@ -59,18 +59,6 @@ public interface IUserQueryService
     Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId);
 
     /// <summary>
-    /// 读取组织架构用户树形列表
-    /// </summary>
-    /// <returns></returns>
-    Task<List<CascaderViewModel>> GetOrganizationUserTreeSelectListAsync();
-
-    /// <summary>
-    /// 读取组织架构和用户树形列表
-    /// </summary>
-    /// <returns></returns>
-    Task<List<CascaderViewModel>> GetOrganizationAndUserTreeSelectListAsync();
-
-    /// <summary>
     /// 读取用户资源
     /// </summary>
     /// <param name="userId"></param>

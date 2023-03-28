@@ -149,18 +149,14 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         {
             throw FriendlyException.Of("登录名或密码错误");
         }
-
-        result.OrganizationName = await QueryNoTracking<OrganizationUser>()
-            .Where(p => p.UserId == result.Id)
-            .ToListAsync(p => p.Organization.Name);
-
+        
         // 读取角色
         var roleIds = Query<RoleUser>()
             .As("e")
             .Where(p => p.UserId == result.Id);
 
         // 读取组织架构用户
-        var organizationIds = await Query<OrganizationUser>()
+        var organizationIds = await Query<UserAppointment>()
             .Where(p => p.UserId == result.Id)
             .ToListAsync(p => p.OrganizationId);
         // 组织架构Id
@@ -209,7 +205,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         var organizationIds = Query<OrganizationRole>()
             .Where(p => p.RoleId == roleId);
 
-        var userIds1 = await Query<OrganizationUser>()
+        var userIds1 = await Query<UserAppointment>()
             .Where(p => organizationIds.Any(c => c.OrganizationId == p.OrganizationId))
             .ToListAsync(p => p.UserId);
         list.AddRange(userIds1);
@@ -282,94 +278,6 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 Disabled = t1.Status == Status.Disabled,
                 Extend = t1.UserName
             });
-
-        return result;
-    }
-
-    /// <summary>
-    /// 读取组织架构用户树形列表
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="FriendlyException"></exception>
-    public async Task<List<CascaderViewModel>> GetOrganizationUserTreeSelectListAsync()
-    {
-        var res = await QueryNoTracking<OrganizationUser>()
-            .Where(p => QueryNoTracking<Organization>()
-                .As("o")
-                .Any(o => o.Id == p.OrganizationId)
-            )
-            .ToListAsync(p => new
-            {
-                p.User.RealName,
-                p.UserId,
-                OrganizationName = p.Organization.Name,
-                p.OrganizationId,
-                OrganizationParentId = p.Organization.ParentId,
-                p.Organization.ParentPath
-            });
-
-        var orgIds = new List<string?>();
-        foreach (var item in res)
-        {
-            orgIds.AddRange(item.ParentPath.Split(','));
-            orgIds.Add(item.OrganizationId);
-        }
-
-        orgIds = orgIds.GroupBy(p => p).Select(p => p.Key).ToList();
-
-        // 读取组织架构列表
-        var organizationList = await QueryNoTracking<Organization>()
-            .Where(p => orgIds.Contains(p.Id) || orgIds.Contains(p.ParentId))
-            .ToListAsync();
-        var list = new List<dynamic>();
-        list.AddRange(res);
-        var result = new List<CascaderViewModel>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.OrganizationParentId;
-        GetTreeChildren(organizationList, list, result, parentId, true);
-
-        return result;
-    }
-
-
-    /// <summary>
-    /// 读取组织架构用户树形列表
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="FriendlyException"></exception>
-    public async Task<List<CascaderViewModel>> GetOrganizationAndUserTreeSelectListAsync()
-    {
-        var res = await QueryNoTracking<OrganizationUser>()
-            .Where(p => QueryNoTracking<Organization>().As("o")
-                .Any(o => o.Id == p.OrganizationId)
-            )
-            .ToListAsync(p => new
-            {
-                p.User.RealName,
-                p.UserId,
-                OrganizationName = p.Organization.Name,
-                p.OrganizationId,
-                OrganizationParentId = p.Organization.ParentId,
-                p.Organization.ParentPath
-            });
-
-        var orgIds = new List<string?>();
-        foreach (var item in res)
-        {
-            orgIds.AddRange(item.ParentPath.Split(','));
-            orgIds.Add(item.OrganizationId);
-        }
-
-        orgIds = orgIds.GroupBy(p => p).Select(p => p.Key).ToList();
-
-        // 读取组织架构列表
-        var organizationList = await QueryNoTracking<Organization>()
-            .Where(p => orgIds.Contains(p.Id) || orgIds.Contains(p.ParentId))
-            .ToListAsync();
-        var list = new List<dynamic>();
-        list.AddRange(res);
-        var result = new List<CascaderViewModel>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.OrganizationParentId;
-        GetTreeChildren(organizationList, list, result, parentId);
 
         return result;
     }

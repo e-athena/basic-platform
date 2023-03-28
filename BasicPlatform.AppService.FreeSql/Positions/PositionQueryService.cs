@@ -10,7 +10,10 @@ namespace BasicPlatform.AppService.FreeSql.Positions;
 [Component]
 public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IPositionQueryService
 {
-    public PositionQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor) : base(freeSql, accessor)
+    public PositionQueryService(
+        IFreeSql freeSql,
+        ISecurityContextAccessor accessor,
+        ICacheManager cacheManager) : base(freeSql, accessor, cacheManager)
     {
     }
 

@@ -199,28 +199,6 @@ public class UserController : CustomControllerBase
         return _queryService.GetSelectListAsync(organizationId);
     }
 
-
-    /// <summary>
-    /// 读取组织架构用户树形列表
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(ApiPermissionConstant.OrgUserTreeSelectListForSelf, IsVisible = false)]
-    public Task<List<CascaderViewModel>> GetOrganizationUserTreeSelectListAsync()
-    {
-        return _queryService.GetOrganizationUserTreeSelectListAsync();
-    }
-
-    // /// <summary>
-    // /// 读取组织架构和用户树形列表
-    // /// </summary>
-    // /// <returns></returns>
-    // [HttpGet]
-    // public Task<List<CascaderViewModel>> GetOrganizationAndUserTreeSelectListAsync()
-    // {
-    //     return _queryService.GetOrganizationAndUserTreeSelectListAsync();
-    // }
-
     /// <summary>
     /// 读取资源
     /// </summary>

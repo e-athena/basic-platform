@@ -36,17 +36,4 @@ public class AppQueryServiceBase<T> : QueryServiceBase<T> where T : EntityCore, 
     /// 租户ID
     /// </summary>
     protected string? TenantId => _accessor.TenantId;
-
-    /// <summary>
-    /// 读取组织架构同级及下级用户列表
-    /// </summary>
-    /// <param name="organizationId"></param>
-    /// <returns></returns>
-    protected async Task<List<string>?> GetOrganizationUserIdTreeAsync(string organizationId)
-    {
-        var list = await QueryNoTracking<OrganizationUser>()
-            .Where(c => c.Organization.ParentPath.Contains(organizationId) || c.OrganizationId == organizationId)
-            .ToListAsync(p => p.UserId);
-        return list.GroupBy(p => p).Select(p => p.Key).ToList();
-    }
 }

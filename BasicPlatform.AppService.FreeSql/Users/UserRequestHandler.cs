@@ -92,7 +92,7 @@ public class UserRequestHandler : AppServiceBase<User>,
             throw FriendlyException.Of("用户名已存在");
         }
 
-        // 封装实体对象
+        // 读取数据
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         // 更新
         entity.Update(
@@ -105,8 +105,7 @@ public class UserRequestHandler : AppServiceBase<User>,
             request.Email,
             request.OrganizationId,
             request.PositionId,
-            UserId,
-            IsRoot
+            UserId
         );
 
         #region 用户角色

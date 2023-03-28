@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.XPath;
 using Athena.Infrastructure.Summaries;
-using BasicPlatform.AppService.DataPermissions.Attributes;
 using BasicPlatform.AppService.DataPermissions.Models;
 
 namespace BasicPlatform.AppService.DataPermissions;
@@ -48,23 +47,27 @@ public static class DataPermissionHelper
             var displayName = string.IsNullOrEmpty(group.Key) ? "默认分组" : group.Key;
             list.Add(new DataPermissionGroup(
                 displayName,
-                group.Select(
-                    c =>
-                    {
-                        var resourceKey = c.BaseType.FullName!;
-                        var item = permissions.FirstOrDefault(p => p.ResourceKey == resourceKey);
-                        return new DataPermission(
-                            c.DisplayName!,
-                            c.BaseType.FullName!
-                        )
+                group
+                    .OrderBy(p => p.Sort)
+                    .Select(
+                        c =>
                         {
-                            Enabled = item is {Enabled: true},
-                            DataScope = item?.DataScope ?? RoleDataScope.All,
-                            DataScopeCustom = item?.DataScopeCustom,
-                            DisableChecked = item?.DisableChecked ?? false
-                        };
-                    }
-                ).ToList()));
+                            var resourceKey = c.BaseType.FullName!;
+                            var item = permissions.FirstOrDefault(p => p.ResourceKey == resourceKey);
+                            return new DataPermission(
+                                c.DisplayName!,
+                                c.BaseType.FullName!
+                            )
+                            {
+                                Enabled = item is {Enabled: true},
+                                DataScope = item?.DataScope ?? RoleDataScope.All,
+                                DataScopeCustom = item?.DataScopeCustom,
+                                DisableChecked = item?.DisableChecked ?? false
+                            };
+                        }
+                    )
+                    .ToList())
+            );
         }
 
         return list;

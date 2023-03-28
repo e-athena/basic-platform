@@ -12,9 +12,4 @@ public class GetUserByUserNameResponse : UserQueryModel
     /// 角色列表
     /// </summary>
     public List<RoleModel> Roles { get; set; } = new();
-
-    /// <summary>
-    /// 组织架构名称
-    /// </summary>
-    public List<string> OrganizationName { get; set; } = new();
 }

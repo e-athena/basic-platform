@@ -129,18 +129,6 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     public async Task<List<CascaderViewModel>> GetCascaderListAsync()
     {
         var list = await QueryableNoTracking.ToListAsync();
-        if (!IsRoot)
-        {
-            var peerOrganization = await QueryNoTracking<OrganizationUser>()
-                .Where(p => p.UserId == UserId)
-                .OrderBy(p => p.Organization.ParentPath.Length)
-                .ToOneAsync(p => p.Organization);
-            if (peerOrganization != null)
-            {
-                list.Add(peerOrganization);
-            }
-        }
-
         var result = new List<CascaderViewModel>();
         var parentId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
         // 递归读取

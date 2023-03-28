@@ -1,3 +1,4 @@
+using BasicPlatform.Domain.Events.Users;
 using BasicPlatform.Infrastructure.IntegrationEvents;
 
 namespace BasicPlatform.Domain.Models;
@@ -208,26 +209,12 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="email"></param>
     /// <param name="positionId"></param>
     /// <param name="updatedUserId"></param>
-    /// <param name="isRoot"></param>
     /// <param name="gender"></param>
     /// <param name="organizationId"></param>
     public void Update(string userName, string? avatar, string realName, Gender gender,
         string? nickName,
-        string? phoneNumber, string? email, string organizationId, string positionId, string? updatedUserId,
-        bool isRoot)
+        string? phoneNumber, string? email, string organizationId, string positionId, string? updatedUserId)
     {
-        // // 密码为空时不修改
-        // if (!string.IsNullOrEmpty(password))
-        // {
-        //     Password = PasswordHash.CreateHash(password);
-        // }
-        //
-        // // 非开发者帐号不能修改开发者帐号的密码
-        // if (UserName == "root" && !isRoot && !string.IsNullOrEmpty(password))
-        // {
-        //     throw FriendlyException.Of("非开发者帐号不能修改开发者帐号的密码");
-        // }
-
         UserName = userName;
         Avatar = avatar;
         RealName = realName;
@@ -239,6 +226,11 @@ public class User : EntityCore, ICreator, IUpdater
         PositionId = positionId;
         UpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
+
+        // 添加领域事件
+        AddDomainEvent(new UserUpdatedEvent(Id, userName, avatar, realName, gender,
+            nickName, phoneNumber, email, organizationId, positionId)
+        );
     }
 
     /// <summary>

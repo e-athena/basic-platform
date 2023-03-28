@@ -45,12 +45,17 @@ const TableList: React.FC = () => {
     [
       permission.user.putAsync,
       permission.user.assignResourcesAsync,
+      permission.user.assignDataPermissionsAsync,
       permission.user.resetPasswordAsync,
     ],
     resource,
   );
   const showMoreOption: boolean = hasPermission(
-    [permission.user.assignResourcesAsync, permission.user.resetPasswordAsync],
+    [
+      permission.user.assignResourcesAsync,
+      permission.user.assignDataPermissionsAsync,
+      permission.user.resetPasswordAsync
+    ],
     resource,
   );
 
