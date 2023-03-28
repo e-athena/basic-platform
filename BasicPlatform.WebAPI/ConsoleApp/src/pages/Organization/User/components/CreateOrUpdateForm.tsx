@@ -5,15 +5,15 @@ import {
   ModalForm,
   ProForm,
   ProFormSelect,
-  ProFormTreeSelect,
   ProFormRadio,
   FormInstance,
+  ProFormCascader,
 } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
 import { roleList } from '@/services/ant-design-pro/system/role';
 import { positionList } from '@/services/ant-design-pro/system/position';
-import { orgTreeSelect } from '@/services/ant-design-pro/system/org';
+import { orgCascader } from '@/services/ant-design-pro/system/org';
 
 type CreateOrUpdateFormProps = {
   onCancel: () => void;
@@ -39,6 +39,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         destroyOnClose: true,
       }}
       onFinish={async (values: API.UpdateUserRequest) => {
+        if (values.organizationId !== undefined && values.organizationId.length !== 0) {
+          values.organizationId = values.organizationId[values.organizationId.length - 1];
+        }
         const isUpdate = props.values !== undefined;
         if (isUpdate) {
           values.id = props.values!.id!;
@@ -56,6 +59,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       }}
       initialValues={{
         ...props.values,
+        organizationId:
+          props.values?.organizationPath === undefined || props.values?.organizationPath === ''
+            ? []
+            : props.values?.organizationPath.split(','),
       }}
     >
       <ProForm.Group>
@@ -123,52 +130,51 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           ]}
         />
       </ProForm.Group>
-      <ProForm.Group>
-        <ProFormTreeSelect
-          name="organizationId"
-          label="组织/部门"
-          fieldProps={{
-            showSearch: true,
-            onChange: (value: string) => {
-              setOrganizationId(value);
-              formRef.current?.setFieldsValue({
-                positionId: undefined,
-              });
-            },
-          }}
-          width="sm"
-          request={async () => {
-            const { data } = await orgTreeSelect();
-            return data || [];
-          }}
-          rules={[
-            {
-              required: true,
-              message: '请选择',
-            },
-          ]}
-        />
-        <ProFormSelect
-          name="positionId"
-          label="职位"
-          showSearch
-          width="sm"
-          placeholder="请先选择组织/部门"
-          params={{
-            organizationId: organizationId || props.values?.organizationId,
-          }}
-          request={async (params: { organizationId?: string }) => {
-            const { data } = await positionList(params.organizationId);
-            return data || [];
-          }}
-          rules={[
-            {
-              required: true,
-              message: '请选择',
-            },
-          ]}
-        />
-      </ProForm.Group>
+      <ProFormCascader
+        name="organizationId"
+        label="组织/部门"
+        fieldProps={{
+          showSearch: true,
+          changeOnSelect: true,
+          onChange: (values: string[] | any) => {
+            formRef.current?.setFieldsValue({
+              positionId: undefined,
+            });
+            if (values) {
+              setOrganizationId(values[values.length - 1]);
+            }
+          }
+        }}
+        request={async () => {
+          const { data } = await orgCascader();
+          return (data || []) as any;
+        }}
+        rules={[
+          {
+            required: true,
+            message: '请选择',
+          },
+        ]}
+      />
+      <ProFormSelect
+        name="positionId"
+        label="职位"
+        showSearch
+        placeholder="请先选择组织/部门"
+        params={{
+          organizationId: organizationId || props.values?.organizationId,
+        }}
+        request={async (params: { organizationId?: string }) => {
+          const { data } = await positionList(params.organizationId);
+          return data || [];
+        }}
+        rules={[
+          {
+            required: true,
+            message: '请选择',
+          },
+        ]}
+      />
       <ProFormSelect
         name="roleIds"
         label="角色"

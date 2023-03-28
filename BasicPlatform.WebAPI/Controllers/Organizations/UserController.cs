@@ -89,7 +89,7 @@ public class UserController : CustomControllerBase
     [ApiPermission(AdditionalRules = new[]
     {
         ApiPermissionConstant.PositionSelectList,
-        ApiPermissionConstant.OrgTreeSelectList,
+        ApiPermissionConstant.OrgCascaderList,
         ApiPermissionConstant.RoleSelectList
     })]
     public Task<string> PostAsync([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
@@ -107,7 +107,7 @@ public class UserController : CustomControllerBase
     [ApiPermission(AdditionalRules = new[]
     {
         ApiPermissionConstant.PositionSelectList,
-        ApiPermissionConstant.OrgTreeSelectList,
+        ApiPermissionConstant.OrgCascaderList,
         ApiPermissionConstant.RoleSelectList,
         ApiPermissionConstant.UserDetail
     })]

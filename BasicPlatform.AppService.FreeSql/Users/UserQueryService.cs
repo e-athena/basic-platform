@@ -107,12 +107,18 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .Where(p => p.Id == id)
             .ToOneAsync(p => new GetUserByIdResponse
             {
-                Password = string.Empty
+                Password = string.Empty,
+                OrganizationPath = p.Organization!.ParentPath
             }, cancellationToken);
 
         if (result == null)
         {
             throw FriendlyException.Of("找不到数据");
+        }
+
+        if (!string.IsNullOrEmpty(result.OrganizationPath))
+        {
+            result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
         }
 
         // 读取角色
@@ -149,7 +155,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         {
             throw FriendlyException.Of("登录名或密码错误");
         }
-        
+
         // 读取角色
         var roleIds = Query<RoleUser>()
             .As("e")

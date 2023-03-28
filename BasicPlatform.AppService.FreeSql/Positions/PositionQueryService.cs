@@ -55,20 +55,22 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
     /// <returns></returns>
     public async Task<GetPositionByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default)
     {
-        var entity = await QueryableNoTracking
+        var result = await QueryableNoTracking
             .Where(p => p.Id == id)
             .FirstAsync(p => new GetPositionByIdResponse
             {
                 OrganizationPath = p.Organization!.ParentPath
             }, cancellationToken);
-        if (entity is null)
+        if (result is null)
         {
             throw FriendlyException.Of("职位不存在");
         }
 
-        entity.OrganizationPath = $"{entity.OrganizationPath},{entity.OrganizationId}";
-
-        return entity;
+        if (!string.IsNullOrEmpty(result.OrganizationPath))
+        {
+            result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
+        }
+        return result;
     }
 
     /// <summary>

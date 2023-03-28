@@ -29,13 +29,15 @@ const TableList: React.FC = () => {
       title: '路由',
       dataIndex: 'path',
       hideInSearch: true,
-      width: 150,
+      width: 180,
+      ellipsis: true,
     },
     {
       title: '代码',
       dataIndex: 'code',
-      width: 220,
+      width: 210,
       hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: '显示',

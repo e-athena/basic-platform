@@ -34,6 +34,7 @@ declare namespace API {
   type UserDetailInfo = {
     resources: ResourceModel[];
     organizationId: string;
+    organizationPath?: string;
     roleIds: string[];
   } & Partial<UserListItem>;
 
