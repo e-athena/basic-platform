@@ -34,7 +34,7 @@ export function assignUsers(data: API.AssignRolUsersRequest) {
 }
 /** 数据权限列表 */
 export function dataPermission(id: string) {
-  return get<API.RoleDataPermissionGroup[]>('/api/Role/GetDataPermissions', { id });
+  return get<API.DataPermissionGroup[]>('/api/Role/GetDataPermissions', { id });
 }
 /** 分配数据权限 */
 export function assignDataPermissions(data: API.AssignRoleDataPermissionsRequest) {

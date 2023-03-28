@@ -60,7 +60,8 @@ public static class DataPermissionHelper
                         {
                             Enabled = item is {Enabled: true},
                             DataScope = item?.DataScope ?? RoleDataScope.All,
-                            DataScopeCustom = item?.DataScopeCustom
+                            DataScopeCustom = item?.DataScopeCustom,
+                            DisableChecked = item?.DisableChecked ?? false
                         };
                     }
                 ).ToList()));

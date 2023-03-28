@@ -6,6 +6,11 @@ namespace BasicPlatform.AppService.DataPermissions.Models;
 public class DataPermission
 {
     /// <summary>
+    /// 禁用选中☑️
+    /// </summary>
+    public bool DisableChecked { get; set; }
+
+    /// <summary>
     /// 启用
     /// </summary>
     public bool Enabled { get; set; }
@@ -33,8 +38,9 @@ public class DataPermission
     /// <summary>
     /// 自定义数据访问范围
     /// </summary>
-    public IList<string> DataScopeCustoms => DataScopeCustom?.Split(',').ToList() ?? new List<string>();
-
+    public IList<string> DataScopeCustoms => string.IsNullOrEmpty(DataScopeCustom)
+        ? new List<string>()
+        : DataScopeCustom.Split(',').ToList();
     /// <summary>
     /// 
     /// </summary>

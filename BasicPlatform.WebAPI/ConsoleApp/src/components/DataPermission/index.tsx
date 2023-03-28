@@ -1,25 +1,35 @@
-import { submitHandle } from '@/utils/utils';
-import { ModalForm, ProColumns, ProTable } from '@ant-design/pro-components';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
 import { Badge, Button, Checkbox, Radio, Segmented, Space, Tooltip } from 'antd';
-import React, { useState } from 'react';
-import { dataPermission, assignDataPermissions } from '../service';
+import React, { useEffect, useState } from 'react';
 import OrgModal from '@/components/OrgModal';
 
-type DataPermissionFormProps = {
-  onCancel: () => void;
-  onSuccess: () => void;
-  open: boolean;
-  roleId: string;
-  title?: string;
+type DataPermissionProps = {
+  data: API.DataPermissionGroup[];
+  onChange: (data: API.DataPermissionGroup[]) => void;
 };
 
-const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
+const DataPermission: React.FC<DataPermissionProps> = (props) => {
   const [dataSources, setDataSources] = useState<API.DataPermissionGroup[]>([]);
   const [segmentedOptions, setSegmentedOptioins] = useState<string[]>([]);
   const [currentSegmented, setCurrentSegmented] = useState<string>('');
   const [orgModalOpen, setOrgModalOpen] = useState<boolean>(false);
   const [dataScopeCustoms, setDataScopeCustoms] = useState<string[]>([]);
   const [currentResourceKey, setCurrentResourceKey] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  console.log(props.data);
+  useEffect(() => {
+    if (loading && props.data.length > 0) {
+      setLoading(false);
+      setDataSources(props.data);
+      setSegmentedOptioins(props.data.map((item) => item.displayName!));
+      setCurrentSegmented(props.data[0].displayName!);
+    }
+  }, [loading, props.data])
+
+  useEffect(() => {
+    props.onChange(dataSources);
+  }, [dataSources]);
 
   const columns: ProColumns<API.DataPermission>[] = [
     {
@@ -33,6 +43,7 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
         return (
           <Checkbox
             checked={entity.enabled}
+            disabled={entity.disableChecked && entity.enabled}
             onChange={(e) => {
               // 更新dataSources的启用状态
               const index = dataSources.findIndex((item) => item.displayName === currentSegmented);
@@ -128,42 +139,7 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
     },
   ];
   return (
-    <ModalForm
-      width={860}
-      title={props.title || '分配权限'}
-      open={props.open}
-      modalProps={{
-        onCancel: () => {
-          props.onCancel();
-        },
-        // bodyStyle: { padding: '32px 40px 48px' },
-        bodyStyle: { padding: '10px 0', minHeight: 400 },
-        destroyOnClose: true,
-      }}
-      onFinish={async () => {
-        // 将DataSources展开
-        let permissions: API.DataPermissionItem[] = [];
-        for (let j = 0; j < dataSources.length; j++) {
-          const group = dataSources[j];
-          for (let i = 0; i < group.items.length; i++) {
-            const item = group.items[i];
-            permissions.push({
-              resourceKey: item.resourceKey,
-              dataScope: item.dataScope,
-              enabled: item.enabled,
-              dataScopeCustom: (item.dataScopeCustoms || []).join(','),
-            });
-          }
-        }
-        const succeed = await submitHandle(assignDataPermissions, {
-          id: props.roleId,
-          permissions,
-        });
-        if (succeed) {
-          props.onSuccess();
-        }
-      }}
-    >
+    <>
       {segmentedOptions.length > 1 && (
         <div style={{ padding: '20px 0' }}>
           <Segmented
@@ -177,31 +153,22 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
         </div>
       )}
       <ProTable<API.DataPermission>
-        headerTitle={'资源列表'}
+        loading={loading}
+        headerTitle={'权限列表'}
         rowKey="resourceKey"
         search={false}
         toolBarRender={false}
         request={async (params) => {
-          if (dataSources.length > 0 && params.group !== '') {
-            const items =
-              dataSources.find((item) => item.displayName === params.group)?.items || [];
+          if (dataSources.length > 0 && currentSegmented !== '') {
+            const items = dataSources.find((item) => item.displayName === params.group)?.items || [];
             return {
               data: items,
               success: true,
               total: 0,
             };
           }
-          const res = await dataPermission(props.roleId);
-          let list: any = [];
-          if (res.success && res.data !== null && res.data!.length > 0) {
-            const data = res.data!;
-            setDataSources(data);
-            setSegmentedOptioins(data.map((item) => item.displayName!));
-            setCurrentSegmented(data[0].displayName!);
-            list = res.data![0].items;
-          }
           return {
-            data: list,
+            data: [],
             success: true,
             total: 0,
           };
@@ -233,8 +200,8 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
         }}
         defaultSelectedKeys={dataScopeCustoms || []}
       />
-    </ModalForm>
+    </>
   );
 };
 
-export default DataPermissionForm;
+export default DataPermission;

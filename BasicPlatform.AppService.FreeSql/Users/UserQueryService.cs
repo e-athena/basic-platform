@@ -476,6 +476,72 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
+    /// 读取用户数据权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync(string id)
+    {
+        // 读取用户的角色数据权限
+        var list = await QueryNoTracking<RoleDataPermission>()
+            // 读取用户的角色
+            .Where(p => QueryNoTracking<RoleUser>()
+                .As("c")
+                .Where(c => c.UserId == id)
+                .Any(c => c.RoleId == p.RoleId)
+            )
+            .ToListAsync(p => new GetUserDataPermissionsResponse
+            {
+                ResourceKey = p.ResourceKey,
+                DataScope = p.DataScope,
+                Enabled = p.Enabled,
+                DataScopeCustom = p.DataScopeCustom,
+            });
+        foreach (var item in list)
+        {
+            item.IsRolePermission = true;
+        }
+
+        // 读取用户的数据权限
+        var userPermissionList = await QueryNoTracking<UserDataPermission>()
+            .Where(p => p.UserId == id)
+            // 读取未过期的
+            .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
+            .ToListAsync(p => new GetUserDataPermissionsResponse
+            {
+                ResourceKey = p.ResourceKey,
+                DataScope = p.DataScope,
+                Enabled = p.Enabled,
+                DataScopeCustom = p.DataScopeCustom,
+            });
+
+        // 以用户的为准，因为可对用户进行个性化设置
+        foreach (var item in userPermissionList)
+        {
+            // 查询
+            var single = list
+                .Where(p => p.DataScope != item.DataScope)
+                .FirstOrDefault(p => p.ResourceKey == item.ResourceKey);
+            if (single == null)
+            {
+                list.Add(item);
+                continue;
+            }
+
+            single.DataScope = item.DataScope;
+            single.DataScopeCustom = item.DataScopeCustom;
+        }
+
+        // 去重
+        list = list
+            .GroupBy(p => p.ResourceKey)
+            .Select(p => p.First())
+            .ToList();
+
+        return list;
+    }
+
+    /// <summary>
     /// 递归读取
     /// </summary>
     /// <param name="entities"></param>

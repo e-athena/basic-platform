@@ -34,7 +34,14 @@ export function queryResourceCodeInfo(id: string) {
 export function assignResources(data: API.AssignUserResourcesRequest) {
   return put<API.AssignUserResourcesRequest, string>('/api/User/AssignResources', data);
 }
-
+/** 数据权限列表 */
+export function dataPermission(id: string) {
+  return get<API.DataPermissionGroup[]>('/api/User/GetDataPermissions', { id });
+}
+/** 分配数据权限 */
+export function assignDataPermissions(data: API.AssignUserDataPermissionsRequest) {
+  return put<API.AssignUserDataPermissionsRequest, string>('/api/User/AssignDataPermissions', data);
+}
 /** 切换状态 */
 export function statusChange(id: string) {
   return put('/api/User/StatusChange', { id });

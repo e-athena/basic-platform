@@ -1,3 +1,5 @@
+using BasicPlatform.AppService.DataPermissions;
+using BasicPlatform.AppService.DataPermissions.Models;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
@@ -141,6 +143,19 @@ public class UserController : CustomControllerBase
     }
 
     /// <summary>
+    /// 分配权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    public Task<string> AssignDataPermissionsAsync([FromBody] AssignUserDataPermissionsRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
     /// 更新表格列表信息
     /// </summary>
     /// <param name="request"></param>
@@ -228,7 +243,7 @@ public class UserController : CustomControllerBase
         var keys = resources.Select(p => p.Key).ToList();
         var result = service.GetPermissionMenuResources(assembly, keys);
 
-        return await Task.FromResult(result);
+        return result;
     }
 
     /// <summary>
@@ -253,6 +268,28 @@ public class UserController : CustomControllerBase
     public Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync([FromQuery] string id)
     {
         return _queryService.GetResourceCodeInfoAsync(id);
+    }
+
+    /// <summary>
+    /// 读取数据权限
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
+    {
+        var result = await _queryService.GetDataPermissionsAsync(id);
+        var assembly = Assembly.Load("BasicPlatform.AppService");
+        return DataPermissionHelper.GetTreeList(
+            assembly,
+            result.Select(p => new DataPermission
+            {
+                ResourceKey = p.ResourceKey,
+                DataScopeCustom = p.DataScopeCustom,
+                DataScope = p.DataScope,
+                Enabled = p.Enabled,
+                DisableChecked = p.IsRolePermission
+            }).ToList()
+        );
     }
 
     #endregion

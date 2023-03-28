@@ -1,9 +1,9 @@
-namespace BasicPlatform.AppService.Roles.Models;
+namespace BasicPlatform.AppService.Users.Models;
 
 /// <summary>
-/// 数据数据权限模型
+/// 数据权限模型
 /// </summary>
-public class RoleDataPermissionModel
+public class UserDataPermissionModel
 {
     /// <summary>
     /// 资源Key

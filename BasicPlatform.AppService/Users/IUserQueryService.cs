@@ -103,4 +103,11 @@ public interface IUserQueryService
     /// <param name="moduleName">模块名</param>
     /// <returns></returns>
     Task<List<UserCustomColumnModel>> GetCurrentUserCustomColumnsAsync(string moduleName);
+    
+    /// <summary>
+    /// 读取数据权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync(string id);
 }

@@ -41,17 +41,29 @@ public class UserDataPermission : ValueObject
     /// </summary>
     public bool Enabled { get; set; }
 
+    /// <summary>
+    /// 有效期至
+    /// <remarks>为空时永久有效</remarks>
+    /// </summary>
+    public DateTime? ExpireAt { get; set; }
+
     public UserDataPermission()
     {
     }
 
-    public UserDataPermission(string userId, string resourceKey, RoleDataScope dataScope, string? dataScopeCustom,
-        bool enabled)
+    public UserDataPermission(
+        string userId,
+        string resourceKey,
+        RoleDataScope dataScope,
+        string? dataScopeCustom,
+        bool enabled, 
+        DateTime? expireAt)
     {
         UserId = userId;
         ResourceKey = resourceKey;
         DataScope = dataScope;
         DataScopeCustom = dataScopeCustom;
         Enabled = enabled;
+        ExpireAt = expireAt;
     }
 }

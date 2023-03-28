@@ -50,32 +50,9 @@ declare namespace API {
     userIds: string[];
   };
 
-  /** 数据权限组 */
-  type RoleDataPermissionGroup = {
-    displayName: string;
-    items: RoleDataPermission[];
-  };
-
-  /** 数据权限 */
-  type RoleDataPermission = {
-    displayName?: string;
-    resourceKey: string;
-    dataScope: number;
-    enabled: boolean;
-    dataScopeCustom?: string;
-    dataScopeCustoms: string[];
-  };
-
   /** 分配数据权限 */
   type AssignRoleDataPermissionsRequest = {
     id: string;
-    permissions: RoleDataPermissionItem[];
-  };
-  /** 分配数据权限 */
-  type RoleDataPermissionItem = {
-    resourceKey: string;
-    dataScope: number;
-    enabled: boolean;
-    dataScopeCustom?: string;
+    permissions: DataPermissionItem[];
   };
 }

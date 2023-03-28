@@ -14,7 +14,8 @@ public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<UpdateUserLoginInfoRequest, bool>,
     IRequestHandler<AddUserAccessRecordRequest, long>,
     IRequestHandler<UpdateUserCustomColumnsRequest, long>,
-    IRequestHandler<ResetUserPasswordRequest, string>
+    IRequestHandler<ResetUserPasswordRequest, string>,
+    IRequestHandler<AssignUserDataPermissionsRequest, string>
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
@@ -180,6 +181,35 @@ public class UserRequestHandler : AppServiceBase<User>,
             .Select(p => new UserResource(request.Id, p.Key, p.Code, request.ExpireAt))
             .ToList();
         await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
+
+        return request.Id;
+    }
+
+
+    /// <summary>
+    /// 分配数据权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Handle(AssignUserDataPermissionsRequest request, CancellationToken cancellationToken)
+    {
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<UserDataPermission>(
+            p => p.UserId == request.Id, cancellationToken
+        );
+        if (request.Permissions.Count <= 0)
+        {
+            return request.Id;
+        }
+
+        // 新增新数据
+        var userDataPermissions = request
+            .Permissions
+            .Select(p => new UserDataPermission
+                (request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled, request.ExpireAt))
+            .ToList();
+        await RegisterNewRangeValueObjectAsync(userDataPermissions, cancellationToken);
 
         return request.Id;
     }

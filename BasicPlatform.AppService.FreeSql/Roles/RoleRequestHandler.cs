@@ -145,11 +145,11 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         }
 
         // 新增新数据
-        var roleResources = request
+        var roleDataPermissions = request
             .Permissions
             .Select(p => new RoleDataPermission(request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled))
             .ToList();
-        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
+        await RegisterNewRangeValueObjectAsync(roleDataPermissions, cancellationToken);
 
         return request.Id;
     }

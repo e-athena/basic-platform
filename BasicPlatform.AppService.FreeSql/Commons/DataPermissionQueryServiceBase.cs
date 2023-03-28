@@ -361,12 +361,30 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
             .Where(p => p.UserId == userId)
             // 启用的
             .Where(p => p.Enabled)
+            // 读取未过期的
+            .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToList(p => new DataPermission
             {
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
             });
-        list.AddRange(userPermissionList);
+
+        // 以用户的为准，因为可对用户进行个性化设置
+        foreach (var item in userPermissionList)
+        {
+            // 查询
+            var single = list
+                .Where(p => p.DataScope != item.DataScope)
+                .FirstOrDefault(p => p.ResourceKey == item.ResourceKey);
+            if (single == null)
+            {
+                list.Add(item);
+                continue;
+            }
+
+            single.DataScope = item.DataScope;
+            single.DataScopeCustom = item.DataScopeCustom;
+        }
 
         // 去重
         list = list

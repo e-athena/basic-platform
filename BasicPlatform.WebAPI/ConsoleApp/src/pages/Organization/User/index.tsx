@@ -5,6 +5,7 @@ import {
   SafetyOutlined,
   MoreOutlined,
   ReloadOutlined,
+  ShareAltOutlined,
 } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
@@ -20,11 +21,13 @@ import OrganizationTree from '@/components/OrganizationTree';
 import { useSize } from 'ahooks';
 import ProTablePlus from '@/components/ProTablePlus';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import DataPermissionForm from './components/DataPermissionForm';
 const { Paragraph } = Typography;
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
   const [authorizationModalOpen, handleAuthorizationModalOpen] = useState<boolean>(false);
+  const [permissionModalOpen, handlePermissionModalOpen] = useState<boolean>(false);
 
   // 获取card的宽度，用于计算表格的宽度
   const tableSize = useSize(document.getElementsByClassName('ant-pro-card-body')[0]);
@@ -154,8 +157,15 @@ const TableList: React.FC = () => {
         if (canAccessible(permission.user.assignResourcesAsync, resource)) {
           moreItems.push({
             key: 'auth',
+            icon: <ShareAltOutlined />,
+            label: '分配资源',
+          });
+        }
+        if (canAccessible(permission.user.assignResourcesAsync, resource)) {
+          moreItems.push({
+            key: 'permission',
             icon: <SafetyOutlined />,
-            label: '资源授权',
+            label: '分配权限',
           });
         }
         if (canAccessible(permission.user.resetPasswordAsync, resource)) {
@@ -202,6 +212,12 @@ const TableList: React.FC = () => {
                       return;
                     }
                     message.error(res.message);
+                    return;
+                  }
+                  if (key === 'permission') {
+                    setCurrentRow(entity as any);
+                    handlePermissionModalOpen(true);
+                    return;
                   }
                   if (key === 'resetPassword') {
                     Modal.confirm({
@@ -264,8 +280,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                    maxWidth: tableSize?.width - 270 - 24,
-                  }
+                  maxWidth: tableSize?.width - 270 - 24,
+                }
                 : {}
             }
             defaultColumns={defaultColumns}
@@ -306,6 +322,7 @@ const TableList: React.FC = () => {
         values={currentRow}
       />
       <AuthorizationForm
+        title={`${currentRow?.realName} - 分配资源`}
         onCancel={() => {
           handleAuthorizationModalOpen(false);
         }}
@@ -316,6 +333,19 @@ const TableList: React.FC = () => {
         values={currentRow}
         resourceCodeInfo={currentResourceCodeRow}
       />
+      {permissionModalOpen && (
+        <DataPermissionForm
+          title={`${currentRow?.realName} - 分配权限`}
+          onCancel={() => {
+            handlePermissionModalOpen(false);
+          }}
+          onSuccess={() => {
+            handlePermissionModalOpen(false);
+          }}
+          open={permissionModalOpen}
+          userId={currentRow!.id!}
+        />
+      )}
     </PageContainer>
   );
 };

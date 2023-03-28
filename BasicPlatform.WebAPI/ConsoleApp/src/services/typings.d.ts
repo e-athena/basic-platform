@@ -69,4 +69,29 @@ declare namespace API {
     /** 枚举 */
     enumOptions?: any[];
   };
+
+  /** 数据权限组 */
+  type DataPermissionGroup = {
+    displayName: string;
+    items: DataPermission[];
+  };
+
+  /** 数据权限 */
+  type DataPermission = {
+    displayName?: string;
+    resourceKey: string;
+    dataScope: number;
+    enabled: boolean;
+    disableChecked: boolean;
+    dataScopeCustom?: string;
+    dataScopeCustoms: string[];
+  };
+
+  /** 分配数据权限 */
+  type DataPermissionItem = {
+    resourceKey: string;
+    dataScope: number;
+    enabled: boolean;
+    dataScopeCustom?: string;
+  };
 }

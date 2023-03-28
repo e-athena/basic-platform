@@ -11,6 +11,7 @@ type AuthorizationFormProps = {
   open: boolean;
   values?: API.UserDetailInfo;
   resourceCodeInfo: API.UserResourceCodeInfo;
+  title?: string;
 };
 
 const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
@@ -18,13 +19,14 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
   return (
     <ModalForm
       width={860}
-      title={'资源授权'}
+      title={props.title || '分配资源'}
       open={props.open}
       modalProps={{
         onCancel: () => {
           props.onCancel();
         },
-        bodyStyle: { padding: '32px 40px 48px' },
+        // bodyStyle: { padding: '32px 40px 48px' },
+        bodyStyle: { padding: '10px 0', minHeight: 400 },
         destroyOnClose: true,
       }}
       onFinish={async (values) => {
