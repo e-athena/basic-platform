@@ -149,6 +149,10 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.UserDataPermissions
+    })]
     public Task<string> AssignDataPermissionsAsync([FromBody] AssignUserDataPermissionsRequest request,
         CancellationToken cancellationToken)
     {
@@ -253,6 +257,7 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(ApiPermissionConstant.UserDataPermissions, IsVisible = false)]
     public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
     {
         var result = await _queryService.GetDataPermissionsAsync(id);

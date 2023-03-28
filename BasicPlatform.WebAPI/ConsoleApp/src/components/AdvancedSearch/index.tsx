@@ -237,12 +237,12 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                     .filter((p) => !p.hideInSearch)
                     .map(
                       (p) =>
-                        ({
-                          label: p.title,
-                          value: p.propertyName,
-                          propertyType: p.propertyType,
-                          enumOptions: p.enumOptions,
-                        } as ColSelectItem),
+                      ({
+                        label: p.title,
+                        value: p.propertyName,
+                        propertyType: p.propertyType,
+                        enumOptions: p.enumOptions,
+                      } as ColSelectItem),
                     )}
                   onChange={(value) => {
                     // 更新

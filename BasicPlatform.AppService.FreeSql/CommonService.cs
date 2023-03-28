@@ -1,6 +1,5 @@
 using BasicPlatform.AppService.TableColumns;
 using BasicPlatform.AppService.Users;
-using BasicPlatform.Infrastructure.Tables;
 
 namespace BasicPlatform.AppService.FreeSql;
 

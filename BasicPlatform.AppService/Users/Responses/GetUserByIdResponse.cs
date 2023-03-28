@@ -15,5 +15,5 @@ public class GetUserByIdResponse : UserQueryModel
     /// <summary>
     /// 组织架构
     /// </summary>
-    public string OrganizationPath { get; set; }
+    public string? OrganizationPath { get; set; }
 }

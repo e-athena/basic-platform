@@ -1,16 +1,18 @@
+import UserModal from '@/components/UserModal';
+import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
 import {
   Button,
   Col,
   Row,
   Select,
-  TreeSelect,
-  Tooltip,
   DatePicker,
   Radio,
   InputNumber,
   Input,
+  Space,
 } from 'antd';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 
 const { RangePicker } = DatePicker;
 
@@ -27,12 +29,14 @@ export type FilterItem = {
   operator?: string;
   groupIndex: number;
   index?: number;
+  extras?: API.SelectInfo[]
 };
 type RulerItemProps = {
   item: FilterItem;
   colSelect: ColSelectItem[];
   onChange: (value: FilterItem) => void;
   onRemoveItem?: () => void;
+  onSelectUser?: (value: FilterItem) => void;
 };
 
 export type ColSelectItem = {
@@ -43,54 +47,62 @@ export type ColSelectItem = {
 };
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
-  const rulerSelect = [
-    {
-      label: '等于',
-      value: '==',
-    },
-    {
-      label: '不等于',
-      value: '!=',
-    },
-    {
-      label: '大于',
-      value: '>',
-    },
-    {
-      label: '小于',
-      value: '<',
-    },
-    {
-      label: '大于等于',
-      value: '>=',
-    },
-    {
-      label: '小于等于',
-      value: '<=',
-    },
-    {
-      label: '包含',
-      value: 'contains',
-    },
-    {
-      label: '属于',
-      value: 'in',
-    },
-    {
-      label: '含有任意一个',
-      value: 'intersect',
-    },
-  ];
+  // const rulerSelect = [
+  //   {
+  //     label: '等于',
+  //     value: '==',
+  //   },
+  //   {
+  //     label: '不等于',
+  //     value: '!=',
+  //   },
+  //   {
+  //     label: '大于',
+  //     value: '>',
+  //   },
+  //   {
+  //     label: '小于',
+  //     value: '<',
+  //   },
+  //   {
+  //     label: '大于等于',
+  //     value: '>=',
+  //   },
+  //   {
+  //     label: '小于等于',
+  //     value: '<=',
+  //   },
+  //   {
+  //     label: '包含',
+  //     value: 'contains',
+  //   },
+  //   {
+  //     label: '属于',
+  //     value: 'in',
+  //   },
+  //   {
+  //     label: '含有任意一个',
+  //     value: 'intersect',
+  //   },
+  // ];
   const { onRemoveItem, item, onChange, colSelect } = props;
+  const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
+    console.log(item);
     return [];
   };
   const getRulerSelect = () => {
-    console.log(item);
-    // if (isTop) {
     // 如果有UserId关键字
     if (item.key?.includes('UserId')) {
       return [
+        {
+          label: '等于',
+          value: '==',
+        },
+        {
+          label: '不等于',
+          value: '!=',
+        },
         {
           label: '属于',
           value: 'in',
@@ -197,42 +209,45 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         ];
 
       default:
-        return rulerSelect;
+        return [
+          {
+            label: '等于',
+            value: '==',
+          }
+        ];
     }
   };
-
   const getValueDom = () => {
-    if (item.key === 'OrganizationIds') {
+    if (item.key?.includes('UserId')) {
       return (
-        <Tooltip placement={'top'} title="组织架构和指定策略二选一">
-          <TreeSelect
-            style={{ width: '350px' }}
-            value={item.value === undefined || item.value === '' ? [] : item.value.split(',')}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={getOptions()}
-            placeholder="请选择组织架构或别名"
-            multiple
-            treeLine={{
-              showLeafIcon: true,
+        <Space direction="horizontal">
+          {item.operator !== undefined && item.operator === 'in' ?
+            <Select
+              autoClearSearchValue
+              options={item.extras || []}
+              mode="tags"
+              style={{ width: 277 }}
+              placeholder="请点击右侧选择"
+              disabled
+              value={item.extras?.map((x) => x.value) || []}
+            /> :
+            <Input
+              allowClear
+              placeholder="请点击右侧选择"
+              disabled
+              style={{ width: 277 }}
+              value={(item.extras || []).length > 0 ? item.extras![0].label : ''}
+            />
+          }
+          <Button
+            disabled={item.operator === undefined}
+            onClick={() => {
+              setUserModalOpen(true);
             }}
-            treeDefaultExpandAll
-            treeCheckable
-            showCheckedStrategy="SHOW_ALL"
-            onChange={(value) => {
-              const newItem = { ...item };
-              if (value.length === 0) {
-                newItem.value = undefined;
-              } else {
-                if (value.includes('{OrganizationIds}')) {
-                  newItem.value = '{OrganizationIds}';
-                } else {
-                  newItem.value = value.join(','); // value[value.length - 1];
-                }
-              }
-              onChange(newItem);
-            }}
-          />
-        </Tooltip>
+          >
+            选择
+          </Button>
+        </Space>
       );
     }
     const options = getOptions();
@@ -257,10 +272,6 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         />
       );
     }
-    // // 如果是用户类型
-    // if (item.key?.includes('UserId')) {
-    //   return <span>aaaa</span>
-    // }
     // 如果是枚举类型
     if (item.propertyType === 'enum') {
       let mode: string | undefined = 'tags';
@@ -291,6 +302,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           style={{ width: '350px' }}
           placeholder="请选择"
           value={value}
+          disabled={item.operator === undefined}
           onChange={(value) => {
             const newItem = { ...item };
             if (value) {
@@ -319,6 +331,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
                 ? null
                 : [dayjs(item.value.split(',')[0]), dayjs(item.value.split(',')[1])]
             }
+            disabled={item.operator === undefined}
             onChange={(values) => {
               const newItem = { ...item };
               if (values?.length === 2) {
@@ -339,6 +352,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           style={{ width: '350px' }}
           placeholder="请选择时间"
           value={item.value === undefined || item.value === '' ? null : dayjs(item.value)}
+          disabled={item.operator === undefined}
           onChange={(value) => {
             const newItem = { ...item };
             if (!value) {
@@ -383,10 +397,16 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         />
       );
     }
+    let inputPlaceholder = '请输入关键字';
+    if (item.operator === '==') {
+      inputPlaceholder = '请输入关键字(精准查询)';
+    } else if (item.operator === 'contains') {
+      inputPlaceholder = '请输入关键字(模糊查询)';
+    }
     return (
       <Input
         allowClear
-        placeholder="请输入关键字"
+        placeholder={inputPlaceholder}
         style={{ width: '350px' }}
         value={item.value}
         onChange={(e) => {
@@ -461,6 +481,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
               const newItem = { ...item };
               newItem.operator = value;
               newItem.value = undefined;
+              newItem.extras = [];
               onChange(newItem);
             }}
           />
@@ -479,6 +500,32 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           </Button>
         </Col>
       </Row>
+      {userModalOpen &&
+        <UserModal
+          open={userModalOpen}
+          onCancel={() => {
+            setUserModalOpen(false);
+          }}
+          mode={item.operator === 'in' ? 'multiple' : 'single'}
+          onOk={(keys: string[], rows: TransferUserInfo[]) => {
+            const newItem = { ...item };
+            if (keys.length === 0) {
+              newItem.value = undefined;
+            } else {
+              newItem.value = keys.join(',');
+            }
+            newItem.extras = rows.map(p => ({
+              label: p.realName,
+              value: p.id,
+            })) as API.SelectInfo[];
+            onChange(newItem);
+            setUserModalOpen(false);
+          }}
+          defaultSelectedKeys={
+            (item.extras || []).map(p => p.value)
+          }
+        />
+      }
     </div>
   );
 };

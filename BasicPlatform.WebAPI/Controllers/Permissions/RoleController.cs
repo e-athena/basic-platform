@@ -133,6 +133,10 @@ public class RoleController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.RoleDataPermissions
+    })]
     public Task<string> AssignDataPermissionsAsync([FromBody] AssignRoleDataPermissionsRequest request,
         CancellationToken cancellationToken)
     {
@@ -146,7 +150,10 @@ public class RoleController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut]
-    [ApiPermission(AdditionalRules = new[] {ApiPermissionConstant.RoleDetail})]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.RoleDetail
+    })]
     public Task<string> AssignUsersAsync([FromBody] AssignRoleUsersRequest request,
         CancellationToken cancellationToken)
     {
@@ -173,6 +180,7 @@ public class RoleController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [ApiPermission(ApiPermissionConstant.RoleDataPermissions, IsVisible = false)]
     public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
     {
         var result = await _service.GetDataPermissionsAsync(id);

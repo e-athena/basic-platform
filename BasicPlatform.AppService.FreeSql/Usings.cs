@@ -14,3 +14,4 @@ global using Athena.Infrastructure.Attributes;
 global using BasicPlatform.AppService.Resources.Models;
 global using Athena.Infrastructure.Caching;
 global using BasicPlatform.Infrastructure.Caches;
+global using Athena.Infrastructure.FrontEndTables;

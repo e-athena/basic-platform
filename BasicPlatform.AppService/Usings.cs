@@ -7,6 +7,6 @@ global using System.ComponentModel.DataAnnotations;
 global using Athena.Infrastructure.Securities;
 global using BasicPlatform.AppService.Resources.Models;
 global using BasicPlatform.Infrastructure.Enums;
-global using BasicPlatform.Infrastructure.Tables;
 global using BasicPlatform.Domain.Models;
 global using BasicPlatform.AppService.DataPermissions.Attributes;
+global using Athena.Infrastructure.FrontEndTables;

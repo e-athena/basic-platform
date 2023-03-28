@@ -26,6 +26,7 @@ const UserModal: React.FC<UserModalProps> = (props) => {
             props.onOk(selectedKeys, selectedRows);
           }
         }}
+        destroyOnClose
         width={1000}
         bodyStyle={{ paddingTop: 20, paddingBottom: 10, minHeight: 500 }}
         onCancel={props.onCancel}

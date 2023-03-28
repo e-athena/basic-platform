@@ -16,6 +16,10 @@ public static class ApiPermissionConstant
     /// 角色下拉列表
     /// </summary>
     public const string RoleDetail = "role:detail";
+    /// <summary>
+    /// 角色数据权限
+    /// </summary>
+    public const string RoleDataPermissions = "role:dataPermissions";
 
     #endregion
 
@@ -37,9 +41,9 @@ public static class ApiPermissionConstant
     public const string UserSelectList = "user:select";
 
     /// <summary>
-    /// 组织架构用户树形下拉列表
+    /// 用户数据权限
     /// </summary>
-    public const string OrgUserTreeSelectListForSelf = "user:orgUserTreeSelect";
+    public const string UserDataPermissions = "user:dataPermissions";
 
     #endregion
 
