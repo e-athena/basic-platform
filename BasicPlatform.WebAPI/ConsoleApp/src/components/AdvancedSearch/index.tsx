@@ -89,7 +89,7 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
             添加分组
           </Button>,
           <Button
-            key="link"
+            key="reset"
             danger
             type={'dashed'}
             onClick={() => {
@@ -101,11 +101,14 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
           >
             重置
           </Button>,
-          <Button key="back" onClick={onCancel}>
+          <Button key="cancel" onClick={() => {
+            onCancel?.();
+            setSelfOpen(false);
+          }}>
             取消
           </Button>,
           <Button
-            key="submit"
+            key="search"
             type="primary"
             icon={<SearchOutlined />}
             onClick={() => {

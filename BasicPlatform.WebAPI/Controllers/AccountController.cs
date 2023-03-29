@@ -1,9 +1,9 @@
 using System.Security.Claims;
 using Athena.Infrastructure.Exceptions;
-using Athena.Infrastructure.Jwt;
 using Athena.Infrastructure.Mvc.Messaging.Requests;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
+using Microsoft.Extensions.Options;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -113,22 +113,28 @@ public class AccountController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     public async Task<dynamic> CurrentUserAsync(
-        [FromServices] IApiPermissionCacheService apiPermissionCacheService,
-        [FromServices] ISecurityContextAccessor accessor
+        [FromServices] IApiPermissionCacheService service,
+        [FromServices] ISecurityContextAccessor accessor,
+        [FromServices] IOptions<JwtConfig> options
     )
     {
         var user = await _service.GetCurrentUserAsync();
+        var appId = accessor.TenantId;
+        var identificationId = user.Id;
         if (user.ResourceCodes.Count == 0)
         {
             // 删除缓存
-            await apiPermissionCacheService
-                .RemoveOperationPermissionsAsync(accessor.TenantId, user.Id!);
+            await service.RemoveAsync(appId, identificationId!);
         }
         else
         {
             // 设置缓存
-            await apiPermissionCacheService
-                .SetOperationPermissionsAsync(accessor.TenantId, user.Id!, user.ResourceCodes);
+            await service.SetAsync(
+                appId,
+                identificationId!,
+                user.ResourceCodes,
+                TimeSpan.FromSeconds(options.Value.Expires)
+            );
         }
 
         return await Task.FromResult(new
