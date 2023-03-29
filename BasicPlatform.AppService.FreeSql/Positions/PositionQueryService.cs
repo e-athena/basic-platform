@@ -38,7 +38,7 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
-            .ToPagingAsync(request, p => new GetPositionPagingResponse
+            .ToPagingAsync(UserId, request, p => new GetPositionPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.UpdatedUser!.RealName,
@@ -70,6 +70,7 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
         {
             result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
         }
+
         return result;
     }
 

@@ -31,7 +31,7 @@ const UserModal: React.FC<UserModalProps> = (props) => {
         bodyStyle={{ paddingTop: 20, paddingBottom: 10, minHeight: 500 }}
         onCancel={props.onCancel}
       >
-        <ProCard split="vertical">
+        <ProCard split="vertical" bordered>
           <ProCard colSpan="250px">
             <OrganizationTree
               onSelect={(key) => {

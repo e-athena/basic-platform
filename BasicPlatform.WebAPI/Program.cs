@@ -86,6 +86,7 @@ services.AddControllers(options =>
 
 var app = builder.Build();
 
+app.RegisterCustomServiceInstance();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

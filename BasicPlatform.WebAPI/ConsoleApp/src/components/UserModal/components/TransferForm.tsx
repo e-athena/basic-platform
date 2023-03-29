@@ -47,8 +47,9 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }: TableTransfe
           columns={columns}
           dataSource={filteredItems}
           size="small"
+          locale={{ emptyText: direction === 'left' ? '暂无数据' : '未选择用户' }}
           style={{ pointerEvents: listDisabled ? 'none' : undefined }}
-          scroll={{ y: 300 }}
+          scroll={{ y: 350 }}
           onRow={({ key, disabled: itemDisabled }) => ({
             onClick: () => {
               if (itemDisabled || listDisabled) return;
@@ -68,7 +69,7 @@ const leftTableColumns: ColumnsType<TransferItem> = [
   },
   {
     dataIndex: 'description',
-    title: '登录名',
+    title: '帐号',
   },
 ];
 
@@ -110,10 +111,10 @@ const TransferForm: React.FC<TransferFormProps> = (props) => {
       setDataSource(
         res.success
           ? res.data!.map((item: API.SelectInfo) => ({
-              key: item.value,
-              title: item.label,
-              description: item.extend,
-            }))
+            key: item.value,
+            title: item.label,
+            description: item.extend,
+          }))
           : [],
       );
       setLoading(false);

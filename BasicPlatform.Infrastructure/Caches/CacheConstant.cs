@@ -22,5 +22,10 @@ public static class CacheConstant
     /// </summary>
     public const string UserOrganizationsKey = "{0},UserOrganizations";
 
+    /// <summary>
+    /// 用户策略查询缓存键
+    /// </summary>
+    public const string UserPolicyQueryKey = "{0},UserPolicyQuery,{1}";
+
     #endregion
 }

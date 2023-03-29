@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Iframe from 'react-iframe';
 import { useRafState } from 'ahooks';
 import { LinkOutlined } from '@ant-design/icons';
+import './index.less';
 
 const ExternalPages: React.FC = () => {
   const url = useParams<{ id: string }>();
@@ -50,12 +51,13 @@ const ExternalPages: React.FC = () => {
             新窗口打开
           </Button>
         }
+        prefixCls={'athena-external-pages'}
       >
         <Spin spinning={loading}>
           <Iframe
             url={url.id!}
             width="100%"
-            height={`${state.height - 90}px`}
+            height={`${state.height - 64}px`}
             // id="iframe"
             className=""
             sandbox={['allow-same-origin', 'allow-scripts']}
