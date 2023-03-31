@@ -8,6 +8,11 @@ public static class CacheConstant
     #region 用户相关
 
     /// <summary>
+    /// 用户缓存键
+    /// </summary>
+    public const string UserCacheKeys = "user:{0}:*";
+
+    /// <summary>
     /// 用户数据范围缓存键
     /// </summary>
     public const string UserDataScopesKey = "user:{0}:UserDataScopes";

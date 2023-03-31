@@ -24,17 +24,9 @@ public class CacheNotificationHandler :
     /// <exception cref="NotImplementedException"></exception>
     public async Task Handle(UserUpdatedEvent notification, CancellationToken cancellationToken)
     {
-        // 移除用户缓存
-
-        #region 数据权限相关
-
-        var key1 = string.Format(CacheConstant.UserDataScopesKey, notification.Id);
-        var key2 = string.Format(CacheConstant.UserOrganizationKey, notification.Id);
-        var key3 = string.Format(CacheConstant.UserOrganizationsKey, notification.Id);
-        await _cacheManager.RemoveAsync(key1, cancellationToken);
-        await _cacheManager.RemoveAsync(key2, cancellationToken);
-        await _cacheManager.RemoveAsync(key3, cancellationToken);
-
-        #endregion
+        // 匹配用户缓存
+        var patternKey = string.Format(CacheConstant.UserCacheKeys, notification.Id);
+        // 移除用户所有缓存
+        await _cacheManager.RemovePatternAsync(patternKey, cancellationToken);
     }
 }

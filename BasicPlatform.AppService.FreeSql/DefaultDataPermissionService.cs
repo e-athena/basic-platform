@@ -51,6 +51,10 @@ public class DefaultDataPermissionService : IDataPermissionService
                 result.AddRange(userPolicy.Policies);
             }
 
+            var userPolicyResourceKeys = userPolicies
+                .Select(p => p.PolicyResourceKey)
+                .ToList();
+
             // 读取用户角色配置的策略
             var rolePolicies = await _freeSql.Select<RoleDataQueryPolicy>()
                 .Where(p => _freeSql.Select<RoleUser>()
@@ -62,9 +66,8 @@ public class DefaultDataPermissionService : IDataPermissionService
                 .Where(p => p.Enabled)
                 .Where(p => p.PolicyResourceKey == resourceKey)
                 // 如果已经在用户策略中配置了，则不再读取角色策略
-                .Where(p => !userPolicies
-                    .Select(c => c.PolicyResourceKey)
-                    .Contains(p.PolicyResourceKey)
+                .WhereIf(userPolicyResourceKeys.Count > 0,
+                    p => !userPolicyResourceKeys.Contains(p.PolicyResourceKey)
                 )
                 .ToListAsync();
             // 角色

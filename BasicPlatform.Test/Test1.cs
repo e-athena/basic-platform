@@ -1,9 +1,10 @@
 using System.Text.RegularExpressions;
+using Athena.Infrastructure.Caching;
 using BasicPlatform.AppService.DataPermissions;
 
 namespace BasicPlatform.Test;
 
-public class Test1
+public class Test1 : TestBase
 {
     [Test]
     public void Test2()
@@ -132,5 +133,23 @@ public class Test1
         }
 
         Assert.IsTrue(true);
+    }
+
+    [Test]
+    public void Test7()
+    {
+        var a = Provider.GetService<ICacheManager>();
+
+        a?.Keys("user:640800b6054d3e000131af2c:*").ToList().ForEach(x =>
+        {
+            Console.WriteLine(x);
+        });
+        
+        RedisHelper.Instance.Keys("basic_platform:user:640800b6054d3e000131af2c:*").ToList().ForEach(x =>
+        {
+            Console.WriteLine(x);
+        });
+        
+        Assert.Pass();
     }
 }

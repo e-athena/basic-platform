@@ -45,6 +45,7 @@ public class TestBase
             Assembly.Load("BasicPlatform.AppService.FreeSql"),
             Assembly.Load("BasicPlatform.Infrastructure")
         );
+        services.AddCustomCsRedisCache(Configuration);
         services.AddCustomFreeSql(Configuration, new HostingEnvironment
         {
             EnvironmentName = "Development"
