@@ -2,6 +2,7 @@ import { ProColumns, ProTable } from '@ant-design/pro-components';
 import { Badge, Button, Checkbox, Radio, Segmented, Space, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import OrgModal from '@/components/OrgModal';
+import QueryPolicyModal from './components/QueryPolicyModal';
 
 type DataPermissionProps = {
   data: API.DataPermissionGroup[];
@@ -13,11 +14,12 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
   const [segmentedOptions, setSegmentedOptioins] = useState<string[]>([]);
   const [currentSegmented, setCurrentSegmented] = useState<string>('');
   const [orgModalOpen, setOrgModalOpen] = useState<boolean>(false);
+  const [queryPolicyOpen, setQueryPolicyOpen] = useState<boolean>(false);
   const [dataScopeCustoms, setDataScopeCustoms] = useState<string[]>([]);
   const [currentResourceKey, setCurrentResourceKey] = useState<string>('');
+  const [currentRow, setCurrentRow] = useState<API.DataPermission>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  console.log(props.data);
   useEffect(() => {
     if (loading && props.data.length > 0) {
       setLoading(false);
@@ -61,7 +63,7 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
       dataIndex: 'displayName',
       hideInSearch: true,
       ellipsis: true,
-      width: 180,
+      width: 190,
     },
     {
       title: '数据访问范围',
@@ -137,6 +139,27 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
         );
       },
     },
+    {
+      title: '查询策略',
+      dataIndex: 'displayName',
+      hideInSearch: true,
+      ellipsis: true,
+      width: 100,
+      tooltip: '针对模块列表字段的查询策略',
+      align: 'center',
+      render(_, entity) {
+        const defaultDom = <Button size={'small'} type={'dashed'} onClick={() => {
+          setCurrentRow(entity);
+          setQueryPolicyOpen(true);
+        }}>配置</Button>;
+        if (entity.queryFilterGroups.length === 0) {
+          return defaultDom;
+        }
+        return (<Badge count={entity.queryFilterGroups.length}>
+          {defaultDom}
+        </Badge>)
+      }
+    },
   ];
   return (
     <>
@@ -200,6 +223,28 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
         }}
         defaultSelectedKeys={dataScopeCustoms || []}
       />
+      {queryPolicyOpen && currentRow && (
+        <QueryPolicyModal
+          title={`${currentRow?.displayName} - 查询策略配置`}
+          onCancel={() => {
+            setCurrentRow(undefined);
+            setQueryPolicyOpen(false);
+          }}
+          historyFilters={[...(currentRow?.queryFilterGroups || [])]}
+          onOk={(rows: FilterGroupItem[]) => {
+            // 将数据更新到queryFilterGroups
+            const index = dataSources.findIndex((item) => item.displayName === currentSegmented);
+            const items = dataSources[index].items;
+            const itemIndex = items.findIndex((item) => item.resourceKey === currentRow?.resourceKey);
+            items[itemIndex].queryFilterGroups = rows;
+            setDataSources([...dataSources]);
+            setCurrentRow(undefined);
+            setQueryPolicyOpen(false);
+          }}
+          open={queryPolicyOpen}
+          resourceKey={currentRow?.resourceKey || ''}
+          data={currentRow?.properties || []}
+        />)}
     </>
   );
 };

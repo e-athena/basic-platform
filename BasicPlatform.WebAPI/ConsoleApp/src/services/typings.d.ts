@@ -85,6 +85,9 @@ declare namespace API {
     disableChecked: boolean;
     dataScopeCustom?: string;
     dataScopeCustoms: string[];
+    properties: DataPermissionProperty[];
+    queryFilterGroups: FilterGroupItem[];
+    policyResourceKey: string;
   };
 
   /** 分配数据权限 */
@@ -93,5 +96,16 @@ declare namespace API {
     dataScope: number;
     enabled: boolean;
     dataScopeCustom?: string;
+    queryFilterGroups: FilterGroupItem[];
+    policyResourceKey: string;
   };
+
+  /** 数据权限属性 */
+  type DataPermissionProperty = {
+    label: string;
+    value: string;
+    key: string;
+    propertyType?: string;
+    enumOptions?: SelectInfo[];
+  }
 }

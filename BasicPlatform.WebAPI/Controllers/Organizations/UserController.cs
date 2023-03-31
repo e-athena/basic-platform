@@ -262,7 +262,7 @@ public class UserController : CustomControllerBase
     {
         var result = await _queryService.GetDataPermissionsAsync(id);
         var assembly = Assembly.Load("BasicPlatform.AppService");
-        return DataPermissionHelper.GetTreeList(
+        return DataPermissionHelper.GetGroupList(
             assembly,
             result.Select(p => new DataPermission
             {

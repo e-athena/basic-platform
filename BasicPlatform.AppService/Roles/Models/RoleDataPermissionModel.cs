@@ -31,4 +31,14 @@ public class RoleDataPermissionModel
     /// 是否启用
     /// </summary>
     public bool Enabled { get; set; }
+
+    /// <summary>
+    /// 策略的资源Key
+    /// </summary>
+    public string PolicyResourceKey { get; set; } = null!;
+
+    /// <summary>
+    /// 查询过滤组
+    /// </summary>
+    public IList<QueryFilterGroup>? QueryFilterGroups { get; set; }
 }

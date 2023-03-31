@@ -1,4 +1,3 @@
-using Athena.Infrastructure;
 using BasicPlatform.AppService.Users.Requests;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
@@ -193,6 +192,10 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <returns></returns>
     public async Task<string> Handle(AssignUserDataPermissionsRequest request, CancellationToken cancellationToken)
     {
+        if (request.Id == UserId)
+        {
+            throw FriendlyException.Of("不能给自己分配权限");
+        }
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserDataPermission>(
             p => p.UserId == request.Id, cancellationToken

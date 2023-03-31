@@ -38,24 +38,6 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<dynamic> LoginAsync([FromServices] IMediator mediator, [FromBody] LoginRequest request)
     {
-        // var token = _securityContextAccessor.CreateToken(new List<Claim>
-        // {
-        //     new(ClaimTypes.Name, request.UserName),
-        //
-        //     new(ClaimTypes.NameIdentifier, "63a4897bbd3497da92a27f5b"),
-        //     new(ClaimTypes.Role, ObjectId.GenerateNewStringId()),
-        //     new("RoleName", "admin"),
-        //     new(ClaimTypes.Name, request.UserName),
-        //     new("RealName", request.UserName)
-        // });
-        //
-        // return await Task.FromResult(new
-        // {
-        //     Status = "ok",
-        //     Type = "account",
-        //     CurrentAuthority = token,
-        // });
-
         // 读取用户信息
         var info = await _service.GetByUserNameAsync(request.UserName);
         // 验证密码
@@ -114,8 +96,7 @@ public class AccountController : ControllerBase
     [HttpGet]
     public async Task<dynamic> CurrentUserAsync(
         [FromServices] IApiPermissionCacheService service,
-        [FromServices] ISecurityContextAccessor accessor,
-        [FromServices] IOptions<JwtConfig> options
+        [FromServices] ISecurityContextAccessor accessor
     )
     {
         var user = await _service.GetCurrentUserAsync();
@@ -132,8 +113,7 @@ public class AccountController : ControllerBase
             await service.SetAsync(
                 appId,
                 identificationId!,
-                user.ResourceCodes,
-                TimeSpan.FromSeconds(options.Value.Expires)
+                user.ResourceCodes
             );
         }
 

@@ -31,7 +31,7 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
   }, [props.open]);
   return (
     <ModalForm
-      width={860}
+      width={960}
       title={props.title || '分配权限'}
       open={props.open}
       modalProps={{
@@ -54,6 +54,8 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
               dataScope: item.dataScope,
               enabled: item.enabled,
               dataScopeCustom: (item.dataScopeCustoms || []).join(','),
+              queryFilterGroups: item.queryFilterGroups,
+              policyResourceKey: item.policyResourceKey,
             });
           }
         }

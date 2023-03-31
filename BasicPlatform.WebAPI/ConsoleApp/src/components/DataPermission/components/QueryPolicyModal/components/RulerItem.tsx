@@ -66,7 +66,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
   const { onRemoveItem, item, onChange, colSelect } = props;
   const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
-    console.log(item);
+    // console.log(item);
     return [];
   };
   const getRulerSelect = () => {

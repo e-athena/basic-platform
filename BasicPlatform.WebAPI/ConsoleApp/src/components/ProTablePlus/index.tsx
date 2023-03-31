@@ -5,7 +5,6 @@ import { Tooltip } from 'antd';
 import { cloneDeep } from 'lodash';
 import { useEffect, useState } from 'react';
 import AdvancedSearch from '../AdvancedSearch';
-import { FilterGroupItem } from '../AdvancedSearch/components/RulerItem';
 import EditTableColumnForm from '../EditTableColumnForm';
 
 type ProTablePlusProps<T, U, ValueType = 'text'> = {

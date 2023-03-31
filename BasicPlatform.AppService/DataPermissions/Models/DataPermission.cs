@@ -41,6 +41,22 @@ public class DataPermission
     public IList<string> DataScopeCustoms => string.IsNullOrEmpty(DataScopeCustom)
         ? new List<string>()
         : DataScopeCustom.Split(',').ToList();
+
+    /// <summary>
+    /// 属性列表
+    /// </summary>
+    public List<DataPermissionProperty>? Properties { get; set; }
+    
+    /// <summary>
+    /// 策略资源Key
+    /// </summary>
+    public string? PolicyResourceKey { get; set; }
+
+    /// <summary>
+    /// 默认的查询过滤器
+    /// </summary>
+    public List<QueryFilterGroup> QueryFilterGroups { get; set; } = new();
+
     /// <summary>
     /// 
     /// </summary>

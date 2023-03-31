@@ -10,3 +10,5 @@ global using BasicPlatform.Infrastructure.Enums;
 global using BasicPlatform.Domain.Models;
 global using BasicPlatform.AppService.DataPermissions.Attributes;
 global using Athena.Infrastructure.FrontEndTables;
+global using Athena.Infrastructure.QueryFilters;
+global using System.Text.Json;

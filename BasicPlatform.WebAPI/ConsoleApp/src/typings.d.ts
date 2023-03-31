@@ -82,3 +82,26 @@ declare interface ResourceModel {
   key: string;
   code: string;
 }
+
+declare interface FilterGroupItem {
+  xor: string;
+  filters: FilterItem[];
+};
+
+declare interface FilterItem {
+  key?: string;
+  propertyType?: string;
+  label?: string;
+  value?: any;
+  xor?: string;
+  operator?: string;
+  groupIndex: number;
+  index?: number;
+  extras?: API.SelectInfo[]
+};
+declare interface ColSelectItem {
+  label: string;
+  value: string;
+  propertyType: string;
+  enumOptions: any[];
+};

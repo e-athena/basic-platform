@@ -25,6 +25,11 @@ public static class CacheConstant
     /// <summary>
     /// 用户策略查询缓存键
     /// </summary>
+    public const string UserPolicyFilterGroupQuery = "user:{0}:UserPolicyFilterGroupQuery:{1}";
+
+    /// <summary>
+    /// 用户策略查询缓存键
+    /// </summary>
     public const string UserPolicyQueryKey = "user:{0}:UserPolicyQuery:{1}";
 
     #endregion

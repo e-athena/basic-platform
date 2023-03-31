@@ -1,6 +1,3 @@
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-
 SelfLog.Enable(Console.Error);
 
 var builder = WebApplication.CreateBuilder(args);
@@ -84,6 +81,7 @@ services.AddControllers(options =>
     options.AddCustomApiExceptionFilter();
 }).AddNewtonsoftJson();
 
+builder.Host.UseDefaultServiceProvider(options => { options.ValidateScopes = false; });
 var app = builder.Build();
 
 app.RegisterCustomServiceInstance();

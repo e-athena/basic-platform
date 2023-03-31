@@ -8,8 +8,9 @@ public class Test1
     [Test]
     public void Test2()
     {
-        var res = DataPermissionHelper.GetTreeList("BasicPlatform.AppService");
+        var res = DataPermissionHelper.GetGroupList("BasicPlatform.AppService");
         var res2 = DataPermissionHelper.GetList("BasicPlatform.AppService");
+        var res3 = DataPermissionHelper.GetTreeList("BasicPlatform.AppService");
         Assert.IsTrue(true);
     }
 
@@ -129,6 +130,7 @@ public class Test1
         {
             Console.WriteLine("连接字符串2对应的数据库类型未知");
         }
+
         Assert.IsTrue(true);
     }
 }

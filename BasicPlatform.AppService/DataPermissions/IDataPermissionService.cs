@@ -1,6 +1,4 @@
-using Athena.Infrastructure.QueryFilters;
-
-namespace Athena.Infrastructure.DataPermission;
+namespace BasicPlatform.AppService.DataPermissions;
 
 /// <summary>
 /// 数据权限服务接口
@@ -17,7 +15,7 @@ public interface IDataPermissionService
     Task<List<QueryFilterGroup>> GetPolicyQueryFilterGroupsAsync(string userId, string resourceKey, string? appId);
 
     /// <summary>
-    /// 获取用户所在组织列表
+    /// 获取用户所在组织/部门列表
     /// </summary>
     /// <param name="userId">关联的用户ID</param>
     /// <param name="appId"></param>
@@ -25,7 +23,7 @@ public interface IDataPermissionService
     Task<List<string>> GetUserOrganizationIdsAsync(string userId, string? appId);
 
     /// <summary>
-    /// 获取用户所有组织及下级组织列表
+    /// 获取用户所有组织/部门及下级组织/部门列表
     /// </summary>
     /// <param name="userId">关联的用户ID</param>
     /// <param name="appId"></param>

@@ -139,6 +139,10 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         await RegisterDeleteValueObjectAsync<RoleDataPermission>(
             p => p.RoleId == request.Id, cancellationToken
         );
+        // 删除查询策略
+        await RegisterDeleteValueObjectAsync<RoleDataQueryPolicy>(
+            p => p.RoleId == request.Id, cancellationToken
+        );
         if (request.Permissions.Count <= 0)
         {
             return request.Id;
@@ -150,6 +154,14 @@ public class RoleRequestHandler : AppServiceBase<Role>,
             .Select(p => new RoleDataPermission(request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled))
             .ToList();
         await RegisterNewRangeValueObjectAsync(roleDataPermissions, cancellationToken);
+
+        // 新增查询策略
+        var roleDataQueryPolicies = request
+            .Permissions
+            .Select(p =>
+                new RoleDataQueryPolicy(request.Id, p.ResourceKey, p.PolicyResourceKey, p.QueryFilterGroups, p.Enabled))
+            .ToList();
+        await RegisterNewRangeValueObjectAsync(roleDataQueryPolicies, cancellationToken);
 
         return request.Id;
     }

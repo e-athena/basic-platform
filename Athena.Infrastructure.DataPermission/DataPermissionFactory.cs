@@ -1,17 +1,17 @@
-namespace Athena.Infrastructure.DataPermission.Extras;
+namespace Athena.Infrastructure.DataPermission;
 
 /// <summary>
-/// 扩展数据权限工厂类
+/// 数据权限工厂类
 /// </summary>
-public class ExtraDataPermissionFactory
+public class DataPermissionFactory
 {
-    private readonly IEnumerable<IExtraDataPermission> _services;
+    private readonly IEnumerable<IDataPermission> _services;
 
     /// <summary>
     /// 构造函数
     /// </summary>
     /// <param name="services"></param>
-    public ExtraDataPermissionFactory(IEnumerable<IExtraDataPermission> services)
+    public DataPermissionFactory(IEnumerable<IDataPermission> services)
     {
         _services = services;
     }
@@ -20,7 +20,7 @@ public class ExtraDataPermissionFactory
     /// 获取实例列表
     /// </summary>
     /// <returns></returns>
-    public IList<IExtraDataPermission> GetInstances()
+    public IList<IDataPermission> GetInstances()
     {
         return _services.ToList();
     }

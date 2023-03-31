@@ -32,7 +32,7 @@ public interface IRoleQueryService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<SelectViewModel>> GetSelectListAsync(CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// 读取用户拥有的角色
     /// </summary>
@@ -47,4 +47,11 @@ public interface IRoleQueryService
     /// <param name="id"></param>
     /// <returns></returns>
     Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id);
+
+    /// <summary>
+    /// 读取角色数据查询策略
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<RoleDataQueryPolicyModel>> GetDataQueryPoliciesAsync(string id);
 }

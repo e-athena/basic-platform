@@ -7,6 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Commons;
 public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityCore, new()
 {
     private readonly ISecurityContextAccessor _accessor;
+    private readonly ICacheManager? _cacheManager;
 
     /// <summary>
     /// 
@@ -17,6 +18,7 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
         base(unitOfWorkManager)
     {
         _accessor = accessor;
+        _cacheManager = ServiceLocator.Instance?.GetService(typeof(ICacheManager)) as ICacheManager;
     }
 
     #region 新增
@@ -144,21 +146,36 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
     /// <returns></returns>
     private List<string> GetUserOrganizationIds()
     {
-        // 任职表
-        var orgIds = QueryNoTracking<UserAppointment>()
-            .Where(p => p.UserId == UserId)
-            .ToList(p => p.OrganizationId);
+        // Key
+        var key = string.Format(CacheConstant.UserOrganizationKey, UserId);
+        // 过期时间
+        var expireTime = TimeSpan.FromMinutes(30);
 
-        // 用户组织
-        var orgId = QueryNoTracking<User>()
-            .Where(p => p.Id == UserId)
-            .First(p => p.OrganizationId);
-
-        if (!string.IsNullOrEmpty(orgId))
+        List<string> QueryFunc()
         {
-            orgIds.Add(orgId);
+            // 兼任职信息表
+            var orgIds = QueryNoTracking<UserAppointment>()
+                .Where(p => p.UserId == UserId)
+                .ToList(p => p.OrganizationId);
+
+            // 用户组织
+            var orgId = QueryNoTracking<User>()
+                .Where(p => p.Id == UserId)
+                .First(p => p.OrganizationId);
+
+            if (!string.IsNullOrEmpty(orgId))
+            {
+                orgIds.Add(orgId);
+            }
+
+            return orgIds;
         }
 
-        return orgIds;
+        if (_cacheManager == null)
+        {
+            return QueryFunc();
+        }
+
+        return _cacheManager.GetOrCreate(key, QueryFunc, expireTime) ?? new List<string>();
     }
 }

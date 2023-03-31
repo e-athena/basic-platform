@@ -12,6 +12,12 @@ public class QueryModelBase
     public string? Id { get; set; }
 
     /// <summary>
+    /// 组织架构ID
+    /// </summary>
+    [TableColumn(Ignore = true)]
+    public string? OrganizationalUnitIds { get; set; }
+
+    /// <summary>
     /// 创建人Id
     /// </summary>
     [TableColumn(Sort = 85, HideInTable = true)]

@@ -9,167 +9,18 @@ namespace Athena.Infrastructure.DataPermission;
 
 public abstract class DataPermissionHelper
 {
-    public class DataPermissionGroupInfo
-    {
-        /// <summary>
-        /// 显示名
-        /// </summary>
-        public string DisplayName { get; set; }
-
-        /// <summary>
-        /// 子项
-        /// </summary>
-        public IList<DataPermissionInfo> Children { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="displayName"></param>
-        /// <param name="children"></param>
-        public DataPermissionGroupInfo(string displayName, IList<DataPermissionInfo> children)
-        {
-            DisplayName = displayName;
-            Children = children;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DataPermissionInfo
-    {
-        /// <summary>
-        /// 权限名称
-        /// </summary>
-        public string DisplayName { get; set; }
-
-        /// <summary>
-        /// KEY
-        /// </summary>
-        public string Key { get; set; }
-
-        /// <summary>
-        /// 基础类型
-        /// </summary>
-        public string BaseType { get; set; }
-
-        public DataPermissionInfo(string displayName, string key, string baseType)
-        {
-            DisplayName = displayName;
-            Key = key;
-            BaseType = baseType;
-        }
-    }
-
-    /// <summary>
-    /// 读取数据权限配置树列表
-    /// </summary>
-    /// <returns></returns>
-    public static IEnumerable<DataPermissionGroupInfo> GetDataPermissionTreeList(string assembly)
-    {
-        var asm = Assembly.Load(assembly);
-        var types = asm.GetExportedTypes();
-
-        bool IsMyAttribute(IEnumerable<Attribute> o) => o.OfType<DataPermissionAttribute>().Any();
-        var typeList = types
-            .Where(o => IsMyAttribute(Attribute.GetCustomAttributes(o, false)))
-            .ToList();
-        var attributes = new List<DataPermissionAttribute>();
-        foreach (var type in typeList)
-        {
-            if (type.GetCustomAttributes(typeof(DataPermissionAttribute), false)
-                    .FirstOrDefault() is not DataPermissionAttribute attribute)
-            {
-                continue;
-            }
-
-            attribute.Key = type.Name;
-            if (string.IsNullOrWhiteSpace(attribute.DisplayName))
-            {
-                attribute.DisplayName = GetSummaryName(type, assembly);
-            }
-
-            attributes.Add(attribute);
-        }
-
-        var list = new List<DataPermissionGroupInfo>();
-
-        foreach (var group in attributes.GroupBy(p => p.Group))
-        {
-            var displayName = string.IsNullOrEmpty(group.Key) ? "默认分组" : group.Key;
-            list.Add(new DataPermissionGroupInfo(
-                displayName,
-                group.Select(
-                    c => new DataPermissionInfo(
-                        c.DisplayName!,
-                        c.Key!,
-                        c.BaseType.FullName!
-                    )
-                ).ToList()));
-        }
-        
-        return list;
-    }
-
-    /// <summary>
-    /// 读取策略树状数据列表
-    /// </summary>
-    /// <returns></returns>
-    public static List<TreeSelectInfo> GetStrategyTreeList(string assembly)
-    {
-        var asm = Assembly.Load(assembly);
-        var types = asm.GetExportedTypes();
-
-        bool IsMyAttribute(IEnumerable<Attribute> o) => o.OfType<DataPermissionAttribute>().Any();
-        var typeList = types
-            .Where(o => IsMyAttribute(Attribute.GetCustomAttributes(o, false)))
-            .ToList();
-        var attributes = new List<DataPermissionAttribute>();
-        var permissionTypes = new List<Type>();
-        foreach (var type in typeList)
-        {
-            if (type.GetCustomAttributes(typeof(DataPermissionAttribute), false)
-                    .FirstOrDefault() is not DataPermissionAttribute attribute)
-            {
-                continue;
-            }
-
-            attribute.Key = type.Name;
-            if (string.IsNullOrWhiteSpace(attribute.DisplayName))
-            {
-                attribute.DisplayName = GetSummaryName(type, assembly);
-            }
-
-            attributes.Add(attribute);
-            permissionTypes.Add(type);
-        }
-
-        var list = GetTreeSelectList(permissionTypes.ToArray(), assembly);
-        var result = new List<TreeSelectInfo>();
-        foreach (var item in list)
-        {
-            var dp = attributes.First(p => p.Key == item.Key);
-            var parent = new TreeSelectInfo
-            {
-                Label = dp.DisplayName!,
-                Key = item.Key,
-                Value = item.Key,
-                PropertyType = "class",
-                Children = item.Children
-            };
-
-            result.Add(parent);
-        }
-
-        return result;
-    }
-
     /// <summary>
     /// 获取树形结构列表
     /// </summary>
     /// <returns></returns>
-    private static List<TreeSelectInfo> GetTreeSelectList(IEnumerable<Type> types, string assemblyName)
+    private static List<TreeSelectInfo> GetTreeSelectList(string assemblyName)
     {
+        var asm = Assembly.Load(assemblyName);
+        var types = asm.GetExportedTypes();
+        bool IsMyAttribute(IEnumerable<Attribute> o) => o.OfType<DataPermissionAttribute>().Any();
+        var typeList = types
+            .Where(o => IsMyAttribute(Attribute.GetCustomAttributes(o, false)))
+            .ToList();
         XPathNavigator? xmlNavigator = null;
         var path = AppDomain.CurrentDomain.BaseDirectory;
         // 找出里面的xml
@@ -185,17 +36,19 @@ public abstract class DataPermissionHelper
         }
 
         var summaryList = new List<TreeSelectInfo>();
-        foreach (var item in types)
+        foreach (var type in typeList)
         {
-            var summaryName = GetTypeSummaryName(xmlNavigator, item);
+            var summaryName = GetTypeSummaryName(xmlNavigator, type);
 
             var summary = new TreeSelectInfo
             {
                 Label = summaryName,
-                Key = item.Name,
+                Key = type.Name,
+                Value = type.Name,
+                PropertyType = "type",
                 Children = new List<TreeSelectInfo>()
             };
-            foreach (var property in item.GetProperties())
+            foreach (var property in type.GetProperties())
             {
                 var label = GetPropertySummaryName(xmlNavigator, property);
 
@@ -267,31 +120,6 @@ public abstract class DataPermissionHelper
         }
 
         return summaryList;
-    }
-
-    /// <summary>
-    /// 读取注释内容
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="assemblyName"></param>
-    /// <returns></returns>
-    private static string GetSummaryName(Type type, string assemblyName)
-    {
-        XPathNavigator? xmlNavigator = null;
-        var path = AppDomain.CurrentDomain.BaseDirectory;
-        // 找出里面的xml
-        var fileInfo = new DirectoryInfo(path).GetFiles()
-            // 读取文件后缀名为.xml的文件信息
-            .Where(p => p.Extension.ToLower() == ".xml")
-            .FirstOrDefault(n => assemblyName.Contains(n.Name.Replace(n.Extension, "")));
-        if (fileInfo != null)
-        {
-            var document = new XmlDocument();
-            document.Load(fileInfo.OpenRead());
-            xmlNavigator = document.CreateNavigator();
-        }
-
-        return GetTypeSummaryName(xmlNavigator, type);
     }
 
     /// <summary>

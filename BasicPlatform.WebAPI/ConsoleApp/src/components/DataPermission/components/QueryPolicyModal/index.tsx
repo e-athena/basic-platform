@@ -6,10 +6,12 @@ import RulerItem from './components/RulerItem';
 
 type EditTableColumnFormProps = {
   onCancel?: () => void;
-  onSearch: (data: FilterGroupItem[]) => void;
+  onOk: (data: FilterGroupItem[], saveTemplate: boolean) => void;
   open?: boolean;
-  data: API.TableColumnItem[];
+  resourceKey: string;
+  data: API.DataPermissionProperty[];
   historyFilters?: FilterGroupItem[];
+  title?: string;
 };
 
 /**
@@ -17,10 +19,11 @@ type EditTableColumnFormProps = {
  * @param props
  * @returns
  */
-const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
-  const { open, onCancel, onSearch, data, historyFilters } = props;
+const QueryPolicyModal: React.FC<EditTableColumnFormProps> = (props) => {
+  const { open, onCancel, onOk, data, historyFilters } = props;
   const [selfOpen, setSelfOpen] = useState<boolean>(false);
   const [filterGroups, setFilterGroups] = useState<FilterGroupItem[]>(historyFilters || []);
+
   useEffect(() => {
     if (open || selfOpen) {
       // 如果分组为空，添加一个默认分组
@@ -40,6 +43,34 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
       }
     }
   }, [open, selfOpen]);
+
+  const okHandle = (saveTemplate?: boolean) => {
+    // 数据验证
+    if (filterGroups.length > 0) {
+      let errCount: number = 0;
+      for (let i = 0; i < filterGroups.length; i++) {
+        const group = filterGroups[i];
+        for (let j = 0; j < group.filters.length; j++) {
+          const filter = group.filters[j];
+          // 验证是否有空值
+          if (!filter.key || !filter.operator || !filter.value) {
+            message.error(`第${i + 1}组第${j + 1}条数据有空值`);
+            errCount++;
+            break;
+          }
+        }
+      }
+      if (errCount > 0) {
+        return;
+      }
+    }
+    if (saveTemplate && filterGroups.length === 0) {
+      message.error('保存的模板不能为空');
+      return;
+    }
+    setSelfOpen(false);
+    onOk(filterGroups, saveTemplate || false);
+  }
   return (
     <>
       {props.open === undefined && (
@@ -51,13 +82,13 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
         />
       )}
       <Modal
-        title="自定义查询"
+        title={props.title || '配置查询策略'}
         open={open || selfOpen}
         width={1000}
         bodyStyle={{
-          maxHeight: 'calc(100vh - 400px)',
+          maxHeight: 'calc(100vh - 500px)',
           overflow: 'auto',
-          minHeight: 400,
+          minHeight: 500,
           paddingTop: 15,
         }}
         destroyOnClose
@@ -94,11 +125,9 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
             onClick={() => {
               // 重置
               setFilterGroups([]);
-              setSelfOpen(false);
-              onSearch([]);
             }}
           >
-            重置
+            清空
           </Button>,
           <Button key="cancel" onClick={() => {
             onCancel?.();
@@ -107,34 +136,13 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
             取消
           </Button>,
           <Button
-            key="search"
+            key="save"
             type="primary"
-            icon={<SearchOutlined />}
             onClick={() => {
-              // 数据验证
-              if (filterGroups.length > 0) {
-                let errCount: number = 0;
-                for (let i = 0; i < filterGroups.length; i++) {
-                  const group = filterGroups[i];
-                  for (let j = 0; j < group.filters.length; j++) {
-                    const filter = group.filters[j];
-                    // 验证是否有空值
-                    if (!filter.key || !filter.operator || !filter.value) {
-                      message.error(`第${i + 1}组第${j + 1}条数据有空值`);
-                      errCount++;
-                      break;
-                    }
-                  }
-                }
-                if (errCount > 0) {
-                  return;
-                }
-              }
-              setSelfOpen(false);
-              onSearch(filterGroups);
+              okHandle();
             }}
           >
-            搜索
+            保存
           </Button>,
         ]}
       >
@@ -235,17 +243,13 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                 <RulerItem
                   key={index}
                   item={{ ...item, groupIndex, index }}
-                  colSelect={data
-                    .filter((p) => !p.hideInSearch)
-                    .map(
-                      (p) =>
-                      ({
-                        label: p.title,
-                        value: p.propertyName,
-                        propertyType: p.propertyType,
-                        enumOptions: p.enumOptions,
-                      } as ColSelectItem),
-                    )}
+                  colSelect={data.map((p) => ({
+                    label: p.label,
+                    value: p.value,
+                    propertyType: p.propertyType,
+                    enumOptions: p.enumOptions,
+                  } as ColSelectItem)
+                  )}
                   onChange={(value) => {
                     // 更新
                     group.filters[index] = value;
@@ -272,4 +276,4 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
   );
 };
 
-export default AdvancedSearch;
+export default QueryPolicyModal;

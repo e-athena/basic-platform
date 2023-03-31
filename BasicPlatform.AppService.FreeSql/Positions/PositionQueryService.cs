@@ -12,8 +12,7 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
 {
     public PositionQueryService(
         IFreeSql freeSql,
-        ISecurityContextAccessor accessor,
-        ICacheManager cacheManager) : base(freeSql, accessor, cacheManager)
+        ISecurityContextAccessor accessor) : base(freeSql, accessor)
     {
     }
 
