@@ -2,19 +2,18 @@ using BasicPlatform.AppService.Positions;
 using BasicPlatform.AppService.Positions.Requests;
 using BasicPlatform.AppService.Positions.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Organizations;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 职位管理
 /// </summary>
 [Menu("职位管理",
-    ModuleCode = "organization",
-    ModuleName = "组织架构",
-    ModuleIcon = "ApartmentOutlined",
-    ModuleRoutePath = "/organization",
+    ModuleCode = "system",
+    ModuleName = "系统管理",
+    ModuleRoutePath = "/system",
     ModuleSort = 1,
-    RoutePath = "/organization/position",
-    Sort = 1,
+    RoutePath = "/system/position",
+    Sort = 3,
     Description = "员工职位，如总经理、销售经理、销售员等"
 )]
 public class PositionController : CustomControllerBase

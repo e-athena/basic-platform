@@ -2,19 +2,18 @@ using BasicPlatform.AppService.ExternalPages;
 using BasicPlatform.AppService.ExternalPages.Requests;
 using BasicPlatform.AppService.ExternalPages.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Systems;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 外部页面管理
 /// </summary>
 [Menu("扩展页面",
     ModuleCode = "system",
-    ModuleName = "系统模块",
+    ModuleName = "系统管理",
     ModuleRoutePath = "/system",
-    ModuleSort = 3,
-    
+    ModuleSort = 1,
     RoutePath = "/system/external-page",
-    Sort = 3,
+    Sort = 4,
     Description = "可用于添加外部页面，如：https://www.baidu.com"
 )]
 public class ExternalPageController : CustomControllerBase

@@ -73,7 +73,9 @@ services.AddCustomIntegrationEventHandler(
     Assembly.Load("BasicPlatform.IntegratedEventHandler")
 );
 services.AddCustomCsRedisCache(configuration);
-services.AddCustomApiPermissionWithJwt(configuration);
+services.AddCustomApiPermission();
+services.AddCustomJwtAuthWithSignalR(configuration);
+services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
 services.AddControllers(options =>
 {
@@ -98,11 +100,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseCustomAuditLog();
+app.MapCustomSignalR();
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/index.html");
     return Task.CompletedTask;
 });
 app.MapGet("/health", context => context.Response.WriteAsync("ok"));
-
 app.Run();

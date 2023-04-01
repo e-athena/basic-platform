@@ -9,5 +9,6 @@ export default defineConfig({
 
   define: {
     API_URL: '',
+    RTC_URL: '',
   },
 });

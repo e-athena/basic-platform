@@ -1,5 +1,3 @@
-import { FilterGroupItem, FilterItem } from '@/components/AdvancedSearch/components/RulerItem';
-
 const convertSubFiltersToText = (subFilters: FilterItem[]): string => {
   let text = '';
 

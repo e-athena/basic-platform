@@ -1,19 +1,19 @@
 using BasicPlatform.AppService.Resources.Models;
 using BasicPlatform.AppService.Resources.Requests;
 
-namespace BasicPlatform.WebAPI.Controllers.Permissions;
+namespace BasicPlatform.WebAPI.Controllers.Developer;
 
 /// <summary>
 /// 资源管理
 /// </summary>
 [Menu("资源管理",
-    ModuleCode = "permission",
-    ModuleName = "权限管理",
-    ModuleIcon = "SafetyOutlined",
-    ModuleRoutePath = "/permission",
-    ModuleSort = 2,
+    ModuleCode = "developer",
+    ModuleName = "开发者中心",
+    ModuleIcon = "ControlOutlined",
+    ModuleRoutePath = "/developer",
+    ModuleSort = 0,
     
-    RoutePath = "/permission/resource",
+    RoutePath = "/developer/resource",
     Sort = 1,
     Description = "资源包含菜单树以及功能，由系统生成，用于控制系统菜单的展示及功能权限。"
 )]

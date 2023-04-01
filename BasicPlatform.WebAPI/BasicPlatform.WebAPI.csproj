@@ -21,9 +21,10 @@
         <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.0.8" />
         <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.2.2" />
         <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="6.2.0-pre1.0" />
-        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.9" />
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.10" />
         <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.12" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
+        <PackageReference Include="Athena.InstantMessaging.SignalR" Version="6.0.2" />
         <PackageReference Include="Athena.Serilog.Enrichers.ClientInfo" Version="1.0.0" />
         <PackageReference Include="Athena.Serilog.Enrichers.OpenTracing" Version="1.0.0" />
         
@@ -40,6 +41,10 @@
     <ItemGroup>
         <ProjectReference Include="..\BasicPlatform.AppService.FreeSql\BasicPlatform.AppService.FreeSql.csproj" />
         <ProjectReference Include="..\BasicPlatform.IntegratedEventHandler\BasicPlatform.IntegratedEventHandler.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\Platform" />
     </ItemGroup>
 
 </Project>

@@ -1,19 +1,18 @@
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Organizations;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 员工访问记录
 /// </summary>
 [Menu("员工访问记录",
-    ModuleCode = "organization",
-    ModuleName = "组织架构",
-    ModuleIcon = "ApartmentOutlined",
-    ModuleRoutePath = "/organization",
+    ModuleCode = "system",
+    ModuleName = "系统管理",
+    ModuleRoutePath = "/system",
     ModuleSort = 1,
-    RoutePath = "/organization/user-access-record",
-    Sort = 3,
+    RoutePath = "/system/user-access-record",
+    Sort = 6,
     Description = "员工访问记录管理"
 )]
 public class UserAccessRecordController : CustomControllerBase

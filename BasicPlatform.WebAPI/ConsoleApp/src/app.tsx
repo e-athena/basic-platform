@@ -19,6 +19,8 @@ import fixMenuItemIcon from './components/FixMenuItemIcon';
 import { recursionMenu } from './utils/menu';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+import { fetchSignalRConnectionNotice } from './signalr/connection';
+import { HubConnection } from '@microsoft/signalr';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -33,6 +35,10 @@ export async function getInitialState(): Promise<{
   apiResources?: API.ResourceInfo[];
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
   externalPages?: API.ExternalPage[];
+  noticeConnectionHub?: HubConnection;
+  fetchSignalRConnectionNotice?: (token: string) => Promise<HubConnection>;
+  // eventConnectionHub?: HubConnection;
+  // fetchSignalRConnectionEvent?: (token: string) => Promise<HubConnection>;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -63,11 +69,18 @@ export async function getInitialState(): Promise<{
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
     const externalPages = await fetchExternalPages();
+    // SignalR
+    const noticeConnectionHub = await fetchSignalRConnectionNotice();
+    // const eventConnectionHub = await fetchSignalRConnectionEvent(token);
     return {
       fetchMenuData,
       fetchUserInfo,
       fetchApiResources,
       fetchExternalPages,
+      noticeConnectionHub,
+      fetchSignalRConnectionNotice,
+      // eventConnectionHub,
+      // fetchSignalRConnectionEvent,
       currentUser,
       apiResources,
       externalPages,

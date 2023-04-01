@@ -1,9 +1,10 @@
 using System.Security.Claims;
 using Athena.Infrastructure.Exceptions;
 using Athena.Infrastructure.Mvc.Messaging.Requests;
+using Athena.InstantMessaging;
+using Athena.InstantMessaging.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
-using Microsoft.Extensions.Options;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -36,7 +37,10 @@ public class AccountController : ControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<dynamic> LoginAsync([FromServices] IMediator mediator, [FromBody] LoginRequest request)
+    public async Task<dynamic> LoginAsync(
+        [FromServices] IMediator mediator,
+        [FromBody] LoginRequest request
+    )
     {
         // 读取用户信息
         var info = await _service.GetByUserNameAsync(request.UserName);
@@ -80,7 +84,6 @@ public class AccountController : ControllerBase
         };
 
         var token = _securityContextAccessor.CreateToken(claims);
-
         return new
         {
             Status = "ok",
@@ -95,6 +98,7 @@ public class AccountController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     public async Task<dynamic> CurrentUserAsync(
+        [FromServices] INoticeHubService noticeHubService,
         [FromServices] IApiPermissionCacheService service,
         [FromServices] ISecurityContextAccessor accessor
     )
@@ -116,6 +120,13 @@ public class AccountController : ControllerBase
                 user.ResourceCodes
             );
         }
+        // 发送上线通知
+        await noticeHubService.SendMessageToAllAsync(new InstantMessaging<string>
+        {
+            NoticeType = "OnlineNotice",
+            Data = $"{user.RealName}上线啦~",
+            Type = MessageType.Notice,
+        });
 
         return await Task.FromResult(new
         {

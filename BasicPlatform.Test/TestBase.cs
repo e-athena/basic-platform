@@ -95,7 +95,9 @@ public class DefaultSecurityContextAccessor : ISecurityContextAccessor
     public bool IsRoot => true;
     public string? TenantId => null;
     public string? Role => null;
+    public IList<string>? Roles { get; } = null;
     public string? RoleName => null;
+    public IList<string>? RoleNames { get; } = null;
     public bool IsRefreshCache => false;
     public string JwtToken => string.Empty;
     public string JwtTokenNotBearer => string.Empty;

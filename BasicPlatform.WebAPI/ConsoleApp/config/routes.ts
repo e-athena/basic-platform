@@ -46,71 +46,60 @@ export default [
     ],
   },
   {
-    path: '/organization',
-    name: '组织架构',
+    path: '/developer',
+    name: '开发者中心',
     icon: 'crown',
     routes: [
       {
-        path: '/organization',
-        redirect: '/organization/org',
+        path: '/developer',
+        redirect: '/developer/resource',
       },
       {
-        path: '/organization/org',
-        name: '组织架构',
-        component: './Organization/Org',
-        access: 'routeFilter',
-      },
-      {
-        path: '/organization/position',
-        name: '职位管理',
-        component: './Organization/Position',
-        access: 'routeFilter',
-      },
-      {
-        path: '/organization/user',
-        name: '用户管理',
-        component: './Organization/User',
-        access: 'routeFilter',
-      },
-      {
-        path: '/organization/user-access-record',
-        name: '员工访问记录',
-        component: './Organization/UserAccessRecord',
-        access: 'routeFilter',
-      },
-    ],
-  },
-  {
-    path: '/permission',
-    name: '权限管理',
-    icon: 'crown',
-    routes: [
-      {
-        path: '/permission',
-        redirect: '/permission/role',
-      },
-      {
-        path: '/permission/role',
-        name: '角色管理',
-        component: './Permission/Role',
-        access: 'routeFilter',
-      },
-      {
-        path: '/permission/resource',
+        path: '/developer/resource',
         name: '资源管理',
-        component: './Permission/Resource',
+        component: './Developer/Resource',
         access: 'routeFilter',
       },
     ],
   },
   {
     path: '/system',
-    name: '系统模块',
+    name: '系统管理',
     icon: 'crown',
     routes: [
       {
         path: '/system',
-        redirect: '/system/server-info',
+        redirect: '/system/organization',
+      },
+      {
+        path: '/system/organization',
+        name: '组织架构',
+        component: './System/Organization',
+        access: 'routeFilter',
+      },
+      {
+        path: '/system/position',
+        name: '职位管理',
+        component: './System/Position',
+        access: 'routeFilter',
+      },
+      {
+        path: '/system/role',
+        name: '角色管理',
+        component: './System/Role',
+        access: 'routeFilter',
+      },
+      {
+        path: '/system/user',
+        name: '用户管理',
+        component: './System/User',
+        access: 'routeFilter',
+      },
+      {
+        path: '/system/user-access-record',
+        name: '员工访问记录',
+        component: './System/UserAccessRecord',
+        access: 'routeFilter',
       },
       {
         path: '/system/server-info',

@@ -1,6 +1,6 @@
 using Athena.Infrastructure.Status;
 
-namespace BasicPlatform.WebAPI.Controllers.Systems;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 服务器信息
@@ -9,10 +9,9 @@ namespace BasicPlatform.WebAPI.Controllers.Systems;
     ModuleCode = "system",
     ModuleName = "系统模块",
     ModuleRoutePath = "/system",
-    ModuleSort = 3,
-    
+    ModuleSort = 1,
     RoutePath = "/system/server-info",
-    Sort = 6
+    Sort = 5
 )]
 public class ServerController : CustomControllerBase
 {

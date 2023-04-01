@@ -5,19 +5,18 @@ using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Permissions;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 角色管理
 /// </summary>
 [Menu("角色管理",
-    ModuleCode = "permission",
-    ModuleName = "权限管理",
-    ModuleIcon = "SafetyOutlined",
-    ModuleRoutePath = "/permission",
-    ModuleSort = 2,
-    RoutePath = "/permission/role",
-    Sort = 0,
+    ModuleCode = "system",
+    ModuleName = "系统管理",
+    ModuleRoutePath = "/system",
+    ModuleSort = 1,
+    RoutePath = "/system/role",
+    Sort = 1,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class RoleController : CustomControllerBase

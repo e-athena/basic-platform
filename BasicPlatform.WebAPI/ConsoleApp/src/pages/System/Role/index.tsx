@@ -232,6 +232,7 @@ const TableList: React.FC = () => {
             <Button
               type="primary"
               onClick={() => {
+                setCurrentRow(undefined);
                 handleCreateOrUpdateModalOpen(true);
               }}
               icon={<PlusOutlined />}

@@ -5,19 +5,18 @@ using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Organizations;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 员工管理
 /// </summary>
 [Menu("员工管理",
-    ModuleCode = "organization",
-    ModuleName = "组织架构",
-    ModuleIcon = "ApartmentOutlined",
-    ModuleRoutePath = "/organization",
+    ModuleCode = "system",
+    ModuleName = "系统管理",
+    ModuleRoutePath = "/system",
     ModuleSort = 1,
-    RoutePath = "/organization/user",
-    Sort = 2,
+    RoutePath = "/system/user",
+    Sort = 0,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
 public class UserController : CustomControllerBase

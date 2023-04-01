@@ -21,6 +21,7 @@ declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 // 以下变量声明对应config.[env].ts文件内define的变量
 declare const API_URL: string;
 declare const APP_TOKEN_KEY: string;
+declare const RTC_URL: string;
 
 /**
  * 分页结构

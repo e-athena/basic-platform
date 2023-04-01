@@ -18,3 +18,4 @@ global using BasicPlatform.AppService;
 global using BasicPlatform.AppService.TableColumns;
 global using OpenTelemetry.Resources;
 global using OpenTelemetry.Trace;
+global using System.Diagnostics;

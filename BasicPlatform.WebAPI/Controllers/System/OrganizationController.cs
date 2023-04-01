@@ -2,19 +2,18 @@ using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Organizations.Requests;
 using BasicPlatform.AppService.Organizations.Responses;
 
-namespace BasicPlatform.WebAPI.Controllers.Organizations;
+namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
 /// 组织架构管理
 /// </summary>
 [Menu("组织管理",
-    ModuleCode = "organization",
-    ModuleName = "组织架构",
-    ModuleIcon = "ApartmentOutlined",
-    ModuleRoutePath = "/organization",
+    ModuleCode = "system",
+    ModuleName = "系统管理",
+    ModuleRoutePath = "/system",
     ModuleSort = 1,
-    RoutePath = "/organization/org",
-    Code = "org",
+    RoutePath = "/system/organization",
+    Sort = 2,
     Description = "组织机构,部门，多级树状结构"
 )]
 public class OrganizationController : CustomControllerBase

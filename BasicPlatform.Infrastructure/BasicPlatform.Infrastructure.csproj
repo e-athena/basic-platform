@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Athena.InstantMessaging" Version="6.0.0" />
         <PackageReference Include="NewLife.IP" Version="2.0.2023.203" />
         <PackageReference Include="Athena.Infrastructure" Version="6.1.12" />
         <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />

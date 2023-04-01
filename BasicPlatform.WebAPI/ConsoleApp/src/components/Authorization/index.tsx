@@ -44,6 +44,11 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       render(_, entity) {
         return (
           <Checkbox
+            style={{
+              marginTop: 5,
+              marginInlineStart: 0,
+              marginRight: 8,
+            }}
             checked={selectedResources.map((p) => p.key).includes(entity.code)}
             disabled={props.disabledResourceKeys?.includes(entity.code)}
             onChange={(e) => {
