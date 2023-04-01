@@ -130,18 +130,6 @@ public class OrganizationController : CustomControllerBase
     #region 扩展接口
 
     /// <summary>
-    /// 读取树形列表
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    [HttpPost]
-    public Task<List<GetOrganizationTreeDataResponse>> GetTreeListAsync(
-        [FromBody] GetOrganizationTreeDataRequest request)
-    {
-        return _queryService.GetTreeListAsync(request);
-    }
-
-    /// <summary>
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>

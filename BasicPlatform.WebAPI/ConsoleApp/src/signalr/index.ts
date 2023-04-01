@@ -8,7 +8,7 @@ type NoticeMessageType = {
   data: any;
   eventType: string;
   noticeType: string;
-}
+};
 
 /** 状态 */
 enum MessageType {

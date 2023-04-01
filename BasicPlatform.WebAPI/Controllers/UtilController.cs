@@ -31,6 +31,49 @@ public class UtilController : ControllerBase
     }
 
     /// <summary>
+    /// 读取程序集信息
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public IActionResult GetAssemblyInfo()
+    {
+        // 读取所有程序集
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        // 过滤掉动态程序集
+        assemblies = assemblies.Where(x => !x.IsDynamic).ToArray();
+        // 只读取直接引用的程序集
+        assemblies = assemblies.Where(x => x.Location.Contains(AppDomain.CurrentDomain.BaseDirectory)).ToArray();
+        // 按名称排序
+        assemblies = assemblies.OrderBy(x => x.FullName).ToArray();
+        // 过滤掉重复的
+        assemblies = assemblies.Distinct().ToArray();
+        // 循环读取程序集信息
+        var list = new List<object>();
+        foreach (var assembly in assemblies)
+        {
+            var version = assembly.GetName().Version;
+            var fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location);
+            var info = new
+            {
+                assembly.FullName,
+                version,
+                fileVersion.FileVersion,
+                fileVersion.ProductVersion,
+                fileVersion.ProductName,
+                fileVersion.CompanyName,
+                fileVersion.FileDescription,
+                fileVersion.Comments,
+                fileVersion.OriginalFilename,
+                fileVersion.Language,
+            };
+            list.Add(info);
+        }
+
+        return Ok(list);
+    }
+
+
+    /// <summary>
     /// 释放内存
     /// </summary>
     /// <returns></returns>

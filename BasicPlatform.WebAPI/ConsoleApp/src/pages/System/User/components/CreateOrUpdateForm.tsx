@@ -143,7 +143,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
             if (values) {
               setOrganizationId(values[values.length - 1]);
             }
-          }
+          },
         }}
         request={async () => {
           const { data } = await orgCascader();

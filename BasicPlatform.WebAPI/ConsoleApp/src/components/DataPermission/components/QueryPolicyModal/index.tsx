@@ -70,7 +70,7 @@ const QueryPolicyModal: React.FC<EditTableColumnFormProps> = (props) => {
     }
     setSelfOpen(false);
     onOk(filterGroups, saveTemplate || false);
-  }
+  };
   return (
     <>
       {props.open === undefined && (
@@ -129,10 +129,13 @@ const QueryPolicyModal: React.FC<EditTableColumnFormProps> = (props) => {
           >
             清空
           </Button>,
-          <Button key="cancel" onClick={() => {
-            onCancel?.();
-            setSelfOpen(false);
-          }}>
+          <Button
+            key="cancel"
+            onClick={() => {
+              onCancel?.();
+              setSelfOpen(false);
+            }}
+          >
             取消
           </Button>,
           <Button
@@ -243,12 +246,14 @@ const QueryPolicyModal: React.FC<EditTableColumnFormProps> = (props) => {
                 <RulerItem
                   key={index}
                   item={{ ...item, groupIndex, index }}
-                  colSelect={data.map((p) => ({
-                    label: p.label,
-                    value: p.value,
-                    propertyType: p.propertyType,
-                    enumOptions: p.enumOptions,
-                  } as ColSelectItem)
+                  colSelect={data.map(
+                    (p) =>
+                      ({
+                        label: p.label,
+                        value: p.value,
+                        propertyType: p.propertyType,
+                        enumOptions: p.enumOptions,
+                      } as ColSelectItem),
                   )}
                   onChange={(value) => {
                     // 更新

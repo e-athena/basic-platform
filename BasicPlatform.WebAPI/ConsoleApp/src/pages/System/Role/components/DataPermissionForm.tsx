@@ -24,10 +24,10 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
         setData(data);
         setDataSources(data);
       }
-    }
+    };
     if (props.open) {
       fetch();
-    };
+    }
   }, [props.open]);
   return (
     <ModalForm

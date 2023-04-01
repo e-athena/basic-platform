@@ -23,10 +23,25 @@ export default [
     ],
   },
   {
-    path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
-    component: './Welcome',
+    path: '/',
+    redirect: '/dashboard',
+  },
+  {
+    path: '/dashboard',
+    name: '工作台',
+    icon: 'home',
+    routes: [
+      {
+        path: '/dashboard',
+        redirect: '/dashboard/workbench',
+      },
+      {
+        path: '/dashboard/workbench',
+        name: '工作台',
+        icon: 'smile',
+        component: './Welcome',
+      },
+    ],
   },
   {
     path: '/admin',
@@ -120,10 +135,6 @@ export default [
     icon: 'table',
     path: '/list',
     component: './TableList',
-  },
-  {
-    path: '/',
-    component: './Welcome',
   },
   {
     path: '/external/:id',

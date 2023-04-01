@@ -1,6 +1,6 @@
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { useLocation, useModel } from '@umijs/max';
-import { Button, Divider, message } from 'antd';
+import { Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { query } from './service';
 
@@ -43,11 +43,11 @@ const ServerInfo: React.FC = () => {
   useEffect(() => {
     const fetch = async () => {
       setLoading(false);
-      const hide = message.loading('正在加载', 0);
+      // const hide = message.loading('正在加载', 0);
       const res = await query();
       setDataSource(res.data);
       setStartTime(res.data?.startTime);
-      hide();
+      // hide();
     };
     if (loading) {
       fetch();

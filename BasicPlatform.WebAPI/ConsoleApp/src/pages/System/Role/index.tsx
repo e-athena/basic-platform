@@ -46,7 +46,7 @@ const TableList: React.FC = () => {
     [
       permission.role.assignResourcesAsync,
       permission.role.assignDataPermissionsAsync,
-      permission.role.assignUsersAsync
+      permission.role.assignUsersAsync,
     ],
     resource,
   );

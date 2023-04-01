@@ -11,7 +11,7 @@ export default {
   // 通知类型
   noticeType: {
     // 上线通知
-    online: "OnlineNotice",
+    online: 'OnlineNotice',
     // 系统升级
     systemUpgrade: 'SystemUpgradeNotice',
     // 系统升级完成

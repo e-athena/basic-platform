@@ -27,7 +27,7 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
       setSegmentedOptioins(props.data.map((item) => item.displayName!));
       setCurrentSegmented(props.data[0].displayName!);
     }
-  }, [loading, props.data])
+  }, [loading, props.data]);
 
   useEffect(() => {
     props.onChange(dataSources);
@@ -148,17 +148,23 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
       tooltip: '针对模块列表字段的查询策略',
       align: 'center',
       render(_, entity) {
-        const defaultDom = <Button size={'small'} type={'dashed'} onClick={() => {
-          setCurrentRow(entity);
-          setQueryPolicyOpen(true);
-        }}>配置</Button>;
+        const defaultDom = (
+          <Button
+            size={'small'}
+            type={'dashed'}
+            onClick={() => {
+              setCurrentRow(entity);
+              setQueryPolicyOpen(true);
+            }}
+          >
+            配置
+          </Button>
+        );
         if (entity.queryFilterGroups.length === 0) {
           return defaultDom;
         }
-        return (<Badge count={entity.queryFilterGroups.length}>
-          {defaultDom}
-        </Badge>)
-      }
+        return <Badge count={entity.queryFilterGroups.length}>{defaultDom}</Badge>;
+      },
     },
   ];
   return (
@@ -183,7 +189,8 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
         toolBarRender={false}
         request={async (params) => {
           if (dataSources.length > 0 && currentSegmented !== '') {
-            const items = dataSources.find((item) => item.displayName === params.group)?.items || [];
+            const items =
+              dataSources.find((item) => item.displayName === params.group)?.items || [];
             return {
               data: items,
               success: true,
@@ -235,7 +242,9 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
             // 将数据更新到queryFilterGroups
             const index = dataSources.findIndex((item) => item.displayName === currentSegmented);
             const items = dataSources[index].items;
-            const itemIndex = items.findIndex((item) => item.resourceKey === currentRow?.resourceKey);
+            const itemIndex = items.findIndex(
+              (item) => item.resourceKey === currentRow?.resourceKey,
+            );
             items[itemIndex].queryFilterGroups = rows;
             setDataSources([...dataSources]);
             setCurrentRow(undefined);
@@ -244,7 +253,8 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
           open={queryPolicyOpen}
           resourceKey={currentRow?.resourceKey || ''}
           data={currentRow?.properties || []}
-        />)}
+        />
+      )}
     </>
   );
 };

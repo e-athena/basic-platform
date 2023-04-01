@@ -87,7 +87,7 @@ declare interface ResourceModel {
 declare interface FilterGroupItem {
   xor: string;
   filters: FilterItem[];
-};
+}
 
 declare interface FilterItem {
   key?: string;
@@ -98,11 +98,11 @@ declare interface FilterItem {
   operator?: string;
   groupIndex: number;
   index?: number;
-  extras?: API.SelectInfo[]
-};
+  extras?: API.SelectInfo[];
+}
 declare interface ColSelectItem {
   label: string;
   value: string;
   propertyType: string;
   enumOptions: any[];
-};
+}

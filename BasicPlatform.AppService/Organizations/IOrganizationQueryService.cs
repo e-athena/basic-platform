@@ -23,13 +23,6 @@ public interface IOrganizationQueryService
     Task<GetOrganizationByIdResponse?> GetAsync(string id);
 
     /// <summary>
-    /// 读取树形数据
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    Task<List<GetOrganizationTreeDataResponse>> GetTreeListAsync(GetOrganizationTreeDataRequest request);
-
-    /// <summary>
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>

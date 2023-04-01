@@ -100,10 +100,13 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
           >
             重置
           </Button>,
-          <Button key="cancel" onClick={() => {
-            onCancel?.();
-            setSelfOpen(false);
-          }}>
+          <Button
+            key="cancel"
+            onClick={() => {
+              onCancel?.();
+              setSelfOpen(false);
+            }}
+          >
             取消
           </Button>,
           <Button
@@ -239,12 +242,12 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                     .filter((p) => !p.hideInSearch)
                     .map(
                       (p) =>
-                      ({
-                        label: p.title,
-                        value: p.propertyName,
-                        propertyType: p.propertyType,
-                        enumOptions: p.enumOptions,
-                      } as ColSelectItem),
+                        ({
+                          label: p.title,
+                          value: p.propertyName,
+                          propertyType: p.propertyType,
+                          enumOptions: p.enumOptions,
+                        } as ColSelectItem),
                     )}
                   onChange={(value) => {
                     // 更新

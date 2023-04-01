@@ -72,29 +72,6 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     }
 
     /// <summary>
-    /// 读取树形数据
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    public async Task<List<GetOrganizationTreeDataResponse>> GetTreeListAsync(
-        GetOrganizationTreeDataRequest request)
-    {
-        var list = await QueryableNoTracking
-            .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
-            .ToListAsync(p => new GetOrganizationTreeDataResponse
-            {
-                CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName
-            });
-
-        var result = new List<GetOrganizationTreeDataResponse>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
-        // 递归读取
-        GetTreeChildren(list, result, parentId);
-        return result;
-    }
-
-    /// <summary>
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>

@@ -1,16 +1,6 @@
 import UserModal from '@/components/UserModal';
 import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
-import {
-  Button,
-  Col,
-  Row,
-  Select,
-  DatePicker,
-  Radio,
-  InputNumber,
-  Input,
-  Space,
-} from 'antd';
+import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
@@ -191,7 +181,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           {
             label: '等于',
             value: '==',
-          }
+          },
         ];
     }
   };
@@ -199,7 +189,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
     if (item.key?.includes('UserId')) {
       return (
         <Space direction="horizontal">
-          {item.operator !== undefined && item.operator === 'in' ?
+          {item.operator !== undefined && item.operator === 'in' ? (
             <Select
               autoClearSearchValue
               options={item.extras || []}
@@ -208,7 +198,8 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
               placeholder="请点击右侧选择"
               disabled
               value={item.extras?.map((x) => x.value) || []}
-            /> :
+            />
+          ) : (
             <Input
               allowClear
               placeholder="请点击右侧选择"
@@ -216,7 +207,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
               style={{ width: 277 }}
               value={(item.extras || []).length > 0 ? item.extras![0].label : ''}
             />
-          }
+          )}
           <Button
             disabled={item.operator === undefined}
             onClick={() => {
@@ -494,7 +485,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           </Button>
         </Col>
       </Row>
-      {userModalOpen &&
+      {userModalOpen && (
         <UserModal
           open={userModalOpen}
           onCancel={() => {
@@ -508,18 +499,16 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
             } else {
               newItem.value = keys.join(',');
             }
-            newItem.extras = rows.map(p => ({
+            newItem.extras = rows.map((p) => ({
               label: p.realName,
               value: p.id,
             })) as API.SelectInfo[];
             onChange(newItem);
             setUserModalOpen(false);
           }}
-          defaultSelectedKeys={
-            (item.extras || []).map(p => p.value)
-          }
+          defaultSelectedKeys={(item.extras || []).map((p) => p.value)}
         />
-      }
+      )}
     </div>
   );
 };

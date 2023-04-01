@@ -96,8 +96,8 @@ declare namespace API {
     dataScope: number;
     enabled: boolean;
     dataScopeCustom?: string;
-    queryFilterGroups: FilterGroupItem[];
-    policyResourceKey: string;
+    queryFilterGroups?: FilterGroupItem[];
+    policyResourceKey?: string;
   };
 
   /** 数据权限属性 */
@@ -107,5 +107,5 @@ declare namespace API {
     key: string;
     propertyType?: string;
     enumOptions?: SelectInfo[];
-  }
+  };
 }

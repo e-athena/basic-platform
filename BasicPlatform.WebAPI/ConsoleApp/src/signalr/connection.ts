@@ -1,6 +1,6 @@
-import { HttpTransportType, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { HttpTransportType, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import rtc from './rtc-message';
-import { notification } from "antd";
+import { notification } from 'antd';
 import notice from './index';
 import { getToken } from '@/utils/token';
 
@@ -50,10 +50,9 @@ export const fetchSignalRConnectionNotice = async () => {
   return connection;
 };
 
-
 /**
  * SignalR Event
- * @returns 
+ * @returns
  */
 export const fetchSignalRConnectionEvent = async () => {
   const token = getToken();

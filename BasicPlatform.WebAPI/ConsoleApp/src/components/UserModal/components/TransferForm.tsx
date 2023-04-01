@@ -111,10 +111,10 @@ const TransferForm: React.FC<TransferFormProps> = (props) => {
       setDataSource(
         res.success
           ? res.data!.map((item: API.SelectInfo) => ({
-            key: item.value,
-            title: item.label,
-            description: item.extend,
-          }))
+              key: item.value,
+              title: item.label,
+              description: item.extend,
+            }))
           : [],
       );
       setLoading(false);

@@ -59,7 +59,6 @@ declare namespace API {
     status?: Status[];
   } & Partial<Record<string, any>>;
 
-
   /** 分配数据权限 */
   type AssignUserDataPermissionsRequest = {
     id: string;

@@ -54,7 +54,7 @@ const TableList: React.FC = () => {
     [
       permission.user.assignResourcesAsync,
       permission.user.assignDataPermissionsAsync,
-      permission.user.resetPasswordAsync
+      permission.user.resetPasswordAsync,
     ],
     resource,
   );
@@ -285,8 +285,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                  maxWidth: tableSize?.width - 270 - 24,
-                }
+                    maxWidth: tableSize?.width - 270 - 24,
+                  }
                 : {}
             }
             defaultColumns={defaultColumns}
