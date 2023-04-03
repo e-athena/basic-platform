@@ -63,7 +63,7 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
       dataIndex: 'displayName',
       hideInSearch: true,
       ellipsis: true,
-      width: 190,
+      width: 180,
     },
     {
       title: '数据访问范围',
@@ -144,7 +144,7 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
       dataIndex: 'displayName',
       hideInSearch: true,
       ellipsis: true,
-      width: 100,
+      width: 95,
       tooltip: '针对模块列表字段的查询策略',
       align: 'center',
       render(_, entity) {

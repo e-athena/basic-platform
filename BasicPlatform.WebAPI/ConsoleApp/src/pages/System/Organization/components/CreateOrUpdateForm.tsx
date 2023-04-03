@@ -44,8 +44,12 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           destroyOnClose: true,
         }}
         onFinish={async (values: API.UpdateOrgRequest) => {
-          if (values.parentId !== undefined && values.parentId.length !== 0) {
-            values.parentId = values.parentId[values.parentId.length - 1];
+          if (values.parentId !== undefined) {
+            if (values.parentId.length !== 0) {
+              values.parentId = values.parentId[values.parentId.length - 1];
+            } else {
+              delete values.parentId;
+            }
           }
           const isUpdate = props.values?.id !== undefined;
           values.leaderId = leaderId;

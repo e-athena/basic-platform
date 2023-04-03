@@ -11,72 +11,44 @@ builder.Host
     );
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
 // Add services to the container.
-
-#region OpenTelemetry
-
-// services.AddSingleton<Instrumentation>();
-services.AddOpenTelemetry()
-    // Build a resource configuration action to set service information.
-    .ConfigureResource(r => r.AddService(
-        serviceName: configuration.GetValue<string>("ServiceName"),
-        serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown",
-        serviceInstanceId: Environment.MachineName)
-    )
-    .WithTracing(providerBuilder => providerBuilder
-        .SetSampler(new AlwaysOnSampler())
-        .AddFreeSqlInstrumentation()
-        .AddHttpClientInstrumentation()
-        .AddAspNetCoreInstrumentation()
-        .AddZipkinExporter(o =>
-        {
-            // Endpoint to send Zipkin traces to.
-            o.Endpoint = new Uri(configuration.GetValue<string>("Zipkin:Endpoint"));
-        })
-    );
-// .WithMetrics(providerBuilder => providerBuilder
-//         .AddHttpClientInstrumentation()
-//         .AddAspNetCoreInstrumentation()
-//         .AddOtlpExporter()
-//     // .AddConsoleExporter()
-// );
-
-#endregion
-
 services.AddHttpContextAccessor();
+services.AddCustomOpenTelemetry<Program>(configuration);
 services.AddCustomMediatR(
     Assembly.Load("BasicPlatform.AppService.FreeSql")
 );
-// services.AddCustomLogging(configuration);
 services.AddCustomServiceComponent(
     Assembly.Load("BasicPlatform.AppService.FreeSql"),
     Assembly.Load("BasicPlatform.Infrastructure")
 );
 services.AddCustomSwaggerGen(configuration);
-services.AddCustomFreeSql(configuration, builder.Environment, aop =>
-{
-    aop.CurdAfter += (_, e) =>
-    {
-        if (e.ElapsedMilliseconds > 200)
-        {
-            Console.WriteLine($"执行SQL耗时 {e.ElapsedMilliseconds} ms");
-        }
-    };
-});
+services.AddCustomFreeSql(configuration, builder.Environment);
+
+// #region 使用SQLite作为集成事件存储，用于开发环境
+//
+// var connectionString = configuration.GetConnectionString("Default");
+// services.AddCustomIntegrationEvent(options =>
+// {
+//     options.UseSqlite(connectionString);
+//     options.UseRedis();
+//     options.UseDashboard();
+// }, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
+//
+// #endregion
+
+// 添加集成事件支持
 services.AddCustomIntegrationEvent(configuration, capOptions =>
 {
     // Dashboard
     capOptions.UseDashboard();
-});
-services.AddCustomIntegrationEventHandler(
-    Assembly.Load("BasicPlatform.IntegratedEventHandler")
-);
+}, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
+
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
 services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
+services.AddCustomStorageLogger(configuration, FreeSqlMultiTenancyManager.Instance);
 services.AddControllers(options =>
 {
     options.AddCustomApiResultFilter();
@@ -87,6 +59,7 @@ builder.Host.UseDefaultServiceProvider(options => { options.ValidateScopes = fal
 var app = builder.Build();
 
 app.RegisterCustomServiceInstance();
+app.UseCustomFreeSqlMultiTenancy();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

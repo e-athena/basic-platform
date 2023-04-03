@@ -36,7 +36,7 @@ public class RoleQueryModel : QueryModelBase
     /// 备注
     /// </summary>
     [MaxLength(1024)]
-    [TableColumn(Width = 150, Sort = 3)]
+    [TableColumn(Sort = 3)]
     public string? Remarks { get; set; }
 
     /// <summary>

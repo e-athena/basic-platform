@@ -32,8 +32,12 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         destroyOnClose: true,
       }}
       onFinish={async (values: API.UpdatePositionItem) => {
-        if (values.organizationId !== undefined && values.organizationId.length !== 0) {
-          values.organizationId = values.organizationId[values.organizationId.length - 1];
+        if (values.organizationId !== undefined) {
+          if (values.organizationId.length !== 0) {
+            values.organizationId = values.organizationId[values.organizationId.length - 1];
+          } else {
+            delete values.organizationId;
+          }
         }
         const isUpdate = props.values !== undefined;
         let succeed;
@@ -52,7 +56,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         ...props.values,
         status: props.values?.id === undefined ? true : props.values?.status === 1,
         organizationId:
-          props.values?.organizationPath === undefined || props.values?.organizationPath === ''
+          props.values?.organizationPath === undefined || props.values?.organizationPath === '' || props.values?.organizationPath === null
             ? []
             : props.values?.organizationPath.split(','),
       }}

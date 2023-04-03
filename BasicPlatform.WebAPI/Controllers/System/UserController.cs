@@ -8,9 +8,9 @@ using BasicPlatform.AppService.Users.Responses;
 namespace BasicPlatform.WebAPI.Controllers.System;
 
 /// <summary>
-/// 员工管理
+/// 用户管理
 /// </summary>
-[Menu("员工管理",
+[Menu("用户管理",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",
@@ -180,6 +180,7 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns>新密码</returns>
     [HttpPost]
+    [AllowAnonymous]
     public Task<string> ResetPasswordAsync([FromBody] ResetUserPasswordRequest request,
         CancellationToken cancellationToken)
     {

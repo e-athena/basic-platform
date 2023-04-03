@@ -33,7 +33,7 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
 
   return (
     <ModalForm
-      width={860}
+      width={960}
       title={props.title || '分配权限'}
       open={props.open}
       modalProps={{

@@ -59,10 +59,8 @@ public class TestBase
                 }
             };
         });
-        services.AddCustomIntegrationEvent(Configuration);
-        services.AddCustomIntegrationEventHandler(
-            Assembly.Load("BasicPlatform.IntegratedEventHandler")
-        );
+        services.AddCustomIntegrationEvent(Configuration,
+            new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
         services.AddScoped<ISecurityContextAccessor, DefaultSecurityContextAccessor>();
         Provider = services.BuildServiceProvider();
         DbContext = Provider.GetService<IFreeSql>()!;
