@@ -24,24 +24,24 @@ services.AddCustomServiceComponent(
 services.AddCustomSwaggerGen(configuration);
 services.AddCustomFreeSql(configuration, builder.Environment);
 
-// #region 使用SQLite作为集成事件存储，用于开发环境
-//
-// var connectionString = configuration.GetConnectionString("Default");
-// services.AddCustomIntegrationEvent(options =>
-// {
-//     options.UseSqlite(connectionString);
-//     options.UseRedis();
-//     options.UseDashboard();
-// }, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
-//
-// #endregion
+#region 使用SQLite作为集成事件存储，用于开发环境
 
-// 添加集成事件支持
-services.AddCustomIntegrationEvent(configuration, capOptions =>
+var connectionString = configuration.GetConnectionString("Default");
+services.AddCustomIntegrationEvent(options =>
 {
-    // Dashboard
-    capOptions.UseDashboard();
+    options.UseSqlite(connectionString);
+    options.UseRedis();
+    options.UseDashboard();
 }, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
+
+#endregion
+
+// // 添加集成事件支持
+// services.AddCustomIntegrationEvent(configuration, capOptions =>
+// {
+//     // Dashboard
+//     capOptions.UseDashboard();
+// }, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
 
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
