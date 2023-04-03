@@ -45,7 +45,8 @@ public class TestBase
             Assembly.Load("BasicPlatform.AppService.FreeSql"),
             Assembly.Load("BasicPlatform.Infrastructure")
         );
-        services.AddCustomFreeSqlWithMySql(Configuration, new HostingEnvironment
+        services.AddCustomCsRedisCache(Configuration);
+        services.AddCustomFreeSql(Configuration, new HostingEnvironment
         {
             EnvironmentName = "Development"
         }, aop =>
@@ -58,7 +59,8 @@ public class TestBase
                 }
             };
         });
-        services.AddCustomIntegrationEvent(Configuration);
+        services.AddCustomIntegrationEvent(Configuration,
+            new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
         services.AddScoped<ISecurityContextAccessor, DefaultSecurityContextAccessor>();
         Provider = services.BuildServiceProvider();
         DbContext = Provider.GetService<IFreeSql>()!;
@@ -67,26 +69,37 @@ public class TestBase
 
 public class DefaultSecurityContextAccessor : ISecurityContextAccessor
 {
+    public string CreateToken(List<Claim> claims)
+    {
+        return string.Empty;
+    }
+
+    public string CreateToken(List<Claim> claims, string scheme)
+    {
+        return string.Empty;
+    }
+
     public string CreateToken(JwtConfig config, List<Claim> claims, string scheme = "Bearer")
     {
         // throw new NotImplementedException();
         return string.Empty;
     }
 
-    public string? AppId { get; }
-
-    public string? MemberId { get; }
-    public string? UserId => "63a4897bbd3497da92a27f5b";
-    public string? RealName => "开发者";
-    public string? UserName => "root";
+    public string? AppId => null;
+    public string MemberId => "63a4897bbd3497da92a27f5b";
+    public string UserId => "63a4897bbd3497da92a27f5b";
+    public string RealName => "开发者";
+    public string UserName => "root";
     public bool IsRoot => true;
-    public string? TenantId { get; }
-    public string? Role { get; }
-    public string? RoleName { get; }
-    public bool IsRefreshCache { get; }
+    public string? TenantId => null;
+    public string? Role => null;
+    public IList<string>? Roles { get; } = null;
+    public string? RoleName => null;
+    public IList<string>? RoleNames { get; } = null;
+    public bool IsRefreshCache => false;
     public string JwtToken => string.Empty;
     public string JwtTokenNotBearer => string.Empty;
-    public bool IsAuthenticated { get; }
+    public bool IsAuthenticated => true;
     public string UserAgent => string.Empty;
     public string IpAddress => string.Empty;
 }

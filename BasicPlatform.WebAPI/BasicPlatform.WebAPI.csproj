@@ -11,21 +11,45 @@
         <DocumentationFile>bin\Debug\net6.0\BasicPlatform.WebAPI.xml</DocumentationFile>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DocumentationFile>bin\Release\net6.0\BasicPlatform.WebAPI.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
+        <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.2" />
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.1" />
-        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.0.10" />
-        <PackageReference Include="Athena.Infrastructure.Permission" Version="6.0.4" />
+        <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.0.8" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.3.1" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="6.2.0-pre1.1" />
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.10" />
+        <PackageReference Include="Athena.Infrastructure.Logger.FreeSql" Version="6.3.1" />
+        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.12" />
         <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.3" />
-        <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+        <PackageReference Include="Athena.InstantMessaging.SignalR" Version="6.0.2" />
+        <PackageReference Include="Athena.Serilog.Enrichers.ClientInfo" Version="1.0.0" />
+        <PackageReference Include="Athena.Serilog.Enrichers.OpenTracing" Version="1.0.0" />
+        
+        <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
-        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.0.0" />
+        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.1.0" />
+        
+        <PackageReference Include="FreeSql.Provider.SqliteCore" Version="3.2.693" />
+        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
+        
+        <PackageReference Include="DotNetCore.CAP.Sqlite" Version="6.2.1" />
         <PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.2.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BasicPlatform.AppService.FreeSql\BasicPlatform.AppService.FreeSql.csproj" />
         <ProjectReference Include="..\BasicPlatform.IntegratedEventHandler\BasicPlatform.IntegratedEventHandler.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\Platform" />
     </ItemGroup>
 
 </Project>

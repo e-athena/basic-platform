@@ -20,25 +20,33 @@ public class RoleResource : ValueObject
     public virtual Role Role { get; set; } = null!;
 
     /// <summary>
-    /// 资源ID
+    /// 资源Key
     /// </summary>
-    /// <value></value>
-    [MaxLength(36)]
-    public string ResourceId { get; set; } = null!;
+    [MaxLength(128)]
+    public string ResourceKey { get; set; } = null!;
 
     /// <summary>
-    /// 资源
+    /// 资源代码
+    /// <remarks>多个用逗号分割</remarks>
     /// </summary>
     /// <value></value>
-    public virtual Resource Resource { get; set; } = null!;
+    [MaxLength(256)]
+    public string ResourceCode { get; set; } = null!;
 
+    /// <summary>
+    /// 资源代码列表
+    /// </summary>
+    public IList<string> ResourceCodes =>
+        string.IsNullOrEmpty(ResourceCode) ? new List<string>() : ResourceCode.Split(",");
+    
     public RoleResource()
     {
     }
 
-    public RoleResource(string roleId, string resourceId)
+    public RoleResource(string roleId, string resourceKey, string resourceCode)
     {
         RoleId = roleId ?? throw new ArgumentNullException(nameof(roleId));
-        ResourceId = resourceId ?? throw new ArgumentNullException(nameof(resourceId));
+        ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
+        ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));
     }
 }

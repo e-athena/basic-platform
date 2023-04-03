@@ -4,76 +4,108 @@ namespace BasicPlatform.Domain.Models;
 /// 职位
 /// </summary>
 [Table("authority_positions")]
-// ReSharper disable once ClassNeverInstantiated.Global
-public class Position : EntityCore, ICreator, IUpdater
+public class Position : FullEntityCore
 {
     /// <summary>
-    /// 上级
+    /// 组织架构ID
+    /// <remarks>为空时为通用职位</remarks>
     /// </summary>
     [MaxLength(36)]
-    public string? ParentId { get; set; }
+    public string? OrganizationId { get; set; }
 
     /// <summary>
-    /// 上级
+    /// 组织架构
     /// </summary>
-    public virtual Position? Parent { get; set; }
-
-    /// <summary>
-    /// 上级路径，用逗号分割，用于快速检索
-    /// </summary>
-    public string ParentPath { get; set; } = string.Empty;
+    public virtual Organization? Organization { get; set; }
 
     /// <summary>
     /// 名称
     /// </summary>
-    [Required]
     [MaxLength(32)]
+    [Required]
     public string Name { get; set; } = null!;
 
     /// <summary>
     /// 备注
     /// </summary>
+    [MaxLength(1000)]
     public string? Remarks { get; set; }
 
     /// <summary>
     /// 状态
     /// </summary>
-    public Status Status { get; set; }
+    public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id
+    /// 排序
     /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
+    public int Sort { get; set; }
+
+    // /// <summary>
+    // /// 创建人Id
+    // /// </summary>
+    // [MaxLength(36)]
+    // public string? CreatedUserId { get; set; }
 
     /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
 
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    // /// <summary>
+    // /// 最后更新人Id
+    // /// </summary>
+    // [MaxLength(36)]
+    // public string? UpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
     public virtual User? UpdatedUser { get; set; }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
     public Position()
     {
     }
 
-    public Position(string? parentId, string name, string? remarks, Status status, string? userId)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="organizationId"></param>
+    /// <param name="name"></param>
+    /// <param name="remarks"></param>
+    /// <param name="status"></param>
+    /// <param name="sort"></param>
+    /// <param name="createdUserId"></param>
+    public Position(string? organizationId, string name, string? remarks, Status status, int sort,
+        string? createdUserId)
     {
-        ParentId = parentId;
+        OrganizationId = organizationId;
         Name = name;
         Remarks = remarks;
         Status = status;
-        CreatedUserId = userId;
-        UpdatedUserId = userId;
+        Sort = sort;
+        CreatedUserId = createdUserId;
+    }
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="organizationId"></param>
+    /// <param name="name"></param>
+    /// <param name="remarks"></param>
+    /// <param name="sort"></param>
+    /// <param name="updatedUserId"></param>
+    public void Update(string? organizationId, string name, string? remarks, int sort, string? updatedUserId)
+    {
+        OrganizationId = organizationId;
+        Name = name;
+        Remarks = remarks;
+        Sort = sort;
+        UpdatedUserId = updatedUserId;
     }
 
     /// <summary>
@@ -84,24 +116,6 @@ public class Position : EntityCore, ICreator, IUpdater
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         UpdatedUserId = updatedUserId;
-        UpdatedOn = DateTime.Now;
-    }
-
-    /// <summary>
-    /// 更新
-    /// </summary>
-    /// <param name="parentId"></param>
-    /// <param name="parentPath"></param>
-    /// <param name="name"></param>
-    /// <param name="remarks"></param>
-    /// <param name="userId"></param>
-    public void Update(string? parentId, string parentPath, string name, string? remarks, string? userId)
-    {
-        ParentId = parentId;
-        ParentPath = parentPath;
-        Name = name;
-        Remarks = remarks;
-        UpdatedUserId = userId;
         UpdatedOn = DateTime.Now;
     }
 }

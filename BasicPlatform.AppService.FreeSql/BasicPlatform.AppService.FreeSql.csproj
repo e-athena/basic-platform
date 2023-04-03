@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BasicPlatform.AppService\BasicPlatform.AppService.csproj" />
+        <ProjectReference Include="..\BasicPlatform.AppService\BasicPlatform.AppService.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.1.19" />
-      <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.5" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.3.0" />
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.9" />
     </ItemGroup>
 
 </Project>

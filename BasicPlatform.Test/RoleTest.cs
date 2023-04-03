@@ -27,7 +27,7 @@ public class RoleTest : TestBase
         var role = await _queryService!.GetAsync(id);
         Assert.That(role, Is.Not.Null);
 
-        var res = await _queryService!.GetAsync(new GetRolePagingRequest());
+        var res = await _queryService!.GetPagingAsync(new GetRolePagingRequest());
         Assert.That(res, Is.Not.Null);
         await DbContext.Delete<Role>(id).ExecuteAffrowsAsync();
     }

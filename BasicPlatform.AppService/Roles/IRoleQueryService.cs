@@ -15,7 +15,7 @@ public interface IRoleQueryService
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Paging<GetRolePagingResponse>> GetAsync(GetRolePagingRequest request,
+    Task<Paging<GetRolePagingResponse>> GetPagingAsync(GetRolePagingRequest request,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -24,7 +24,7 @@ public interface IRoleQueryService
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<RoleModel> GetAsync(string id, CancellationToken cancellationToken = default);
+    Task<GetRoleByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 读取下拉列表数据
@@ -32,4 +32,26 @@ public interface IRoleQueryService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<SelectViewModel>> GetSelectListAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 读取用户拥有的角色
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<List<string>> GetRoleIdsByUserIdAsync(string userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 读取数据权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id);
+
+    /// <summary>
+    /// 读取角色数据查询策略
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<RoleDataQueryPolicyModel>> GetDataQueryPoliciesAsync(string id);
 }
