@@ -171,17 +171,4 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
             .Where(p => p.RoleId == id)
             .ToListAsync<RoleDataPermissionModel>();
     }
-
-    /// <summary>
-    /// 读取角色数据查询策略
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public Task<List<RoleDataQueryPolicyModel>> GetDataQueryPoliciesAsync(string id)
-    {
-        return QueryNoTracking<RoleDataQueryPolicy>()
-            .Where(p => p.RoleId == id)
-            .ToListAsync<RoleDataQueryPolicyModel>();
-    }
 }

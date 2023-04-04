@@ -49,7 +49,7 @@ public class PolicyQueryFilterService : IQueryFilterService
             var result = await _dataPermissionService.GetPolicyQueryFilterGroupsAsync(userId, resourceKey, appId);
             if (result.Count == 0)
             {
-                return null;
+                return new List<QueryFilterGroup>();
             }
 
             // 基础权限列表

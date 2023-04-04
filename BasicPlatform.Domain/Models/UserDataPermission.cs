@@ -20,7 +20,7 @@ public class UserDataPermission : ValueObject
     public virtual User User { get; set; } = null!;
 
     /// <summary>
-    /// 资源Key
+    /// 基础资源Key
     /// </summary>
     public string ResourceKey { get; set; } = null!;
 
@@ -36,6 +36,25 @@ public class UserDataPermission : ValueObject
     [MaxLength(-1)]
     public string? DataScopeCustom { get; set; }
 
+    /// <summary>
+    /// 策略资源Key
+    /// </summary>
+    public string PolicyResourceKey { get; set; } = null!;
+
+    /// <summary>
+    /// 策略
+    /// </summary>
+    [MaxLength(-1)]
+    public string Policy { get; set; } = null!;
+
+    /// <summary>
+    /// 策略
+    /// </summary>
+    [JsonIgnore]
+    public IList<QueryFilterGroup> Policies => string.IsNullOrEmpty(Policy)
+        ? new List<QueryFilterGroup>()
+        : JsonSerializer.Deserialize<IList<QueryFilterGroup>>(Policy) ?? new List<QueryFilterGroup>();
+    
     /// <summary>
     /// 是否启用
     /// </summary>
@@ -56,13 +75,22 @@ public class UserDataPermission : ValueObject
         string resourceKey,
         RoleDataScope dataScope,
         string? dataScopeCustom,
-        bool enabled, 
+        string policyResourceKey,
+        IList<QueryFilterGroup>? policy,
+        bool enabled,
         DateTime? expireAt)
     {
-        UserId = userId;
+        UserId = userId; 
         ResourceKey = resourceKey;
         DataScope = dataScope;
         DataScopeCustom = dataScopeCustom;
+        PolicyResourceKey = policyResourceKey;
+        Policy = string.Empty;
+        if (policy is {Count: > 0})
+        {
+            Policy = JsonSerializer.Serialize(policy);
+        }
+
         Enabled = enabled;
         ExpireAt = expireAt;
     }

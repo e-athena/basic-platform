@@ -1,6 +1,3 @@
-using Athena.Infrastructure.QueryFilters;
-using BasicPlatform.AppService.DataPermissions;
-using BasicPlatform.AppService.DataPermissions.Models;
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
@@ -184,23 +181,16 @@ public class RoleController : CustomControllerBase
     public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
     {
         var result = await _service.GetDataPermissionsAsync(id);
-        var policies = await _service.GetDataQueryPoliciesAsync(id);
         var assembly = Assembly.Load("BasicPlatform.AppService");
         return DataPermissionHelper.GetGroupList(
             assembly,
-            result.Select(p =>
+            result.Select(p => new DataPermission
             {
-                var groups = policies
-                    .FirstOrDefault(c => c.BaseResourceKey == p.ResourceKey)
-                    ?.Policies.ToList() ?? new List<QueryFilterGroup>();
-                return new DataPermission
-                {
-                    ResourceKey = p.ResourceKey,
-                    DataScopeCustom = p.DataScopeCustom,
-                    DataScope = p.DataScope,
-                    Enabled = p.Enabled,
-                    QueryFilterGroups = groups
-                };
+                ResourceKey = p.ResourceKey,
+                DataScopeCustom = p.DataScopeCustom,
+                DataScope = p.DataScope,
+                Enabled = p.Enabled,
+                QueryFilterGroups = p.QueryFilterGroups?.ToList() ?? new List<QueryFilterGroup>()
             }).ToList());
     }
 

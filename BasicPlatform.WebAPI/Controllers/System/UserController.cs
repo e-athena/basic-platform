@@ -1,5 +1,3 @@
-using BasicPlatform.AppService.DataPermissions;
-using BasicPlatform.AppService.DataPermissions.Models;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
@@ -270,7 +268,8 @@ public class UserController : CustomControllerBase
                 DataScopeCustom = p.DataScopeCustom,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
-                DisableChecked = p.IsRolePermission
+                DisableChecked = p.IsRolePermission,
+                QueryFilterGroups = p.Policies.ToList()
             }).ToList()
         );
     }

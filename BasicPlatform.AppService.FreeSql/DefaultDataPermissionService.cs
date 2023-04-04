@@ -36,7 +36,7 @@ public class DefaultDataPermissionService : IDataPermissionService
             var result = new List<QueryFilterGroup>();
 
             // 读取用户配置的策略
-            var userPolicies = await _freeSql.Select<UserDataQueryPolicy>()
+            var userPolicies = await _freeSql.Select<UserDataPermission>()
                 .Where(p => p.UserId == userId)
                 // 启用的
                 .Where(p => p.Enabled)
@@ -56,7 +56,7 @@ public class DefaultDataPermissionService : IDataPermissionService
                 .ToList();
 
             // 读取用户角色配置的策略
-            var rolePolicies = await _freeSql.Select<RoleDataQueryPolicy>()
+            var rolePolicies = await _freeSql.Select<RoleDataPermission>()
                 .Where(p => _freeSql.Select<RoleUser>()
                     .As("c")
                     .Where(c => c.UserId == userId)

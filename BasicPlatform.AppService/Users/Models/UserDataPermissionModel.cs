@@ -28,6 +28,23 @@ public class UserDataPermissionModel
         : DataScopeCustom.Split(',').ToList();
 
     /// <summary>
+    /// 策略的资源Key
+    /// </summary>
+    public string PolicyResourceKey { get; set; } = null!;
+
+    /// <summary>
+    /// 策略
+    /// </summary>
+    public string Policy { get; set; } = null!;
+
+    /// <summary>
+    /// 策略
+    /// </summary>
+    public IList<QueryFilterGroup> Policies => string.IsNullOrEmpty(Policy)
+        ? new List<QueryFilterGroup>()
+        : JsonSerializer.Deserialize<IList<QueryFilterGroup>>(Policy) ?? new List<QueryFilterGroup>();
+
+    /// <summary>
     /// 是否启用
     /// </summary>
     public bool Enabled { get; set; }

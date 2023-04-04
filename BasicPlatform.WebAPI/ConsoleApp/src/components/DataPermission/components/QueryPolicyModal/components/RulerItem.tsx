@@ -1,5 +1,6 @@
 import UserModal from '@/components/UserModal';
 import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
+import { SelectOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -15,44 +16,6 @@ type RulerItemProps = {
 };
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
-  // const rulerSelect = [
-  //   {
-  //     label: '等于',
-  //     value: '==',
-  //   },
-  //   {
-  //     label: '不等于',
-  //     value: '!=',
-  //   },
-  //   {
-  //     label: '大于',
-  //     value: '>',
-  //   },
-  //   {
-  //     label: '小于',
-  //     value: '<',
-  //   },
-  //   {
-  //     label: '大于等于',
-  //     value: '>=',
-  //   },
-  //   {
-  //     label: '小于等于',
-  //     value: '<=',
-  //   },
-  //   {
-  //     label: '包含',
-  //     value: 'contains',
-  //   },
-  //   {
-  //     label: '属于',
-  //     value: 'in',
-  //   },
-  //   {
-  //     label: '含有任意一个',
-  //     value: 'intersect',
-  //   },
-  // ];
   const { onRemoveItem, item, onChange, colSelect } = props;
   const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
@@ -188,35 +151,68 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
   const getValueDom = () => {
     if (item.key?.includes('UserId')) {
       return (
-        <Space direction="horizontal">
-          {item.operator !== undefined && item.operator === 'in' ? (
-            <Select
-              autoClearSearchValue
-              options={item.extras || []}
-              mode="tags"
-              style={{ width: 277 }}
-              placeholder="请点击右侧选择"
-              disabled
-              value={item.extras?.map((x) => x.value) || []}
-            />
-          ) : (
-            <Input
-              allowClear
-              placeholder="请点击右侧选择"
-              disabled
-              style={{ width: 277 }}
-              value={(item.extras || []).length > 0 ? item.extras![0].label : ''}
-            />
-          )}
-          <Button
-            disabled={item.operator === undefined}
-            onClick={() => {
-              setUserModalOpen(true);
+        item.operator === '==' ?
+          <Select
+            autoClearSearchValue
+            options={[{
+              label: '{当前用户}',
+              value: '{SelfUserId}'
+            }, {
+              label: '{当前用户所在部门}',
+              value: '{SelfOrganizationId}'
+            }, {
+              label: '{当前用户所在部门及下级部门}',
+              value: '{SelfOrganizationChildrenIds}'
+            }, ...(item.extras || [])]}
+            style={{ width: 350 }}
+            placeholder="请选择"
+            onChange={(value) => {
+              const newItem = { ...item };
+              newItem.extras = [];
+              newItem.value = value;
+              onChange(newItem);
             }}
-          >
-            选择
-          </Button>
-        </Space>
+            value={(item.extras || []).length > 0 ? item.extras![0].value : item.value}
+            dropdownRender={(menu) => (<>
+              {menu}
+              <Button
+                type={'link'}
+                icon={<SelectOutlined />}
+                onClick={() => {
+                  setUserModalOpen(true);
+                }}
+              >选择其他用户</Button>
+            </>)}
+          /> :
+          <Space direction="horizontal">
+            {item.operator !== undefined && item.operator === 'in' ? (
+              <Select
+                autoClearSearchValue
+                options={item.extras || []}
+                mode="tags"
+                style={{ width: 277 }}
+                placeholder="请点击右侧选择"
+                disabled
+                value={item.extras?.map((x) => x.value) || []}
+              />
+            ) : (
+              <Input
+                allowClear
+                placeholder="请点击右侧选择"
+                disabled
+                style={{ width: 277 }}
+                value={(item.extras || []).length > 0 ? item.extras![0].label : ''}
+              />
+            )}
+            <Button
+              disabled={item.operator === undefined}
+              onClick={() => {
+                setUserModalOpen(true);
+              }}
+            >
+              选择
+            </Button>
+          </Space>
       );
     }
     const options = getOptions();

@@ -20,7 +20,7 @@ public class RoleDataPermission : ValueObject
     public virtual Role Role { get; set; } = null!;
 
     /// <summary>
-    /// 资源Key
+    /// 基础资源Key
     /// </summary>
     public string ResourceKey { get; set; } = null!;
 
@@ -37,6 +37,25 @@ public class RoleDataPermission : ValueObject
     public string? DataScopeCustom { get; set; }
 
     /// <summary>
+    /// 策略资源Key
+    /// </summary>
+    public string PolicyResourceKey { get; set; } = null!;
+
+    /// <summary>
+    /// 策略
+    /// </summary>
+    [MaxLength(-1)]
+    public string Policy { get; set; } = null!;
+
+    /// <summary>
+    /// 策略
+    /// </summary>
+    [JsonIgnore]
+    public IList<QueryFilterGroup> Policies => string.IsNullOrEmpty(Policy)
+        ? new List<QueryFilterGroup>()
+        : JsonSerializer.Deserialize<IList<QueryFilterGroup>>(Policy) ?? new List<QueryFilterGroup>();
+
+    /// <summary>
     /// 是否启用
     /// </summary>
     public bool Enabled { get; set; }
@@ -45,13 +64,26 @@ public class RoleDataPermission : ValueObject
     {
     }
 
-    public RoleDataPermission(string roleId, string resourceKey, RoleDataScope dataScope, string? dataScopeCustom,
+    public RoleDataPermission(
+        string roleId,
+        string resourceKey,
+        RoleDataScope dataScope,
+        string? dataScopeCustom,
+        string policyResourceKey,
+        IList<QueryFilterGroup>? policy,
         bool enabled)
     {
         RoleId = roleId;
         ResourceKey = resourceKey;
         DataScope = dataScope;
         DataScopeCustom = dataScopeCustom;
+        PolicyResourceKey = policyResourceKey;
+        Policy = string.Empty;
+        if (policy is {Count: > 0})
+        {
+            Policy = JsonSerializer.Serialize(policy);
+        }
+
         Enabled = enabled;
     }
 }

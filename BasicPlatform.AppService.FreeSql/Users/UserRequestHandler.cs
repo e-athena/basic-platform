@@ -196,6 +196,7 @@ public class UserRequestHandler : AppServiceBase<User>,
         {
             throw FriendlyException.Of("不能给自己分配权限");
         }
+
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserDataPermission>(
             p => p.UserId == request.Id, cancellationToken
@@ -208,8 +209,16 @@ public class UserRequestHandler : AppServiceBase<User>,
         // 新增新数据
         var userDataPermissions = request
             .Permissions
-            .Select(p => new UserDataPermission
-                (request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled, request.ExpireAt))
+            .Select(p => new UserDataPermission(
+                request.Id,
+                p.ResourceKey,
+                p.DataScope,
+                p.DataScopeCustom,
+                p.PolicyResourceKey,
+                p.QueryFilterGroups,
+                p.Enabled,
+                request.ExpireAt)
+            )
             .ToList();
         await RegisterNewRangeValueObjectAsync(userDataPermissions, cancellationToken);
 

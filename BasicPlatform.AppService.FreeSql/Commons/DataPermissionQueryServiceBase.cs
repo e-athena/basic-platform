@@ -32,6 +32,16 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     }
 
     /// <summary>
+    /// 跳过权限查询
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <returns></returns>
+    protected ISelect<T1> QuerySkipPermission<T1>() where T1 : class, new()
+    {
+        return _freeSql.Select<T1>().NoTracking();
+    }
+
+    /// <summary>
     /// 查询对象
     /// </summary>
     protected override ISelect<T> Queryable => QueryWithPermission<T>();
@@ -360,6 +370,7 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
         {
             return QueryFunc();
         }
+
         List<DataPermission> QueryFunc()
         {
             userId ??= UserId;

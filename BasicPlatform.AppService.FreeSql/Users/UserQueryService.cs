@@ -410,6 +410,8 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
                 DataScopeCustom = p.DataScopeCustom,
+                PolicyResourceKey = p.PolicyResourceKey,
+                Policy = p.Policy
             });
         foreach (var item in list)
         {
@@ -427,6 +429,8 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
                 DataScopeCustom = p.DataScopeCustom,
+                PolicyResourceKey = p.PolicyResourceKey,
+                Policy = p.Policy
             });
 
         // 以用户的为准，因为可对用户进行个性化设置
@@ -434,7 +438,6 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         {
             // 查询
             var single = list
-                .Where(p => p.DataScope != item.DataScope)
                 .FirstOrDefault(p => p.ResourceKey == item.ResourceKey);
             if (single == null)
             {
@@ -444,6 +447,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 
             single.DataScope = item.DataScope;
             single.DataScopeCustom = item.DataScopeCustom;
+            single.Policy = item.Policy;
         }
 
         // 去重

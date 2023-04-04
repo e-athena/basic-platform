@@ -47,11 +47,4 @@ public interface IRoleQueryService
     /// <param name="id"></param>
     /// <returns></returns>
     Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id);
-
-    /// <summary>
-    /// 读取角色数据查询策略
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    Task<List<RoleDataQueryPolicyModel>> GetDataQueryPoliciesAsync(string id);
 }

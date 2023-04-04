@@ -28,7 +28,7 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
         ISelect<Organization>? organizationQuery = null;
         if (request.OrganizationId != null)
         {
-            organizationQuery = QueryNoTracking<Organization>()
+            organizationQuery = QuerySkipPermission<Organization>()
                 .As("o")
                 // 当前组织架构及下级组织架构
                 .Where(p => p.ParentPath.Contains(request.OrganizationId!) || p.Id == request.OrganizationId);

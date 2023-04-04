@@ -18,3 +18,6 @@ global using BasicPlatform.AppService;
 global using BasicPlatform.AppService.TableColumns;
 global using System.Diagnostics;
 global using Athena.Infrastructure.FreeSql.Tenants;
+global using Athena.Infrastructure.QueryFilters;
+global using BasicPlatform.AppService.DataPermissions;
+global using BasicPlatform.AppService.DataPermissions.Models;
