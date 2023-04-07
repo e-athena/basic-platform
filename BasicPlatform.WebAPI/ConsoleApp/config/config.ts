@@ -155,5 +155,6 @@ export default defineConfig({
   define: {
     API_URL: '',
     APP_TOKEN_KEY: 'basic_platform_token',
+    APP_NAV_THEME_KEY: 'basic_platform_nav_theme',
   },
 });

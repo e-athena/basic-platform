@@ -1,5 +1,6 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import { SelectLang as UmiSelectLang } from '@umijs/max';
+import { AlertFilled, AlertOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { SelectLang as UmiSelectLang, useModel } from '@umijs/max';
+import { Switch } from 'antd';
 import React from 'react';
 
 export type SiderTheme = 'light' | 'dark';
@@ -26,6 +27,32 @@ export const Question = () => {
       }}
     >
       <QuestionCircleOutlined />
+    </div>
+  );
+};
+
+export const NavTheme = () => {
+  const { initialState, setInitialState } = useModel('@@initialState');
+  return (
+    <div
+      style={{
+        display: 'flex',
+        padding: 0
+      }}
+    >
+      <Switch
+        checkedChildren={<AlertFilled />}
+        unCheckedChildren={<AlertOutlined />}
+        checked={initialState?.customNavTheme !== 'light'}
+        onChange={(checked) => {
+          const theme = checked ? 'realDark' : 'light';
+          initialState?.setCustomNavTheme?.(theme);
+          setInitialState({
+            ...initialState,
+            customNavTheme: theme,
+          });
+        }}
+      />
     </div>
   );
 };

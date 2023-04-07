@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { Question, SelectLang } from '@/components/RightContent';
+import { Question, SelectLang, NavTheme } from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
 import type { MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -21,11 +21,14 @@ const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 import { fetchSignalRConnectionNotice } from './signalr/connection';
 import { HubConnection } from '@microsoft/signalr';
+import { getNavTheme, setNavTheme } from '@/utils/navTheme';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
+  customNavTheme?: 'realDark' | 'light' | undefined;
+  setCustomNavTheme?: (theme: string) => void;
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   loading?: boolean;
@@ -85,20 +88,29 @@ export async function getInitialState(): Promise<{
       apiResources,
       externalPages,
       settings: defaultSettings as Partial<LayoutSettings>,
+      customNavTheme: getNavTheme(),
+      setCustomNavTheme: setNavTheme,
     };
   }
   return {
     fetchMenuData,
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
+    customNavTheme: getNavTheme(),
+    setCustomNavTheme: setNavTheme,
   };
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
-  console.log(initialState?.settings)
+  console.log(initialState?.settings);
+  console.log(initialState?.customNavTheme);
   return {
-    actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [
+      <NavTheme key={'theme'} />,
+      <Question key="doc" />,
+      <SelectLang key="SelectLang" />
+    ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -254,6 +266,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
+    // 根据操作系统设置自动切换主题
+    navTheme: initialState?.customNavTheme === undefined ?
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'realDark' : 'light') : initialState?.customNavTheme,
   };
 };
 

@@ -1,12 +1,12 @@
 import pattern from '@/utils/pattern';
 import { BarsOutlined, MessageOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
 import { ProCard, ProForm, ProFormRadio, ProFormText, ProList } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+// import { useModel } from '@umijs/max';
 import { Menu, Switch } from 'antd';
 import { useState } from 'react';
 
 const Center = () => {
-  const { initialState } = useModel('@@initialState');
+  // const { initialState } = useModel('@@initialState');
   const [current, setCurrent] = useState('basic');
 
   return (
@@ -247,7 +247,7 @@ const Center = () => {
                   dataIndex: 'desc',
                 },
                 actions: {
-                  render: (text, row) => [
+                  render: () => [
                     <Switch key="switch" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />,
                   ],
                 },

@@ -18,6 +18,7 @@ services.AddCustomServiceComponent(
     Assembly.Load("BasicPlatform.Infrastructure")
 );
 services.AddCustomSwaggerGen(configuration);
+// 添加ORM
 services.AddCustomFreeSql(configuration, builder.Environment);
 // 添加集成事件支持
 services.AddCustomIntegrationEvent(configuration, capOptions =>
