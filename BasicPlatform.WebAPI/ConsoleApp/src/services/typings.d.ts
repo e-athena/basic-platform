@@ -50,7 +50,7 @@ declare namespace API {
     sort: number;
     /** 超出宽度显示省略号 */
     ellipsis?: boolean;
-    // /** 是否可复制 */ 有bug,先不显示
+    // /** 是否可复制 */
     // copyable?: boolean;
     /** 文字对齐方式 */
     align?: 'left' | 'center' | 'right';

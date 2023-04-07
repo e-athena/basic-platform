@@ -50,6 +50,7 @@
     "@ant-design/pro-components": "^2.3.57",
     "@ant-design/use-emotion-css": "1.0.4",
     "@microsoft/signalr": "^7.0.4",
+    "@twp0217/react-org-chart": "^1.1.2",
     "@umijs/route-utils": "^2.2.2",
     "ahooks": "^3.7.5",
     "antd": "^5.2.2",

@@ -23,6 +23,16 @@ export default [
     ],
   },
   {
+    name: '个人中心',
+    path: '/user/center',
+    component: './User/Center',
+  },
+  {
+    name: '个人设置',
+    path: '/user/settings',
+    component: './User/Settings',
+  },
+  {
     path: '/',
     redirect: '/dashboard',
   },

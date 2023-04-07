@@ -7,6 +7,7 @@ specifiers:
   '@ant-design/use-emotion-css': 1.0.4
   '@microsoft/signalr': ^7.0.4
   '@testing-library/react': ^13.4.0
+  '@twp0217/react-org-chart': ^1.1.2
   '@types/classnames': ^2.3.1
   '@types/express': ^4.17.17
   '@types/history': ^4.7.11
@@ -53,6 +54,7 @@ dependencies:
   '@ant-design/pro-components': 2.4.2_wacdszkbqwn7wuohqczb7gb7ie
   '@ant-design/use-emotion-css': 1.0.4_wacdszkbqwn7wuohqczb7gb7ie
   '@microsoft/signalr': 7.0.4
+  '@twp0217/react-org-chart': 1.1.2_biqbaboplfbrettd7655fr4n2y
   '@umijs/route-utils': 2.2.2
   ahooks: 3.7.5_react@18.2.0
   antd: 5.3.2_jb42yyeu5qxbfieyxjks6malva
@@ -4090,6 +4092,17 @@ packages:
   /@tsconfig/node16/1.0.3:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: true
+
+  /@twp0217/react-org-chart/1.1.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Jjr9p26L/CVYsa3QIygAMduhEqxJUiSOWFZdmWsOti/URVhBG5+SCzcZpWbWH1rdm+lNKVAJTgZGlfSyES6I3w==}
+    peerDependencies:
+      react: '>=16.9.0'
+      react-dom: '>=16.9.0'
+    dependencies:
+      classnames: 2.3.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /@types/aria-query/5.0.1:
     resolution: {integrity: sha512-XTIieEY+gvJ39ChLcB4If5zHtPxt3Syj5rgZR+e1ctpmK8NjPf0zFqsz4JpLJT0xla9GFDKjy8Cpu331nrmE1Q==}

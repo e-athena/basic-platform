@@ -1,3 +1,5 @@
+using Athena.Infrastructure.Exceptions;
+
 namespace BasicPlatform.WebAPI.Controllers;
 
 /// <summary>
@@ -22,10 +24,19 @@ public class UtilController : ControllerBase
     /// 同步数据库结构
     /// </summary>
     /// <param name="freeSql"></param>
+    /// <param name="accessor"></param>
     /// <returns></returns>
     [HttpGet]
-    public IActionResult SyncStructure([FromServices] IFreeSql freeSql)
+    [Authorize]
+    public IActionResult SyncStructure(
+        [FromServices] IFreeSql freeSql,
+        [FromServices] ISecurityContextAccessor accessor)
     {
+        if (!accessor.IsRoot)
+        {
+            throw FriendlyException.Of("只有超级管理员才能执行此操作");
+        }
+
         freeSql.SyncStructure("BasicPlatform.Domain");
         return Ok("ok");
     }

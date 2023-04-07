@@ -210,20 +210,40 @@ public class UserController : CustomControllerBase
     [AllowAnonymous]
     public async Task<IList<MenuTreeInfo>> GetResourcesAsync(
         [FromServices] IApiPermissionService service,
-        [FromServices] ISecurityContextAccessor accessor
+        [FromServices] ISecurityContextAccessor accessor,
+        [FromServices] IConfiguration configuration
     )
     {
-        var assembly = Assembly.GetExecutingAssembly();
+        var assemblies = new List<Assembly>
+        {
+            Assembly.GetExecutingAssembly()
+        };
+        var resourceAssemblies = configuration.GetSection("ResourceAssemblies").Get<List<string>>();
+        if (resourceAssemblies != null)
+        {
+            assemblies.AddRange(resourceAssemblies.Select(Assembly.Load));
+        }
+
+        var list = new List<MenuTreeInfo>();
         if (accessor.IsRoot)
         {
-            return service.GetMenuResources(assembly);
+            foreach (var assembly in assemblies)
+            {
+                list.AddRange(service.GetMenuResources(assembly));
+            }
+
+            return list;
         }
 
         var resources = await _queryService.GetUserResourceAsync(null);
         var keys = resources.Select(p => p.Key).ToList();
-        var result = service.GetPermissionMenuResources(assembly, keys);
 
-        return result;
+        foreach (var assembly in assemblies)
+        {
+            list.AddRange(service.GetPermissionMenuResources(assembly, keys));
+        }
+
+        return list;
     }
 
     /// <summary>
@@ -256,22 +276,40 @@ public class UserController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [ApiPermission(ApiPermissionConstant.UserDataPermissions, IsVisible = false)]
-    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
+    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync(
+        [FromServices] IConfiguration configuration,
+        [FromQuery] string id
+    )
     {
         var result = await _queryService.GetDataPermissionsAsync(id);
-        var assembly = Assembly.Load("BasicPlatform.AppService");
-        return DataPermissionHelper.GetGroupList(
-            assembly,
-            result.Select(p => new DataPermission
-            {
-                ResourceKey = p.ResourceKey,
-                DataScopeCustom = p.DataScopeCustom,
-                DataScope = p.DataScope,
-                Enabled = p.Enabled,
-                DisableChecked = p.IsRolePermission,
-                QueryFilterGroups = p.Policies.ToList()
-            }).ToList()
-        );
+        var assemblies = new List<Assembly>
+        {
+            Assembly.Load("BasicPlatform.AppService")
+        };
+        var dataPermissionAssemblies = configuration.GetSection("DataPermissionAssemblies").Get<List<string>>();
+        if (dataPermissionAssemblies != null)
+        {
+            assemblies.AddRange(dataPermissionAssemblies.Select(Assembly.Load));
+        }
+
+        var list = new List<DataPermissionGroup>();
+        foreach (var assembly in assemblies)
+        {
+            list.AddRange(DataPermissionHelper.GetGroupList(
+                assembly,
+                result.Select(p => new DataPermission
+                {
+                    ResourceKey = p.ResourceKey,
+                    DataScopeCustom = p.DataScopeCustom,
+                    DataScope = p.DataScope,
+                    Enabled = p.Enabled,
+                    DisableChecked = p.IsRolePermission,
+                    QueryFilterGroups = p.Policies.ToList()
+                }).ToList()
+            ));
+        }
+
+        return list;
     }
 
     #endregion
