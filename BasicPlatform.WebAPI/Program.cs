@@ -8,7 +8,7 @@ var host = builder.Host;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 // Add services to the container.
-services.AddHttpContextAccessor();
+services.AddAthenaProvider();
 services.AddCustomOpenTelemetry<Program>(configuration);
 services.AddCustomMediatR(
     Assembly.Load("BasicPlatform.AppService.FreeSql")
@@ -19,7 +19,7 @@ services.AddCustomServiceComponent(
 );
 services.AddCustomSwaggerGen(configuration);
 // 添加ORM
-services.AddCustomFreeSql(configuration, builder.Environment);
+services.AddCustomFreeSql(configuration, builder.Environment.IsDevelopment());
 // 添加集成事件支持
 services.AddCustomIntegrationEvent(configuration, capOptions =>
 {
@@ -32,7 +32,7 @@ services.AddCustomApiPermission();
 services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
-services.AddCustomStorageLogger(configuration, FreeSqlMultiTenancyManager.Instance);
+services.AddCustomStorageLogger(configuration);
 services.AddCustomController().AddNewtonsoftJson();
 
 host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
@@ -42,7 +42,7 @@ host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
     .UseDefaultServiceProvider(options => { options.ValidateScopes = false; });
 var app = builder.Build();
 
-app.RegisterCustomServiceInstance();
+app.UseAthenaProvider();
 app.UseCustomFreeSqlMultiTenancy();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

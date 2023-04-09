@@ -28,7 +28,7 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     {
         _freeSql = freeSql;
         _accessor = accessor;
-        _cacheManager = ServiceLocator.Instance?.GetService(typeof(ICacheManager)) as ICacheManager;
+        _cacheManager = AthenaProvider.Provider?.GetService(typeof(ICacheManager)) as ICacheManager;
     }
 
     /// <summary>

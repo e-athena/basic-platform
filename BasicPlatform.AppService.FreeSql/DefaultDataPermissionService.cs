@@ -1,4 +1,3 @@
-using Athena.Infrastructure.QueryFilters;
 using BasicPlatform.AppService.DataPermissions;
 
 namespace BasicPlatform.AppService.FreeSql;
@@ -15,7 +14,7 @@ public class DefaultDataPermissionService : IDataPermissionService
     public DefaultDataPermissionService(IFreeSql freeSql)
     {
         _freeSql = freeSql;
-        _cacheManager = ServiceLocator.Instance?.GetService(typeof(ICacheManager)) as ICacheManager;
+        _cacheManager = AthenaProvider.Provider?.GetService(typeof(ICacheManager)) as ICacheManager;
     }
 
     /// <summary>

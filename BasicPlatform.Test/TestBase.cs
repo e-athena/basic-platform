@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Security.Claims;
 using Athena.Infrastructure.Jwt;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace BasicPlatform.Test;
@@ -46,19 +45,7 @@ public class TestBase
             Assembly.Load("BasicPlatform.Infrastructure")
         );
         services.AddCustomCsRedisCache(Configuration);
-        services.AddCustomFreeSql(Configuration, new HostingEnvironment
-        {
-            EnvironmentName = "Development"
-        }, aop =>
-        {
-            aop.CurdAfter += (_, e) =>
-            {
-                if (e.ElapsedMilliseconds > 200)
-                {
-                    Console.WriteLine($"执行SQL耗时 {e.ElapsedMilliseconds} ms");
-                }
-            };
-        });
+        services.AddCustomFreeSql(Configuration, true);
         services.AddCustomIntegrationEvent(Configuration,
             new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
         services.AddScoped<ISecurityContextAccessor, DefaultSecurityContextAccessor>();

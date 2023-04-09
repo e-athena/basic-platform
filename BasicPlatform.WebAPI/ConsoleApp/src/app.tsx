@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer';
-import { Question, SelectLang, NavTheme } from '@/components/RightContent';
+import { Question, NavTheme } from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
-import type { MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-components';
+import { MenuDataItem, Settings as LayoutSettings, PageLoading } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -109,7 +109,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     actionsRender: () => [
       <NavTheme key={'theme'} />,
       <Question key="doc" />,
-      <SelectLang key="SelectLang" />
+      // <SelectLang key="SelectLang" />
     ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
@@ -247,7 +247,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}

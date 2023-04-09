@@ -18,7 +18,7 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
         base(unitOfWorkManager)
     {
         _accessor = accessor;
-        _cacheManager = ServiceLocator.Instance?.GetService(typeof(ICacheManager)) as ICacheManager;
+        _cacheManager = AthenaProvider.Provider?.GetService(typeof(ICacheManager)) as ICacheManager;
     }
 
     #region 新增

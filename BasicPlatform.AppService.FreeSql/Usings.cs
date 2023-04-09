@@ -16,3 +16,5 @@ global using Athena.Infrastructure.Caching;
 global using BasicPlatform.Infrastructure.Caches;
 global using Athena.Infrastructure.FrontEndTables;
 global using Athena.Infrastructure;
+global using Athena.Infrastructure.Providers;
+global using Athena.Infrastructure.QueryFilters;

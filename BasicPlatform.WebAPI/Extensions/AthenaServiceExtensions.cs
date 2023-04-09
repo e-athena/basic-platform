@@ -69,7 +69,7 @@ public static class AthenaServiceExtensions
             .UseDefaultServiceProvider(options => { options.ValidateScopes = false; });
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         // Add services to the container.
-        services.AddHttpContextAccessor();
+        services.AddAthenaProvider();
         services.AddCustomOpenTelemetry<Program>(configuration);
 
         #region 添加MediatR服务
@@ -110,7 +110,7 @@ public static class AthenaServiceExtensions
         #endregion
 
         services.AddCustomSwaggerGen(configuration);
-        services.AddCustomFreeSql(configuration, environment);
+        services.AddCustomFreeSql(configuration, environment.IsDevelopment());
         // 添加集成事件支持
         services.AddCustomIntegrationEvent(configuration, capOptions =>
         {
@@ -123,7 +123,7 @@ public static class AthenaServiceExtensions
         services.AddCustomJwtAuthWithSignalR(configuration);
         services.AddCustomSignalRWithRedis(configuration);
         services.AddCustomCors(configuration);
-        services.AddCustomStorageLogger(configuration, FreeSqlMultiTenancyManager.Instance);
+        services.AddCustomStorageLogger(configuration);
         services.AddCustomController().AddNewtonsoftJson();
         return services;
     }

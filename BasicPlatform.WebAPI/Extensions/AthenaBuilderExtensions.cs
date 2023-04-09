@@ -17,7 +17,7 @@ public static class AthenaBuilderExtensions
     /// <returns></returns>
     public static IApplicationBuilder UseAthena(this IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.RegisterCustomServiceInstance();
+        app.UseAthenaProvider();
         app.UseCustomFreeSqlMultiTenancy();
         if (env.IsDevelopment())
         {
