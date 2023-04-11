@@ -35,6 +35,21 @@ export async function login(
     ...(options || {}),
   });
 }
+/** 读取授权码 */
+export async function getAuthCode(
+  params: API.SSOAuthCodeParams,
+  options?: { [key: string]: any },
+): Promise<ApiResponse<API.LoginResult>> {
+  return request<ApiResponse<API.LoginResult>>('/api/sso/getAuthCode', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+    skipErrorHandler: true,
+    ...(options || {}),
+  });
+}
 
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {

@@ -12,17 +12,31 @@ export default {
     /** 删除 */
     deleteAsync: 'ExternalPageController_DeleteAsync',
   },
-  /** 服务器信息 */
-  server: {
-    /** 读取服务器信息 */
-    get: 'ServerController_Get',
+  /** 组织架构管理 */
+  organization: {
+    /** 读取列表 */
+    getPagingAsync: 'OrganizationController_GetPagingAsync',
+    /** 详情 */
+    getAsync: 'org:detail',
+    /** 创建 */
+    postAsync: 'OrganizationController_PostAsync',
+    /** 编辑 */
+    putAsync: 'OrganizationController_PutAsync',
+    /** 状态变更 */
+    statusChangeAsync: 'OrganizationController_StatusChangeAsync',
   },
-  /** 资源管理 */
-  resource: {
-    /** 同步资源 */
-    syncAsync: 'ResourceController_SyncAsync',
-    /** 重置资源 */
-    reinitializeAsync: 'ResourceController_ReinitializeAsync',
+  /** 职位管理 */
+  position: {
+    /** 读取列表 */
+    getPagingAsync: 'PositionController_GetPagingAsync',
+    /** 详情 */
+    getAsync: 'position:detail',
+    /** 创建 */
+    postAsync: 'PositionController_PostAsync',
+    /** 更新 */
+    putAsync: 'PositionController_PutAsync',
+    /** 状态变更 */
+    statusChangeAsync: 'PositionController_StatusChangeAsync',
   },
   /** 角色管理 */
   role: {
@@ -42,43 +56,18 @@ export default {
     assignDataPermissionsAsync: 'RoleController_AssignDataPermissionsAsync',
     /** 分配用户 */
     assignUsersAsync: 'RoleController_AssignUsersAsync',
-    /** 读取数据权限 */
-    getDataPermissionsAsync: 'RoleController_GetDataPermissionsAsync',
   },
-  /** 组织架构管理 */
-  organization: {
-    /** 读取列表 */
-    getPagingAsync: 'OrganizationController_GetPagingAsync',
-    /** 详情 */
-    getAsync: 'org:detail',
-    /** 创建 */
-    postAsync: 'OrganizationController_PostAsync',
-    /** 编辑 */
-    putAsync: 'OrganizationController_PutAsync',
-    /** 状态变更 */
-    statusChangeAsync: 'OrganizationController_StatusChangeAsync',
-    /** 读取树形列表 */
-    getTreeListAsync: 'OrganizationController_GetTreeListAsync',
-  },
-  /** 职位管理 */
-  position: {
-    /** 读取列表 */
-    getPagingAsync: 'PositionController_GetPagingAsync',
-    /** 详情 */
-    getAsync: 'position:detail',
-    /** 创建 */
-    postAsync: 'PositionController_PostAsync',
-    /** 更新 */
-    putAsync: 'PositionController_PutAsync',
-    /** 状态变更 */
-    statusChangeAsync: 'PositionController_StatusChangeAsync',
+  /** 服务器信息 */
+  server: {
+    /** 读取服务器信息 */
+    get: 'ServerController_Get',
   },
   /** 员工访问记录 */
   userAccessRecord: {
     /** 读取列表 */
     getPagingAsync: 'UserAccessRecordController_GetPagingAsync',
   },
-  /** 员工管理 */
+  /** 用户管理 */
   user: {
     /** 读取列表 */
     getPagingAsync: 'UserController_GetPagingAsync',
@@ -96,7 +85,23 @@ export default {
     assignDataPermissionsAsync: 'UserController_AssignDataPermissionsAsync',
     /** 重置密码 */
     resetPasswordAsync: 'UserController_ResetPasswordAsync',
-    /** 读取数据权限 */
-    getDataPermissionsAsync: 'UserController_GetDataPermissionsAsync',
+  },
+  /** 应用管理 */
+  application: {
+    /** 读取列表 */
+    getPagingAsync: 'ApplicationController_GetPagingAsync',
+    /** 详情 */
+    getAsync: 'application:detail',
+    /** 创建 */
+    postAsync: 'ApplicationController_PostAsync',
+    /** 编辑 */
+    putAsync: 'ApplicationController_PutAsync',
+  },
+  /** 资源管理 */
+  resource: {
+    /** 同步资源 */
+    syncAsync: 'ResourceController_SyncAsync',
+    /** 重置资源 */
+    reinitializeAsync: 'ResourceController_ReinitializeAsync',
   },
 };

@@ -66,9 +66,18 @@ public class DefaultSecurityContextAccessor : ISecurityContextAccessor
         return string.Empty;
     }
 
-    public string CreateToken(JwtConfig config, List<Claim> claims, string scheme = "Bearer")
+    public string CreateToken(JwtConfig config, List<Claim> claims, bool hasScheme = true, string scheme = "Bearer")
     {
-        // throw new NotImplementedException();
+        return string.Empty;
+    }
+
+    public string CreateTokenNotScheme(JwtConfig config, List<Claim> claims)
+    {
+        return string.Empty;
+    }
+
+    public string CreateTokenNotScheme(List<Claim> claims)
+    {
         return string.Empty;
     }
 

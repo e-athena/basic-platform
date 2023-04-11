@@ -7,6 +7,18 @@ namespace BasicPlatform.Domain.Models;
 public class UserResource : ValueObject
 {
     /// <summary>
+    /// 应用ID
+    /// </summary>
+    [MaxLength(36)]
+    public string? ApplicationId { get; set; }
+
+    /// <summary>
+    /// 应用
+    /// </summary>
+    /// <value></value>
+    public virtual Application? Application { get; set; } = null!;
+
+    /// <summary>
     /// 用户ID
     /// </summary>
     /// <value></value>

@@ -1,10 +1,10 @@
 using System.Security.Claims;
-using Athena.Infrastructure.Exceptions;
 using Athena.Infrastructure.Mvc.Messaging.Requests;
 using Athena.InstantMessaging;
 using Athena.InstantMessaging.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
+using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -34,11 +34,13 @@ public class AccountController : ControllerBase
     /// 登录
     /// </summary>
     /// <param name="mediator"></param>
+    /// <param name="cacheManager"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
     public async Task<dynamic> LoginAsync(
         [FromServices] IMediator mediator,
+        [FromServices] ICacheManager cacheManager,
         [FromBody] LoginRequest request
     )
     {
@@ -83,12 +85,23 @@ public class AccountController : ControllerBase
             new("RealName", info.RealName)
         };
 
+        var sessionCode = Guid.NewGuid().ToString("N").ToUpper();
+        var cacheTime = TimeSpan.FromMinutes(30);
+        var key = string.Format(SsoCacheKey.CurrentUserInfo, sessionCode);
+        await cacheManager.SetAsync(key, info, cacheTime);
+        // 设置会话过期时间
+        await cacheManager.SetAsync(
+            string.Format(SsoCacheKey.SessionExpiry, sessionCode),
+            DateTime.Now.AddMinutes(30),
+            cacheTime
+        );
         var token = _securityContextAccessor.CreateToken(claims);
         return new
         {
             Status = "ok",
             Type = "account",
             CurrentAuthority = token,
+            SessionCode = sessionCode
         };
     }
 
@@ -120,6 +133,7 @@ public class AccountController : ControllerBase
                 user.ResourceCodes
             );
         }
+
         // 发送上线通知
         await noticeHubService.SendMessageToAllAsync(new InstantMessaging<string>
         {

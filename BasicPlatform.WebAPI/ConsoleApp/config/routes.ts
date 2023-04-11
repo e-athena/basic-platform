@@ -23,6 +23,12 @@ export default [
     ],
   },
   {
+    layout: false,
+    name: '跳转中',
+    path: '/user/login-redirect',
+    component: './User/LoginRedirect',
+  },
+  {
     name: '个人中心',
     path: '/user/center',
     component: './User/Center',
@@ -83,6 +89,12 @@ export default [
         path: '/developer/resource',
         name: '资源管理',
         component: './Developer/Resource',
+        access: 'routeFilter',
+      },
+      {
+        path: '/developer/app',
+        name: '应用管理',
+        component: './Developer/Application',
         access: 'routeFilter',
       },
     ],

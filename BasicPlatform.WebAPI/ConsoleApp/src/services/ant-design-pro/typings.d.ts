@@ -28,6 +28,7 @@ declare namespace API {
     type?: string;
     currentAuthority?: string;
     errorMessage?: string;
+    sessionCode?: string;
   };
 
   type PageParams = {
@@ -40,10 +41,21 @@ declare namespace API {
     status?: string;
   };
 
+  type SSOLoginParams = {
+    authCode?: string;
+    sessionCode?: string;
+  };
+
+  type SSOAuthCodeParams = {
+    clientId: string;
+    sessionCode: string;
+  };
+
   type LoginParams = {
     username?: string;
     password?: string;
-    autoLogin?: boolean;
+    clientId?: string;
+    rememberMe?: boolean;
     type?: string;
   };
 

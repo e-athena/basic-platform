@@ -7,6 +7,18 @@ namespace BasicPlatform.Domain.Models;
 public class UserDataPermission : ValueObject
 {
     /// <summary>
+    /// 应用ID
+    /// </summary>
+    [MaxLength(36)]
+    public string? ApplicationId { get; set; }
+
+    /// <summary>
+    /// 应用
+    /// </summary>
+    /// <value></value>
+    public virtual Application? Application { get; set; } = null!;
+
+    /// <summary>
     /// 用户ID
     /// </summary>
     /// <value></value>
@@ -54,7 +66,7 @@ public class UserDataPermission : ValueObject
     public IList<QueryFilterGroup> Policies => string.IsNullOrEmpty(Policy)
         ? new List<QueryFilterGroup>()
         : JsonSerializer.Deserialize<IList<QueryFilterGroup>>(Policy) ?? new List<QueryFilterGroup>();
-    
+
     /// <summary>
     /// 是否启用
     /// </summary>
@@ -80,7 +92,7 @@ public class UserDataPermission : ValueObject
         bool enabled,
         DateTime? expireAt)
     {
-        UserId = userId; 
+        UserId = userId;
         ResourceKey = resourceKey;
         DataScope = dataScope;
         DataScopeCustom = dataScopeCustom;

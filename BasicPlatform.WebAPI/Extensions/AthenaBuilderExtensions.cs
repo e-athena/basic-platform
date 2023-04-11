@@ -65,6 +65,48 @@ public static class AthenaBuilderExtensions
         return app;
     }
 
+    /// <summary>
+    /// 前端路由
+    /// </summary>
+    /// <param name="app"></param>
+    /// <param name="pattern"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static WebApplication MapSpaFront(this WebApplication app, string pattern = "/")
+    {
+        app.MapGet(pattern, async httpContext =>
+        {
+            httpContext.Response.StatusCode = 200;
+            httpContext.Response.ContentType = "text/html;charset=utf-8";
+
+            await using var stream =
+                typeof(AthenaBuilderExtensions).Assembly.GetManifestResourceStream(
+                    "BasicPlatform.WebAPI.wwwroot" + ".index.html");
+            if (stream == null) throw new InvalidOperationException();
+
+            using var sr = new StreamReader(stream);
+            var htmlBuilder = new StringBuilder(await sr.ReadToEndAsync());
+            await httpContext.Response.WriteAsync(htmlBuilder.ToString(), Encoding.UTF8);
+        });
+        return app;
+    }
+
+    /// <summary>
+    /// 健康检查
+    /// </summary>
+    /// <param name="app"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static WebApplication MapHealth(this WebApplication app)
+    {
+        app.MapGet("/health", async context =>
+        {
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync("ok");
+        });
+        return app;
+    }
+
     /// <summary>使用路由配置，用于注册路由映射</summary>
     /// <param name="app"></param>
     /// <param name="configure"></param>

@@ -16,12 +16,13 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
+import { FormattedMessage, SelectLang, useIntl, useModel, Helmet, history } from '@umijs/max';
+import { parse } from 'querystring';
 import { Alert, message, Tabs } from 'antd';
 import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
-import { setToken } from '@/utils/token';
+import { setSessionCode, setToken } from '@/utils/token';
 
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -40,7 +41,11 @@ const ActionIcons = () => {
 
   return (
     <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} />
+      <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} onClick={() => {
+        // console.log(window.location)
+        // window.location.href = 'http://localhost:5218/SSO/Login?clientId=web1&redirectUrl=' + window.location.href;
+        window.location.href = 'http://localhost:5079/user/login-redirect?clientId=web1&redirectUrl=http%3A%2F%2Flocalhost%3A5079%2F%23%2Fuser%2Flogin%3Fredirect%3D%252F';
+      }} />
       <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName} />
       <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName} />
     </>
@@ -88,6 +93,8 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
+  const query = parse(history.location.search.split('?')[1], '&');
+  const { clientId, redirectUrl } = query;
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -129,6 +136,9 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
+      if (clientId) {
+        values.clientId = clientId as string;
+      }
       const res = await login({ ...values, type });
       if (res.success) {
         const defaultLoginSuccessMessage = intl.formatMessage({
@@ -137,11 +147,24 @@ const Login: React.FC = () => {
         });
         message.success(defaultLoginSuccessMessage);
         setToken(res.data!.currentAuthority!);
+        setSessionCode(res.data!.sessionCode!);
         await fetchUserInfo();
         await fetchApiResources();
         const urlParams = new URL(window.location.href).searchParams;
-        // history.push(urlParams.get('redirect') || '/');
-        location.href = urlParams.get('redirect') || '/';
+        if (redirectUrl !== undefined && clientId !== undefined) {
+          // 
+          const url = redirectUrl as string;
+          const code = res.data?.sessionCode;
+          if (url?.includes('?')) {
+            let param = url.split("?")[1];
+            window.location.href = `${url.split("?")[0]}?authCode=${code}&sessionCode=${code}&source=sso&${param}`;
+            return;
+          }
+          window.location.href = `${redirectUrl}?authCode=${code}&sessionCode=${code}&source=sso`;
+        } else {
+          // history.push(urlParams.get('redirect') || '/');
+          location.href = urlParams.get('redirect') || '/';
+        }
         return;
       }
       // 如果失败去设置用户错误信息
@@ -187,7 +210,7 @@ const Login: React.FC = () => {
           title="Ant Design"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
-            autoLogin: true,
+            rememberMe: true,
           }}
           actions={[
             <FormattedMessage
@@ -367,7 +390,7 @@ const Login: React.FC = () => {
               marginBottom: 24,
             }}
           >
-            <ProFormCheckbox noStyle name="autoLogin">
+            <ProFormCheckbox noStyle name="rememberMe">
               <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
             </ProFormCheckbox>
             <a

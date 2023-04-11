@@ -33,6 +33,13 @@ export const Question = () => {
 
 export const NavTheme = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
+  let checked = false;
+  const systemNavTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'realDark' : 'light';
+  if (initialState?.customNavTheme === undefined) {
+    checked = systemNavTheme !== 'light';
+  } else {
+    checked = initialState?.customNavTheme !== 'light';
+  }
   return (
     <div
       style={{
@@ -43,7 +50,7 @@ export const NavTheme = () => {
       <Switch
         checkedChildren={<AlertFilled />}
         unCheckedChildren={<AlertOutlined />}
-        checked={initialState?.customNavTheme !== 'light'}
+        checked={checked}
         onChange={(checked) => {
           const theme = checked ? 'realDark' : 'light';
           initialState?.setCustomNavTheme?.(theme);

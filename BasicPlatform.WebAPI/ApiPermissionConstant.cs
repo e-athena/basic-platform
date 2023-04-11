@@ -108,4 +108,15 @@ public static class ApiPermissionConstant
     public const string PositionDetail = "position:detail";
 
     #endregion
+
+    #region 应用
+
+    
+    /// <summary>
+    /// 应用详情
+    /// </summary>
+    public const string ApplicationDetail = "application:detail";
+
+
+    #endregion
 }

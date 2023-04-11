@@ -5,7 +5,6 @@ var configuration = builder.Configuration;
 var services = builder.Services;
 var host = builder.Host;
 
-
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 // Add services to the container.
 services.AddAthenaProvider();
@@ -58,10 +57,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseCustomAuditLog();
 app.MapCustomSignalR();
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/index.html");
-    return Task.CompletedTask;
-});
-app.MapGet("/health", context => context.Response.WriteAsync("ok"));
+app.MapSpaFront();
+app.MapHealth();
+// run
 app.Run();

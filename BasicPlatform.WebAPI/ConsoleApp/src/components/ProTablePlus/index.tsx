@@ -57,6 +57,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         const item = list[i];
         const find = columns.find((x) => x.dataIndex === item.dataIndex);
         if (find !== undefined) {
+          find.title = find.title || item.title;
           find.hideInTable = find.dataIndex === 'option' ? find.hideInTable : item.hideInTable;
           find.width = item.width || find.width;
           find.fixed = item.fixed !== 'left' && item.fixed !== 'right' ? undefined : item.fixed;
