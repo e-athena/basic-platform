@@ -24,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B96F
 		build.py = build.py
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Athena.Infrastructure.DataPermission", "Athena.Infrastructure.DataPermission\Athena.Infrastructure.DataPermission.csproj", "{6BCDBFB7-7ED5-49AB-A6C4-79639F827009}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.Demo", "BasicPlatform.Demo\BasicPlatform.Demo.csproj", "{E20ED886-CF7A-41B1-A41C-81F86CC3CDD8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPlatform.SSO", "BasicPlatform.SSO\BasicPlatform.SSO.csproj", "{134333A0-48C7-409D-BB68-E0C1ABFAEBA2}"
@@ -68,10 +66,6 @@ Global
 		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBF10A81-1386-409E-B16E-2C8B730FB599}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BCDBFB7-7ED5-49AB-A6C4-79639F827009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BCDBFB7-7ED5-49AB-A6C4-79639F827009}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BCDBFB7-7ED5-49AB-A6C4-79639F827009}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BCDBFB7-7ED5-49AB-A6C4-79639F827009}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E20ED886-CF7A-41B1-A41C-81F86CC3CDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E20ED886-CF7A-41B1-A41C-81F86CC3CDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E20ED886-CF7A-41B1-A41C-81F86CC3CDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
