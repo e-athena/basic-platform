@@ -1,7 +1,10 @@
+using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
+using BasicPlatform.WebAPI.Models;
+using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers.System;
 
@@ -17,20 +20,25 @@ namespace BasicPlatform.WebAPI.Controllers.System;
     Sort = 0,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
+// ReSharper disable once InconsistentNaming
 public class UserController : CustomControllerBase
 {
+    private const string DefaultAppId = "system";
     private readonly IMediator _mediator;
     private readonly IUserQueryService _queryService;
+    private readonly ILogger<UserController> _logger;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="queryService"></param>
-    public UserController(IMediator mediator, IUserQueryService queryService)
+    /// <param name="loggerFactory"></param>
+    public UserController(IMediator mediator, IUserQueryService queryService, ILoggerFactory loggerFactory)
     {
         _mediator = mediator;
         _queryService = queryService;
+        _logger = loggerFactory.CreateLogger<UserController>();
     }
 
     #region 基础接口
@@ -202,6 +210,101 @@ public class UserController : CustomControllerBase
     }
 
     /// <summary>
+    /// 读取应用资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(IsVisible = false)]
+    [AllowAnonymous]
+    public async Task<IList<ApplicationResourceModel>> GetApplicationResourcesAsync(
+        [FromServices] IApiPermissionService service,
+        [FromServices] ISecurityContextAccessor accessor,
+        [FromServices] IConfiguration configuration,
+        [FromServices] IApplicationQueryService applicationQueryService
+    )
+    {
+        var result = new List<ApplicationResourceModel>();
+
+        #region 系统资源
+
+        var assemblies = new List<Assembly>
+        {
+            Assembly.GetExecutingAssembly()
+        };
+        var resourceAssemblies = configuration.GetSection("ResourceAssemblies").Get<List<string>>();
+        if (resourceAssemblies != null)
+        {
+            assemblies.AddRange(resourceAssemblies.Select(Assembly.Load));
+        }
+
+        var list = new List<MenuTreeInfo>();
+        if (accessor.IsRoot)
+        {
+            foreach (var assembly in assemblies)
+            {
+                list.AddRange(service.GetMenuResources(assembly, DefaultAppId));
+            }
+
+            result.Add(new ApplicationResourceModel
+            {
+                ApplicationId = DefaultAppId,
+                ApplicationName = "系统应用",
+                Resources = list
+            });
+        }
+        else
+        {
+            var resources = await _queryService.GetUserResourceAsync(null);
+            var keys = resources
+                .Where(p => p.ApplicationId == DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Select(p => p.Key)
+                .ToList();
+
+            foreach (var assembly in assemblies)
+            {
+                list.AddRange(service.GetPermissionMenuResources(assembly, keys, DefaultAppId));
+            }
+
+            result.Add(new ApplicationResourceModel
+            {
+                ApplicationId = DefaultAppId,
+                ApplicationName = "系统应用",
+                Resources = list
+            });
+        }
+
+        #endregion
+
+        // 读取应用信息
+        var apps = await applicationQueryService.GetListAsync();
+
+        foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
+        {
+            try
+            {
+                var res = await $"{app.ApiUrl}{app.MenuResourceRoute}".GetAsync()
+                    .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
+
+                if (res.Data != null && res.Success && res.Data.Count > 0)
+                {
+                    result.Add(new ApplicationResourceModel
+                    {
+                        ApplicationId = app.ClientId,
+                        ApplicationName = app.Name,
+                        Resources = res.Data
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "加载应用资源失败，{ClientId}", app.ClientId);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// 读取资源
     /// </summary>
     /// <returns></returns>
@@ -229,18 +332,21 @@ public class UserController : CustomControllerBase
         {
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetMenuResources(assembly));
+                list.AddRange(service.GetMenuResources(assembly, DefaultAppId));
             }
 
             return list;
         }
 
         var resources = await _queryService.GetUserResourceAsync(null);
-        var keys = resources.Select(p => p.Key).ToList();
+        var keys = resources
+            .Where(p => p.ApplicationId == DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+            .Select(p => p.Key)
+            .ToList();
 
         foreach (var assembly in assemblies)
         {
-            list.AddRange(service.GetPermissionMenuResources(assembly, keys));
+            list.AddRange(service.GetPermissionMenuResources(assembly, keys, DefaultAppId));
         }
 
         return list;

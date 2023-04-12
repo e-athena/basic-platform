@@ -116,6 +116,13 @@ export async function queryUserResources(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+/** 查询应用资源 GET /api/User/GetApplicationResources */
+export async function queryUserApplicationResources(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ApplicationResourceInfo[]>>('/api/User/GetApplicationResources', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
 
 /** 查询菜单 GET /api/ApiPermission/GetMenuResources */
 export async function queryMenus(options?: { [key: string]: any }) {

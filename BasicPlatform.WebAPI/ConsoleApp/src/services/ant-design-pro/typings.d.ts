@@ -90,7 +90,15 @@ declare namespace API {
     type?: NoticeIconItemType;
   };
 
+  /** 应用资源 */
+  type ApplicationResourceInfo = {
+    applicationId: string,
+    applicationName: string,
+    resources: ResourceInfo[],
+  };
+
   type ResourceInfo = {
+    appId?: string;
     parentCode?: string;
     path: string;
     name: string;

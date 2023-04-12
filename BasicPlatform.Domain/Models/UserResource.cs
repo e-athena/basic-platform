@@ -61,8 +61,12 @@ public class UserResource : ValueObject
     {
     }
 
-    public UserResource(string userId, string resourceKey, string resourceCode, DateTime? expireAt = null)
+    public UserResource(
+        string? applicationId,
+        string userId, string resourceKey, string resourceCode,
+        DateTime? expireAt = null)
     {
+        ApplicationId = applicationId;
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
         ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));

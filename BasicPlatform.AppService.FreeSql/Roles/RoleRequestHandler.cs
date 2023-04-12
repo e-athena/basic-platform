@@ -77,7 +77,6 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public async Task<string> Handle(AssignRoleResourcesRequest request, CancellationToken cancellationToken)
     {
         // 删除旧数据
@@ -92,10 +91,9 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         // 新增新数据
         var roleResources = request
             .Resources
-            .Select(p => new RoleResource(request.Id, p.Key, p.Code))
+            .Select(p => new RoleResource(p.ApplicationId, request.Id, p.Key, p.Code))
             .ToList();
         await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
-
         return request.Id;
     }
 

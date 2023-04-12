@@ -7,6 +7,11 @@ namespace BasicPlatform.AppService.Resources.Requests;
 public class SyncResourceRequest : ITxRequest<int>
 {
     /// <summary>
+    /// 应用Id
+    /// </summary>
+    public string? ApplicationId { get; set; }
+
+    /// <summary>
     /// 资源代码列表
     /// </summary>
     public IList<ResourceModel> Resources { get; set; } = null!;

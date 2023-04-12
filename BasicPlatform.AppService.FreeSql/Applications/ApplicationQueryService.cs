@@ -16,6 +16,17 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     }
 
     /// <summary>
+    /// 读取列表
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<List<ApplicationModel>> GetListAsync()
+    {
+        return await QueryableNoTracking
+            .ToListAsync<ApplicationModel>();
+    }
+
+    /// <summary>
     /// 读取分页数据
     /// </summary>
     /// <param name="request"></param>

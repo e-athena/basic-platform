@@ -110,7 +110,12 @@ public class ResourceRequestHandler : AppServiceBase<Resource>,
         // 更新用户和角色已分配的资源
         // 处理角色资源
         var roleResources = await QueryNoTracking<RoleResource>()
-            .ToListAsync(p => new {p.RoleId, p.ResourceKey}, cancellationToken);
+            .Where(p => p.ApplicationId == request.ApplicationId)
+            .ToListAsync(p => new
+            {
+                p.RoleId,
+                p.ResourceKey
+            }, cancellationToken);
         if (roleResources.Count > 0)
         {
             // 按角色分组处理
@@ -122,7 +127,8 @@ public class ResourceRequestHandler : AppServiceBase<Resource>,
                 .ToList();
             // 删除角色资源关联
             await RegisterDeleteValueObjectAsync<RoleResource>(p =>
-                    roleIds.Contains(p.RoleId),
+                    roleIds.Contains(p.RoleId) &&
+                    p.ApplicationId == request.ApplicationId,
                 cancellationToken
             );
             var newRoleResources = new List<RoleResource>();
@@ -138,7 +144,7 @@ public class ResourceRequestHandler : AppServiceBase<Resource>,
                         continue;
                     }
 
-                    newRoleResources.Add(new RoleResource(roleId, item.ResourceKey, rm.Code));
+                    newRoleResources.Add(new RoleResource(request.ApplicationId, roleId, item.ResourceKey, rm.Code));
                 }
             }
 
@@ -150,39 +156,50 @@ public class ResourceRequestHandler : AppServiceBase<Resource>,
 
         // 处理用户资源
         var userResources = await QueryNoTracking<UserResource>()
-            .ToListAsync(p => new {p.UserId, p.ResourceKey}, cancellationToken);
-        if (userResources.Count > 0)
+            .Where(p => p.ApplicationId == request.ApplicationId)
+            .ToListAsync(p => new
+            {
+                p.UserId,
+                p.ResourceKey
+            }, cancellationToken);
+        if (userResources.Count <= 0)
         {
-            // 按用户分组处理
-            var userResourceGroups = userResources
-                .GroupBy(p => p.UserId)
-                .ToList();
-            var userIds = userResourceGroups
-                .Select(c => c.Key)
-                .ToList();
-            // 删除用户资源关联
-            await RegisterDeleteValueObjectAsync<UserResource>(p => userIds.Contains(p.UserId), cancellationToken);
-            var newUserResources = new List<UserResource>();
-            // 重新添加用户资源关联
-            foreach (var group in userResourceGroups)
+            return count;
+        }
+
+        // 按用户分组处理
+        var userResourceGroups = userResources
+            .GroupBy(p => p.UserId)
+            .ToList();
+        var userIds = userResourceGroups
+            .Select(c => c.Key)
+            .ToList();
+        // 删除用户资源关联
+        await RegisterDeleteValueObjectAsync<UserResource>(p =>
+                userIds.Contains(p.UserId) &&
+                p.ApplicationId == request.ApplicationId,
+            cancellationToken
+        );
+        var newUserResources = new List<UserResource>();
+        // 重新添加用户资源关联
+        foreach (var group in userResourceGroups)
+        {
+            var userId = group.Key;
+            foreach (var item in group)
             {
-                var userId = group.Key;
-                foreach (var item in group)
+                var rm = request.Resources.FirstOrDefault(p => p.Key == item.ResourceKey);
+                if (rm == null)
                 {
-                    var rm = request.Resources.FirstOrDefault(p => p.Key == item.ResourceKey);
-                    if (rm == null)
-                    {
-                        continue;
-                    }
-
-                    newUserResources.Add(new UserResource(userId, item.ResourceKey, rm.Code));
+                    continue;
                 }
-            }
 
-            if (newUserResources.Count > 0)
-            {
-                await RegisterNewRangeValueObjectAsync(newUserResources, cancellationToken);
+                newUserResources.Add(new UserResource(request.ApplicationId, userId, item.ResourceKey, rm.Code));
             }
+        }
+
+        if (newUserResources.Count > 0)
+        {
+            await RegisterNewRangeValueObjectAsync(newUserResources, cancellationToken);
         }
 
         return count;

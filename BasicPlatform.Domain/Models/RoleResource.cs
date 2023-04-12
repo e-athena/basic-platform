@@ -55,8 +55,9 @@ public class RoleResource : ValueObject
     {
     }
 
-    public RoleResource(string roleId, string resourceKey, string resourceCode)
+    public RoleResource(string? applicationId, string roleId, string resourceKey, string resourceCode)
     {
+        ApplicationId = applicationId;
         RoleId = roleId ?? throw new ArgumentNullException(nameof(roleId));
         ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));

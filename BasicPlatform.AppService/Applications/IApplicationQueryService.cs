@@ -10,6 +10,12 @@ namespace BasicPlatform.AppService.Applications;
 public interface IApplicationQueryService
 {
     /// <summary>
+    /// 读取列表
+    /// </summary>
+    /// <returns></returns>
+    Task<List<ApplicationModel>> GetListAsync();
+
+    /// <summary>
     /// 读取分页列表
     /// </summary>
     /// <param name="request">请求类</param>

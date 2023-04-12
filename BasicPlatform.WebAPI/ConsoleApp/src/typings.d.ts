@@ -82,6 +82,7 @@ declare interface ApiResponse<T = any> {
 
 /** 资源模型 */
 declare interface ResourceModel {
+  applicationId?: string;
   key: string;
   code: string;
 }

@@ -2,7 +2,7 @@ import { submitHandle } from '@/utils/utils';
 import { ModalForm, ProDescriptions, ProFormDateTimePicker } from '@ant-design/pro-components';
 import React from 'react';
 import { assignResources } from '../service';
-import Authorization from '@/components/Authorization';
+import Authorization from '@/components/ApplicationAuthorization';
 import { Alert } from 'antd';
 
 type AuthorizationFormProps = {
@@ -18,7 +18,7 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
   const [resources, setResources] = React.useState<ResourceModel[]>([]);
   return (
     <ModalForm
-      width={860}
+      width={960}
       title={props.title || '分配资源'}
       open={props.open}
       modalProps={{
@@ -67,6 +67,11 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
         label="有效期至"
         tooltip="资源授权的有效期，超过有效期将自动失效。"
         placeholder={'请选择'}
+        formItemProps={{
+          style: {
+            marginBottom: 0,
+          }
+        }}
       />
       <Authorization
         resources={[

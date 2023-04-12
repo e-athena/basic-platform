@@ -10,6 +10,7 @@ import { errorConfig } from './requestErrorConfig';
 import {
   currentUser as queryCurrentUser,
   queryUserResources,
+  queryUserApplicationResources,
   queryExternalPages,
   addUserAccessRecord,
 } from './services/ant-design-pro/api';
@@ -36,6 +37,8 @@ export async function getInitialState(): Promise<{
   fetchMenuData?: () => Promise<MenuDataItem[]>;
   fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   apiResources?: API.ResourceInfo[];
+  fetchApplicationResources?: () => Promise<API.ApplicationResourceInfo[]>;
+  applicationResources?: API.ApplicationResourceInfo[];
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
   externalPages?: API.ExternalPage[];
   noticeConnectionHub?: HubConnection;
@@ -58,6 +61,10 @@ export async function getInitialState(): Promise<{
     const res = await queryUserResources();
     return res.data || [];
   };
+  const fetchApplicationResources = async () => {
+    const res = await queryUserApplicationResources();
+    return res.data || [];
+  };
   const fetchExternalPages = async () => {
     const res = await queryExternalPages();
     return res.data || [];
@@ -71,6 +78,7 @@ export async function getInitialState(): Promise<{
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
+    const applicationResources = await fetchApplicationResources();
     const externalPages = await fetchExternalPages();
     // SignalR
     const noticeConnectionHub = await fetchSignalRConnectionNotice();
@@ -79,6 +87,7 @@ export async function getInitialState(): Promise<{
       fetchMenuData,
       fetchUserInfo,
       fetchApiResources,
+      fetchApplicationResources,
       fetchExternalPages,
       noticeConnectionHub,
       fetchSignalRConnectionNotice,
@@ -86,6 +95,7 @@ export async function getInitialState(): Promise<{
       // fetchSignalRConnectionEvent,
       currentUser,
       apiResources,
+      applicationResources,
       externalPages,
       settings: defaultSettings as Partial<LayoutSettings>,
       customNavTheme: getNavTheme(),

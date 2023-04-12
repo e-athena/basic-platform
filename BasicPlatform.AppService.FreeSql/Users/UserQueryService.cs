@@ -297,6 +297,11 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     public async Task<List<ResourceModel>> GetUserResourceAsync(string? userId)
     {
         userId ??= UserId;
+        if (userId == null)
+        {
+            throw FriendlyException.Of("请传入用户Id");
+        }
+
         var result = await GetResourceCodeInfoAsync(userId!);
         // 去重
         return result
@@ -323,7 +328,6 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public async Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync(string userId)
     {
         var roleResources = new List<ResourceModel>();
@@ -336,6 +340,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 .Where(p => roleIds.Contains(p.RoleId))
                 .ToListAsync(p => new ResourceModel
                 {
+                    ApplicationId = p.ApplicationId,
                     Key = p.ResourceKey,
                     Code = p.ResourceCode
                 });
@@ -348,6 +353,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new ResourceModel
             {
+                ApplicationId = p.ApplicationId,
                 Key = p.ResourceKey,
                 Code = p.ResourceCode
             });
