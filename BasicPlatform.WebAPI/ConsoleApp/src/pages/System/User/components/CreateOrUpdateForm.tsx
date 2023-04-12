@@ -64,7 +64,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       initialValues={{
         ...props.values,
         organizationId:
-          props.values?.organizationPath === undefined || props.values?.organizationPath === '' || props.values?.organizationPath === null
+          props.values?.organizationPath === undefined ||
+          props.values?.organizationPath === '' ||
+          props.values?.organizationPath === null
             ? []
             : props.values?.organizationPath.split(','),
       }}

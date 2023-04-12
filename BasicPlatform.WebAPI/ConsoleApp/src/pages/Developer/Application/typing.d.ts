@@ -37,7 +37,7 @@ declare namespace API {
     Partial<UpdatedItem>;
 
   /** 应用详情 */
-  type ApplicationDetailItem = & Partial<ApplicationListItem>;
+  type ApplicationDetailItem = Partial<ApplicationListItem>;
 
   /**
    * 分页请求参数

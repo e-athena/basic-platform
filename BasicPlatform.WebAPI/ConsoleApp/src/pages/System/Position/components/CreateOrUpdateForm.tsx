@@ -56,7 +56,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         ...props.values,
         status: props.values?.id === undefined ? true : props.values?.status === 1,
         organizationId:
-          props.values?.organizationPath === undefined || props.values?.organizationPath === '' || props.values?.organizationPath === null
+          props.values?.organizationPath === undefined ||
+          props.values?.organizationPath === '' ||
+          props.values?.organizationPath === null
             ? []
             : props.values?.organizationPath.split(','),
       }}

@@ -1,10 +1,5 @@
 import { submitHandle } from '@/utils/utils';
-import {
-  ProFormText,
-  ProFormTextArea,
-  ModalForm,
-  ProForm,
-} from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea, ModalForm, ProForm } from '@ant-design/pro-components';
 import { FormInstance, Select } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import { update, create } from '../service';
@@ -101,37 +96,41 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         name="frontendUrl"
         label={'前端地址'}
         fieldProps={{
-          addonBefore: <>
-            <Select
-              value={frontendUrlAgreement}
-              onChange={(value) => {
-                setFrontendUrlAgreement(value);
-              }}
-            >
-              <Select.Option value="http://">http://</Select.Option>
-              <Select.Option value="https://">https://</Select.Option>
-            </Select>
-          </>
+          addonBefore: (
+            <>
+              <Select
+                value={frontendUrlAgreement}
+                onChange={(value) => {
+                  setFrontendUrlAgreement(value);
+                }}
+              >
+                <Select.Option value="http://">http://</Select.Option>
+                <Select.Option value="https://">https://</Select.Option>
+              </Select>
+            </>
+          ),
         }}
       />
       <ProFormText
         name="apiUrl"
         label={'接口地址'}
         fieldProps={{
-          addonBefore: <>
-            <Select
-              value={apiUrlAgreement}
-              onChange={(value) => {
-                setApiUrlAgreement(value);
-              }}
-            >
-              <Select.Option value="http://">http://</Select.Option>
-              <Select.Option value="https://">https://</Select.Option>
-            </Select>
-          </>,
+          addonBefore: (
+            <>
+              <Select
+                value={apiUrlAgreement}
+                onChange={(value) => {
+                  setApiUrlAgreement(value);
+                }}
+              >
+                <Select.Option value="http://">http://</Select.Option>
+                <Select.Option value="https://">https://</Select.Option>
+              </Select>
+            </>
+          ),
           onChange: (e) => {
             setApiUrl(e.target.value);
-          }
+          },
         }}
         rules={[
           {
@@ -144,21 +143,17 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         name="menuResourceRoute"
         label={'菜单资源地址'}
         fieldProps={{
-          addonBefore: apiUrl ? `${apiUrlAgreement}${apiUrl}` : undefined
+          addonBefore: apiUrl ? `${apiUrlAgreement}${apiUrl}` : undefined,
         }}
       />
       <ProFormText
         name="permissionResourceRoute"
         label={'权限资源地址'}
         fieldProps={{
-          addonBefore: apiUrl ? `${apiUrlAgreement}${apiUrl}` : undefined
+          addonBefore: apiUrl ? `${apiUrlAgreement}${apiUrl}` : undefined,
         }}
       />
-      <ProFormTextArea
-        name="remarks"
-        label={'描述'}
-        placeholder={'请输入'}
-      />
+      <ProFormTextArea name="remarks" label={'描述'} placeholder={'请输入'} />
     </ModalForm>
   );
 };

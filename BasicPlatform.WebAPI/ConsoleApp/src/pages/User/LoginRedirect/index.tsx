@@ -21,8 +21,8 @@ const LoginRedirect: React.FC = () => {
         if (res.success) {
           const redirectUrl = query!.redirectUrl as string;
           if (redirectUrl !== undefined && redirectUrl?.includes('?')) {
-            let url = redirectUrl.split("?")[0];
-            let param = redirectUrl.split("?")[1];
+            let url = redirectUrl.split('?')[0];
+            let param = redirectUrl.split('?')[1];
             window.location.href = `${url}?authCode=${res.data}&sessionCode=${res.data}&source=sso&${param}`;
             return;
           }
@@ -30,7 +30,7 @@ const LoginRedirect: React.FC = () => {
         }
       }
       setHandling(false);
-    }
+    };
     if (query?.clientId && query?.redirectUrl && handling) {
       fetch();
     }
@@ -44,7 +44,7 @@ const LoginRedirect: React.FC = () => {
 
   return (
     <div>
-      <PageLoading tip={"页面跳转中..."} />
+      <PageLoading tip={'页面跳转中...'} />
     </div>
   );
 };

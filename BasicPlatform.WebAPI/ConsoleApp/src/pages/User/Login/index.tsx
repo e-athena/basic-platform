@@ -41,11 +41,16 @@ const ActionIcons = () => {
 
   return (
     <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} onClick={() => {
-        // console.log(window.location)
-        // window.location.href = 'http://localhost:5218/SSO/Login?clientId=web1&redirectUrl=' + window.location.href;
-        window.location.href = 'http://localhost:5079/user/login-redirect?clientId=web1&redirectUrl=http%3A%2F%2Flocalhost%3A5079%2F%23%2Fuser%2Flogin%3Fredirect%3D%252F';
-      }} />
+      <AlipayCircleOutlined
+        key="AlipayCircleOutlined"
+        className={langClassName}
+        onClick={() => {
+          // console.log(window.location)
+          // window.location.href = 'http://localhost:5218/SSO/Login?clientId=web1&redirectUrl=' + window.location.href;
+          window.location.href =
+            'http://localhost:5079/user/login-redirect?clientId=web1&redirectUrl=http%3A%2F%2Flocalhost%3A5079%2F%23%2Fuser%2Flogin%3Fredirect%3D%252F';
+        }}
+      />
       <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName} />
       <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName} />
     </>
@@ -152,12 +157,14 @@ const Login: React.FC = () => {
         await fetchApiResources();
         const urlParams = new URL(window.location.href).searchParams;
         if (redirectUrl !== undefined && clientId !== undefined) {
-          // 
+          //
           const url = redirectUrl as string;
           const code = res.data?.sessionCode;
           if (url?.includes('?')) {
-            let param = url.split("?")[1];
-            window.location.href = `${url.split("?")[0]}?authCode=${code}&sessionCode=${code}&source=sso&${param}`;
+            let param = url.split('?')[1];
+            window.location.href = `${
+              url.split('?')[0]
+            }?authCode=${code}&sessionCode=${code}&source=sso&${param}`;
             return;
           }
           window.location.href = `${redirectUrl}?authCode=${code}&sessionCode=${code}&source=sso`;

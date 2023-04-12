@@ -92,11 +92,12 @@ declare namespace API {
 
   /** 应用资源 */
   type ApplicationResourceInfo = {
-    applicationId: string,
-    applicationName: string,
-    resources: ResourceInfo[],
+    applicationId: string;
+    applicationName: string;
+    resources: ResourceInfo[];
   };
 
+  /** 资源信息 */
   type ResourceInfo = {
     appId?: string;
     parentCode?: string;

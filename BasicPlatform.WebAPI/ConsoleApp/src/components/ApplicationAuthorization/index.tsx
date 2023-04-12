@@ -14,7 +14,7 @@ type ApplicationAuthorizationProps = {
 
 type TableItemProps = {
   dataSource: API.ResourceInfo[];
-}
+};
 
 const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props) => {
   const actionRef = useRef<ActionType>();
@@ -62,7 +62,11 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
               if (entity.parentCode === null) {
                 infos = [
                   { key: entity.code, code: entity.code, applicationId: entity.appId },
-                  ...(entity.children || []).map((p) => ({ key: p.code, code: p.code, applicationId: entity.appId })),
+                  ...(entity.children || []).map((p) => ({
+                    key: p.code,
+                    code: p.code,
+                    applicationId: entity.appId,
+                  })),
                 ];
               }
               const { checked } = e.target;
@@ -130,7 +134,7 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
                         (func): ResourceModel => ({
                           key: func.key,
                           code: func.value,
-                          applicationId: entity.appId
+                          applicationId: entity.appId,
                         }),
                       );
                     });
@@ -159,7 +163,9 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
                     props.disabledResourceKeys !== undefined &&
                     props.disabledResourceKeys?.length > 0
                   ) {
-                    funcKeys2 = funcKeys2.filter((p) => !props.disabledResourceKeys?.includes(p.key));
+                    funcKeys2 = funcKeys2.filter(
+                      (p) => !props.disabledResourceKeys?.includes(p.key),
+                    );
                   }
                   if (checked) {
                     setSelectedResources([...selectedResources, ...(funcKeys2 || [])]);
@@ -188,7 +194,10 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
             onChange={(e) => {
               const { checked } = e.target;
               if (checked) {
-                setSelectedResources([...selectedResources, { key: item.key, code: item.value, applicationId: entity.appId }]);
+                setSelectedResources([
+                  ...selectedResources,
+                  { key: item.key, code: item.value, applicationId: entity.appId },
+                ]);
               } else {
                 setSelectedResources(selectedResources.filter((c) => c.key !== item.key));
               }
@@ -207,40 +216,56 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
       width: 70,
       align: 'center',
       render(_, entity) {
-        const allChecked = selectedResources.map((p) => p.key).includes(entity.code) &&
+        const allChecked =
+          selectedResources.map((p) => p.key).includes(entity.code) &&
           entity.functions !== undefined &&
           entity.functions?.length > 0 &&
-          entity.functions.filter(p => selectedResources.map((p) => p.key).includes(p.key)).length === entity.functions?.length;
+          entity.functions.filter((p) => selectedResources.map((p) => p.key).includes(p.key))
+            .length === entity.functions?.length;
         return (
           <Checkbox
             // 如果节点全选了，就勾选
             checked={allChecked}
             // 如果disabledResourceKeys包含了当前节点的keyey，就禁用
-            disabled={entity.parentCode === null ||
-              (props.disabledResourceKeys?.includes(entity.code) && entity.functions === undefined ||
-                (entity.functions !== undefined &&
-                  entity.functions?.filter(p => props.disabledResourceKeys?.includes(p.key)).length === entity.functions?.length)
-              )}
+            disabled={
+              entity.parentCode === null ||
+              (props.disabledResourceKeys?.includes(entity.code) &&
+                entity.functions === undefined) ||
+              (entity.functions !== undefined &&
+                entity.functions?.filter((p) => props.disabledResourceKeys?.includes(p.key))
+                  .length === entity.functions?.length)
+            }
             // disabled={entity.parentCode === null}
             onChange={(e) => {
               const checked = e.target.checked;
               // 处理菜单和功能的选择
-              let infos = [{
-                key: entity.code,
-                code: entity.code,
-                applicationId: entity.appId
-              },
-              ...entity.functions?.map((p) => ({ key: p.key, code: p.value, applicationId: entity.appId })) || []
+              let infos = [
+                {
+                  key: entity.code,
+                  code: entity.code,
+                  applicationId: entity.appId,
+                },
+                ...(entity.functions?.map((p) => ({
+                  key: p.key,
+                  code: p.value,
+                  applicationId: entity.appId,
+                })) || []),
               ];
               if (checked) {
                 // 排除disabledResourceKeys的
-                if (props.disabledResourceKeys !== undefined && props.disabledResourceKeys?.length > 0) {
+                if (
+                  props.disabledResourceKeys !== undefined &&
+                  props.disabledResourceKeys?.length > 0
+                ) {
                   infos = infos.filter((p) => !props.disabledResourceKeys?.includes(p.key));
                 }
                 setSelectedResources([...selectedResources, ...infos]);
               } else {
                 // 排除disabledResourceKeys的
-                if (props.disabledResourceKeys !== undefined && props.disabledResourceKeys?.length > 0) {
+                if (
+                  props.disabledResourceKeys !== undefined &&
+                  props.disabledResourceKeys?.length > 0
+                ) {
                   infos = infos.filter((p) => !props.disabledResourceKeys?.includes(p.key));
                 }
                 setSelectedResources(
@@ -263,17 +288,25 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
         rowKey="code"
         search={false}
         toolBarRender={false}
-        dataSource={dataSource.filter(p => p.children !== undefined && p.children?.filter(c => c.isAuth).length > 0) || []}
-        expandable={{
-          expandedRowKeys: dataSource.filter(
+        dataSource={
+          dataSource.filter(
             (p) => p.children !== undefined && p.children?.filter((c) => c.isAuth).length > 0,
-          ).map((p) => p.code) || [],
+          ) || []
+        }
+        expandable={{
+          expandedRowKeys:
+            dataSource
+              .filter(
+                (p) => p.children !== undefined && p.children?.filter((c) => c.isAuth).length > 0,
+              )
+              .map((p) => p.code) || [],
         }}
         columns={columns}
         scroll={{ x: 730, y: props.height || 400 }}
         rowSelection={false}
         pagination={false}
-      />);
+      />
+    );
   };
 
   return (
@@ -283,7 +316,7 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
         tabs={{
           tabPosition: 'top',
           activeKey: currentTab,
-          items: (initialState?.applicationResources || []).map(p => ({
+          items: (initialState?.applicationResources || []).map((p) => ({
             label: p.applicationName,
             key: p.applicationId,
             children: <TableItem dataSource={p.resources || []} />,
@@ -292,8 +325,8 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
             bodyStyle: {
               // paddingBlock: 0,
               paddingInlineStart: 0,
-              paddingInlineEnd: 0
-            }
+              paddingInlineEnd: 0,
+            },
           },
           onChange: (key) => {
             setCurrentTab(key);

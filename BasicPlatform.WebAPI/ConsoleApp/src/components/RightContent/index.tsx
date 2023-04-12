@@ -34,7 +34,9 @@ export const Question = () => {
 export const NavTheme = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   let checked = false;
-  const systemNavTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'realDark' : 'light';
+  const systemNavTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'realDark'
+    : 'light';
   if (initialState?.customNavTheme === undefined) {
     checked = systemNavTheme !== 'light';
   } else {
@@ -44,7 +46,7 @@ export const NavTheme = () => {
     <div
       style={{
         display: 'flex',
-        padding: 0
+        padding: 0,
       }}
     >
       <Switch

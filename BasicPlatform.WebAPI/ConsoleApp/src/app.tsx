@@ -246,11 +246,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -277,8 +277,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     ...initialState?.settings,
     // 根据操作系统设置自动切换主题
-    navTheme: initialState?.customNavTheme === undefined ?
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'realDark' : 'light') : initialState?.customNavTheme,
+    navTheme:
+      initialState?.customNavTheme === undefined
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'realDark'
+          : 'light'
+        : initialState?.customNavTheme,
   };
 };
 

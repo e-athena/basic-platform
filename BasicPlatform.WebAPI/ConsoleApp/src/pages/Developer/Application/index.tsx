@@ -1,8 +1,5 @@
 import { query, detail } from './service';
-import {
-  PlusOutlined,
-  FormOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, FormOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
@@ -21,12 +18,7 @@ const TableList: React.FC = () => {
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
-  const showOption: boolean = hasPermission(
-    [
-      permission.application.putAsync,
-    ],
-    resource,
-  );
+  const showOption: boolean = hasPermission([permission.application.putAsync], resource);
 
   /**需要重写的Column */
   const [defaultColumns] = useState<ProColumns<API.ApplicationListItem>[]>([
@@ -34,9 +26,11 @@ const TableList: React.FC = () => {
       dataIndex: 'frontendUrl',
       render: (_, entity) => {
         return entity.frontendUrl ? (
-          <a target={'_blank'} href={entity.frontendUrl} rel="noreferrer">{entity.frontendUrl}</a>
+          <a target={'_blank'} href={entity.frontendUrl} rel="noreferrer">
+            {entity.frontendUrl}
+          </a>
         ) : null;
-      }
+      },
     },
     {
       title: '操作',
@@ -46,7 +40,10 @@ const TableList: React.FC = () => {
       width: 95,
       render(_, entity) {
         return [
-          <Access key={'edit'} accessible={canAccessible(permission.application.putAsync, resource)}>
+          <Access
+            key={'edit'}
+            accessible={canAccessible(permission.application.putAsync, resource)}
+          >
             <Button
               shape="circle"
               type={'link'}
@@ -84,7 +81,10 @@ const TableList: React.FC = () => {
         query={query}
         moduleName={'Application'}
         toolBarRender={() => [
-          <Access key={'add'} accessible={canAccessible(permission.application.postAsync, resource)}>
+          <Access
+            key={'add'}
+            accessible={canAccessible(permission.application.postAsync, resource)}
+          >
             <Button
               type="primary"
               onClick={() => {

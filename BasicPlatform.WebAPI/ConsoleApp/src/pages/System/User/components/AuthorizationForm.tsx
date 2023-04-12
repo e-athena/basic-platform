@@ -70,7 +70,7 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
         formItemProps={{
           style: {
             marginBottom: 0,
-          }
+          },
         }}
       />
       <Authorization

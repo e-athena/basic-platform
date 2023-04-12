@@ -150,30 +150,35 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
   };
   const getValueDom = () => {
     if (item.key?.includes('UserId')) {
-      return (
-        item.operator === '==' ?
-          <Select
-            autoClearSearchValue
-            options={[{
+      return item.operator === '==' ? (
+        <Select
+          autoClearSearchValue
+          options={[
+            {
               label: '{当前用户}',
-              value: '{SelfUserId}'
-            }, {
+              value: '{SelfUserId}',
+            },
+            {
               label: '{当前用户所在部门}',
-              value: '{SelfOrganizationId}'
-            }, {
+              value: '{SelfOrganizationId}',
+            },
+            {
               label: '{当前用户所在部门及下级部门}',
-              value: '{SelfOrganizationChildrenIds}'
-            }, ...(item.extras || [])]}
-            style={{ width: 350 }}
-            placeholder="请选择"
-            onChange={(value) => {
-              const newItem = { ...item };
-              newItem.extras = [];
-              newItem.value = value;
-              onChange(newItem);
-            }}
-            value={(item.extras || []).length > 0 ? item.extras![0].value : item.value}
-            dropdownRender={(menu) => (<>
+              value: '{SelfOrganizationChildrenIds}',
+            },
+            ...(item.extras || []),
+          ]}
+          style={{ width: 350 }}
+          placeholder="请选择"
+          onChange={(value) => {
+            const newItem = { ...item };
+            newItem.extras = [];
+            newItem.value = value;
+            onChange(newItem);
+          }}
+          value={(item.extras || []).length > 0 ? item.extras![0].value : item.value}
+          dropdownRender={(menu) => (
+            <>
               {menu}
               <Button
                 type={'link'}
@@ -181,38 +186,42 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
                 onClick={() => {
                   setUserModalOpen(true);
                 }}
-              >选择其他用户</Button>
-            </>)}
-          /> :
-          <Space direction="horizontal">
-            {item.operator !== undefined && item.operator === 'in' ? (
-              <Select
-                autoClearSearchValue
-                options={item.extras || []}
-                mode="tags"
-                style={{ width: 277 }}
-                placeholder="请点击右侧选择"
-                disabled
-                value={item.extras?.map((x) => x.value) || []}
-              />
-            ) : (
-              <Input
-                allowClear
-                placeholder="请点击右侧选择"
-                disabled
-                style={{ width: 277 }}
-                value={(item.extras || []).length > 0 ? item.extras![0].label : ''}
-              />
-            )}
-            <Button
-              disabled={item.operator === undefined}
-              onClick={() => {
-                setUserModalOpen(true);
-              }}
-            >
-              选择
-            </Button>
-          </Space>
+              >
+                选择其他用户
+              </Button>
+            </>
+          )}
+        />
+      ) : (
+        <Space direction="horizontal">
+          {item.operator !== undefined && item.operator === 'in' ? (
+            <Select
+              autoClearSearchValue
+              options={item.extras || []}
+              mode="tags"
+              style={{ width: 277 }}
+              placeholder="请点击右侧选择"
+              disabled
+              value={item.extras?.map((x) => x.value) || []}
+            />
+          ) : (
+            <Input
+              allowClear
+              placeholder="请点击右侧选择"
+              disabled
+              style={{ width: 277 }}
+              value={(item.extras || []).length > 0 ? item.extras![0].label : ''}
+            />
+          )}
+          <Button
+            disabled={item.operator === undefined}
+            onClick={() => {
+              setUserModalOpen(true);
+            }}
+          >
+            选择
+          </Button>
+        </Space>
       );
     }
     const options = getOptions();
