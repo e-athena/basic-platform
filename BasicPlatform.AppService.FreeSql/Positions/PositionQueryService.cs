@@ -65,10 +65,9 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
             throw FriendlyException.Of("职位不存在");
         }
 
-        if (!string.IsNullOrEmpty(result.OrganizationPath))
-        {
-            result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
-        }
+        result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
+            ? $"{result.OrganizationPath},{result.OrganizationId}"
+            : result.OrganizationId;
 
         return result;
     }

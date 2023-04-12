@@ -113,9 +113,6 @@ const ServerInfo: React.FC = () => {
         <ProDescriptions.Item valueType="text" label="已运行时间">
           {runTime}
         </ProDescriptions.Item>
-
-        {/* <ProDescriptions.Item valueType="text" dataIndex={'totalProcessorTime'} label="处理器总时间" />
-        <ProDescriptions.Item valueType="text" dataIndex={'userProcessorTime'} label="用户处理器时间" /> */}
       </ProDescriptions>
       <Divider />
       {dataSource && (

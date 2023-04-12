@@ -8,6 +8,18 @@ namespace BasicPlatform.Domain.Models;
 public class Resource : EntityCore, ICreator, IUpdater
 {
     /// <summary>
+    /// 应用ID
+    /// </summary>
+    [MaxLength(36)]
+    public string ApplicationId { get; set; } = null!;
+
+    /// <summary>
+    /// 应用
+    /// </summary>
+    /// <value></value>
+    public virtual Application? Application { get; set; }
+
+    /// <summary>
     /// 唯一Key
     /// </summary>
     [MaxLength(128)]
@@ -49,8 +61,9 @@ public class Resource : EntityCore, ICreator, IUpdater
     {
     }
 
-    public Resource(string key, int sort, Status status, string? userId)
+    public Resource(string applicationId, string key, int sort, Status status, string? userId)
     {
+        ApplicationId = applicationId;
         Key = key;
         Sort = sort;
         Status = status;

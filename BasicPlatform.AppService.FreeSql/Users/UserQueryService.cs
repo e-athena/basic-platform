@@ -116,10 +116,9 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             throw FriendlyException.Of("找不到数据");
         }
 
-        if (!string.IsNullOrEmpty(result.OrganizationPath))
-        {
-            result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
-        }
+        result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
+            ? $"{result.OrganizationPath},{result.OrganizationId}"
+            : result.OrganizationId;
 
         // 读取角色
         var roleIds = await Query<RoleUser>()

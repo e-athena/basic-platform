@@ -11,11 +11,3 @@ export function query(): Promise<ApiResponse<API.ResourceInfo[]>> {
 export async function sync(): Promise<ApiResponse<boolean>> {
   return get('/api/Resource/Sync');
 }
-
-/**
- * 重置资源
- * @returns
- */
-export async function reinitialize(): Promise<ApiResponse<boolean>> {
-  return get('/api/Resource/Reinitialize');
-}

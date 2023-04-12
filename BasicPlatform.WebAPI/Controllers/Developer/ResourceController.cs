@@ -12,7 +12,6 @@ namespace BasicPlatform.WebAPI.Controllers.Developer;
     ModuleIcon = "ControlOutlined",
     ModuleRoutePath = "/developer",
     ModuleSort = 0,
-    
     RoutePath = "/developer/resource",
     Sort = 1,
     Description = "资源包含菜单树以及功能，由系统生成，用于控制系统菜单的展示及功能权限。"
@@ -42,32 +41,13 @@ public class ResourceController : CustomControllerBase
     public Task<int> SyncAsync(CancellationToken cancellationToken)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resources = _apiPermissionService.GetResourceCodeInfos(assembly);
+        var resources = _apiPermissionService.GetResourceCodeInfos(assembly, ApiPermissionConstant.DefaultAppId);
         var request = new SyncResourceRequest
         {
+            ApplicationId = ApiPermissionConstant.DefaultAppId,
             Resources = resources.Select(p => new ResourceModel
             {
-                Key = p.Key,
-                Code = p.Code
-            }).ToList()
-        };
-        return _mediator.SendAsync(request, cancellationToken);
-    }
-
-    /// <summary>
-    /// 重新初始化资源
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(DisplayName = "重置资源", Description = "该操作会重置所有资源数据，所有被分配的资源也将会被清空")]
-    public Task<int> ReinitializeAsync(CancellationToken cancellationToken)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var resources = _apiPermissionService.GetResourceCodeInfos(assembly);
-        var request = new ReinitializeResourceRequest
-        {
-            Resources = resources.Select(p => new ResourceModel
-            {
+                ApplicationId = p.ApplicationId,
                 Key = p.Key,
                 Code = p.Code
             }).ToList()

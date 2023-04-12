@@ -1,5 +1,5 @@
-import { query, sync, reinitialize } from './service';
-import { SyncOutlined, RedoOutlined } from '@ant-design/icons';
+import { query, sync } from './service';
+import { SyncOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message, Tag, Tooltip } from 'antd';
@@ -108,6 +108,10 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="code"
         search={false}
+        options={{
+          reload: false,
+          fullScreen: true,
+        }}
         toolBarRender={() => [
           <Access key={'sync'} accessible={canAccessible(permission.resource.syncAsync, resource)}>
             <Button
@@ -126,29 +130,6 @@ const TableList: React.FC = () => {
               icon={<SyncOutlined />}
             >
               同步资源
-            </Button>
-          </Access>,
-          <Access
-            key={'reset'}
-            accessible={canAccessible(permission.resource.reinitializeAsync, resource)}
-          >
-            <Button
-              type="primary"
-              danger
-              onClick={async () => {
-                const hide = message.loading('正在重置', 0);
-                const res = await reinitialize();
-                hide();
-                if (res.success) {
-                  message.success('重置成功');
-                  actionRef.current?.reloadAndRest?.();
-                  return;
-                }
-                message.error('重置失败，请重试');
-              }}
-              icon={<RedoOutlined />}
-            >
-              重置资源
             </Button>
           </Access>,
         ]}

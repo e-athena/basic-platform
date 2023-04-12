@@ -23,7 +23,6 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 // ReSharper disable once InconsistentNaming
 public class UserController : CustomControllerBase
 {
-    private const string DefaultAppId = "system";
     private readonly IMediator _mediator;
     private readonly IUserQueryService _queryService;
     private readonly ILogger<UserController> _logger;
@@ -242,12 +241,12 @@ public class UserController : CustomControllerBase
         {
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetMenuResources(assembly, DefaultAppId));
+                list.AddRange(service.GetMenuResources(assembly, ApiPermissionConstant.DefaultAppId));
             }
 
             result.Add(new ApplicationResourceModel
             {
-                ApplicationId = DefaultAppId,
+                ApplicationId = ApiPermissionConstant.DefaultAppId,
                 ApplicationName = "系统应用",
                 Resources = list
             });
@@ -256,18 +255,18 @@ public class UserController : CustomControllerBase
         {
             var resources = await _queryService.GetUserResourceAsync(null);
             var keys = resources
-                .Where(p => p.ApplicationId == DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Where(p => p.ApplicationId == ApiPermissionConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
                 .Select(p => p.Key)
                 .ToList();
 
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetPermissionMenuResources(assembly, keys, DefaultAppId));
+                list.AddRange(service.GetPermissionMenuResources(assembly, keys, ApiPermissionConstant.DefaultAppId));
             }
 
             result.Add(new ApplicationResourceModel
             {
-                ApplicationId = DefaultAppId,
+                ApplicationId = ApiPermissionConstant.DefaultAppId,
                 ApplicationName = "系统应用",
                 Resources = list
             });
@@ -280,9 +279,10 @@ public class UserController : CustomControllerBase
 
         foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
         {
+            var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
             try
             {
-                var res = await $"{app.ApiUrl}{app.MenuResourceRoute}".GetAsync()
+                var res = await resourceUrl.GetAsync()
                     .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
 
                 if (res.Data != null && res.Success && res.Data.Count > 0)
@@ -297,7 +297,7 @@ public class UserController : CustomControllerBase
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e, "加载应用资源失败，{ClientId}", app.ClientId);
+                _logger.LogWarning(e, "加载应用资源失败，应用ID:{ClientId},资源地址:{Url}", app.ClientId, resourceUrl);
             }
         }
 
@@ -332,7 +332,7 @@ public class UserController : CustomControllerBase
         {
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetMenuResources(assembly, DefaultAppId));
+                list.AddRange(service.GetMenuResources(assembly, ApiPermissionConstant.DefaultAppId));
             }
 
             return list;
@@ -340,13 +340,13 @@ public class UserController : CustomControllerBase
 
         var resources = await _queryService.GetUserResourceAsync(null);
         var keys = resources
-            .Where(p => p.ApplicationId == DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+            .Where(p => p.ApplicationId == ApiPermissionConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
             .Select(p => p.Key)
             .ToList();
 
         foreach (var assembly in assemblies)
         {
-            list.AddRange(service.GetPermissionMenuResources(assembly, keys, DefaultAppId));
+            list.AddRange(service.GetPermissionMenuResources(assembly, keys, ApiPermissionConstant.DefaultAppId));
         }
 
         return list;
