@@ -1,4 +1,5 @@
-using Athena.Infrastructure.Exceptions;
+using BasicPlatform.AppService.Applications;
+using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -18,6 +19,122 @@ public class UtilController : ControllerBase
     public UtilController(ILoggerFactory loggerFactory)
     {
         _logger = loggerFactory.CreateLogger<UtilController>();
+    }
+
+    /// <summary>
+    /// 读取菜单资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<MenuTreeInfo>> GetMenuResourcesAsync([FromServices] IApiPermissionService service)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var result = service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+        return await Task.FromResult(result);
+    }
+
+    /// <summary>
+    /// 读取应用数据权限资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<ApplicationDataPermissionInfo>> GetApplicationDataPermissionResourcesAsync(
+        [FromServices] IApplicationQueryService applicationQueryService
+    )
+    {
+        var result = new List<ApplicationDataPermissionInfo>();
+        var assembly = Assembly.Load("BasicPlatform.AppService");
+        var defaultList = DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
+        result.Add(new ApplicationDataPermissionInfo
+        {
+            ApplicationId = GlobalConstant.DefaultAppId,
+            ApplicationName = "系统应用",
+            DataPermissionGroups = defaultList
+        });
+
+        // 读取应用信息
+        var apps = await applicationQueryService.GetListAsync();
+
+        foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.PermissionResourceRoute)))
+        {
+            var resourceUrl = $"{app.ApiUrl}{app.PermissionResourceRoute}";
+            try
+            {
+                var res = await resourceUrl.GetAsync()
+                    .ReceiveJson<ApiResult<List<DataPermissionGroup>>>();
+
+                if (res.Data != null && res.Success && res.Data.Count > 0)
+                {
+                    result.Add(new ApplicationDataPermissionInfo
+                    {
+                        ApplicationId = app.ClientId,
+                        ApplicationName = app.Name,
+                        DataPermissionGroups = res.Data
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "加载应用数据权限失败，应用ID:{ClientId},数据权限地址:{Url}", app.ClientId, resourceUrl);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 读取应用菜单资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<ApplicationResourceInfo>> GetApplicationMenuResourcesAsync(
+        [FromServices] IApiPermissionService service,
+        [FromServices] IApplicationQueryService applicationQueryService
+    )
+    {
+        var result = new List<ApplicationResourceInfo>();
+
+        #region 系统资源
+
+        var assembly = Assembly.GetExecutingAssembly();
+        var defaultList = service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+        result.Add(new ApplicationResourceInfo
+        {
+            ApplicationId = GlobalConstant.DefaultAppId,
+            ApplicationName = "系统应用",
+            Resources = defaultList
+        });
+
+        #endregion
+
+        // 其他业务应用
+        var apps = await applicationQueryService.GetListAsync();
+
+        foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
+        {
+            var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
+            try
+            {
+                var res = await resourceUrl.GetAsync()
+                    .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
+
+                if (res.Data != null && res.Success && res.Data.Count > 0)
+                {
+                    result.Add(new ApplicationResourceInfo
+                    {
+                        ApplicationId = app.ClientId,
+                        ApplicationName = app.Name,
+                        Resources = res.Data
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "加载应用资源失败，应用ID:{ClientId},资源地址:{Url}", app.ClientId, resourceUrl);
+            }
+        }
+
+        return result;
     }
 
     /// <summary>

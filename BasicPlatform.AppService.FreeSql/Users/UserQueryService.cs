@@ -411,6 +411,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             )
             .ToListAsync(p => new GetUserDataPermissionsResponse
             {
+                ApplicationId = p.ApplicationId,
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
@@ -430,6 +431,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new GetUserDataPermissionsResponse
             {
+                ApplicationId = p.ApplicationId,
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,

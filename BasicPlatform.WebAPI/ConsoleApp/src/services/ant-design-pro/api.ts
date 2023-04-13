@@ -73,9 +73,16 @@ export async function queryUserResources(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
-/** 查询应用资源 GET /api/User/GetApplicationResources */
-export async function queryUserApplicationResources(options?: { [key: string]: any }) {
-  return request<ApiResponse<API.ApplicationResourceInfo[]>>('/api/User/GetApplicationResources', {
+/** 查询应用菜单资源 GET /api/Util/GetApplicationMenuResources */
+export async function queryApplicationMenuResources(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ApplicationMenuResourceInfo[]>>('/api/Util/GetApplicationMenuResources', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+/** 查询应用数据权限资源 GET /api/Util/GetApplicationMenuResources */
+export async function queryApplicationDataPermissionResources(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ApplicationDataPermissionResourceInfo[]>>('/api/Util/GetApplicationDataPermissionResources', {
     method: 'GET',
     ...(options || {}),
   });

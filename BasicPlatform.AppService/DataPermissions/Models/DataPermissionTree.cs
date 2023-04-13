@@ -6,6 +6,11 @@ namespace BasicPlatform.AppService.DataPermissions.Models;
 public class DataPermissionTree
 {
     /// <summary>
+    /// 应用ID
+    /// </summary>
+    public string AppId { get; set; } = null!;
+
+    /// <summary>
     /// 显示名称
     /// </summary>
     public string Label { get; set; } = null!;

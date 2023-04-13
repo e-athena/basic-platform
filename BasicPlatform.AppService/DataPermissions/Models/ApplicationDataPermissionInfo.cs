@@ -1,9 +1,9 @@
-namespace BasicPlatform.WebAPI.Models;
+namespace BasicPlatform.AppService.DataPermissions.Models;
 
 /// <summary>
-/// 应用资源模型
+/// 应用数据权限
 /// </summary>
-public class ApplicationResourceModel
+public class ApplicationDataPermissionInfo
 {
     /// <summary>
     /// 应用名称
@@ -16,7 +16,7 @@ public class ApplicationResourceModel
     public string ApplicationId { get; set; } = null!;
 
     /// <summary>
-    /// 资源列表
+    /// 数据权限组列表
     /// </summary>
-    public IList<MenuTreeInfo> Resources { get; set; } = null!;
+    public IList<DataPermissionGroup> DataPermissionGroups { get; set; } = new List<DataPermissionGroup>();
 }

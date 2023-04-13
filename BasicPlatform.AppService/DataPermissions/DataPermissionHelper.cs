@@ -14,11 +14,38 @@ public static class DataPermissionHelper
     /// <summary>
     /// 读取数据权限配置列表
     /// </summary>
+    /// <param name="assembly">程序集</param>
+    /// <param name="appId">应用ID</param>
     /// <returns></returns>
-    public static IEnumerable<DataPermission> GetList(string assembly)
+    public static IEnumerable<DataPermission> GetList(Assembly assembly, string appId)
     {
-        var dict = GetAttributeList(assembly);
+        return GetList(assembly.GetName().Name!, appId);
+    }
+
+    /// <summary>
+    /// 读取数据权限配置列表
+    /// </summary>
+    /// <param name="assembly">程序集</param>
+    /// <param name="appId">应用ID</param>
+    /// <param name="permissions"></param>
+    /// <returns></returns>
+    public static IEnumerable<DataPermission> GetList(Assembly assembly, string appId,
+        IList<DataPermission>? permissions)
+    {
+        return GetList(assembly.GetName().Name!, appId, permissions);
+    }
+
+    /// <summary>
+    /// 读取数据权限配置列表
+    /// </summary>
+    /// <param name="assemblyName">程序集名称</param>
+    /// <param name="appId">应用ID</param>
+    /// <returns></returns>
+    public static IEnumerable<DataPermission> GetList(string assemblyName, string appId)
+    {
+        var dict = GetAttributeList(assemblyName);
         return dict.Keys.Select(c => new DataPermission(
+            appId,
             c.DisplayName!,
             c.BaseType.Name
         )
@@ -27,24 +54,80 @@ public static class DataPermissionHelper
         }).ToList();
     }
 
-
     /// <summary>
-    /// 读取数据权限配置树列表
+    /// 读取数据权限配置列表
     /// </summary>
+    /// <param name="assemblyName">程序集名称</param>
+    /// <param name="appId">应用ID</param>
+    /// <param name="permissions"></param>
     /// <returns></returns>
-    public static IList<DataPermissionGroup> GetGroupList(Assembly assembly, IList<DataPermission>? permissions = null)
+    public static IEnumerable<DataPermission> GetList(string assemblyName, string appId,
+        IList<DataPermission>? permissions)
     {
-        return GetGroupList(assembly.GetName().Name!, permissions);
+        var dict = GetAttributeList(assemblyName);
+        if (permissions == null || permissions.Count == 0)
+        {
+            return dict.Keys.Select(c => new DataPermission(
+                appId,
+                c.DisplayName!,
+                c.BaseType.Name
+            )
+            {
+                Properties = dict[c]
+            }).ToList();
+        }
+
+        return dict.Keys.Select(c =>
+        {
+            var resourceKey = c.BaseType.Name;
+            var item = permissions.FirstOrDefault(p => p.ResourceKey == resourceKey);
+            return new DataPermission(
+                appId,
+                c.DisplayName!,
+                resourceKey
+            )
+            {
+                PolicyResourceKey = c.Key,
+                Enabled = item is {Enabled: true},
+                DataScope = item?.DataScope ?? RoleDataScope.All,
+                DataScopeCustom = item?.DataScopeCustom,
+                DisableChecked = item?.DisableChecked ?? false,
+                Properties = dict[c],
+                QueryFilterGroups = item?.QueryFilterGroups ?? new List<QueryFilterGroup>()
+            };
+        }).ToList();
     }
 
     /// <summary>
     /// 读取数据权限配置树列表
     /// </summary>
+    /// <param name="assembly">程序集</param>
+    /// <param name="appId">应用ID</param>
+    /// <param name="permissions">拥有的权限</param>
     /// <returns></returns>
-    public static IList<DataPermissionGroup> GetGroupList(string assembly, IList<DataPermission>? permissions = null)
+    public static IList<DataPermissionGroup> GetGroupList(
+        Assembly assembly,
+        string appId,
+        IList<DataPermission>? permissions = null)
+    {
+        return GetGroupList(assembly.GetName().Name!, appId, permissions);
+    }
+
+    /// <summary>
+    /// 读取数据权限配置树列表
+    /// </summary>
+    /// <param name="assemblyName">程序集名称</param>
+    /// <param name="appId">应用ID</param>
+    /// <param name="permissions">拥有的权限</param>
+    /// <returns></returns>
+    public static IList<DataPermissionGroup> GetGroupList(
+        string assemblyName,
+        string appId,
+        IList<DataPermission>? permissions = null
+    )
     {
         permissions ??= new List<DataPermission>();
-        var dictionary = GetAttributeList(assembly);
+        var dictionary = GetAttributeList(assemblyName);
         var list = new List<DataPermissionGroup>();
         foreach (var group in dictionary.Keys.GroupBy(p => p.Group))
         {
@@ -59,6 +142,7 @@ public static class DataPermissionHelper
                             var resourceKey = c.BaseType.Name;
                             var item = permissions.FirstOrDefault(p => p.ResourceKey == resourceKey);
                             return new DataPermission(
+                                appId,
                                 c.DisplayName!,
                                 resourceKey
                             )
@@ -80,12 +164,24 @@ public static class DataPermissionHelper
         return list;
     }
 
+    /// <summary>
+    /// 获取树形结构列表
+    /// </summary>
+    /// <param name="assembly">程序集</param>
+    /// <param name="appId">应用ID</param>
+    /// <returns></returns>
+    public static List<DataPermissionTree> GetTreeList(Assembly assembly, string appId)
+    {
+        return GetTreeList(assembly.GetName().Name!, appId);
+    }
 
     /// <summary>
     /// 获取树形结构列表
     /// </summary>
+    /// <param name="assemblyName"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
-    public static List<DataPermissionTree> GetTreeList(string assemblyName)
+    public static List<DataPermissionTree> GetTreeList(string assemblyName, string appId)
     {
         var asm = Assembly.Load(assemblyName);
         var types = asm.GetExportedTypes();
@@ -114,6 +210,7 @@ public static class DataPermissionHelper
                 ?.DisplayName ?? GetTypeSummaryName(xmlNavigator, type);
             var summary = new DataPermissionTree
             {
+                AppId = appId,
                 Label = label,
                 Key = type.Name,
                 Value = type.Name,
@@ -193,6 +290,7 @@ public static class DataPermissionHelper
 
                 summary.Children.Add(new DataPermissionTree
                 {
+                    AppId = appId,
                     PropertyType = dataType,
                     Key = property.Name,
                     Value = property.Name,
@@ -220,11 +318,11 @@ public static class DataPermissionHelper
     /// </summary>
     /// <returns></returns>
     private static IDictionary<DataPermissionAttribute, List<DataPermissionProperty>> GetAttributeList(
-        string assembly)
+        string assemblyName)
     {
-        if (CacheDictionary.ContainsKey(assembly))
+        if (CacheDictionary.TryGetValue(assemblyName, out var list))
         {
-            return CacheDictionary[assembly];
+            return list;
         }
 
         XPathNavigator? xmlNavigator = null;
@@ -233,7 +331,7 @@ public static class DataPermissionHelper
         var fileInfo = new DirectoryInfo(path).GetFiles()
             // 读取文件后缀名为.xml的文件信息
             .Where(p => p.Extension.ToLower() == ".xml")
-            .FirstOrDefault(n => assembly.Contains(n.Name.Replace(n.Extension, "")));
+            .FirstOrDefault(n => assemblyName.Contains(n.Name.Replace(n.Extension, "")));
         if (fileInfo != null)
         {
             var document = new XmlDocument();
@@ -241,7 +339,7 @@ public static class DataPermissionHelper
             xmlNavigator = document.CreateNavigator();
         }
 
-        var asm = Assembly.Load(assembly);
+        var asm = Assembly.Load(assemblyName);
         var types = asm.GetExportedTypes();
 
         bool IsMyAttribute(IEnumerable<Attribute> o) => o.OfType<DataPermissionAttribute>().Any();
@@ -366,7 +464,7 @@ public static class DataPermissionHelper
         }
 
         // 添加到缓存
-        CacheDictionary.TryAdd(assembly, attributeDict);
+        CacheDictionary.TryAdd(assemblyName, attributeDict);
         return attributeDict;
     }
 

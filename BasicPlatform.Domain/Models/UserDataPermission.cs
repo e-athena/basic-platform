@@ -83,6 +83,7 @@ public class UserDataPermission : ValueObject
     }
 
     public UserDataPermission(
+        string? applicationId,
         string userId,
         string resourceKey,
         RoleDataScope dataScope,
@@ -92,6 +93,7 @@ public class UserDataPermission : ValueObject
         bool enabled,
         DateTime? expireAt)
     {
+        ApplicationId = applicationId;
         UserId = userId;
         ResourceKey = resourceKey;
         DataScope = dataScope;

@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace BasicPlatform.AppService.Roles.Models;
 
 /// <summary>
@@ -5,6 +8,11 @@ namespace BasicPlatform.AppService.Roles.Models;
 /// </summary>
 public class RoleDataPermissionModel
 {
+    /// <summary>
+    /// 应用ID
+    /// </summary>
+    public string? ApplicationId { get; set; }
+
     /// <summary>
     /// 资源Key
     /// </summary>
@@ -38,7 +46,27 @@ public class RoleDataPermissionModel
     public string PolicyResourceKey { get; set; } = null!;
 
     /// <summary>
+    /// 策略
+    /// </summary>
+    [JsonIgnore]
+    public string? Policy { get; set; }
+
+    private IList<QueryFilterGroup>? _policies;
+
+    /// <summary>
     /// 查询过滤组
     /// </summary>
-    public IList<QueryFilterGroup>? QueryFilterGroups { get; set; }
+    public IList<QueryFilterGroup>? QueryFilterGroups
+    {
+        get
+        {
+            if (_policies == null && !string.IsNullOrEmpty(Policy))
+            {
+                return JsonSerializer.Deserialize<IList<QueryFilterGroup>>(Policy);
+            }
+
+            return _policies;
+        }
+        set => _policies = value;
+    }
 }

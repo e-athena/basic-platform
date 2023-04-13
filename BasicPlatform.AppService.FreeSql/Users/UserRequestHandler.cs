@@ -210,6 +210,7 @@ public class UserRequestHandler : AppServiceBase<User>,
         var userDataPermissions = request
             .Permissions
             .Select(p => new UserDataPermission(
+                p.ApplicationId,
                 request.Id,
                 p.ResourceKey,
                 p.DataScope,

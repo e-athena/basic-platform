@@ -164,7 +164,6 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id)
     {
         return QueryNoTracking<RoleDataPermission>()

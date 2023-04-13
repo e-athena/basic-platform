@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Roles;
+using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
 
@@ -172,26 +173,38 @@ public class RoleController : CustomControllerBase
         return _service.GetSelectListAsync();
     }
 
+    // /// <summary>
+    // /// 读取数据权限
+    // /// </summary>
+    // /// <returns></returns>
+    // [HttpGet]
+    // [ApiPermission(ApiPermissionConstant.RoleDataPermissions, IsVisible = false)]
+    // public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
+    // {
+    //     var result = await _service.GetDataPermissionsAsync(id);
+    //     var assembly = Assembly.Load("BasicPlatform.AppService");
+    //     return DataPermissionHelper.GetGroupList(
+    //         assembly,
+    //         GlobalConstant.DefaultAppId,
+    //         result.Select(p => new DataPermission
+    //         {
+    //             ResourceKey = p.ResourceKey,
+    //             DataScopeCustom = p.DataScopeCustom,
+    //             DataScope = p.DataScope,
+    //             Enabled = p.Enabled,
+    //             QueryFilterGroups = p.QueryFilterGroups?.ToList() ?? new List<QueryFilterGroup>()
+    //         }).ToList());
+    // }
+
     /// <summary>
     /// 读取数据权限
     /// </summary>
     /// <returns></returns>
     [HttpGet]
     [ApiPermission(ApiPermissionConstant.RoleDataPermissions, IsVisible = false)]
-    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
+    public Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync([FromQuery] string id)
     {
-        var result = await _service.GetDataPermissionsAsync(id);
-        var assembly = Assembly.Load("BasicPlatform.AppService");
-        return DataPermissionHelper.GetGroupList(
-            assembly,
-            result.Select(p => new DataPermission
-            {
-                ResourceKey = p.ResourceKey,
-                DataScopeCustom = p.DataScopeCustom,
-                DataScope = p.DataScope,
-                Enabled = p.Enabled,
-                QueryFilterGroups = p.QueryFilterGroups?.ToList() ?? new List<QueryFilterGroup>()
-            }).ToList());
+        return _service.GetDataPermissionsAsync(id);
     }
 
     #endregion

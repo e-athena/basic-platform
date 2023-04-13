@@ -70,6 +70,13 @@ declare namespace API {
     enumOptions?: any[];
   };
 
+  /** 应用数据权限资源 */
+  type ApplicationDataPermissionResourceInfo = {
+    applicationId: string;
+    applicationName: string;
+    dataPermissionGroups: DataPermissionGroup[];
+  }
+
   /** 数据权限组 */
   type DataPermissionGroup = {
     displayName: string;
@@ -78,6 +85,7 @@ declare namespace API {
 
   /** 数据权限 */
   type DataPermission = {
+    appId?: string;
     displayName?: string;
     resourceKey: string;
     dataScope: number;
@@ -92,6 +100,7 @@ declare namespace API {
 
   /** 分配数据权限 */
   type DataPermissionItem = {
+    applicationId?: string;
     resourceKey: string;
     dataScope: number;
     enabled: boolean;
@@ -107,5 +116,18 @@ declare namespace API {
     key: string;
     propertyType?: string;
     enumOptions?: SelectInfo[];
+  };
+
+  /** 数据权限 */
+  type UserDataPermission = {
+    applicationId?: string;
+    resourceKey: string;
+    dataScope: number;
+    enabled: boolean;
+    disableChecked?: boolean;
+    dataScopeCustom?: string;
+    dataScopeCustoms: string[];
+    queryFilterGroups?: FilterGroupItem[];
+    policyResourceKey: string;
   };
 }

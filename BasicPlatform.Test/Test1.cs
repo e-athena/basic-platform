@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Athena.Infrastructure.Caching;
 using BasicPlatform.AppService.DataPermissions;
@@ -9,9 +10,9 @@ public class Test1 : TestBase
     [Test]
     public void Test2()
     {
-        var res = DataPermissionHelper.GetGroupList("BasicPlatform.AppService");
-        var res2 = DataPermissionHelper.GetList("BasicPlatform.AppService");
-        var res3 = DataPermissionHelper.GetTreeList("BasicPlatform.AppService");
+        var res = DataPermissionHelper.GetGroupList("BasicPlatform.AppService", "test");
+        var res2 = DataPermissionHelper.GetList("BasicPlatform.AppService", "test");
+        var res3 = DataPermissionHelper.GetTreeList("BasicPlatform.AppService", "test");
         Assert.IsTrue(true);
     }
 
@@ -140,16 +141,13 @@ public class Test1 : TestBase
     {
         var a = Provider.GetService<ICacheManager>();
 
-        a?.Keys("user:640800b6054d3e000131af2c:*").ToList().ForEach(x =>
-        {
-            Console.WriteLine(x);
-        });
-        
+        a?.Keys("user:640800b6054d3e000131af2c:*").ToList().ForEach(x => { Console.WriteLine(x); });
+
         RedisHelper.Instance.Keys("basic_platform:user:640800b6054d3e000131af2c:*").ToList().ForEach(x =>
         {
             Console.WriteLine(x);
         });
-        
+
         Assert.Pass();
     }
 }

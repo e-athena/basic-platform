@@ -41,10 +41,10 @@ public class ResourceController : CustomControllerBase
     public Task<int> SyncAsync(CancellationToken cancellationToken)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resources = _apiPermissionService.GetResourceCodeInfos(assembly, ApiPermissionConstant.DefaultAppId);
+        var resources = _apiPermissionService.GetResourceCodeInfos(assembly, GlobalConstant.DefaultAppId);
         var request = new SyncResourceRequest
         {
-            ApplicationId = ApiPermissionConstant.DefaultAppId,
+            ApplicationId = GlobalConstant.DefaultAppId,
             Resources = resources.Select(p => new ResourceModel
             {
                 ApplicationId = p.ApplicationId,

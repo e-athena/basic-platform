@@ -10,7 +10,8 @@ import { errorConfig } from './requestErrorConfig';
 import {
   currentUser as queryCurrentUser,
   queryUserResources,
-  queryUserApplicationResources,
+  queryApplicationMenuResources,
+  queryApplicationDataPermissionResources,
   queryExternalPages,
   addUserAccessRecord,
 } from './services/ant-design-pro/api';
@@ -37,8 +38,10 @@ export async function getInitialState(): Promise<{
   fetchMenuData?: () => Promise<MenuDataItem[]>;
   fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   apiResources?: API.ResourceInfo[];
-  fetchApplicationResources?: () => Promise<API.ApplicationResourceInfo[]>;
-  applicationResources?: API.ApplicationResourceInfo[];
+  fetchApplicationResources?: () => Promise<API.ApplicationMenuResourceInfo[]>;
+  applicationResources?: API.ApplicationMenuResourceInfo[];
+  fetchApplicationDataPermissionResources?: () => Promise<API.ApplicationDataPermissionResourceInfo[]>;
+  applicationDataPermissionResources?: API.ApplicationDataPermissionResourceInfo[];
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
   externalPages?: API.ExternalPage[];
   noticeConnectionHub?: HubConnection;
@@ -62,7 +65,11 @@ export async function getInitialState(): Promise<{
     return res.data || [];
   };
   const fetchApplicationResources = async () => {
-    const res = await queryUserApplicationResources();
+    const res = await queryApplicationMenuResources();
+    return res.data || [];
+  };
+  const fetchApplicationDataPermissionResources = async () => {
+    const res = await queryApplicationDataPermissionResources();
     return res.data || [];
   };
   const fetchExternalPages = async () => {
@@ -79,6 +86,7 @@ export async function getInitialState(): Promise<{
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
     const applicationResources = await fetchApplicationResources();
+    const applicationDataPermissionResources = await fetchApplicationDataPermissionResources();
     const externalPages = await fetchExternalPages();
     // SignalR
     const noticeConnectionHub = await fetchSignalRConnectionNotice();
@@ -88,6 +96,7 @@ export async function getInitialState(): Promise<{
       fetchUserInfo,
       fetchApiResources,
       fetchApplicationResources,
+      fetchApplicationDataPermissionResources,
       fetchExternalPages,
       noticeConnectionHub,
       fetchSignalRConnectionNotice,
@@ -96,6 +105,7 @@ export async function getInitialState(): Promise<{
       currentUser,
       apiResources,
       applicationResources,
+      applicationDataPermissionResources,
       externalPages,
       settings: defaultSettings as Partial<LayoutSettings>,
       customNavTheme: getNavTheme(),
@@ -246,11 +256,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

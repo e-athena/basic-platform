@@ -146,6 +146,7 @@ public class RoleRequestHandler : AppServiceBase<Role>,
         var roleDataPermissions = request
             .Permissions
             .Select(p => new RoleDataPermission(
+                p.ApplicationId,
                 request.Id,
                 p.ResourceKey,
                 p.DataScope,

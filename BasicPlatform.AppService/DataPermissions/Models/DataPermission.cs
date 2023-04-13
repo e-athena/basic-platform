@@ -6,7 +6,12 @@ namespace BasicPlatform.AppService.DataPermissions.Models;
 public class DataPermission
 {
     /// <summary>
-    /// 禁用选中☑️
+    /// 应用ID
+    /// </summary>
+    public string AppId { get; set; } = null!;
+
+    /// <summary>
+    /// 禁用选中
     /// </summary>
     public bool DisableChecked { get; set; }
 
@@ -46,7 +51,7 @@ public class DataPermission
     /// 属性列表
     /// </summary>
     public List<DataPermissionProperty>? Properties { get; set; }
-    
+
     /// <summary>
     /// 策略资源Key
     /// </summary>
@@ -67,10 +72,12 @@ public class DataPermission
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="appId"></param>
     /// <param name="displayName"></param>
     /// <param name="resourceKey"></param>
-    public DataPermission(string displayName, string resourceKey)
+    public DataPermission(string appId, string displayName, string resourceKey)
     {
+        AppId = appId;
         DisplayName = displayName;
         ResourceKey = resourceKey;
     }

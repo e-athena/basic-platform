@@ -77,6 +77,7 @@ public class RoleDataPermission : ValueObject
     }
 
     public RoleDataPermission(
+        string? applicationId,
         string roleId,
         string resourceKey,
         RoleDataScope dataScope,
@@ -85,6 +86,7 @@ public class RoleDataPermission : ValueObject
         IList<QueryFilterGroup>? policy,
         bool enabled)
     {
+        ApplicationId = applicationId;
         RoleId = roleId;
         ResourceKey = resourceKey;
         DataScope = dataScope;

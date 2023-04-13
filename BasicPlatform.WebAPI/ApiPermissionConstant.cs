@@ -5,11 +5,6 @@ namespace BasicPlatform.WebAPI;
 /// </summary>
 public static class ApiPermissionConstant
 {
-    /// <summary>
-    /// 默认应用Id
-    /// </summary>
-    public const string DefaultAppId = "system";
-
     #region 角色
 
     /// <summary>

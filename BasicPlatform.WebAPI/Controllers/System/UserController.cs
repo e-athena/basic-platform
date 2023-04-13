@@ -3,7 +3,6 @@ using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
-using BasicPlatform.WebAPI.Models;
 using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers.System;
@@ -215,14 +214,14 @@ public class UserController : CustomControllerBase
     [HttpGet]
     [ApiPermission(IsVisible = false)]
     [AllowAnonymous]
-    public async Task<IList<ApplicationResourceModel>> GetApplicationResourcesAsync(
+    public async Task<IList<ApplicationResourceInfo>> GetApplicationResourcesAsync(
         [FromServices] IApiPermissionService service,
         [FromServices] ISecurityContextAccessor accessor,
         [FromServices] IConfiguration configuration,
         [FromServices] IApplicationQueryService applicationQueryService
     )
     {
-        var result = new List<ApplicationResourceModel>();
+        var result = new List<ApplicationResourceInfo>();
 
         #region 系统资源
 
@@ -241,12 +240,12 @@ public class UserController : CustomControllerBase
         {
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetMenuResources(assembly, ApiPermissionConstant.DefaultAppId));
+                list.AddRange(service.GetMenuResources(assembly, GlobalConstant.DefaultAppId));
             }
 
-            result.Add(new ApplicationResourceModel
+            result.Add(new ApplicationResourceInfo
             {
-                ApplicationId = ApiPermissionConstant.DefaultAppId,
+                ApplicationId = GlobalConstant.DefaultAppId,
                 ApplicationName = "系统应用",
                 Resources = list
             });
@@ -255,18 +254,19 @@ public class UserController : CustomControllerBase
         {
             var resources = await _queryService.GetUserResourceAsync(null);
             var keys = resources
-                .Where(p => p.ApplicationId == ApiPermissionConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId ||
+                            string.IsNullOrEmpty(p.ApplicationId))
                 .Select(p => p.Key)
                 .ToList();
 
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetPermissionMenuResources(assembly, keys, ApiPermissionConstant.DefaultAppId));
+                list.AddRange(service.GetPermissionMenuResources(assembly, keys, GlobalConstant.DefaultAppId));
             }
 
-            result.Add(new ApplicationResourceModel
+            result.Add(new ApplicationResourceInfo
             {
-                ApplicationId = ApiPermissionConstant.DefaultAppId,
+                ApplicationId = GlobalConstant.DefaultAppId,
                 ApplicationName = "系统应用",
                 Resources = list
             });
@@ -287,7 +287,7 @@ public class UserController : CustomControllerBase
 
                 if (res.Data != null && res.Success && res.Data.Count > 0)
                 {
-                    result.Add(new ApplicationResourceModel
+                    result.Add(new ApplicationResourceInfo
                     {
                         ApplicationId = app.ClientId,
                         ApplicationName = app.Name,
@@ -332,7 +332,7 @@ public class UserController : CustomControllerBase
         {
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetMenuResources(assembly, ApiPermissionConstant.DefaultAppId));
+                list.AddRange(service.GetMenuResources(assembly, GlobalConstant.DefaultAppId));
             }
 
             return list;
@@ -340,13 +340,13 @@ public class UserController : CustomControllerBase
 
         var resources = await _queryService.GetUserResourceAsync(null);
         var keys = resources
-            .Where(p => p.ApplicationId == ApiPermissionConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+            .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
             .Select(p => p.Key)
             .ToList();
 
         foreach (var assembly in assemblies)
         {
-            list.AddRange(service.GetPermissionMenuResources(assembly, keys, ApiPermissionConstant.DefaultAppId));
+            list.AddRange(service.GetPermissionMenuResources(assembly, keys, GlobalConstant.DefaultAppId));
         }
 
         return list;
@@ -376,47 +376,58 @@ public class UserController : CustomControllerBase
         return _queryService.GetResourceCodeInfoAsync(id);
     }
 
+    // /// <summary>
+    // /// 读取数据权限
+    // /// </summary>
+    // /// <returns></returns>
+    // [HttpGet]
+    // [ApiPermission(ApiPermissionConstant.UserDataPermissions, IsVisible = false)]
+    // public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync(
+    //     [FromServices] IConfiguration configuration,
+    //     [FromQuery] string id
+    // )
+    // {
+    //     var result = await _queryService.GetDataPermissionsAsync(id);
+    //     var assemblies = new List<Assembly>
+    //     {
+    //         Assembly.Load("BasicPlatform.AppService")
+    //     };
+    //     var dataPermissionAssemblies = configuration.GetSection("DataPermissionAssemblies").Get<List<string>>();
+    //     if (dataPermissionAssemblies != null)
+    //     {
+    //         assemblies.AddRange(dataPermissionAssemblies.Select(Assembly.Load));
+    //     }
+    //
+    //     var list = new List<DataPermissionGroup>();
+    //     foreach (var assembly in assemblies)
+    //     {
+    //         list.AddRange(DataPermissionHelper.GetGroupList(
+    //             assembly,
+    //             GlobalConstant.DefaultAppId,
+    //             result.Select(p => new DataPermission
+    //             {
+    //                 ResourceKey = p.ResourceKey,
+    //                 DataScopeCustom = p.DataScopeCustom,
+    //                 DataScope = p.DataScope,
+    //                 Enabled = p.Enabled,
+    //                 DisableChecked = p.IsRolePermission,
+    //                 QueryFilterGroups = p.Policies.ToList()
+    //             }).ToList()
+    //         ));
+    //     }
+    //
+    //     return list;
+    // }
+    
     /// <summary>
     /// 读取数据权限
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(ApiPermissionConstant.UserDataPermissions, IsVisible = false)]
-    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync(
-        [FromServices] IConfiguration configuration,
-        [FromQuery] string id
-    )
+    [ApiPermission(ApiPermissionConstant.RoleDataPermissions, IsVisible = false)]
+    public Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync([FromQuery] string id)
     {
-        var result = await _queryService.GetDataPermissionsAsync(id);
-        var assemblies = new List<Assembly>
-        {
-            Assembly.Load("BasicPlatform.AppService")
-        };
-        var dataPermissionAssemblies = configuration.GetSection("DataPermissionAssemblies").Get<List<string>>();
-        if (dataPermissionAssemblies != null)
-        {
-            assemblies.AddRange(dataPermissionAssemblies.Select(Assembly.Load));
-        }
-
-        var list = new List<DataPermissionGroup>();
-        foreach (var assembly in assemblies)
-        {
-            list.AddRange(DataPermissionHelper.GetGroupList(
-                assembly,
-                result.Select(p => new DataPermission
-                {
-                    ResourceKey = p.ResourceKey,
-                    DataScopeCustom = p.DataScopeCustom,
-                    DataScope = p.DataScope,
-                    Enabled = p.Enabled,
-                    DisableChecked = p.IsRolePermission,
-                    QueryFilterGroups = p.Policies.ToList()
-                }).ToList()
-            ));
-        }
-
-        return list;
+        return _queryService.GetDataPermissionsAsync(id);
     }
-
     #endregion
 }
