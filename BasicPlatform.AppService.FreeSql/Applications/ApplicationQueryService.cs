@@ -23,6 +23,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     public async Task<List<ApplicationModel>> GetListAsync()
     {
         return await QueryableNoTracking
+            .Where(p => p.Status == Status.Enabled)
             .ToListAsync<ApplicationModel>();
     }
 

@@ -1,14 +1,15 @@
-import { query, detail } from './service';
+import { query, detail, statusChange } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, message } from 'antd';
+import { Button, Modal, Switch, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ProTablePlus from '@/components/ProTablePlus';
+import IconStatus from '@/components/IconStatus';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
@@ -30,6 +31,43 @@ const TableList: React.FC = () => {
             {entity.frontendUrl}
           </a>
         ) : null;
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      width: 90,
+      hideInSearch: true,
+      align: 'center',
+      sorter: true,
+      render(_, entity) {
+        if (canAccessible(permission.application.statusChangeAsync, resource)) {
+          return (
+            <Switch
+              checkedChildren="启用"
+              unCheckedChildren="禁用"
+              checked={entity.status === 1}
+              onClick={async () => {
+                const statusName = entity.status === 1 ? '禁用' : '启用';
+                Modal.confirm({
+                  title: '操作提示',
+                  content: `确定${statusName}{${entity.name}}吗？`,
+                  onOk: async () => {
+                    const hide = message.loading(`正在${statusName}`, 0);
+                    const res = await statusChange(entity.id!);
+                    hide();
+                    if (res.success) {
+                      actionRef.current?.reload();
+                      return;
+                    }
+                    message.error(res.message);
+                  },
+                });
+              }}
+            />
+          );
+        }
+        return <IconStatus status={entity.status === 1} />;
       },
     },
     {

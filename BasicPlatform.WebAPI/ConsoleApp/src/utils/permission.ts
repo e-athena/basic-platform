@@ -85,6 +85,12 @@ export default {
     assignDataPermissionsAsync: 'UserController_AssignDataPermissionsAsync',
     /** 重置密码 */
     resetPasswordAsync: 'UserController_ResetPasswordAsync',
+    /** 读取资源 */
+    getResourcesAsync: 'UserController_GetResourcesAsync',
+    /** 读取外部页面列表 */
+    getExternalPagesAsync: 'UserController_GetExternalPagesAsync',
+    /** 读取用户资源 */
+    getUserResourceAsync: 'UserController_GetUserResourceAsync',
   },
   /** 应用管理 */
   application: {
@@ -96,12 +102,12 @@ export default {
     postAsync: 'ApplicationController_PostAsync',
     /** 编辑 */
     putAsync: 'ApplicationController_PutAsync',
+    /** 状态变更 */
+    statusChangeAsync: 'ApplicationController_StatusChangeAsync',
   },
   /** 资源管理 */
   resource: {
     /** 同步资源 */
     syncAsync: 'ResourceController_SyncAsync',
-    /** 重置资源 */
-    reinitializeAsync: 'ResourceController_ReinitializeAsync',
   },
 };

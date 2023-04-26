@@ -52,4 +52,11 @@ public class ApplicationQueryModel : QueryModelBase
     /// </summary>
     [TableColumn(Sort = 8)]
     public string? Remarks { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    /// <value></value>
+    [TableColumn(Width = 90, Sort = 9)]
+    public Status Status { get; set; }
 }

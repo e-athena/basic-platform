@@ -32,6 +32,7 @@ declare namespace API {
     apiUrl?: string;
     menuResourceRoute?: string;
     permissionResourceRoute?: string;
+    status: Status;
     remarks?: string;
   } & Partial<CreatedItem> &
     Partial<UpdatedItem>;

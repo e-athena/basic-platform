@@ -19,3 +19,8 @@ export function create(data: API.CreateApplicationItem) {
 export function update(data: API.UpdateApplicationItem) {
   return put<API.UpdateApplicationItem, string>('/api/Application/Put', data);
 }
+
+/** 切换状态 */
+export function statusChange(id: string) {
+  return put('/api/Application/StatusChange', { id });
+}

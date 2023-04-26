@@ -105,5 +105,18 @@ public class ApplicationController : CustomControllerBase
         return _mediator.SendAsync(request, cancellationToken);
     }
 
+    /// <summary>
+    /// 状态变更
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    public Task<string> StatusChangeAsync([FromBody] ApplicationStatusChangeRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
     #endregion
 }

@@ -232,10 +232,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
         return;
       }
-      // if (location.pathname !== '/') {
-      //   // 添加访问记录
-      //   addUserAccessRecord({ accessUrl: location.pathname });
-      // }
+      if (location.pathname !== '/') {
+        // 添加访问记录
+        addUserAccessRecord({ accessUrl: location.pathname });
+      }
     },
     layoutBgImgList: [
       {

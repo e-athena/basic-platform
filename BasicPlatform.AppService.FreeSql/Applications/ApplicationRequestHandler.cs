@@ -7,7 +7,8 @@ namespace BasicPlatform.AppService.FreeSql.Applications;
 /// </summary>
 public class ApplicationRequestHandler : AppServiceBase<Application>,
     IRequestHandler<CreateApplicationRequest, string>,
-    IRequestHandler<UpdateApplicationRequest, string>
+    IRequestHandler<UpdateApplicationRequest, string>,
+    IRequestHandler<ApplicationStatusChangeRequest, string>
 {
     public ApplicationRequestHandler(
         UnitOfWorkManager unitOfWorkManager,
@@ -52,11 +53,12 @@ public class ApplicationRequestHandler : AppServiceBase<Application>,
     public async Task<string> Handle(UpdateApplicationRequest request, CancellationToken cancellationToken)
     {
         // 检查clientId是否已存在
-        if (await QueryableNoTracking.AnyAsync(x => x.ClientId == request.ClientId && x.Id != request.Id, cancellationToken))
+        if (await QueryableNoTracking.AnyAsync(x => x.ClientId == request.ClientId && x.Id != request.Id,
+                cancellationToken))
         {
             throw FriendlyException.Of("ClientId已存在");
         }
-        
+
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.Update(request.Name,
             request.ClientId,
@@ -67,6 +69,20 @@ public class ApplicationRequestHandler : AppServiceBase<Application>,
             request.Remarks,
             UserId
         );
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
+    }
+
+    /// <summary>
+    /// 状态变更
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Handle(ApplicationStatusChangeRequest request, CancellationToken cancellationToken)
+    {
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
     }
