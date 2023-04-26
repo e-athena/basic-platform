@@ -18,6 +18,12 @@ public class UserCustomColumn : ValueObject
     public virtual User User { get; set; } = null!;
 
     /// <summary>
+    /// 应用ID
+    /// </summary>
+    [MaxLength(64)]
+    public string? AppId { get; set; }
+
+    /// <summary>
     /// 所属模块
     /// </summary>
     [MaxLength(128)]
@@ -63,16 +69,19 @@ public class UserCustomColumn : ValueObject
     /// 添加用户自定义列
     /// </summary>
     /// <param name="userId"></param>
+    /// <param name="appId"></param>
     /// <param name="moduleName"></param>
     /// <param name="dataIndex"></param>
     /// <param name="width"></param>
     /// <param name="show"></param>
     /// <param name="fixed"></param>
     /// <param name="sort"></param>
-    public UserCustomColumn(string userId, string moduleName, string dataIndex, int? width, bool show, string? @fixed,
+    public UserCustomColumn(string userId, string? appId, string moduleName, string dataIndex, int? width, bool show,
+        string? @fixed,
         int sort)
     {
         UserId = userId;
+        AppId = appId;
         ModuleName = moduleName;
         DataIndex = dataIndex;
         Width = width;

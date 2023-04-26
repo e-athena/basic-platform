@@ -2,7 +2,6 @@ using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
-using BasicPlatform.Infrastructure.Enums;
 
 namespace BasicPlatform.AppService.FreeSql.Roles;
 
@@ -31,7 +30,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
             .ToPagingAsync(request, p => new GetRolePagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName
+                UpdatedUserName = p.LastUpdatedUser!.RealName
             }, cancellationToken);
         return result;
     }

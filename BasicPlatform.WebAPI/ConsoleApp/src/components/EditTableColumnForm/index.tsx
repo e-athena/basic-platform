@@ -101,7 +101,7 @@ const EditTableColumnForm: React.FC<EditTableColumnFormProps> = (props) => {
               menu={{
                 items,
                 onClick: ({ key }) => {
-                  console.log(key);
+                  // console.log(key);
                   // 取消固定
                   if (key === '0') {
                     // 更新为空

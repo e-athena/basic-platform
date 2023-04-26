@@ -72,12 +72,12 @@ public class Organization : EntityCore, ICreator, IUpdater
     /// 最后更新人Id
     /// </summary>
     [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
-    public virtual User? UpdatedUser { get; set; }
+    public virtual User? LastUpdatedUser { get; set; }
 
     /// <summary>
     /// 
@@ -124,7 +124,7 @@ public class Organization : EntityCore, ICreator, IUpdater
         LeaderId = leaderId;
         Remarks = remarks;
         Sort = sort;
-        UpdatedUserId = userId;
+        LastUpdatedUserId = userId;
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public class Organization : EntityCore, ICreator, IUpdater
     public void StatusChange(string? updatedUserId)
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
     }
 }

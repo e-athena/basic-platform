@@ -19,7 +19,7 @@ const Center = () => {
       >
         <Menu
           onClick={(e) => {
-            console.log('click ', e);
+            // console.log('click ', e);
             setCurrent(e.key);
           }}
           selectedKeys={[current]}

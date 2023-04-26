@@ -52,12 +52,12 @@ public class Role : EntityCore, ICreator, IUpdater
     /// 最后更新人Id
     /// </summary>
     [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
-    public User? UpdatedUser { get; set; }
+    public virtual User? LastUpdatedUser { get; set; }
 
     /// <summary>
     /// 
@@ -99,7 +99,7 @@ public class Role : EntityCore, ICreator, IUpdater
         DataScope = dataScope;
         DataScopeCustom = dataScopeCustom;
         Remarks = remarks;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public class Role : EntityCore, ICreator, IUpdater
     public void StatusChange(string? updatedUserId)
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
     }
 
@@ -131,6 +131,6 @@ public class Role : EntityCore, ICreator, IUpdater
             DataScopeCustom = null;
         }
 
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 }

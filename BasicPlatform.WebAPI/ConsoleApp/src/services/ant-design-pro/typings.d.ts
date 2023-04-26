@@ -182,4 +182,10 @@ declare namespace API {
   type AddUserAccessRecordParams = {
     accessUrl: string;
   };
+
+  type MicroAppInfo = {
+    name: string;
+    entry: string;
+    credentials: boolean
+  }
 }

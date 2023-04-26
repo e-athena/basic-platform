@@ -118,3 +118,11 @@ export function updateUserCustomColumns(body: any) {
     data: body,
   });
 }
+
+
+/** 读取子应用 */
+export function queryApps() {
+  return request<ApiResponse<API.MicroAppInfo[]>>('/api/Util/GetAppList', {
+    method: 'GET',
+  });
+}

@@ -39,7 +39,7 @@ public class QueryModelBase
     /// 更新人Id  
     /// </summary>
     [TableColumn(Sort = 88, HideInTable = true)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 更新人

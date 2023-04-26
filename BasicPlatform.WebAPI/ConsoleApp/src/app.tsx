@@ -14,8 +14,9 @@ import {
   queryApplicationDataPermissionResources,
   queryExternalPages,
   addUserAccessRecord,
+  queryApps,
 } from './services/ant-design-pro/api';
-import React from 'react';
+import React, { useState } from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
 import { recursionMenu } from './utils/menu';
@@ -125,6 +126,8 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   // console.log(initialState?.settings);
   // console.log(initialState?.customNavTheme);
+  // @ts-ignore
+  // window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = theme;
   return {
     actionsRender: () => [
       <NavTheme key={'theme'} />,
@@ -229,10 +232,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
         return;
       }
-      if (location.pathname !== '/') {
-        // 添加访问记录
-        addUserAccessRecord({ accessUrl: location.pathname });
-      }
+      // if (location.pathname !== '/') {
+      //   // 添加访问记录
+      //   addUserAccessRecord({ accessUrl: location.pathname });
+      // }
     },
     layoutBgImgList: [
       {
@@ -304,3 +307,46 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 export const request = {
   ...errorConfig,
 };
+
+export const qiankun = async () => {
+  const res = await queryApps();
+  const apps = res.success ? (res.data || []) : [];
+  console.log(apps);
+  return {
+    // 注册子应用信息
+    apps,
+    // apps: [
+    //   {
+    //     name: 'xdxd',
+    //     entry: '//localhost:5119',
+    //     credentials: true
+    //   },
+    // ],
+    routes: [
+      {
+        path: '/app/xdxd/*',
+        microApp: 'xdxd',
+        microAppProps: {
+          autoCaptureError: true,
+          className: 'micro-app',
+        }
+      },
+    ],
+    // lifeCycles: {
+    //   // 所有子应用在挂载完成时，打印 props 信息
+    //   async afterMount(props: any) {
+    //     console.log(props);
+    //   },
+    // },
+  }
+}
+export function useQiankunStateForSlave() {
+  const [globalState, setGlobalState] = useState<any>({
+    slogan: 'Hello MicroFrontend',
+  });
+
+  return {
+    globalState,
+    setGlobalState,
+  };
+}

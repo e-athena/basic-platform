@@ -38,7 +38,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
             .ToPagingAsync(request, p => new GetApplicationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName,
+                UpdatedUserName = p.LastUpdatedUser!.RealName,
             });
         return result;
     }

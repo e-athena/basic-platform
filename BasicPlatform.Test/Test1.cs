@@ -120,13 +120,13 @@ public class Test1 : TestBase
             Console.WriteLine("连接字符串1对应的数据库类型未知");
         }
 
-        if (Regex.IsMatch(connectionString2, @"\b(Data Source|Server)\b", RegexOptions.IgnoreCase))
-        {
-            Console.WriteLine("连接字符串2对应的数据库类型是 Microsoft SQL Server");
-        }
-        else if (Regex.IsMatch(connectionString2, @"\b(MySQL|MariaDB)\b", RegexOptions.IgnoreCase))
+        if (Regex.IsMatch(connectionString2, @"\b(MySQL|MariaDB)\b", RegexOptions.IgnoreCase))
         {
             Console.WriteLine("连接字符串2对应的数据库类型是 MySQL 或 MariaDB");
+        }
+        else if (Regex.IsMatch(connectionString2, @"\b(Data Source|Server)\b", RegexOptions.IgnoreCase))
+        {
+            Console.WriteLine("连接字符串2对应的数据库类型是 Microsoft SQL Server");
         }
         else
         {
@@ -149,5 +149,126 @@ public class Test1 : TestBase
         });
 
         Assert.Pass();
+    }
+
+    /// <summary>
+    /// 根据时间读取本周周一的日期
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    private static DateTime GetMonday(DateTime date)
+    {
+        var dt = date.DayOfWeek == DayOfWeek.Sunday ? date.AddDays(-1) : date;
+        return dt.AddDays(-1 * (int) dt.DayOfWeek + 1);
+    }
+
+    /// <summary>
+    /// 读取第几周
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    private static int GetWeekOfYear(DateTime date)
+    {
+        var dt = date.DayOfWeek == DayOfWeek.Sunday ? date.AddDays(-1) : date;
+        return (int) Math.Ceiling((double) dt.DayOfYear / 7);
+    }
+
+    /// <summary>
+    /// 读取给定日期的周开始日期和结束日期
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    private static Tuple<DateTime?, DateTime?> GetWeekRange(DateTime date)
+    {
+        return new Tuple<DateTime?, DateTime?>(GetMonday(date), date);
+    }
+
+    /// <summary>
+    /// 读取上周的周一到周日的日期
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    private static Tuple<DateTime?, DateTime?> GetLastWeekRange(DateTime date)
+    {
+        int startDay = date.DayOfWeek switch
+        {
+            DayOfWeek.Monday => -7,
+            DayOfWeek.Tuesday => -8,
+            DayOfWeek.Wednesday => -9,
+            DayOfWeek.Thursday => -10,
+            DayOfWeek.Friday => -11,
+            DayOfWeek.Saturday => -12,
+            DayOfWeek.Sunday => -13,
+            _ => 0
+        };
+
+        var startDate = date.AddDays(startDay);
+        var endDate = startDate.AddDays(6);
+
+        return new Tuple<DateTime?, DateTime?>(startDate, endDate);
+    }
+
+    [Test]
+    public void TestLastWeek()
+    {
+        var week1 = GetLastWeekRange(new DateTime(2023, 4, 10));
+        var week2 = GetLastWeekRange(new DateTime(2023, 4, 11));
+        var week3 = GetLastWeekRange(new DateTime(2023, 4, 12));
+        var week4 = GetLastWeekRange(new DateTime(2023, 4, 13));
+        var week5 = GetLastWeekRange(new DateTime(2023, 4, 14));
+        var week6 = GetLastWeekRange(new DateTime(2023, 4, 15));
+        var week7 = GetLastWeekRange(new DateTime(2023, 4, 16));
+        var week8 = GetLastWeekRange(new DateTime(2023, 4, 8));
+        var week9 = GetLastWeekRange(new DateTime(2023, 4, 9));
+        Assert.Multiple(() =>
+        {
+            Assert.That(week2, Is.EqualTo(week1));
+            Assert.That(week3, Is.EqualTo(week2));
+            Assert.That(week4, Is.EqualTo(week3));
+            Assert.That(week5, Is.EqualTo(week4));
+            Assert.That(week6, Is.EqualTo(week5));
+            Assert.That(week7, Is.EqualTo(week6));
+            Assert.That(week9, Is.EqualTo(week8));
+        });
+        Assert.IsTrue(true);
+    }
+    
+    [Test]
+    public void TestWeek()
+    {
+        var week1 = GetWeekRange(new DateTime(2023, 4, 10));
+        var week2 = GetWeekRange(new DateTime(2023, 4, 11));
+        var week3 = GetWeekRange(new DateTime(2023, 4, 12));
+        var week4 = GetWeekRange(new DateTime(2023, 4, 13));
+        var week5 = GetWeekRange(new DateTime(2023, 4, 14));
+        var week6 = GetWeekRange(new DateTime(2023, 4, 15));
+        var week7 = GetWeekRange(new DateTime(2023, 4, 16));
+        var week8 = GetWeekRange(new DateTime(2023, 4, 17));
+        var week9 = GetWeekRange(new DateTime(2023, 4, 18));
+        Assert.Multiple(() =>
+        {
+            Assert.That(week2.Item1, Is.EqualTo(week1.Item1));
+            Assert.That(week3.Item1, Is.EqualTo(week2.Item1));
+            Assert.That(week4.Item1, Is.EqualTo(week3.Item1));
+            Assert.That(week5.Item1, Is.EqualTo(week4.Item1));
+            Assert.That(week6.Item1, Is.EqualTo(week5.Item1));
+            Assert.That(week7.Item1, Is.EqualTo(week6.Item1));
+            Assert.That(week9.Item1, Is.EqualTo(week8.Item1));
+        });
+        Assert.IsTrue(true);
+    }
+
+    [Test]
+    public void Test8()
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            var str = $"QD-{DateTime.Now:yyyyMMddHHfff}";
+            Console.WriteLine(str);
+            Console.WriteLine(str.Length.ToString());
+            Thread.Sleep(10);
+        }
+        
+        Assert.IsTrue(true);
     }
 }

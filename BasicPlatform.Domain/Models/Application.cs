@@ -47,6 +47,11 @@ public class Application : EntityCore, ICreator, IUpdater
     public string? Remarks { get; set; }
 
     /// <summary>
+    /// 状态
+    /// </summary>
+    public Status Status { get; set; } = Status.Enabled;
+
+    /// <summary>
     /// 创建人Id
     /// </summary>
     [MaxLength(36)]
@@ -61,12 +66,12 @@ public class Application : EntityCore, ICreator, IUpdater
     /// 最后更新人Id
     /// </summary>
     [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
-    public virtual User? UpdatedUser { get; set; }
+    public virtual User? LastUpdatedUser { get; set; }
 
     public Application()
     {
@@ -118,6 +123,17 @@ public class Application : EntityCore, ICreator, IUpdater
         MenuResourceRoute = menuResourceRoute;
         PermissionResourceRoute = permissionResourceRoute;
         Remarks = remarks;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
+    }
+
+    /// <summary>
+    /// 状态变更
+    /// </summary>
+    /// <param name="updatedUserId"></param>
+    public void StatusChange(string? updatedUserId)
+    {
+        Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
+        LastUpdatedUserId = updatedUserId;
+        UpdatedOn = DateTime.Now;
     }
 }

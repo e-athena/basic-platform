@@ -138,6 +138,24 @@ public class UtilController : ControllerBase
     }
 
     /// <summary>
+    /// 读取应用列表
+    /// </summary>
+    /// <param name="applicationQueryService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<List<dynamic>> GetAppListAsync(
+        [FromServices] IApplicationQueryService applicationQueryService)
+    {
+        var apps = await applicationQueryService.GetListAsync();
+        return apps.Where(p => !string.IsNullOrEmpty(p.FrontendUrl)).Select(p => new
+        {
+            Name = p.ClientId,
+            Entry = p.FrontendUrl,
+            Credentials = true
+        }).ToList<dynamic>();
+    }
+
+    /// <summary>
     /// 同步数据库结构
     /// </summary>
     /// <param name="freeSql"></param>

@@ -9,27 +9,36 @@ const LoginRedirect: React.FC = () => {
   const query = parse(history.location.search.split('?')[1], '&');
   const [handling, setHandling] = useState<boolean>(true);
 
+  console.log(query);
   useEffect(() => {
     const fetch = async () => {
-      // 读取sessionCode
-      const sessionCode = getSessionCode();
-      if (sessionCode) {
-        const res = await getAuthCode({
-          clientId: query?.clientId as string,
-          sessionCode,
-        });
-        if (res.success) {
-          const redirectUrl = query!.redirectUrl as string;
-          if (redirectUrl !== undefined && redirectUrl?.includes('?')) {
-            let url = redirectUrl.split('?')[0];
-            let param = redirectUrl.split('?')[1];
-            window.location.href = `${url}?authCode=${res.data}&sessionCode=${res.data}&source=sso&${param}`;
-            return;
+      try {
+        // 读取sessionCode
+        const sessionCode = getSessionCode();
+        if (sessionCode) {
+          const res = await getAuthCode({
+            clientId: query?.clientId as string,
+            sessionCode,
+          });
+          if (res.success) {
+            const redirectUrl = query!.redirectUrl as string;
+            if (redirectUrl !== undefined && redirectUrl?.includes('?')) {
+              let url = redirectUrl.split('?')[0];
+              // let param = redirectUrl.split('?')[1];
+
+              const urlParams = new URL(redirectUrl).searchParams;
+              const redirect = urlParams.get('redirect');
+              const param = redirect === null ? '' : `?redirect=${redirect}`;
+              window.location.href = `${url}?authCode=${res.data}&sessionCode=${res.data}&source=sso&${param}`;
+              return;
+            }
+            window.location.href = `${redirectUrl}?authCode=${res.data}&sessionCode=${res.data}&source=sso`;
           }
-          window.location.href = `${redirectUrl}?authCode=${res.data}&sessionCode=${res.data}&source=sso`;
         }
+        setHandling(false);
+      } catch (error) {
+        setHandling(false);
       }
-      setHandling(false);
     };
     if (query?.clientId && query?.redirectUrl && handling) {
       fetch();

@@ -276,22 +276,24 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<long> Handle(UpdateUserCustomColumnsRequest request, CancellationToken cancellationToken)
     {
+        request.UserId ??= UserId;
         // 未登录
-        if (string.IsNullOrEmpty(UserId))
+        if (string.IsNullOrEmpty(request.UserId))
         {
             return -1;
         }
 
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserCustomColumn>(
-            p => p.UserId == UserId && p.ModuleName == request.ModuleName, cancellationToken
+            p => p.UserId == request.UserId && p.ModuleName == request.ModuleName, cancellationToken
         );
 
         // 新增新数据
         var userCustomColumns = request
             .Columns
             .Select(p => new UserCustomColumn(
-                UserId,
+                request.UserId,
+                request.AppId,
                 request.ModuleName,
                 p.DataIndex,
                 p.Width,

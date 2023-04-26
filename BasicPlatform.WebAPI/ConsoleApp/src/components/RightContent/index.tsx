@@ -1,6 +1,6 @@
 import { AlertFilled, AlertOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { SelectLang as UmiSelectLang, useModel } from '@umijs/max';
-import { Switch } from 'antd';
+import { Switch, message } from 'antd';
 import React from 'react';
 
 export type SiderTheme = 'light' | 'dark';
@@ -33,6 +33,8 @@ export const Question = () => {
 
 export const NavTheme = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
+  // @ts-ignore
+  window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = initialState?.customNavTheme;
   let checked = false;
   const systemNavTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'realDark'
@@ -60,6 +62,14 @@ export const NavTheme = () => {
             ...initialState,
             customNavTheme: theme,
           });
+          if (window.location.href.includes('/app/')) {
+            message.success('切换完成，页面将重新加载...')
+            // @ts-ignore
+            window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = theme;
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          }
         }}
       />
     </div>

@@ -7,6 +7,12 @@ import routes from './routes';
 const { REACT_APP_ENV = 'dev' } = process.env;
 
 export default defineConfig({
+  history: {
+    type: 'hash',
+  },
+  qiankun: {
+    master: {}
+  },
   // publicPath: '/basic/',
   /**
    * @name 开启 hash 模式

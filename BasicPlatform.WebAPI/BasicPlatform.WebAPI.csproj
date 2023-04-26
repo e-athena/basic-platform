@@ -16,7 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.5" />
+        <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.6" />
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.2" />
         <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.0.8" />
         <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.3.3.3" />

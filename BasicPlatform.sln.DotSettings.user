@@ -1,17 +1,13 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ac14fec5_002D0a81_002D4700_002Db17b_002D63d06e231d42/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CreateAsync_GetAsync_Test" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fc81fa41_002Df7b6_002D4920_002Da5e9_002Dc6f3c3f035eb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test8" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::67CE96A3-8D18-4867-B51C-6E596D03041B::net6.0::BasicPlatform.Test.ApplicationTest.CreateAsync_GetAsync_Test&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::67CE96A3-8D18-4867-B51C-6E596D03041B::net6.0::BasicPlatform.Test.Test1.Test8&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::67CE96A3-8D18-4867-B51C-6E596D03041B::net6.0::BasicPlatform.Test.Test1.TestWeek&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dd95bfbd_002Dc2b4_002D4837_002D8068_002D3174121ab28f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;Hosts&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Not&gt;
-    &lt;TestAncestor&gt;
-      &lt;TestId&gt;NUnit3x::67CE96A3-8D18-4867-B51C-6E596D03041B::net6.0::BasicPlatform.Test.Test1.Test8&lt;/TestId&gt;
-    &lt;/TestAncestor&gt;
-  &lt;/Not&gt;
-&lt;/SessionState&gt;</s:String>
+	
+	
+	
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
 	
 	</wpf:ResourceDictionary>

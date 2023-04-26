@@ -61,7 +61,7 @@ public class Position : FullEntityCore
     /// <summary>
     /// 最后更新人
     /// </summary>
-    public virtual User? UpdatedUser { get; set; }
+    public virtual User? LastUpdatedUser { get; set; }
 
 
     /// <summary>
@@ -105,7 +105,7 @@ public class Position : FullEntityCore
         Name = name;
         Remarks = remarks;
         Sort = sort;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public class Position : FullEntityCore
     public void StatusChange(string? updatedUserId)
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
     }
 }

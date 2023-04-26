@@ -101,12 +101,12 @@ public class User : EntityCore, ICreator, IUpdater
     /// 最后更新人Id
     /// </summary>
     [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 更新人
     /// </summary>
-    public virtual User? UpdatedUser { get; set; }
+    public virtual User? LastUpdatedUser { get; set; }
 
     /// <summary>
     /// 最后登录时间
@@ -182,7 +182,7 @@ public class User : EntityCore, ICreator, IUpdater
     public void StatusChange(string? updatedUserId)
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
 
         // 状态为启用时
@@ -224,7 +224,7 @@ public class User : EntityCore, ICreator, IUpdater
         Email = email;
         OrganizationId = organizationId;
         PositionId = positionId;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
 
         // 添加领域事件
@@ -245,7 +245,7 @@ public class User : EntityCore, ICreator, IUpdater
         RealName = realName;
         PhoneNumber = phoneNumber;
         Email = email;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 
     /// <summary>
@@ -262,7 +262,7 @@ public class User : EntityCore, ICreator, IUpdater
         }
 
         Password = PasswordHash.CreateHash(newPassword);
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 
     /// <summary>
@@ -291,6 +291,6 @@ public class User : EntityCore, ICreator, IUpdater
 
         Password = PasswordHash.CreateHash(newPassword);
         IsInitPassword = true;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 }
