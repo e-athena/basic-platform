@@ -40,7 +40,7 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
         },
         bodyStyle: {
           // padding: '10px 0',
-          minHeight: 400
+          minHeight: 400,
         },
         destroyOnClose: true,
       }}

@@ -186,6 +186,6 @@ declare namespace API {
   type MicroAppInfo = {
     name: string;
     entry: string;
-    credentials: boolean
-  }
+    credentials: boolean;
+  };
 }

@@ -18,7 +18,9 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
   const [selectedResources, setSelectedResources] = useState<ResourceModel[]>(
     props.resources || [],
   );
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(dataSource.map((item) => item.code));
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(
+    dataSource.map((item) => item.code),
+  );
   useEffect(() => {
     if (props.onChange !== undefined) {
       props.onChange(
@@ -284,9 +286,9 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       dataSource={dataSource}
       expandable={{
         onExpandedRowsChange(expandedKeys) {
-          setExpandedRowKeys(expandedKeys.map(p => p.toString()));
+          setExpandedRowKeys(expandedKeys.map((p) => p.toString()));
         },
-        expandedRowKeys
+        expandedRowKeys,
       }}
       columns={columns}
       scroll={{ x: 730, y: props.height || 400 }}

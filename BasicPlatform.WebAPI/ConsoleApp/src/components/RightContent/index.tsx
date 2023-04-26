@@ -63,7 +63,7 @@ export const NavTheme = () => {
             customNavTheme: theme,
           });
           if (window.location.href.includes('/app/')) {
-            message.success('切换完成，页面将重新加载...')
+            message.success('切换完成，页面将重新加载...');
             // @ts-ignore
             window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = theme;
             setTimeout(() => {

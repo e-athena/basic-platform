@@ -75,7 +75,7 @@ declare namespace API {
     applicationId: string;
     applicationName: string;
     dataPermissionGroups: DataPermissionGroup[];
-  }
+  };
 
   /** 数据权限组 */
   type DataPermissionGroup = {

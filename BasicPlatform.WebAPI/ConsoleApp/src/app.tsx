@@ -41,7 +41,9 @@ export async function getInitialState(): Promise<{
   apiResources?: API.ResourceInfo[];
   fetchApplicationResources?: () => Promise<API.ApplicationMenuResourceInfo[]>;
   applicationResources?: API.ApplicationMenuResourceInfo[];
-  fetchApplicationDataPermissionResources?: () => Promise<API.ApplicationDataPermissionResourceInfo[]>;
+  fetchApplicationDataPermissionResources?: () => Promise<
+    API.ApplicationDataPermissionResourceInfo[]
+  >;
   applicationDataPermissionResources?: API.ApplicationDataPermissionResourceInfo[];
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
   externalPages?: API.ExternalPage[];
@@ -259,11 +261,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -310,7 +312,7 @@ export const request = {
 
 export const qiankun = async () => {
   const res = await queryApps();
-  const apps = res.success ? (res.data || []) : [];
+  const apps = res.success ? res.data || [] : [];
   console.log(apps);
   return {
     // 注册子应用信息
@@ -329,7 +331,7 @@ export const qiankun = async () => {
         microAppProps: {
           autoCaptureError: true,
           className: 'micro-app',
-        }
+        },
       },
     ],
     // lifeCycles: {
@@ -338,8 +340,8 @@ export const qiankun = async () => {
     //     console.log(props);
     //   },
     // },
-  }
-}
+  };
+};
 export function useQiankunStateForSlave() {
   const [globalState, setGlobalState] = useState<any>({
     slogan: 'Hello MicroFrontend',

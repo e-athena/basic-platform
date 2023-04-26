@@ -24,10 +24,7 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
           items: (initialState?.applicationResources || []).map((p) => ({
             label: p.applicationName,
             key: p.applicationId,
-            children: <Authorization
-              {...props}
-              dataSource={p.resources || []}
-            />,
+            children: <Authorization {...props} dataSource={p.resources || []} />,
           })),
           cardProps: {
             bodyStyle: {

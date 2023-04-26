@@ -18,7 +18,7 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
       setLoading(false);
       const res = await initialState?.fetchApplicationDataPermissionResources?.();
       setDataSource(res || []);
-    }
+    };
     if (loading) {
       fetch();
     }
@@ -32,13 +32,16 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
           tabPosition: 'top',
           activeKey: currentTab,
           items: dataSource.map((p) => {
-            if ((props.selectedData || [].length > 0)) {
+            if (props.selectedData || [].length > 0) {
               // 合并数据，以data为准
               for (let i = 0; i < p.dataPermissionGroups.length; i++) {
                 const group = p.dataPermissionGroups[i];
                 for (let j = 0; j < group.items.length; j++) {
                   const item = group.items[j];
-                  const dataItem = props.selectedData?.find((d) => d.resourceKey === item.resourceKey && d.applicationId === p.applicationId);
+                  const dataItem = props.selectedData?.find(
+                    (d) =>
+                      d.resourceKey === item.resourceKey && d.applicationId === p.applicationId,
+                  );
                   if (dataItem) {
                     // 替换数据
                     item.dataScope = dataItem.dataScope;
@@ -46,7 +49,7 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
                     item.disableChecked = dataItem.disableChecked || false;
                     item.dataScopeCustom = dataItem.dataScopeCustom;
                     item.dataScopeCustoms = dataItem.dataScopeCustoms;
-                    item.queryFilterGroups = (dataItem.queryFilterGroups || []);
+                    item.queryFilterGroups = dataItem.queryFilterGroups || [];
                   }
                 }
               }
@@ -54,30 +57,32 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
             return {
               label: p.applicationName,
               key: p.applicationId,
-              children: <DataPermission
-                data={p.dataPermissionGroups || []}
-                onChange={(values) => {
-                  let changeValues: API.UserDataPermission[] = [];
-                  for (let i = 0; i < values.length; i++) {
-                    const group = values[i];
-                    for (let j = 0; j < group.items.length; j++) {
-                      const item = group.items[j];
-                      changeValues.push({
-                        applicationId: item.appId,
-                        resourceKey: item.resourceKey,
-                        dataScope: item.dataScope,
-                        enabled: item.enabled,
-                        disableChecked: item.disableChecked,
-                        dataScopeCustom: item.dataScopeCustom,
-                        dataScopeCustoms: item.dataScopeCustoms,
-                        queryFilterGroups: item.queryFilterGroups,
-                        policyResourceKey: item.policyResourceKey,
-                      });
+              children: (
+                <DataPermission
+                  data={p.dataPermissionGroups || []}
+                  onChange={(values) => {
+                    let changeValues: API.UserDataPermission[] = [];
+                    for (let i = 0; i < values.length; i++) {
+                      const group = values[i];
+                      for (let j = 0; j < group.items.length; j++) {
+                        const item = group.items[j];
+                        changeValues.push({
+                          applicationId: item.appId,
+                          resourceKey: item.resourceKey,
+                          dataScope: item.dataScope,
+                          enabled: item.enabled,
+                          disableChecked: item.disableChecked,
+                          dataScopeCustom: item.dataScopeCustom,
+                          dataScopeCustoms: item.dataScopeCustoms,
+                          queryFilterGroups: item.queryFilterGroups,
+                          policyResourceKey: item.policyResourceKey,
+                        });
+                      }
                     }
-                  }
-                  props.onChange(changeValues);
-                }}
-              />,
+                    props.onChange(changeValues);
+                  }}
+                />
+              ),
             };
           }),
           cardProps: {

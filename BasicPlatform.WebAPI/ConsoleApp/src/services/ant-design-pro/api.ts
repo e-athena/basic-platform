@@ -75,17 +75,23 @@ export async function queryUserResources(options?: { [key: string]: any }) {
 }
 /** 查询应用菜单资源 GET /api/Util/GetApplicationMenuResources */
 export async function queryApplicationMenuResources(options?: { [key: string]: any }) {
-  return request<ApiResponse<API.ApplicationMenuResourceInfo[]>>('/api/Util/GetApplicationMenuResources', {
-    method: 'GET',
-    ...(options || {}),
-  });
+  return request<ApiResponse<API.ApplicationMenuResourceInfo[]>>(
+    '/api/Util/GetApplicationMenuResources',
+    {
+      method: 'GET',
+      ...(options || {}),
+    },
+  );
 }
 /** 查询应用数据权限资源 GET /api/Util/GetApplicationMenuResources */
 export async function queryApplicationDataPermissionResources(options?: { [key: string]: any }) {
-  return request<ApiResponse<API.ApplicationDataPermissionResourceInfo[]>>('/api/Util/GetApplicationDataPermissionResources', {
-    method: 'GET',
-    ...(options || {}),
-  });
+  return request<ApiResponse<API.ApplicationDataPermissionResourceInfo[]>>(
+    '/api/Util/GetApplicationDataPermissionResources',
+    {
+      method: 'GET',
+      ...(options || {}),
+    },
+  );
 }
 
 /** 查询菜单 GET /api/ApiPermission/GetMenuResources */
@@ -118,7 +124,6 @@ export function updateUserCustomColumns(body: any) {
     data: body,
   });
 }
-
 
 /** 读取子应用 */
 export function queryApps() {

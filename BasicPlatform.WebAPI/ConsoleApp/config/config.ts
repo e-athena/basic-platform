@@ -11,7 +11,7 @@ export default defineConfig({
     type: 'hash',
   },
   qiankun: {
-    master: {}
+    master: {},
   },
   // publicPath: '/basic/',
   /**
