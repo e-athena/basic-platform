@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Applications;
-using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers;
 

@@ -40,11 +40,9 @@ export async function getInitialState(): Promise<{
   fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   apiResources?: API.ResourceInfo[];
   fetchApplicationResources?: () => Promise<API.ApplicationMenuResourceInfo[]>;
-  applicationResources?: API.ApplicationMenuResourceInfo[];
   fetchApplicationDataPermissionResources?: () => Promise<
     API.ApplicationDataPermissionResourceInfo[]
   >;
-  applicationDataPermissionResources?: API.ApplicationDataPermissionResourceInfo[];
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
   externalPages?: API.ExternalPage[];
   noticeConnectionHub?: HubConnection;
@@ -88,8 +86,6 @@ export async function getInitialState(): Promise<{
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
-    const applicationResources = await fetchApplicationResources();
-    const applicationDataPermissionResources = await fetchApplicationDataPermissionResources();
     const externalPages = await fetchExternalPages();
     // SignalR
     const noticeConnectionHub = await fetchSignalRConnectionNotice();
@@ -107,8 +103,6 @@ export async function getInitialState(): Promise<{
       // fetchSignalRConnectionEvent,
       currentUser,
       apiResources,
-      applicationResources,
-      applicationDataPermissionResources,
       externalPages,
       settings: defaultSettings as Partial<LayoutSettings>,
       customNavTheme: getNavTheme(),
@@ -261,11 +255,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -314,7 +308,7 @@ export const qiankun = async () => {
   const res = await queryAppConfig();
   const config = res.data || {};
   return {
-    ...config
+    ...config,
   };
   // const res = await queryApps();
   // const apps = res.success ? res.data || [] : [];

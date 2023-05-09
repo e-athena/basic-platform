@@ -4,7 +4,6 @@ using Athena.InstantMessaging;
 using Athena.InstantMessaging.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
-using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers;
 

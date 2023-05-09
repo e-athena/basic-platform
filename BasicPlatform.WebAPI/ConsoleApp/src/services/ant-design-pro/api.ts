@@ -138,3 +138,10 @@ export function queryAppConfig() {
     method: 'GET',
   });
 }
+
+/** 读取应用列表 */
+export function queryAppList() {
+  return request<ApiResponse<API.ApplicationListItem[]>>('/api/Application/GetList', {
+    method: 'GET',
+  });
+}

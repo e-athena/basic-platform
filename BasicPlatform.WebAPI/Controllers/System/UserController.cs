@@ -5,7 +5,6 @@ using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
-using Flurl.Http;
 
 namespace BasicPlatform.WebAPI.Controllers.System;
 
@@ -186,7 +185,6 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns>新密码</returns>
     [HttpPost]
-    [AllowAnonymous]
     public Task<string> ResetPasswordAsync([FromBody] ResetUserPasswordRequest request,
         CancellationToken cancellationToken)
     {
@@ -457,7 +455,7 @@ public class UserController : CustomControllerBase
     {
         return _queryService.GetUserCustomColumnsAsync(appId, moduleName, userId);
     }
-    
+
     /// <summary>
     /// 读取用户资源
     /// </summary>
@@ -472,6 +470,22 @@ public class UserController : CustomControllerBase
     )
     {
         return _queryService.GetUserResourceAsync(userId, appId);
+    }
+
+    /// <summary>
+    /// 读取用户资源代码
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public Task<List<string>> GetUserResourceCodesAsync(
+        [FromQuery] string userId,
+        [FromQuery] string appId
+    )
+    {
+        return _queryService.GetResourceCodesAsync(userId, appId);
     }
 
     #endregion

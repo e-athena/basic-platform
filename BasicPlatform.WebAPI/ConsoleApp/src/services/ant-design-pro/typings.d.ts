@@ -186,7 +186,7 @@ declare namespace API {
   type MicroConfig = {
     apps: MicroAppInfo[];
     routes: MicroRouteInfo[];
-  }
+  };
 
   type MicroAppInfo = {
     name: string;
@@ -198,5 +198,5 @@ declare namespace API {
     path: string;
     microApp: string;
     microAppProps: any;
-  }
+  };
 }

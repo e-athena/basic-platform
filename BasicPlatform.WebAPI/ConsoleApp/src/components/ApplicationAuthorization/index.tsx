@@ -1,5 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useModel } from '@umijs/max';
 import Authorization from '../Authorization';
 
@@ -14,6 +14,18 @@ type ApplicationAuthorizationProps = {
 const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props) => {
   const [currentTab, setCurrentTab] = useState<string>('system');
   const { initialState } = useModel('@@initialState');
+  const [dataSource, setDataSource] = useState<API.ApplicationMenuResourceInfo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(false);
+      const res = await initialState?.fetchApplicationResources?.();
+      setDataSource(res || []);
+    };
+    if (loading) {
+      fetch();
+    }
+  }, [loading]);
   return (
     <>
       <ProCard
@@ -21,7 +33,7 @@ const ApplicationAuthorization: React.FC<ApplicationAuthorizationProps> = (props
         tabs={{
           tabPosition: 'top',
           activeKey: currentTab,
-          items: (initialState?.applicationResources || []).map((p) => ({
+          items: (dataSource || []).map((p) => ({
             label: p.applicationName,
             key: p.applicationId,
             children: <Authorization {...props} dataSource={p.resources || []} />,

@@ -2,13 +2,14 @@ import { query, sync } from './service';
 import { SyncOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message, Tag, Tooltip } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, message, Select, Tag, Tooltip } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import FixIcon from '@/components/FixIcon';
 import { useLocation, useModel, Access } from '@umijs/max';
 import permission from '@/utils/permission';
 import { canAccessible } from '@/utils/utils';
+import { queryAppList } from '@/services/ant-design-pro/api';
 
 const TableList: React.FC = () => {
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
@@ -96,6 +97,22 @@ const TableList: React.FC = () => {
     },
   ];
 
+  const [apps, setApps] = useState<API.ApplicationListItem[]>([]);
+  const [appLoading, setAppLoading] = useState<boolean>(true);
+  const [subAppResourceUrl, setSubAppResourceUrl] = useState<string>();
+
+  useEffect(() => {
+    const fetch = async () => {
+      setAppLoading(false);
+      const res = await queryAppList();
+      const data = res.success ? res.data || [] : [];
+      setApps(data);
+    };
+    if (appLoading) {
+      fetch();
+    }
+  }, [appLoading]);
+
   return (
     <PageContainer
       header={{
@@ -103,7 +120,7 @@ const TableList: React.FC = () => {
         children: resource?.description,
       }}
     >
-      <ProTable<API.ResourceInfo, API.PageParams>
+      <ProTable<API.ResourceInfo>
         headerTitle={'资源列表'}
         actionRef={actionRef}
         rowKey="code"
@@ -113,6 +130,25 @@ const TableList: React.FC = () => {
           fullScreen: true,
         }}
         toolBarRender={() => [
+          <Select
+            key={'switchApp'}
+            showSearch
+            placeholder="选择应用切换"
+            onChange={(value) => {
+              if (value === undefined) {
+                setSubAppResourceUrl(undefined);
+                return;
+              }
+              const app = apps.find((p) => p.id === value);
+              setSubAppResourceUrl(`${app?.apiUrl}${app?.menuResourceRoute}`);
+            }}
+            allowClear
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            options={apps.map((p) => ({ label: p.name, value: p.id }))}
+            style={{ width: 200, marginRight: 10 }}
+          />,
           <Access key={'sync'} accessible={canAccessible(permission.resource.syncAsync, resource)}>
             <Button
               type="primary"
@@ -133,10 +169,12 @@ const TableList: React.FC = () => {
             </Button>
           </Access>,
         ]}
-        request={async () => {
-          const res = await query();
+        request={async (params) => {
+          const res = await query(params.subAppResourceUrl);
           if (res.success) {
             setExpandedRowKeys(res.data!.map((item) => item.code));
+          } else {
+            message.error('加载资源失败');
           }
           return {
             data: res.data || [],
@@ -150,6 +188,9 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={false}
         pagination={false}
+        params={{
+          subAppResourceUrl,
+        }}
       />
     </PageContainer>
   );

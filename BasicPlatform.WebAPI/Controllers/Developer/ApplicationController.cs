@@ -66,6 +66,17 @@ public class ApplicationController : CustomControllerBase
     }
 
     /// <summary>
+    /// 读取列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public Task<List<ApplicationModel>> GetListAsync()
+    {
+        return _queryService.GetListAsync();
+    }
+
+    /// <summary>
     /// 根据ID读取
     /// </summary>
     /// <param name="id"></param>
