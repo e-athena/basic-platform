@@ -73,7 +73,7 @@ const Lang = () => {
   });
 
   return (
-    <div className={langClassName} data-lang>
+    <div className={langClassName} data-lang="true">
       {SelectLang && <SelectLang />}
     </div>
   );
@@ -157,14 +157,14 @@ const Login: React.FC = () => {
         await fetchApiResources();
         const urlParams = new URL(window.location.href).searchParams;
         if (redirectUrl !== undefined && clientId !== undefined) {
-          //
           const url = redirectUrl as string;
           const code = res.data?.sessionCode;
-          if (url?.includes('?')) {
-            let param = url.split('?')[1];
-            window.location.href = `${
-              url.split('?')[0]
-            }?authCode=${code}&sessionCode=${code}&source=sso&${param}`;
+          if (url !== undefined && url?.includes('?')) {
+            let host = url.split('?')[0];
+            const urlParams = parse(url.split('?')[1], '&');
+            const redirect = urlParams?.redirect;
+            const param = redirect === undefined ? '' : `&redirect=${redirect}`;
+            window.location.href = `${host}?authCode=${res.data}&sessionCode=${res.data}&source=sso${param}`;
             return;
           }
           window.location.href = `${redirectUrl}?authCode=${code}&sessionCode=${code}&source=sso`;

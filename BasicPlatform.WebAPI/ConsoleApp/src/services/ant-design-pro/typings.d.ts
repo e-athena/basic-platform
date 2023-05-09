@@ -183,9 +183,20 @@ declare namespace API {
     accessUrl: string;
   };
 
+  type MicroConfig = {
+    apps: MicroAppInfo[];
+    routes: MicroRouteInfo[];
+  }
+
   type MicroAppInfo = {
     name: string;
     entry: string;
     credentials: boolean;
   };
+
+  type MicroRouteInfo = {
+    path: string;
+    microApp: string;
+    microAppProps: any;
+  }
 }

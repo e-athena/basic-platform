@@ -3,17 +3,12 @@ namespace BasicPlatform.Domain.Events.Users;
 /// <summary>
 /// 用户更新成功事件
 /// </summary>
-public class UserUpdatedEvent : DomainEventBase
+public class UserUpdatedEvent : EventBase
 {
-    /// <summary>
-    /// Id
-    /// </summary>
-    public string Id { get; set; } = null!;
-
     /// <summary>
     /// 用户名
     /// </summary>
-    public string UserName { get; set; } = null!;
+    public string UserName { get; set; }
 
     /// <summary>
     /// 头像
@@ -23,7 +18,7 @@ public class UserUpdatedEvent : DomainEventBase
     /// <summary>
     /// 真实姓名
     /// </summary>
-    public string RealName { get; set; } = null!;
+    public string RealName { get; set; }
 
     /// <summary>
     /// 性别
@@ -49,17 +44,16 @@ public class UserUpdatedEvent : DomainEventBase
     /// <summary>
     /// 所属组织ID
     /// </summary>
-    public string OrganizationId { get; set; } = null!;
+    public string OrganizationId { get; set; }
 
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    public string PositionId { get; set; } = null!;
+    public string PositionId { get; set; }
 
     public UserUpdatedEvent(string id, string userName, string? avatar, string realName, Gender gender,
         string? nickName, string? phoneNumber, string? email, string organizationId, string positionId)
     {
-        Id = id;
         UserName = userName;
         Avatar = avatar;
         RealName = realName;

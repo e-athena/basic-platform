@@ -1,4 +1,3 @@
-using Athena.Infrastructure.FreeSql.Interfaces;
 using BasicPlatform.Domain.Events.Users;
 
 namespace BasicPlatform.AppService.FreeSql;
@@ -25,7 +24,7 @@ public class CacheNotificationHandler :
     public async Task Handle(UserUpdatedEvent notification, CancellationToken cancellationToken)
     {
         // 匹配用户缓存
-        var patternKey = string.Format(CacheConstant.UserCacheKeys, notification.Id);
+        var patternKey = string.Format(CacheConstant.UserCacheKeys, notification.GetId());
         // 移除用户所有缓存
         await _cacheManager.RemovePatternAsync(patternKey, cancellationToken);
     }

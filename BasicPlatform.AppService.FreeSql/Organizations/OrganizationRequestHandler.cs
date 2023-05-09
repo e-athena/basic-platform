@@ -72,6 +72,10 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
         if (!string.IsNullOrWhiteSpace(request.ParentId))
         {
             entity.ParentPath = await GetParentPathAsync(request.ParentId);
+            if (entity.ParentPath.Contains(entity.Id))
+            {
+                throw FriendlyException.Of("不能选择自己的下级作为上级");
+            }
         }
 
         // 更新

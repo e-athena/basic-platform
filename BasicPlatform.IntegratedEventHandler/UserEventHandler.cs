@@ -1,4 +1,4 @@
-using Athena.Infrastructure.FreeSql.Tenants;
+using BasicPlatform.Domain.Events.Users;
 using BasicPlatform.Domain.Models;
 
 namespace BasicPlatform.IntegratedEventHandler;
@@ -7,7 +7,7 @@ namespace BasicPlatform.IntegratedEventHandler;
 /// 
 /// </summary>
 public class UserEventHandler : TenantQueryServiceBase<User>,
-    IIntegratedEventHandler<UserCreatedEvent>
+    IMessageHandler<UserCreatedEvent>
 {
     private readonly ILogger<UserEventHandler> _logger;
 
@@ -25,10 +25,10 @@ public class UserEventHandler : TenantQueryServiceBase<User>,
     /// <param name="payload"></param>
     /// <param name="cancellationToken"></param>
     [IntegratedEventSubscribe(nameof(UserCreatedEvent))]
-    public async Task Handle(UserCreatedEvent payload, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(UserCreatedEvent payload, CancellationToken cancellationToken = default)
     {
         ChangeTenant(payload.TenantId);
-        var res = await QueryableNoTracking.Where(p => p.Id == payload.Id)
+        var res = await QueryableNoTracking.Where(p => p.Id == payload.GetId())
             .FirstAsync(cancellationToken);
 
         Console.WriteLine(res?.PhoneNumber);

@@ -156,6 +156,37 @@ public class UtilController : ControllerBase
     }
 
     /// <summary>
+    /// 读取应用配置
+    /// </summary>
+    /// <param name="applicationQueryService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<dynamic> GetAppConfigAsync(
+        [FromServices] IApplicationQueryService applicationQueryService)
+    {
+        var appList = await applicationQueryService.GetListAsync();
+        return new
+        {
+            Apps = appList.Where(p => !string.IsNullOrEmpty(p.FrontendUrl)).Select(p => new
+            {
+                Name = p.ClientId,
+                Entry = p.FrontendUrl,
+                Credentials = true
+            }).ToList<dynamic>(),
+            Routes = appList.Where(p => !string.IsNullOrEmpty(p.FrontendUrl)).Select(p => new
+            {
+                Path = $"/app/{p.ClientId}/*",
+                MicroApp = p.ClientId,
+                MicroAppProps = new
+                {
+                    AutoCaptureError = true,
+                    ClassName = "micro-app",
+                }
+            }).ToList<dynamic>(),
+        };
+    }
+
+    /// <summary>
     /// 同步数据库结构
     /// </summary>
     /// <param name="freeSql"></param>

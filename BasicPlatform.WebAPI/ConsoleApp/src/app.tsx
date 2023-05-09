@@ -14,9 +14,9 @@ import {
   queryApplicationDataPermissionResources,
   queryExternalPages,
   addUserAccessRecord,
-  queryApps,
+  queryAppConfig,
 } from './services/ant-design-pro/api';
-import React, { useState } from 'react';
+import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
 import { recursionMenu } from './utils/menu';
@@ -151,7 +151,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       params: initialState,
       request: async () => {
         // return initialState?.fetchMenuData?.() || [];
-        let basicMenus: API.ResourceInfo[] = [];
+        let basicMenus: API.ResourceInfo[];
         if (initialState?.apiResources === undefined) {
           basicMenus = (await initialState?.fetchApiResources?.()) || [];
           setInitialState({
@@ -261,11 +261,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -311,44 +311,39 @@ export const request = {
 };
 
 export const qiankun = async () => {
-  const res = await queryApps();
-  const apps = res.success ? res.data || [] : [];
-  console.log(apps);
+  const res = await queryAppConfig();
+  const config = res.data || {};
   return {
-    // 注册子应用信息
-    apps,
-    // apps: [
-    //   {
-    //     name: 'xdxd',
-    //     entry: '//localhost:5119',
-    //     credentials: true
-    //   },
-    // ],
-    routes: [
-      {
-        path: '/app/xdxd/*',
-        microApp: 'xdxd',
-        microAppProps: {
-          autoCaptureError: true,
-          className: 'micro-app',
-        },
-      },
-    ],
-    // lifeCycles: {
-    //   // 所有子应用在挂载完成时，打印 props 信息
-    //   async afterMount(props: any) {
-    //     console.log(props);
-    //   },
-    // },
+    ...config
   };
+  // const res = await queryApps();
+  // const apps = res.success ? res.data || [] : [];
+  // console.log(apps);
+  // return {
+  // 注册子应用信息
+  // apps,
+  // apps: [
+  //   {
+  //     name: 'xdxd',
+  //     entry: '//localhost:5119',
+  //     credentials: true
+  //   },
+  // ],
+  // routes: [
+  //   {
+  //     path: '/app/xdxd/*',
+  //     microApp: 'xdxd',
+  //     microAppProps: {
+  //       autoCaptureError: true,
+  //       className: 'micro-app',
+  //     },
+  //   },
+  // ],
+  // lifeCycles: {
+  //   // 所有子应用在挂载完成时，打印 props 信息
+  //   async afterMount(props: any) {
+  //     console.log(props);
+  //   },
+  // },
+  // };
 };
-export function useQiankunStateForSlave() {
-  const [globalState, setGlobalState] = useState<any>({
-    slogan: 'Hello MicroFrontend',
-  });
-
-  return {
-    globalState,
-    setGlobalState,
-  };
-}

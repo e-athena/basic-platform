@@ -1,5 +1,4 @@
 using BasicPlatform.Domain.Events.Users;
-using BasicPlatform.Infrastructure.IntegrationEvents;
 
 namespace BasicPlatform.Domain.Models;
 
@@ -168,9 +167,8 @@ public class User : EntityCore, ICreator, IUpdater
         CreatedUserId = createdUserId;
 
         // 添加集成事件
-        AddIntegrationEvent(new UserCreatedEvent
+        ApplyEvent(new UserCreatedEvent
         {
-            Id = Id,
             UserName = UserName
         });
     }
@@ -228,7 +226,7 @@ public class User : EntityCore, ICreator, IUpdater
         UpdatedOn = DateTime.Now;
 
         // 添加领域事件
-        AddDomainEvent(new UserUpdatedEvent(Id, userName, avatar, realName, gender,
+        ApplyEvent(new UserUpdatedEvent(Id, userName, avatar, realName, gender,
             nickName, phoneNumber, email, organizationId, positionId)
         );
     }

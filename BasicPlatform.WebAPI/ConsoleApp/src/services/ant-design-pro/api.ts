@@ -131,3 +131,10 @@ export function queryApps() {
     method: 'GET',
   });
 }
+
+/** 读取子应用配置 */
+export function queryAppConfig() {
+  return request<ApiResponse<API.MicroConfig>>('/api/Util/GetAppConfig', {
+    method: 'GET',
+  });
+}

@@ -24,12 +24,11 @@ const LoginRedirect: React.FC = () => {
             const redirectUrl = query!.redirectUrl as string;
             if (redirectUrl !== undefined && redirectUrl?.includes('?')) {
               let url = redirectUrl.split('?')[0];
-              // let param = redirectUrl.split('?')[1];
 
-              const urlParams = new URL(redirectUrl).searchParams;
-              const redirect = urlParams.get('redirect');
-              const param = redirect === null ? '' : `?redirect=${redirect}`;
-              window.location.href = `${url}?authCode=${res.data}&sessionCode=${res.data}&source=sso&${param}`;
+              const urlParams = parse(redirectUrl.split('?')[1], '&');
+              const redirect = urlParams?.redirect;
+              const param = redirect === undefined ? '' : `&redirect=${redirect}`;
+              window.location.href = `${url}?authCode=${res.data}&sessionCode=${res.data}&source=sso${param}`;
               return;
             }
             window.location.href = `${redirectUrl}?authCode=${res.data}&sessionCode=${res.data}&source=sso`;
