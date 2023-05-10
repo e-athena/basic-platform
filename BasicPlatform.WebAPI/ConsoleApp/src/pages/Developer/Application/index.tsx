@@ -6,7 +6,7 @@ import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
 import { Button, Modal, Switch, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ProTablePlus from '@/components/ProTablePlus';
 import IconStatus from '@/components/IconStatus';
@@ -89,15 +89,11 @@ const TableList: React.FC = () => {
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
-                const hide = message.loading('正在查询', 0);
-                const res = await detail(entity.id);
-                hide();
-                if (res.success) {
-                  setCurrentRow(res.data);
+                const data = await queryDetail(detail, entity.id);
+                if (data) {
+                  setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
-                  return;
                 }
-                message.error(res.message);
               }}
             >
               编辑

@@ -178,7 +178,7 @@ const Login: React.FC = () => {
           }
           window.location.href = `${redirectUrl}?token=${res.data}&source=sso`;
         } else {
-          history.push(urlParams?.redirect as string || '/');
+          history.push((urlParams?.redirect as string) || '/');
         }
         return;
       }

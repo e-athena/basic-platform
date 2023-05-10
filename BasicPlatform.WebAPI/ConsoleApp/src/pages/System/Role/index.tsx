@@ -14,7 +14,7 @@ import { Button, Dropdown, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission, submitHandle } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail, submitHandle } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ProTablePlus from '@/components/ProTablePlus';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -158,15 +158,11 @@ const TableList: React.FC = () => {
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
-                const hide = message.loading('正在查询', 0);
-                const res = await detail(entity.id);
-                hide();
-                if (res.success) {
-                  setCurrentRow(res.data);
+                const data = await queryDetail(detail, entity.id);
+                if (data) {
+                  setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
-                  return;
                 }
-                message.error(res.message);
               }}
             >
               编辑
@@ -179,15 +175,11 @@ const TableList: React.FC = () => {
                 onClick: async ({ key, domEvent }) => {
                   domEvent.stopPropagation();
                   if (key === 'resource') {
-                    const hide = message.loading('正在查询', 0);
-                    const res = await detail(entity.id);
-                    hide();
-                    if (res.success) {
-                      setCurrentRow(res.data);
-                      handleResourceModalOpen(true);
-                      return;
+                    const data = await queryDetail(detail, entity.id!);
+                    if (data) {
+                      setCurrentRow(data);
+                      handleCreateOrUpdateModalOpen(true);
                     }
-                    message.error(res.message);
                     return;
                   }
                   if (key === 'permission') {
@@ -196,21 +188,24 @@ const TableList: React.FC = () => {
                     return;
                   }
                   if (key === 'user') {
-                    const hide = message.loading('正在查询', 0);
-                    const res = await detail(entity.id);
-                    hide();
-                    if (res.success) {
-                      setCurrentRow(res.data);
-                      handleUserModalOpen(true);
-                      return;
+                    const data = await queryDetail(detail, entity.id!);
+                    if (data) {
+                      setCurrentRow(data);
+                      handleCreateOrUpdateModalOpen(true);
                     }
-                    message.error(res.message);
                   }
                 },
               }}
               placement="bottom"
             >
-              <Button shape="circle" type={'link'} icon={<MoreOutlined />} onClick={(e) => { e.stopPropagation() }} />
+              <Button
+                shape="circle"
+                type={'link'}
+                icon={<MoreOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              />
             </Dropdown>
           </Access>,
         ];

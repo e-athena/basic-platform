@@ -14,7 +14,7 @@ import { Button, Dropdown, message, Modal, Switch, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 // import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import AuthorizationForm from './components/AuthorizationForm';
 import OrganizationTree from '@/components/OrganizationTree';
@@ -189,15 +189,11 @@ const TableList: React.FC = () => {
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
-                const hide = message.loading('正在查询', 0);
-                const res = await detail(entity.id);
-                hide();
-                if (res.success) {
-                  setCurrentRow(res.data);
+                const data = await queryDetail(detail, entity.id);
+                if (data) {
+                  setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
-                  return;
                 }
-                message.error(res.message);
               }}
             >
               编辑
@@ -210,16 +206,12 @@ const TableList: React.FC = () => {
                 onClick: async ({ key, domEvent }) => {
                   domEvent.stopPropagation();
                   if (key === 'auth') {
-                    const hide = message.loading('正在查询', 0);
-                    const res = await queryResourceCodeInfo(entity.id);
-                    hide();
-                    if (res.success) {
-                      setCurrentResourceCodeRow(res.data!);
+                    const data = await queryDetail(queryResourceCodeInfo, entity.id);
+                    if (data) {
+                      setCurrentResourceCodeRow(data);
                       setCurrentRow(entity as API.UserDetailInfo);
                       handleAuthorizationModalOpen(true);
-                      return;
                     }
-                    message.error(res.message);
                     return;
                   }
                   if (key === 'permission') {
@@ -257,7 +249,14 @@ const TableList: React.FC = () => {
               }}
               placement="bottom"
             >
-              <Button shape="circle" type={'link'} icon={<MoreOutlined />} onClick={(e)=>{e.stopPropagation()}}/>
+              <Button
+                shape="circle"
+                type={'link'}
+                icon={<MoreOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              />
             </Dropdown>
           </Access>,
         ];
@@ -288,8 +287,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                  maxWidth: tableSize?.width - 270 - 24,
-                }
+                    maxWidth: tableSize?.width - 270 - 24,
+                  }
                 : {}
             }
             defaultColumns={defaultColumns}

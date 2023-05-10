@@ -30,6 +30,59 @@ export const hasPermission = (keys: string[], resource: API.ResourceInfo | null)
 };
 
 /**
+ * 是否有菜单权限
+ * @param pathname 路由
+ * @param modules 模块列表
+ * @returns true | false
+ */
+export const hasMenuPermission = (
+  pathname: string,
+  modules: API.ResourceInfo[] | null | undefined,
+) => {
+  if (modules === undefined || modules === null || modules?.length === 0) {
+    return false;
+  }
+  // 从子级中读取对应的菜单信息
+  for (let i = 0; i < modules.length; i++) {
+    const module = modules[i];
+    const item = module.children?.find((p) => p.path === pathname);
+    if (item) {
+      return true;
+    }
+  }
+  return false;
+};
+/**
+ * 查询详情
+ * @param {*} func
+ * @param {*} id
+ */
+export async function queryDetail<T>(
+  func: (id: string) => Promise<ApiResponse<T>>,
+  id: string,
+): Promise<T | undefined> {
+  const hide = message.loading('正在查询', 0);
+  try {
+    const res = await func(id);
+    hide();
+    if (res.success && res.data) {
+      return res.data;
+    }
+    Modal.error({
+      title: '查询失败',
+      content: res.message,
+    });
+    return undefined;
+  } catch (error) {
+    hide();
+    Modal.error({
+      title: '查询失败',
+      content: '请重试或联系管理员！',
+    });
+    return undefined;
+  }
+}
+/**
  * 提交处理
  * @param {*} func
  * @param {*} fields
