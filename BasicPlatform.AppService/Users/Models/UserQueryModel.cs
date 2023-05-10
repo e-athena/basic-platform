@@ -58,13 +58,13 @@ public class UserQueryModel : QueryModelBase
     /// <summary>
     /// 所属组织ID
     /// </summary>
-    [TableColumn(HideInTable = true)]
+    [TableColumn(HideInTable = true, HideInDescriptions = true)]
     public string OrganizationId { get; set; } = null!;
 
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    [TableColumn(HideInTable = true)]
+    [TableColumn(HideInTable = true, HideInDescriptions = true)]
     public string PositionId { get; set; } = null!;
 
     /// <summary>

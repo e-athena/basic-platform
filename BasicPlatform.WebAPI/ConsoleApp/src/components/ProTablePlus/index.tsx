@@ -1,7 +1,13 @@
 import { queryColumns, updateUserCustomColumns } from '@/services/ant-design-pro/api';
 import { getFilter, getSorter } from '@/utils/utils';
-import { ParamsType, ProColumns, ProTable, ProTableProps } from '@ant-design/pro-components';
-import { Tooltip } from 'antd';
+import {
+  ParamsType,
+  ProColumns,
+  ProDescriptions,
+  ProTable,
+  ProTableProps,
+} from '@ant-design/pro-components';
+import { Drawer, Tooltip } from 'antd';
 import { cloneDeep } from 'lodash';
 import { useEffect, useState } from 'react';
 import AdvancedSearch from '../AdvancedSearch';
@@ -10,11 +16,21 @@ import EditTableColumnForm from '../EditTableColumnForm';
 type ProTablePlusProps<T, U, ValueType = 'text'> = {
   /** 重写的Column */
   defaultColumns?: ProColumns<T, ValueType>[];
+  /** 查询接口 */
   query: (params: U) => Promise<ApiPagingResponse<T>>;
+  /** 模块名称 */
   moduleName: string;
-  // actionRef?: React.MutableRefObject<ActionType | undefined>;
+  /** 是否显示索引列 */
+  showIndexColumn?: boolean;
+  /** 是否显示详情 */
+  showDescriptions?: boolean;
 } & Partial<ProTableProps<T, U, ValueType>>;
 
+/**
+ * ProTable
+ * @param props
+ * @returns
+ */
 function ProTablePlus<T extends Record<string, any>, U extends ParamsType, ValueType = 'text'>(
   props: ProTablePlusProps<T, U, ValueType>,
 ) {
@@ -24,10 +40,10 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
   const [tableWidth, setTableWidth] = useState<number | undefined>();
   const [columns, setColumns] = useState<ProColumns<T, ValueType>[]>(props.defaultColumns || []);
   const [remoteModuleName, setRemoteModuleName] = useState<string>();
+  const showIndexColumn = props.showIndexColumn === undefined || props.showIndexColumn;
 
   useEffect(() => {
     const fetch = async () => {
-      setColumnLoading(false);
       let list = columnData;
       if (list.length === 0) {
         const res = await queryColumns(props.moduleName);
@@ -50,6 +66,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         setColumnData(list);
         setHistoryColumnData(cloneDeep(list));
       }
+      setColumnLoading(false);
       const result: ProColumns<T, ValueType>[] = [];
       // 按sort排序
       list.sort((a, b) => a.sort - b.sort);
@@ -94,7 +111,38 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         width += item.width || 200;
       }
       setTableWidth(width);
-      setColumns(result);
+      // 处理自定义的列
+      for (let i = 0; i < (props.defaultColumns || []).length; i++) {
+        const item = (props.defaultColumns || [])[i];
+        const find = result.find((x) => x.dataIndex === item.dataIndex);
+        if (find === undefined) {
+          const nextIndex = i + 1;
+          if (nextIndex < (props.defaultColumns || []).length) {
+            const index = result.findIndex(
+              (x) => x.dataIndex === (props.defaultColumns || [])[nextIndex].dataIndex,
+            );
+            if (index > -1) {
+              result.splice(index, 0, item);
+            }
+          }
+          continue;
+        }
+      }
+      if (showIndexColumn) {
+        setColumns([
+          {
+            title: '序号',
+            dataIndex: 'index',
+            fixed: 'left',
+            valueType: 'indexBorder',
+            width: 75,
+            align: 'center',
+          },
+          ...result,
+        ]);
+      } else {
+        setColumns(result);
+      }
       // 检查数据是否有更新
       let isUpdate = false;
       if (list.length !== historyColumnData.length) {
@@ -151,59 +199,89 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
   }, [columnLoading, columns]);
 
   const [advancedSearchFilter, setAdvancedSearchFilter] = useState<FilterGroupItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<T>();
   const { query } = props;
   return (
-    <ProTable<T, U, ValueType>
-      headerTitle={'查询表格'}
-      rowKey="id"
-      search={false}
-      options={{
-        search: {
-          placeholder: '关健字搜索',
-        },
-        setting: false,
-        fullScreen: true,
-      }}
-      {...props}
-      toolBarRender={(action, rows) => [
-        ...(props.toolBarRender ? props.toolBarRender(action, rows) : []),
-        ...[
-          <Tooltip key={'advancedSearch'} title={'自定义查询'}>
-            <AdvancedSearch
-              data={columnData.filter((d) => d.dataIndex !== 'option')}
-              historyFilters={advancedSearchFilter}
-              onSearch={(d) => {
-                setAdvancedSearchFilter(d);
-              }}
-            />
-          </Tooltip>,
-          <Tooltip key={'editTableColumn'} title={'自定义表格'}>
-            <EditTableColumnForm
-              data={columnData}
-              onOk={(list) => {
-                setColumnData(list);
-                setColumnLoading(true);
-              }}
-            />
-          </Tooltip>,
-        ],
-      ]}
-      // @ts-ignore
-      params={{
-        filterGroups: advancedSearchFilter,
-        ...props.params,
-      }}
-      request={async (params, sorter, filter) => {
-        const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
-        return {
-          data: res.data?.items || [],
-          success: res.success,
-          total: res.data?.totalItems || 0,
-        };
-      }}
-      scroll={{ x: tableWidth || 1000 }}
-      columns={columnLoading ? [] : columns}
-    />
+    <>
+      <ProTable<T, U, ValueType>
+        headerTitle={'查询表格'}
+        rowKey="id"
+        search={false}
+        options={{
+          search: {
+            placeholder: '关健字搜索',
+          },
+          setting: false,
+          fullScreen: true,
+        }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              if (props.showDescriptions) {
+                setCurrentRow(record);
+              }
+            },
+          };
+        }}
+        {...props}
+        toolBarRender={(action, rows) => [
+          ...(props.toolBarRender ? props.toolBarRender(action, rows) : []),
+          ...[
+            <Tooltip key={'advancedSearch'} title={'自定义查询'}>
+              <AdvancedSearch
+                data={columnData.filter((d) => d.dataIndex !== 'option')}
+                historyFilters={advancedSearchFilter}
+                onSearch={(d) => {
+                  setAdvancedSearchFilter(d);
+                }}
+              />
+            </Tooltip>,
+            <Tooltip key={'editTableColumn'} title={'自定义表格'}>
+              <EditTableColumnForm
+                data={columnData}
+                onOk={(list) => {
+                  setColumnData(list);
+                  setColumnLoading(true);
+                }}
+              />
+            </Tooltip>,
+          ],
+        ]}
+        // @ts-ignore
+        params={{
+          filterGroups: advancedSearchFilter,
+          ...props.params,
+        }}
+        request={async (params, sorter, filter) => {
+          const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
+          return {
+            data: res.data?.items || [],
+            success: res.success,
+            total: res.data?.totalItems || 0,
+          };
+        }}
+        scroll={{ x: tableWidth || 1000 }}
+        columns={columnLoading ? [] : columns}
+      />
+      <Drawer
+        width={600}
+        open={!!currentRow}
+        onClose={() => {
+          setCurrentRow(undefined);
+        }}
+        closable={false}
+      >
+        {currentRow !== undefined && (
+          <ProDescriptions
+            column={1}
+            title={'详情'}
+            dataSource={currentRow || {}}
+            // @ts-ignore
+            columns={columnLoading ? [] : columns}
+          />
+        )}
+      </Drawer>
+    </>
   );
 }
 

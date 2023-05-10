@@ -39,7 +39,7 @@ public class SsoController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [Authorize]
-    public async Task<string> GetAuthCodeAsync(
+    public async Task<string> GetAuthTokenAsync(
         [FromQuery] string clientId,
         [FromQuery] string sessionCode
     )
@@ -60,68 +60,8 @@ public class SsoController : ControllerBase
             throw FriendlyException.Of("会话不存在或已过期");
         }
 
-        // 生成授权码
-        var authCode = Guid.NewGuid().ToString("N").ToUpper();
-        // 缓存授权码
-        await _cacheManager.SetAsync(
-            string.Format(SsoCacheKey.AuthCode, authCode),
-            currentUserInfo,
-            TimeSpan.FromMinutes(10));
-        // 缓存授权码是哪个应用的
-        await _cacheManager.SetStringAsync(
-            string.Format(SsoCacheKey.AuthCodeClientId, authCode),
-            clientId,
-            TimeSpan.FromMinutes(10)
-        );
         // 缓存授权码取token时最长的有效时间
         var expireTime = await _cacheManager.GetAsync<DateTime>(string.Format(SsoCacheKey.SessionExpiry, sessionCode));
-        await _cacheManager.SetAsync(
-            string.Format(SsoCacheKey.AuthCodeSessionTime, authCode),
-            expireTime,
-            expireTime - DateTime.Now
-        );
-        return authCode;
-    }
-
-    /// <summary>
-    /// 读取Token
-    /// </summary>
-    /// <param name="authCode"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<string> GetTokenAsync([FromQuery] string authCode)
-    {
-        var authCodeKey = string.Format(SsoCacheKey.AuthCode, authCode);
-        var authCodeClientIdKey = string.Format(SsoCacheKey.AuthCodeClientId, authCode);
-        var authCodeSessionTimeKey = string.Format(SsoCacheKey.AuthCodeSessionTime, authCode);
-
-        var currentUserInfo = await _cacheManager.GetAsync<UserQueryModel>(authCodeKey);
-        // 如果找不到用户信息，说明会话已过期
-        if (currentUserInfo == null)
-        {
-            throw FriendlyException.Of("授权码不存在或已过期");
-        }
-
-        // 清除授权码，一个授权码只能用一次
-        await _cacheManager.RemoveAsync(authCodeKey);
-        // 读取应用ID
-        var clientId = await _cacheManager.GetStringAsync(authCodeClientIdKey);
-        if (clientId == null)
-        {
-            throw FriendlyException.Of("授权码不存在或已过期");
-        }
-
-        // 读取应用信息
-        var app = await _applicationQueryService.GetByClientIdAsync(clientId);
-        if (app == null)
-        {
-            throw FriendlyException.Of("应用不存在");
-        }
-
-        // 读取授权码对应的会话过期时间
-        var sessionTime = await _cacheManager.GetAsync<DateTime>(authCodeSessionTimeKey);
-        // Token过期时间
-        var expireTime = sessionTime > DateTime.Now.AddMinutes(30) ? DateTime.Now.AddMinutes(30) : sessionTime;
         // 根据当前时间和授权码对应的会话过期时间，计算出Token的过期时间/秒
         var expireSeconds = (int) (expireTime - DateTime.Now).TotalSeconds;
         // Claims
@@ -132,7 +72,7 @@ public class SsoController : ControllerBase
             new("RealName", currentUserInfo.RealName)
         };
         // 生成Token
-        var token = _securityContextAccessor.CreateToken(new JwtConfig
+        var authToken = _securityContextAccessor.CreateToken(new JwtConfig
         {
             AppId = clientId,
             Audience = clientId,
@@ -140,7 +80,7 @@ public class SsoController : ControllerBase
             Expires = expireSeconds,
             SecurityKey = app.ClientSecret
         }, claims);
-        return token;
+        return authToken;
     }
 }
 
@@ -158,19 +98,4 @@ public static class SsoCacheKey
     /// 会话过期时间
     /// </summary>
     public const string SessionExpiry = "sso:sessionExpiry:{0}";
-
-    /// <summary>
-    /// 授权码
-    /// </summary>
-    public const string AuthCode = "sso:authCode:{0}";
-
-    /// <summary>
-    /// 授权码对应的应用
-    /// </summary>
-    public const string AuthCodeClientId = "sso:authCodeClientId:{0}";
-
-    /// <summary>
-    /// 授权码会话过期时间
-    /// </summary>
-    public const string AuthCodeSessionTime = "sso:authCodeSessionTime:{0}";
 }

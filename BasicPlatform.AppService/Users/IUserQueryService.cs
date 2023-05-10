@@ -50,7 +50,7 @@ public interface IUserQueryService
     /// 读取当前登录用户信息
     /// </summary>
     /// <returns></returns>
-    Task<GetCurrentUserResponse> GetCurrentUserAsync();
+    Task<GetCurrentUserResponse> GetCurrentUserAsync(string? userId = null);
 
     /// <summary>
     /// 读取用户数据

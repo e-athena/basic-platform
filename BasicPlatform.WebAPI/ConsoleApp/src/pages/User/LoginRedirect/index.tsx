@@ -3,20 +3,19 @@ import { PageLoading } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
 import { parse } from 'querystring';
 import { getSessionCode } from '@/utils/token';
-import { getAuthCode } from '@/services/ant-design-pro/api';
+import { getAuthToken } from '@/services/ant-design-pro/api';
 
 const LoginRedirect: React.FC = () => {
   const query = parse(history.location.search.split('?')[1], '&');
   const [handling, setHandling] = useState<boolean>(true);
 
-  console.log(query);
   useEffect(() => {
     const fetch = async () => {
       try {
         // 读取sessionCode
         const sessionCode = getSessionCode();
         if (sessionCode) {
-          const res = await getAuthCode({
+          const res = await getAuthToken({
             clientId: query?.clientId as string,
             sessionCode,
           });
@@ -28,10 +27,11 @@ const LoginRedirect: React.FC = () => {
               const urlParams = parse(redirectUrl.split('?')[1], '&');
               const redirect = urlParams?.redirect;
               const param = redirect === undefined ? '' : `&redirect=${redirect}`;
-              window.location.href = `${url}?authCode=${res.data}&sessionCode=${res.data}&source=sso${param}`;
+              window.location.href = `${url}?token=${res.data}&source=sso${param}`;
               return;
             }
-            window.location.href = `${redirectUrl}?authCode=${res.data}&sessionCode=${res.data}&source=sso`;
+            window.location.href = `${redirectUrl}?token=${res.data}&source=sso`;
+            return;
           }
         }
         setHandling(false);
@@ -40,7 +40,12 @@ const LoginRedirect: React.FC = () => {
       }
     };
     if (query?.clientId && query?.redirectUrl && handling) {
-      fetch();
+      // 如果退出登录，则直接跳转到登录页面
+      if (query?.target === 'logout') {
+        setHandling(false);
+      } else {
+        fetch();
+      }
     }
   }, [query?.clientId]);
 

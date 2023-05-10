@@ -232,15 +232,16 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// </summary>
     /// <returns></returns>
     /// <exception cref="FriendlyException"></exception>
-    public async Task<GetCurrentUserResponse> GetCurrentUserAsync()
+    public async Task<GetCurrentUserResponse> GetCurrentUserAsync(string? userId = null)
     {
-        if (string.IsNullOrEmpty(UserId))
+        userId ??= UserId;
+        if (string.IsNullOrEmpty(userId))
         {
             throw FriendlyException.Of("用户未登录");
         }
 
         var result = await QueryableNoTracking
-            .Where(p => p.Id == UserId)
+            .Where(p => p.Id == userId)
             .ToOneAsync(p => new GetCurrentUserResponse
             {
                 OrganizationName = p.Organization!.Name,
@@ -253,7 +254,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         }
 
         // 用户拥有的资源代码
-        result.ResourceCodes = await GetResourceCodesAsync(UserId, null);
+        result.ResourceCodes = await GetResourceCodesAsync(userId, null);
 
         return result;
     }

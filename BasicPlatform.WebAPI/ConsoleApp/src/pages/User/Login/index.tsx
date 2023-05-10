@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
+import { getAuthToken, login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   AlipayCircleOutlined,
@@ -155,22 +155,30 @@ const Login: React.FC = () => {
         setSessionCode(res.data!.sessionCode!);
         await fetchUserInfo();
         await fetchApiResources();
-        const urlParams = new URL(window.location.href).searchParams;
+        const urlParams = parse(window.location.href.split('?')[1], '&');
         if (redirectUrl !== undefined && clientId !== undefined) {
-          const url = redirectUrl as string;
           const code = res.data?.sessionCode;
+          // 读取子应用授权Token
+          const tokenRes = await getAuthToken({
+            clientId: clientId as string,
+            sessionCode: code as string,
+          });
+          if (!tokenRes.success) {
+            message.error('跳转失败，请重试。');
+            return;
+          }
+          const url = redirectUrl as string;
           if (url !== undefined && url?.includes('?')) {
             let host = url.split('?')[0];
             const urlParams = parse(url.split('?')[1], '&');
             const redirect = urlParams?.redirect;
             const param = redirect === undefined ? '' : `&redirect=${redirect}`;
-            window.location.href = `${host}?authCode=${res.data}&sessionCode=${res.data}&source=sso${param}`;
+            window.location.href = `${host}?token=${res.data}&source=sso${param}`;
             return;
           }
-          window.location.href = `${redirectUrl}?authCode=${code}&sessionCode=${code}&source=sso`;
+          window.location.href = `${redirectUrl}?token=${res.data}&source=sso`;
         } else {
-          // history.push(urlParams.get('redirect') || '/');
-          location.href = urlParams.get('redirect') || '/';
+          history.push(urlParams?.redirect as string || '/');
         }
         return;
       }

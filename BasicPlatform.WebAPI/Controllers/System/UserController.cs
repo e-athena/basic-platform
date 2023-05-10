@@ -488,5 +488,17 @@ public class UserController : CustomControllerBase
         return _queryService.GetResourceCodesAsync(userId, appId);
     }
 
+    /// <summary>
+    /// 读取用户信息
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public Task<GetCurrentUserResponse> GetUserInfoAsync([FromQuery] string userId)
+    {
+        return _queryService.GetCurrentUserAsync(userId);
+    }
+
     #endregion
 }

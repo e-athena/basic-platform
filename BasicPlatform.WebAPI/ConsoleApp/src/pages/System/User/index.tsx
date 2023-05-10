@@ -112,7 +112,8 @@ const TableList: React.FC = () => {
               checkedChildren="启用"
               unCheckedChildren="禁用"
               checked={entity.status === 1}
-              onClick={async () => {
+              onClick={async (_, e) => {
+                e.stopPropagation();
                 const statusName = entity.status === 1 ? '禁用' : '启用';
                 Modal.confirm({
                   title: '操作提示',
@@ -186,7 +187,8 @@ const TableList: React.FC = () => {
               shape="circle"
               type={'link'}
               icon={<FormOutlined />}
-              onClick={async () => {
+              onClick={async (e) => {
+                e.stopPropagation();
                 const hide = message.loading('正在查询', 0);
                 const res = await detail(entity.id);
                 hide();
@@ -205,7 +207,8 @@ const TableList: React.FC = () => {
             <Dropdown
               menu={{
                 items: moreItems,
-                onClick: async ({ key }) => {
+                onClick: async ({ key, domEvent }) => {
+                  domEvent.stopPropagation();
                   if (key === 'auth') {
                     const hide = message.loading('正在查询', 0);
                     const res = await queryResourceCodeInfo(entity.id);
@@ -254,7 +257,7 @@ const TableList: React.FC = () => {
               }}
               placement="bottom"
             >
-              <Button shape="circle" type={'link'} icon={<MoreOutlined />} />
+              <Button shape="circle" type={'link'} icon={<MoreOutlined />} onClick={(e)=>{e.stopPropagation()}}/>
             </Dropdown>
           </Access>,
         ];
@@ -285,8 +288,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                    maxWidth: tableSize?.width - 270 - 24,
-                  }
+                  maxWidth: tableSize?.width - 270 - 24,
+                }
                 : {}
             }
             defaultColumns={defaultColumns}

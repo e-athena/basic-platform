@@ -43,7 +43,8 @@ const TableList: React.FC = () => {
               checkedChildren="启用"
               unCheckedChildren="禁用"
               checked={entity.status === 1}
-              onClick={async () => {
+              onClick={async (_, e) => {
+                e.stopPropagation();
                 const statusName = entity.status === 1 ? '禁用' : '启用';
                 Modal.confirm({
                   title: '操作提示',
@@ -82,7 +83,8 @@ const TableList: React.FC = () => {
               shape="circle"
               type={'link'}
               icon={<FormOutlined />}
-              onClick={async () => {
+              onClick={async (e) => {
+                e.stopPropagation();
                 const hide = message.loading('正在查询', 0);
                 const res = await detail(entity.id!);
                 hide();
@@ -104,7 +106,8 @@ const TableList: React.FC = () => {
             <Button
               shape="circle"
               type={'link'}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setCurrentRow({ parentId: entity.id });
                 handleCreateOrUpdateModalOpen(true);
               }}

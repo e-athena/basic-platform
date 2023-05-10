@@ -35,12 +35,12 @@ export async function login(
     ...(options || {}),
   });
 }
-/** 读取授权码 */
-export async function getAuthCode(
+/** 读取授权Token */
+export async function getAuthToken(
   params: API.SSOAuthCodeParams,
   options?: { [key: string]: any },
 ): Promise<ApiResponse<API.LoginResult>> {
-  return request<ApiResponse<API.LoginResult>>('/api/sso/getAuthCode', {
+  return request<ApiResponse<API.LoginResult>>('/api/sso/getAuthToken', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

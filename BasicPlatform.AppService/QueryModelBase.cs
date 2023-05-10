@@ -8,7 +8,7 @@ public class QueryModelBase
     /// <summary>
     /// ID
     /// </summary>
-    [TableColumn(Sort = 0, HideInTable = true, HideInSearch = true)]
+    [TableColumn(Sort = 0, HideInTable = true, HideInSearch = true, HideInDescriptions = true)]
     public string? Id { get; set; }
 
     /// <summary>
@@ -20,7 +20,7 @@ public class QueryModelBase
     /// <summary>
     /// 创建人Id
     /// </summary>
-    [TableColumn(Sort = 85, HideInTable = true)]
+    [TableColumn(Sort = 85, HideInTable = true, HideInDescriptions = true)]
     public string? CreatedUserId { get; set; }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class QueryModelBase
     /// <summary>
     /// 更新人Id  
     /// </summary>
-    [TableColumn(Sort = 88, HideInTable = true)]
+    [TableColumn(Sort = 88, HideInTable = true, HideInDescriptions = true)]
     public string? LastUpdatedUserId { get; set; }
 
     /// <summary>

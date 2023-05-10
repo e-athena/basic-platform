@@ -124,7 +124,8 @@ const TableList: React.FC = () => {
               type={'link'}
               icon={<FormOutlined />}
               disabled={entity.isPublic && !isRoot}
-              onClick={async () => {
+              onClick={async (e) => {
+                e.stopPropagation();
                 const hide = message.loading('正在查询', 0);
                 const res = await detail(entity.id!);
                 hide();
