@@ -28,7 +28,8 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     // await outLogin();
     removeToken();
     removeSessionCode();
-    history.push(`/user/login?redirect=${encodeURIComponent(history.location.pathname)}`);
+    const { pathname, search } = history.location;
+    history.push(`/user/login?redirect=${pathname}${search}`);
   };
   const actionClassName = useEmotionCss(({ token }) => {
     return {

@@ -24,9 +24,10 @@ const LoginRedirect: React.FC = () => {
             if (redirectUrl !== undefined && redirectUrl?.includes('?')) {
               let url = redirectUrl.split('?')[0];
 
-              const urlParams = parse(redirectUrl.split('?')[1], '&');
+              const urlParams = parse(redirectUrl.split('login-redirect?')[1], '&');
               const redirect = urlParams?.redirect;
-              const param = redirect === undefined ? '' : `&redirect=${redirect}`;
+              const param =
+                redirect === undefined ? '' : `&redirect=${encodeURIComponent(redirect as string)}`;
               window.location.href = `${url}?token=${res.data}&source=sso${param}`;
               return;
             }
@@ -51,7 +52,7 @@ const LoginRedirect: React.FC = () => {
 
   useEffect(() => {
     if (!handling) {
-      history.push(`/user/login${history.location.search}`);
+      history.push(`/user/login${history.location.search.replace('&target=logout', '')}`);
     }
   }, [handling]);
 

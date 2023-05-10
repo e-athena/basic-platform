@@ -170,13 +170,14 @@ const Login: React.FC = () => {
           const url = redirectUrl as string;
           if (url !== undefined && url?.includes('?')) {
             let host = url.split('?')[0];
-            const urlParams = parse(url.split('?')[1], '&');
+            const urlParams = parse(url.split('login-redirect?')[1], '&');
             const redirect = urlParams?.redirect;
-            const param = redirect === undefined ? '' : `&redirect=${redirect}`;
-            window.location.href = `${host}?token=${res.data}&source=sso${param}`;
+            const param =
+              redirect === undefined ? '' : `&redirect=${encodeURIComponent(redirect as string)}`;
+            window.location.href = `${host}?token=${tokenRes.data}&source=sso${param}`;
             return;
           }
-          window.location.href = `${redirectUrl}?token=${res.data}&source=sso`;
+          window.location.href = `${redirectUrl}?token=${tokenRes.data}&source=sso`;
         } else {
           history.push((urlParams?.redirect as string) || '/');
         }
