@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CRM.Commands\CRM.Commands.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.4.1"/>
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.12"/>
+    </ItemGroup>
+</Project>
