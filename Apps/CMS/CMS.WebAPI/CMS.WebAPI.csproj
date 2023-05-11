@@ -7,6 +7,14 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net6.0\CMS.WebAPI.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net6.0\CMS.WebAPI.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.7" />
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.2" />
@@ -45,6 +53,10 @@
         <ProjectReference Include="..\..\CRM\CRM.ProcessManagers\CRM.ProcessManagers.csproj" />
         <ProjectReference Include="..\CMS.AppService.FreeSql\CMS.AppService.FreeSql.csproj" />
         <ProjectReference Include="..\CMS.IntegratedEventHandler\CMS.IntegratedEventHandler.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CMSConsoleApp\" />
     </ItemGroup>
 
 </Project>

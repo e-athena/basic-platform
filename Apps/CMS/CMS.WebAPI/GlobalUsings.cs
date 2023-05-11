@@ -16,5 +16,8 @@ global using App.Infrastructure.Models;
 global using App.Infrastructure.Services;
 global using Athena.Infrastructure.DataPermission;
 global using Athena.Infrastructure.DataPermission.Models;
+global using Athena.Infrastructure.Messaging.Responses;
+global using Athena.Infrastructure.ViewModels;
+global using MediatR;
 global using Serilog;
 global using Serilog.Debugging;

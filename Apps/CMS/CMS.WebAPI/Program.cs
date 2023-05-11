@@ -19,7 +19,7 @@ services.AddCustomServiceComponent(
 );
 services.AddCustomSwaggerGen(configuration);
 // 添加ORM
-services.AddCustomFreeSql(configuration, false);
+services.AddCustomFreeSql(configuration, builder.Environment.IsDevelopment());
 // 添加集成事件支持
 services.AddCustomIntegrationEvent(configuration, capOptions =>
 {

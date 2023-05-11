@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.Domain" Version="6.4.6"/>
+        <PackageReference Include="Athena.Infrastructure.Domain" Version="6.4.6" />
     </ItemGroup>
 </Project>

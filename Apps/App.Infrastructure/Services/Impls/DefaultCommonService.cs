@@ -1,5 +1,4 @@
 using App.Infrastructure.Messaging.Responses;
-using Athena.Infrastructure.FrontEndTables;
 
 namespace App.Infrastructure.Services.Impls;
 
