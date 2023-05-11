@@ -39,7 +39,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         destroyOnClose: true,
       }}
       onFinish={async (values: API.UpdateApplicationItem) => {
-        const isUpdate = props.values !== undefined;
+        const isUpdate = props.values?.id !== undefined;
         if (isUpdate) {
           values.id = props.values!.id!;
         }
@@ -47,7 +47,6 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         if (values.frontendUrl) {
           values.frontendUrl = frontendUrlAgreement + values.frontendUrl;
         }
-        // console.log(values);
         const req = isUpdate ? update : create;
         const succeed = await submitHandle(req, values);
         if (succeed) {

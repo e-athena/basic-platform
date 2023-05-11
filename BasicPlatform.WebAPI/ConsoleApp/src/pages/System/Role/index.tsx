@@ -178,7 +178,7 @@ const TableList: React.FC = () => {
                     const data = await queryDetail(detail, entity.id!);
                     if (data) {
                       setCurrentRow(data);
-                      handleCreateOrUpdateModalOpen(true);
+                      handleResourceModalOpen(true);
                     }
                     return;
                   }
@@ -191,7 +191,7 @@ const TableList: React.FC = () => {
                     const data = await queryDetail(detail, entity.id!);
                     if (data) {
                       setCurrentRow(data);
-                      handleCreateOrUpdateModalOpen(true);
+                      handleUserModalOpen(true);
                     }
                   }
                 },

@@ -76,7 +76,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: !showOption,
-      width: 95,
+      width: 125,
       render(_, entity) {
         return [
           <Access
@@ -97,6 +97,26 @@ const TableList: React.FC = () => {
               }}
             >
               编辑
+            </Button>
+          </Access>,
+          <Access
+            key={'copy'}
+            accessible={canAccessible(permission.application.postAsync, resource)}
+          >
+            <Button
+              shape="circle"
+              type={'link'}
+              onClick={async (e) => {
+                e.stopPropagation();
+                const data = await queryDetail(detail, entity.id!);
+                if (data) {
+                  data.id = undefined;
+                  setCurrentRow(data);
+                  handleCreateOrUpdateModalOpen(true);
+                }
+              }}
+            >
+              复制
             </Button>
           </Access>,
         ];
