@@ -8,13 +8,13 @@ public class ApplicationQueryModel : QueryModelBase
     /// <summary>
     /// 名称
     /// </summary>
-    [TableColumn(Width = 120, Sort = 1, Fixed = "left")]
+    [TableColumn(Width = 120, Sort = 1, Fixed = TableColumnFixed.Left)]
     public string Name { get; set; } = null!;
 
     /// <summary>
     /// 客户端ID
     /// </summary>
-    [TableColumn(Width = 100, Sort = 2, Fixed = "left")]
+    [TableColumn(Width = 100, Sort = 2, Fixed = TableColumnFixed.Left)]
     public string ClientId { get; set; } = null!;
 
     /// <summary>

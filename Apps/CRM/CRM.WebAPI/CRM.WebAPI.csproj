@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.7" />
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.2" />
-        <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.1.0" />
+        <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.1.1" />
         <PackageReference Include="Athena.Infrastructure.SqlSugar.AspNetCore" Version="6.0.0" />
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.12" />
         <PackageReference Include="Athena.Infrastructure.Logger.FreeSql" Version="6.3.1.3" />
