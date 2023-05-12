@@ -58,15 +58,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.Domain", "Apps\CRM\CRM.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.Commands", "Apps\CRM\CRM.Commands\CRM.Commands.csproj", "{AE246BAE-0159-4105-B195-1DB122E14E64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.CommandHandlers.FreeSql", "Apps\CRM\CRM.CommandHandlers.FreeSql\CRM.CommandHandlers.FreeSql.csproj", "{59C70FD3-B30C-4451-B892-2888DFAEF0A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.CommandHandlers.SqlSugar", "Apps\CRM\CRM.CommandHandlers.SqlSugar\CRM.CommandHandlers.SqlSugar.csproj", "{59C70FD3-B30C-4451-B892-2888DFAEF0A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.WebAPI", "Apps\CRM\CRM.WebAPI\CRM.WebAPI.csproj", "{45F4053C-5579-442B-BE82-3FBB8F148E7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.QueryServices", "Apps\CRM\CRM.QueryServices\CRM.QueryServices.csproj", "{3700FD9C-7434-4375-8E9B-026610FCAB92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.QueryServices.FreeSql", "Apps\CRM\CRM.QueryServices.FreeSql\CRM.QueryServices.FreeSql.csproj", "{14A90881-5DAF-4BB0-95BD-E9FDC0D8454D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.QueryServices.SqlSugar", "Apps\CRM\CRM.QueryServices.SqlSugar\CRM.QueryServices.SqlSugar.csproj", "{14A90881-5DAF-4BB0-95BD-E9FDC0D8454D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.DomainEventHandlers.FreeSql", "Apps\CRM\CRM.DomainEventHandlers.FreeSql\CRM.DomainEventHandlers.FreeSql.csproj", "{DA8DDD19-7D6C-4481-B43C-3084D9C5E69A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM.DomainEventHandlers.SqlSugar", "Apps\CRM\CRM.DomainEventHandlers.SqlSugar\CRM.DomainEventHandlers.SqlSugar.csproj", "{DA8DDD19-7D6C-4481-B43C-3084D9C5E69A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.Integrations", "4.Integrations", "{5DCCB6AB-FB3D-4F10-A960-95824A407432}"
 EndProject

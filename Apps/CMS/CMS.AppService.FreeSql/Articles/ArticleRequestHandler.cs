@@ -18,7 +18,7 @@ public class ArticleRequestHandler : AppServiceBase<Article>,
     }
 
     /// <summary>
-    /// 创建组织架构
+    /// 创建
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>

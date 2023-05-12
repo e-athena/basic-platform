@@ -11,8 +11,7 @@
         <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.7" />
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.2" />
         <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.1.0" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.4.1" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="6.2.0-pre1.1" />
+        <PackageReference Include="Athena.Infrastructure.SqlSugar.AspNetCore" Version="6.0.0" />
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.12" />
         <PackageReference Include="Athena.Infrastructure.Logger.FreeSql" Version="6.3.1.3" />
         <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.15" />
@@ -42,10 +41,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CRM.CommandHandlers.FreeSql\CRM.CommandHandlers.FreeSql.csproj" />
-        <ProjectReference Include="..\CRM.DomainEventHandlers.FreeSql\CRM.DomainEventHandlers.FreeSql.csproj" />
+        <ProjectReference Include="..\CRM.CommandHandlers.SqlSugar\CRM.CommandHandlers.SqlSugar.csproj" />
+        <ProjectReference Include="..\CRM.DomainEventHandlers.SqlSugar\CRM.DomainEventHandlers.SqlSugar.csproj" />
         <ProjectReference Include="..\CRM.ProcessManagers\CRM.ProcessManagers.csproj" />
-        <ProjectReference Include="..\CRM.QueryServices.FreeSql\CRM.QueryServices.FreeSql.csproj" />
+        <ProjectReference Include="..\CRM.QueryServices.SqlSugar\CRM.QueryServices.SqlSugar.csproj" />
     </ItemGroup>
 
 </Project>

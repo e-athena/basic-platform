@@ -8,19 +8,19 @@ var host = builder.Host;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 // Add services to the container.
 services.AddAthenaProvider();
-services.AddCustomOpenTelemetry<Program>(configuration);
+// services.AddCustomOpenTelemetry<Program>(configuration);
 services.AddCustomMediatR(
-    Assembly.Load("CRM.CommandHandlers.FreeSql"),
-    Assembly.Load("CRM.DomainEventHandlers.FreeSql")
+    Assembly.Load("CRM.CommandHandlers.SqlSugar"),
+    Assembly.Load("CRM.DomainEventHandlers.SqlSugar")
 );
 services.AddCustomServiceComponent(
-    Assembly.Load("CRM.QueryServices.FreeSql"),
+    Assembly.Load("CRM.QueryServices.SqlSugar"),
     Assembly.Load("App.Infrastructure"),
     Assembly.GetExecutingAssembly()
 );
 services.AddCustomSwaggerGen(configuration);
 // 添加ORM
-services.AddCustomFreeSql(configuration, false);
+services.AddCustomSqlSugar(configuration);
 // 添加集成事件支持
 services.AddCustomIntegrationEvent(configuration, capOptions =>
 {
@@ -47,7 +47,6 @@ host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
 var app = builder.Build();
 
 app.UseAthenaProvider();
-app.UseCustomFreeSqlMultiTenancy();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
