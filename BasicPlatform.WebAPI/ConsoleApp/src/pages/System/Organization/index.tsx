@@ -103,8 +103,9 @@ const TableList: React.FC = () => {
               shape="circle"
               type={'link'}
               onClick={(e) => {
+                const parentPath = entity.parentPath ? `${entity.parentPath},${entity.id}` : entity.id;
                 e.stopPropagation();
-                setCurrentRow({ parentId: entity.id });
+                setCurrentRow({ parentPath });
                 handleCreateOrUpdateModalOpen(true);
               }}
             >
@@ -140,8 +141,8 @@ const TableList: React.FC = () => {
             style={
               tableSize?.width
                 ? {
-                    maxWidth: tableSize?.width - 270 - 24,
-                  }
+                  maxWidth: tableSize?.width - 270 - 24,
+                }
                 : {}
             }
             defaultColumns={defaultColumns}

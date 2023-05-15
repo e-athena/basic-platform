@@ -33,6 +33,10 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
             request.Sort,
             UserId
         );
+        if (!string.IsNullOrWhiteSpace(request.ParentId))
+        {
+            entity.ParentPath = await GetParentPathAsync(request.ParentId);
+        }
 
         await RegisterNewAsync(entity, cancellationToken);
 

@@ -21,6 +21,7 @@ declare namespace API {
     parentId?: string | string[];
     name?: string;
     parentPath?: string;
+    parentPathList?: string[];
     leaderId?: string;
     remarks?: string;
     status?: Status;

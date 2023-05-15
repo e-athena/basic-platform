@@ -142,9 +142,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     menu: {
       locale: false,
-      params: initialState,
+      params: initialState?.currentUser,
       request: async () => {
-        // return initialState?.fetchMenuData?.() || [];
         let basicMenus: API.ResourceInfo[];
         if (initialState?.apiResources === undefined) {
           basicMenus = (await initialState?.fetchApiResources?.()) || [];
