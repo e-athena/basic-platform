@@ -1,3 +1,5 @@
+using CMS.Domain.Models.Events;
+
 namespace CMS.Domain.Models;
 
 /// <summary>
@@ -117,6 +119,9 @@ public class Article : FullEntityCore
         SourceUrl = sourceUrl;
         Cover = cover;
         CreatedUserId = createdUserId;
+
+        // 添加事件
+        ApplyEvent(new ArticleCreatedEvent(title, summary, content, author, source, sourceUrl, cover, createdUserId));
     }
 
     /// <summary>
@@ -192,6 +197,8 @@ public class Article : FullEntityCore
         IsPublish = true;
         PublishTime = DateTime.Now;
         LastUpdatedUserId = modifiedUserId;
+
+        ApplyEvent(new ArticlePublishedEvent(Title, modifiedUserId));
     }
 
     /// <summary>
