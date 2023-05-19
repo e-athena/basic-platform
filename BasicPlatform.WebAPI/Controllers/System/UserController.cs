@@ -1,8 +1,6 @@
 using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.ExternalPages.Models;
-using BasicPlatform.AppService.Resources.Models;
 using BasicPlatform.AppService.Users;
-using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 
@@ -435,69 +433,6 @@ public class UserController : CustomControllerBase
     public Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync([FromQuery] string id)
     {
         return _queryService.GetDataPermissionsAsync(id);
-    }
-
-    #endregion
-
-    #region 外部接口
-
-    /// <summary>
-    /// 读取用户自定义列列表
-    /// </summary>
-    /// <param name="appId"></param>
-    /// <param name="moduleName"></param>
-    /// <param name="userId"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [ApiPermission(IsVisible = false)]
-    [AllowAnonymous]
-    public Task<List<UserCustomColumnModel>> GetUserCustomColumnsAsync(string appId, string moduleName, string userId)
-    {
-        return _queryService.GetUserCustomColumnsAsync(appId, moduleName, userId);
-    }
-
-    /// <summary>
-    /// 读取用户资源
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="appId"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public Task<List<ResourceModel>> GetUserResourceAsync(
-        [FromQuery] string userId,
-        [FromQuery] string appId
-    )
-    {
-        return _queryService.GetUserResourceAsync(userId, appId);
-    }
-
-    /// <summary>
-    /// 读取用户资源代码
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="appId"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public Task<List<string>> GetUserResourceCodesAsync(
-        [FromQuery] string userId,
-        [FromQuery] string appId
-    )
-    {
-        return _queryService.GetResourceCodesAsync(userId, appId);
-    }
-
-    /// <summary>
-    /// 读取用户信息
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public Task<GetCurrentUserResponse> GetUserInfoAsync([FromQuery] string userId)
-    {
-        return _queryService.GetCurrentUserAsync(userId);
     }
 
     #endregion
