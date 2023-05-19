@@ -10,6 +10,13 @@ namespace BasicPlatform.AppService.Applications;
 public interface IApplicationQueryService
 {
     /// <summary>
+    /// 读取密钥
+    /// </summary>
+    /// <param name="clientId">客户端ID</param>
+    /// <returns></returns>
+    string? GetSecret(string clientId);
+
+    /// <summary>
     /// 读取列表
     /// </summary>
     /// <returns></returns>

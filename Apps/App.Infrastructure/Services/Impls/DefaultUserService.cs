@@ -1,8 +1,8 @@
 using App.Infrastructure.Messaging.Requests;
 using App.Infrastructure.Messaging.Responses;
 using App.Infrastructure.Models;
+using Athena.Infrastructure.Jwt;
 using Athena.Infrastructure.Messaging.Responses;
-using Flurl;
 using Flurl.Http;
 
 namespace App.Infrastructure.Services.Impls;
@@ -14,7 +14,13 @@ namespace App.Infrastructure.Services.Impls;
 public class DefaultUserService : IUserService
 {
     private const string ApiUrl = "http://localhost:5078";
-    
+    private readonly ISecurityContextAccessor _accessor;
+
+    public DefaultUserService(ISecurityContextAccessor accessor)
+    {
+        _accessor = accessor;
+    }
+
     /// <summary>
     /// 读取外部页面列表
     /// </summary>
@@ -22,8 +28,10 @@ public class DefaultUserService : IUserService
     /// <returns></returns>
     public async Task<List<ExternalPageModel>> GetExternalPagesAsync(string userId)
     {
-        const string url = $"{ApiUrl}/api/User/GetExternalPages";
+        const string url = $"{ApiUrl}/api/SubApplication/GetExternalPages";
         var result = await url
+            .WithHeader("AppId", _accessor.AppId)
+            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .SetQueryParams(new
             {
                 userId
@@ -42,8 +50,10 @@ public class DefaultUserService : IUserService
     public async Task<List<UserCustomColumnModel>> GetUserCustomColumnsAsync(string? appId, string moduleName,
         string? userId)
     {
-        const string url = $"{ApiUrl}/api/User/GetUserCustomColumns";
+        const string url = $"{ApiUrl}/api/SubApplication/GetUserCustomColumns";
         var result = await url
+            .WithHeader("AppId", _accessor.AppId)
+            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .SetQueryParams(new
             {
                 userId,
@@ -67,8 +77,10 @@ public class DefaultUserService : IUserService
     /// <returns></returns>
     public async Task<List<ResourceModel>> GetUserResourceAsync(string userId, string appId)
     {
-        const string url = $"{ApiUrl}/api/User/GetUserResource";
+        const string url = $"{ApiUrl}/api/SubApplication/GetUserResource";
         var result = await url
+            .WithHeader("AppId", _accessor.AppId)
+            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .SetQueryParams(new
             {
                 userId,
@@ -91,8 +103,10 @@ public class DefaultUserService : IUserService
     /// <returns></returns>
     public async Task<List<string>> GetUserResourceCodesAsync(string userId, string appId)
     {
-        const string url = $"{ApiUrl}/api/User/GetUserResourceCodes";
+        const string url = $"{ApiUrl}/api/SubApplication/GetUserResourceCodes";
         var result = await url
+            .WithHeader("AppId", _accessor.AppId)
+            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .SetQueryParams(new
             {
                 userId,
@@ -114,8 +128,10 @@ public class DefaultUserService : IUserService
     /// <returns></returns>
     public async Task<GetUserInfoResponse?> GetUserInfoAsync(string userId)
     {
-        const string url = $"{ApiUrl}/api/User/GetUserInfo";
+        const string url = $"{ApiUrl}/api/SubApplication/GetUserInfo";
         var result = await url
+            .WithHeader("AppId", _accessor.AppId)
+            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .SetQueryParams(new
             {
                 userId,
@@ -133,8 +149,10 @@ public class DefaultUserService : IUserService
     public async Task<long> UpdateUserCustomColumnsAsync(UpdateUserCustomColumnsRequest request,
         CancellationToken cancellationToken)
     {
-        const string url = $"{ApiUrl}/api/User/UpdateUserCustomColumns";
+        const string url = $"{ApiUrl}/api/SubApplication/UpdateUserCustomColumns";
         var result = await url
+            .WithHeader("AppId", _accessor.AppId)
+            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .PostJsonAsync(request, cancellationToken)
             .ReceiveJson<ApiResult<long>>();
         return result?.Data ?? 0;

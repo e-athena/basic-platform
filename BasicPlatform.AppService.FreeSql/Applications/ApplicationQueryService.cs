@@ -11,8 +11,29 @@ namespace BasicPlatform.AppService.FreeSql.Applications;
 [Component]
 public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplicationQueryService
 {
-    public ApplicationQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor) : base(freeSql, accessor)
+    private readonly ICacheManager _cacheManager;
+
+    public ApplicationQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor, ICacheManager cacheManager) :
+        base(freeSql, accessor)
     {
+        _cacheManager = cacheManager;
+    }
+
+    /// <summary>
+    /// 读取密钥
+    /// </summary>
+    /// <param name="clientId">客户端ID</param>
+    /// <returns></returns>
+    public string? GetSecret(string clientId)
+    {
+        // 缓存30分钟
+        var cacheKey = $"sso:application:secret:{clientId}";
+        return _cacheManager.GetOrCreate(cacheKey, () =>
+        {
+            return QueryableNoTracking
+                .Where(p => p.ClientId == clientId)
+                .ToOne(p => p.ClientSecret);
+        }, TimeSpan.FromMinutes(30));
     }
 
     /// <summary>
