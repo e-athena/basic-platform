@@ -75,10 +75,6 @@ export async function queryDetail<T>(
     return undefined;
   } catch (error) {
     hide();
-    Modal.error({
-      title: '查询失败',
-      content: '请重试或联系管理员！',
-    });
     return undefined;
   }
 }
@@ -108,10 +104,6 @@ export async function submitHandle<T>(
     return false;
   } catch (error) {
     hide();
-    Modal.error({
-      title: `${aTips}失败`,
-      content: '请重试或联系管理员！',
-    });
     return false;
   }
 }

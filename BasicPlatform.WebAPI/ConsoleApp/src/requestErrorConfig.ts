@@ -90,6 +90,13 @@ export const errorConfig: RequestConfig = {
               }
             });
             break;
+          case 400:
+            Modal.destroyAll();
+            Modal.error({
+              title: '系统错误提示(400)',
+              content: '请求参数错误，请联系管理员！',
+            });
+            break;
           case 403:
             message.error('资源未授权');
             break;
@@ -104,10 +111,9 @@ export const errorConfig: RequestConfig = {
             });
             break;
           default:
+            Modal.destroyAll();
             if (error.response.status === 0) {
-              Modal.destroyAll();
               Modal.confirm({
-                type: 'error',
                 title: '系统错误提示',
                 content: '连接到服务器失败，请检查网络或联系管理员处理。',
                 okText: '知道了',
@@ -115,6 +121,11 @@ export const errorConfig: RequestConfig = {
                 onCancel: () => {
                   window.location.reload();
                 }
+              });
+            } else {
+              Modal.error({
+                title: '系统错误提示',
+                content: '发生未知错误，请重试或联系管理员！',
               });
             }
             break;
