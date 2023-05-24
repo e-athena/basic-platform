@@ -1,3 +1,5 @@
+using Athena.Infrastructure.FrontEndTables;
+
 namespace App.Infrastructure.Messaging.Responses;
 
 /// <summary>

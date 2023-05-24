@@ -42,7 +42,7 @@ public class ArticleController : CustomControllerBase
     /// <param name="commonService"></param>
     /// <returns></returns>
     [HttpGet]
-    [AllowAnonymous]
+    [SkipApiPermissionVerification]
     [ApiPermission(IsVisible = false)]
     public Task<GetTableColumnsResponse> GetColumnsAsync([FromServices] ICommonService commonService)
     {

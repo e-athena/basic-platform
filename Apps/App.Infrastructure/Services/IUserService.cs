@@ -1,5 +1,4 @@
 using App.Infrastructure.Messaging.Requests;
-using App.Infrastructure.Messaging.Responses;
 using App.Infrastructure.Models;
 
 namespace App.Infrastructure.Services;
@@ -48,6 +47,12 @@ public interface IUserService
     /// <returns></returns>
     Task<GetUserInfoResponse?> GetUserInfoAsync(string userId);
 
+    /// <summary>
+    /// 读取用户信息
+    /// </summary>
+    /// <param name="userName">用户名</param>
+    /// <returns></returns>
+    Task<string?> GetIdByUserNameAsync(string userName);
 
     /// <summary>
     /// 更新表格列表信息
@@ -57,4 +62,20 @@ public interface IUserService
     /// <returns></returns>
     Task<long> UpdateUserCustomColumnsAsync(UpdateUserCustomColumnsRequest request,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// 创建用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<string> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 更新用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<string> UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken = default);
 }

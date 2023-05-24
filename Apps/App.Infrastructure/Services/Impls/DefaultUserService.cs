@@ -1,9 +1,9 @@
 using App.Infrastructure.Messaging.Requests;
-using App.Infrastructure.Messaging.Responses;
 using App.Infrastructure.Models;
+using Athena.Infrastructure.Attributes;
+using Athena.Infrastructure.Exceptions;
 using Athena.Infrastructure.Jwt;
 using Athena.Infrastructure.Messaging.Responses;
-using Flurl.Http;
 
 namespace App.Infrastructure.Services.Impls;
 
@@ -11,14 +11,12 @@ namespace App.Infrastructure.Services.Impls;
 /// 用户服务默认实现
 /// </summary>
 [Component]
-public class DefaultUserService : IUserService
+public class DefaultUserService : DefaultServiceBase, IUserService
 {
     private const string ApiUrl = "http://localhost:5078";
-    private readonly ISecurityContextAccessor _accessor;
 
-    public DefaultUserService(ISecurityContextAccessor accessor)
+    public DefaultUserService(ISecurityContextAccessor accessor) : base(accessor)
     {
-        _accessor = accessor;
     }
 
     /// <summary>
@@ -29,9 +27,7 @@ public class DefaultUserService : IUserService
     public async Task<List<ExternalPageModel>> GetExternalPagesAsync(string userId)
     {
         const string url = $"{ApiUrl}/api/SubApplication/GetExternalPages";
-        var result = await url
-            .WithHeader("AppId", _accessor.AppId)
-            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
+        var result = await GetRequest(url)
             .SetQueryParams(new
             {
                 userId
@@ -51,9 +47,7 @@ public class DefaultUserService : IUserService
         string? userId)
     {
         const string url = $"{ApiUrl}/api/SubApplication/GetUserCustomColumns";
-        var result = await url
-            .WithHeader("AppId", _accessor.AppId)
-            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
+        var result = await GetRequest(url)
             .SetQueryParams(new
             {
                 userId,
@@ -78,9 +72,7 @@ public class DefaultUserService : IUserService
     public async Task<List<ResourceModel>> GetUserResourceAsync(string userId, string appId)
     {
         const string url = $"{ApiUrl}/api/SubApplication/GetUserResource";
-        var result = await url
-            .WithHeader("AppId", _accessor.AppId)
-            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
+        var result = await GetRequest(url)
             .SetQueryParams(new
             {
                 userId,
@@ -104,9 +96,7 @@ public class DefaultUserService : IUserService
     public async Task<List<string>> GetUserResourceCodesAsync(string userId, string appId)
     {
         const string url = $"{ApiUrl}/api/SubApplication/GetUserResourceCodes";
-        var result = await url
-            .WithHeader("AppId", _accessor.AppId)
-            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
+        var result = await GetRequest(url)
             .SetQueryParams(new
             {
                 userId,
@@ -129,14 +119,30 @@ public class DefaultUserService : IUserService
     public async Task<GetUserInfoResponse?> GetUserInfoAsync(string userId)
     {
         const string url = $"{ApiUrl}/api/SubApplication/GetUserInfo";
-        var result = await url
-            .WithHeader("AppId", _accessor.AppId)
-            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
+        var result = await GetRequest(url)
             .SetQueryParams(new
             {
                 userId,
             })
             .GetJsonAsync<ApiResult<GetUserInfoResponse>>();
+
+        return result.Data;
+    }
+
+    /// <summary>
+    /// 读取用户ID
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    public async Task<string?> GetIdByUserNameAsync(string userName)
+    {
+        const string url = $"{ApiUrl}/api/SubApplication/GetUserIdByUserName";
+        var result = await GetRequest(url)
+            .SetQueryParams(new
+            {
+                userName
+            })
+            .GetJsonAsync<ApiResult<string>>();
         return result.Data;
     }
 
@@ -150,11 +156,53 @@ public class DefaultUserService : IUserService
         CancellationToken cancellationToken)
     {
         const string url = $"{ApiUrl}/api/SubApplication/UpdateUserCustomColumns";
-        var result = await url
-            .WithHeader("AppId", _accessor.AppId)
-            .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
+        var result = await GetRequest(url)
             .PostJsonAsync(request, cancellationToken)
             .ReceiveJson<ApiResult<long>>();
         return result?.Data ?? 0;
+    }
+
+    /// <summary>
+    /// 创建用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<string> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken = default)
+    {
+        const string url = $"{ApiUrl}/api/SubApplication/CreateUser";
+        var result = await GetRequest(url)
+            .PostJsonAsync(request, cancellationToken)
+            .ReceiveJson<ApiResult<string>>();
+
+        if (!result.Success || string.IsNullOrEmpty(result.Data))
+        {
+            throw FriendlyException.Of(result.Message);
+        }
+
+        return result.Data;
+    }
+
+    /// <summary>
+    /// 更新用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<string> UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken = default)
+    {
+        const string url = $"{ApiUrl}/api/SubApplication/UpdateUser";
+        var result = await GetRequest(url)
+            .PostJsonAsync(request, cancellationToken)
+            .ReceiveJson<ApiResult<string>>();
+
+        if (!result.Success || string.IsNullOrEmpty(result.Data))
+        {
+            throw FriendlyException.Of(result.Message);
+        }
+
+        return result.Data;
     }
 }
