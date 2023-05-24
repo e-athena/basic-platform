@@ -1,8 +1,3 @@
-using System.Linq.Expressions;
-using Athena.Infrastructure.QueryFilters;
-using BasicPlatform.AppService.DataPermissions.Models;
-using BasicPlatform.Infrastructure.Enums;
-
 namespace BasicPlatform.AppService.FreeSql.Commons;
 
 /// <summary>
@@ -40,6 +35,11 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     {
         return _freeSql.Select<T1>().NoTracking();
     }
+
+    /// <summary>
+    /// 跳过权限查询
+    /// </summary>
+    protected ISelect<T> QueryableSkipPermission => QuerySkipPermission<T>();
 
     /// <summary>
     /// 查询对象

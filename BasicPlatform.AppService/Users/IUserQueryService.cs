@@ -57,6 +57,13 @@ public interface IUserQueryService
     /// </summary>
     /// <returns></returns>
     Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId);
+    
+    /// <summary>
+    /// 读取ID
+    /// </summary>
+    /// <param name="userName">登录名</param>
+    /// <returns></returns>
+    Task<string> GetIdByUserNameAsync(string userName);
 
     /// <summary>
     /// 读取用户资源

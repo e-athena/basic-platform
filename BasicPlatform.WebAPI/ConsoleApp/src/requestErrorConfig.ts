@@ -1,7 +1,8 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import { message, notification } from 'antd';
+import { Modal, message, notification } from 'antd';
 import { getToken, removeToken } from '@/utils/token';
+import { history } from '@umijs/max';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -77,9 +78,23 @@ export const errorConfig: RequestConfig = {
         switch (error.response.status) {
           case 401:
             removeToken();
+            Modal.destroyAll();
+            Modal.confirm({
+              title: '系统提示',
+              content: '登录状态已过期，您可以继续留在该页面，或者重新登录',
+              okText: '重新登录',
+              cancelText: '取消',
+              onOk: () => {
+                const { pathname, search } = history.location;
+                history.push(`${LOGIN_PATH}?redirect=${pathname}${search}`);
+              }
+            });
             break;
           case 403:
-            message.error('接口未授权');
+            message.error('资源未授权');
+            break;
+          case 404:
+            message.error('资源不存在');
             break;
           case 500:
             notification.open({
@@ -89,7 +104,19 @@ export const errorConfig: RequestConfig = {
             });
             break;
           default:
-            message.error(`Response status:${error.response.status}`);
+            if (error.response.status === 0) {
+              Modal.destroyAll();
+              Modal.confirm({
+                type: 'error',
+                title: '系统错误提示',
+                content: '连接到服务器失败，请检查网络或联系管理员处理。',
+                okText: '知道了',
+                cancelText: '刷新页面',
+                onCancel: () => {
+                  window.location.reload();
+                }
+              });
+            }
             break;
         }
       } else if (error.request) {

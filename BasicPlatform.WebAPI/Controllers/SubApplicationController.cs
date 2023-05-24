@@ -1,5 +1,8 @@
 using BasicPlatform.AppService.ExternalPages.Models;
+using BasicPlatform.AppService.Organizations;
+using BasicPlatform.AppService.Positions;
 using BasicPlatform.AppService.Resources.Models;
+using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
@@ -44,6 +47,33 @@ public class SubApplicationController : ControllerBase
         return _queryService.GetUserCustomColumnsAsync(appId, moduleName, userId);
     }
 
+    #region 用户
+
+    /// <summary>
+    /// 创建用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public Task<string> CreateUserAsync([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 更新用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public Task<string> UpdateUserAsync([FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+
     /// <summary>
     /// 读取用户资源
     /// </summary>
@@ -86,6 +116,126 @@ public class SubApplicationController : ControllerBase
     }
 
     /// <summary>
+    /// 读取用户下拉列表
+    /// </summary>
+    /// <param name="organizationId">组织Id</param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<SelectViewModel>> GetUserSelectListAsync(string? organizationId = null)
+    {
+        return _queryService.GetSelectListAsync(organizationId);
+    }
+
+    /// <summary>
+    /// 读取用户ID
+    /// </summary>
+    /// <param name="userName">登录名</param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<string> GetUserIdByUserNameAsync([FromQuery] string userName)
+    {
+        return _queryService.GetIdByUserNameAsync(userName);
+    }
+
+    #endregion
+
+    #region 部门
+
+    /// <summary>
+    /// 读取部门下拉列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<SelectViewModel>> GetPositionSelectListAsync(
+        [FromServices] IPositionQueryService service,
+        [FromQuery] string? organizationId = null)
+    {
+        return service.GetSelectListAsync(organizationId);
+    }
+
+    #endregion
+
+    #region 组织架构
+
+    /// <summary>
+    /// 获取组织架构级联列表
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="organizationId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<CascaderViewModel>> GetOrganizationCascaderListAsync(
+        [FromServices] IOrganizationQueryService service,
+        [FromQuery] string? organizationId = null
+    )
+    {
+        return service.GetCascaderListAsync(organizationId);
+    }
+
+    /// <summary>
+    /// 获取组织架构下拉列表
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="organizationId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<SelectViewModel>> GetOrganizationSelectListAsync(
+        [FromServices] IOrganizationQueryService service,
+        [FromQuery] string? organizationId = null
+    )
+    {
+        return service.GetSelectListAsync(organizationId);
+    }
+
+    /// <summary>
+    /// 读取组织架构树形列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<TreeViewModel>> GetOrganizationTreeListAsync(
+        [FromServices] IOrganizationQueryService service,
+        [FromQuery] string? organizationId = null
+    )
+    {
+        return service.GetTreeListAsync(organizationId);
+    }
+
+    /// <summary>
+    /// 读取组织架构ID
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="organizationName"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<string> GetOrganizationIdByNameAsync(
+        [FromServices] IOrganizationQueryService service,
+        [FromQuery] string organizationName
+    )
+    {
+        return service.GetIdByNameAsync(organizationName);
+    }
+
+    #endregion
+
+    #region 角色
+
+    /// <summary>
+    /// 读取角色下拉列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<SelectViewModel>> GetRoleSelectListAsync(
+        [FromServices] IRoleQueryService service,
+        [FromQuery] string organizationId)
+    {
+        return service.GetSelectListAsync(organizationId);
+    }
+
+    #endregion
+
+    #region 其他
+
+    /// <summary>
     /// 更新表格列表信息
     /// </summary>
     /// <param name="request"></param>
@@ -107,4 +257,6 @@ public class SubApplicationController : ControllerBase
     {
         return _queryService.GetUserExternalPagesAsync(userId);
     }
+
+    #endregion
 }

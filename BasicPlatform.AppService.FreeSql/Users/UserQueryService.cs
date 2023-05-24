@@ -245,13 +245,25 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .ToOneAsync(p => new GetCurrentUserResponse
             {
                 OrganizationName = p.Organization!.Name,
-                PositionName = p.Position!.Name
+                PositionName = p.Position!.Name,
+                OrganizationPath = p.Organization!.ParentPath
             });
 
         if (result == null)
         {
             throw FriendlyException.Of("找不到数据");
         }
+        
+        result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
+            ? $"{result.OrganizationPath},{result.OrganizationId}"
+            : result.OrganizationId;
+
+        // 读取角色
+        var roleIds = await Query<RoleUser>()
+            .Where(p => p.UserId == userId)
+            .ToListAsync(p => p.RoleId);
+
+        result.RoleIds.AddRange(roleIds);
 
         // 用户拥有的资源代码
         result.ResourceCodes = await GetResourceCodesAsync(userId, null);
@@ -286,6 +298,16 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             });
 
         return result;
+    }
+
+    /// <summary>
+    /// 读取ID
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    public Task<string> GetIdByUserNameAsync(string userName)
+    {
+        return QueryNoTracking().Where(p => p.UserName == userName).FirstAsync(p => p.Id);
     }
 
     /// <summary>

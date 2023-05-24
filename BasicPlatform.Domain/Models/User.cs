@@ -72,7 +72,7 @@ public class User : EntityCore, ICreator, IUpdater
     /// 所属职位ID
     /// </summary>
     [MaxLength(36)]
-    public string PositionId { get; set; } = null!;
+    public string? PositionId { get; set; }
 
     /// <summary>
     /// 所属职位
@@ -151,7 +151,7 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="positionId">所属职位ID</param>
     /// <param name="createdUserId">创建人</param>
     public User(string userName, string? password, string? avatar, string realName, Gender gender, string? nickName,
-        string? phoneNumber, string? email, string organizationId, string positionId, string? createdUserId)
+        string? phoneNumber, string? email, string organizationId, string? positionId, string? createdUserId)
     {
         password ??= "123456";
         UserName = userName;
@@ -211,7 +211,7 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="organizationId"></param>
     public void Update(string userName, string? avatar, string realName, Gender gender,
         string? nickName,
-        string? phoneNumber, string? email, string organizationId, string positionId, string? updatedUserId)
+        string? phoneNumber, string? email, string organizationId, string? positionId, string? updatedUserId)
     {
         UserName = userName;
         Avatar = avatar;
@@ -221,7 +221,7 @@ public class User : EntityCore, ICreator, IUpdater
         PhoneNumber = phoneNumber;
         Email = email;
         OrganizationId = organizationId;
-        PositionId = positionId;
+        PositionId = positionId ?? throw FriendlyException.Of("职位不能为空");
         LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
 

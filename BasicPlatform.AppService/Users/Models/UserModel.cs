@@ -54,7 +54,7 @@ public class UserModel : ModelBase
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    public string PositionId { get; set; } = null!;
+    public string? PositionId { get; set; }
 
     /// <summary>
     /// 状态

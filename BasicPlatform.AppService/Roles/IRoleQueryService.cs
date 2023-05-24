@@ -34,6 +34,14 @@ public interface IRoleQueryService
     Task<List<SelectViewModel>> GetSelectListAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 读取下拉列表数据
+    /// </summary>
+    /// <param name="organizationId">组织架构Id</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<List<SelectViewModel>> GetSelectListAsync(string organizationId,CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 读取用户拥有的角色
     /// </summary>
     /// <param name="userId"></param>

@@ -106,6 +106,39 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     }
 
     /// <summary>
+    /// 读取下拉列表
+    /// </summary>
+    /// <param name="organizationId">组织架构Id</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<SelectViewModel>> GetSelectListAsync(string organizationId,
+        CancellationToken cancellationToken = default)
+    {
+        var list = await QueryNoTracking<OrganizationRole>()
+            .Where(p =>
+                QueryNoTracking<Organization>()
+                    .As("c")
+                    .Where(c => c.ParentPath.Contains(organizationId) || c.Id == organizationId)
+                    .Any(c => c.Id == p.OrganizationId)
+            )
+            .GroupBy(p => p.RoleId)
+            .ToListAsync(p => new
+            {
+                p.Value.Role.Status,
+                p.Value.Role.Name,
+                Id = p.Key
+            }, cancellationToken);
+        return list
+            .Select(p => new SelectViewModel
+            {
+                Disabled = p.Status == Status.Disabled,
+                Label = p.Name,
+                Value = p.Id
+            })
+            .ToList();
+    }
+
+    /// <summary>
     /// 读取用户拥有的角色
     /// </summary>
     /// <param name="userId"></param>

@@ -21,7 +21,7 @@ import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDrop
 import fixMenuItemIcon from './components/FixMenuItemIcon';
 import { recursionMenu } from './utils/menu';
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
+// const loginPath = '/user/login';
 import { fetchSignalRConnectionNotice } from './signalr/connection';
 import { HubConnection } from '@microsoft/signalr';
 import { getNavTheme, setNavTheme } from '@/utils/navTheme';
@@ -57,7 +57,7 @@ export async function getInitialState(): Promise<{
       });
       return msg.data;
     } catch (error) {
-      history.push(loginPath);
+      history.push(LOGIN_PATH);
     }
     return undefined;
   };
@@ -83,7 +83,7 @@ export async function getInitialState(): Promise<{
   };
   // 如果不是登录页面，执行
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  if (location.pathname !== LOGIN_PATH) {
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
     const externalPages = await fetchExternalPages();
@@ -223,8 +223,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       const { location } = history;
       // console.log('location', location);
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      if (!initialState?.currentUser && location.pathname !== LOGIN_PATH) {
+        history.push(LOGIN_PATH);
         return;
       }
       if (location.pathname !== '/') {

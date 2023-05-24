@@ -152,7 +152,7 @@ public class OrganizationController : CustomControllerBase
     }
 
     /// <summary>
-    /// 获取组织架构级联人员信息
+    /// 获取组织架构级联信息
     /// </summary>
     /// <returns></returns>
     [HttpGet]

@@ -24,6 +24,8 @@ declare const APP_TOKEN_KEY: string;
 declare const RTC_URL: string;
 declare const APP_NAV_THEME_KEY: string;
 declare const APP_SESSION_CODE_KEY: string;
+/** 登录路径 */
+declare const LOGIN_PATH: string;
 
 /**
  * 分页结构
