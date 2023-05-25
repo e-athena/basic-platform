@@ -1,5 +1,5 @@
-import { queryColumns, updateUserCustomColumns } from '@/services/ant-design-pro/api';
-import { getFilter, getSorter } from '@/utils/utils';
+import { queryColumns, queryDetailColumns, updateUserCustomColumns } from '@/services/ant-design-pro/api';
+import { getFilter, getSorter, queryDetail } from '@/utils/utils';
 import {
   ParamsType,
   ProColumns,
@@ -7,11 +7,12 @@ import {
   ProTable,
   ProTableProps,
 } from '@ant-design/pro-components';
-import { Drawer, Tooltip } from 'antd';
+import { Collapse, Drawer, Tooltip } from 'antd';
 import { cloneDeep } from 'lodash';
 import { useEffect, useState } from 'react';
 import AdvancedSearch from '../AdvancedSearch';
 import EditTableColumnForm from '../EditTableColumnForm';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 type ProTablePlusProps<T, U, ValueType = 'text'> = {
   /** 重写的Column */
@@ -24,6 +25,8 @@ type ProTablePlusProps<T, U, ValueType = 'text'> = {
   showIndexColumn?: boolean;
   /** 是否显示详情 */
   showDescriptions?: boolean;
+  queryDetail?: (id: string) => Promise<ApiResponse<any>>;
+  searchPlaceholder?: string;
 } & Partial<ProTableProps<T, U, ValueType>>;
 
 /**
@@ -41,6 +44,25 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
   const [columns, setColumns] = useState<ProColumns<T, ValueType>[]>(props.defaultColumns || []);
   const [remoteModuleName, setRemoteModuleName] = useState<string>();
   const showIndexColumn = props.showIndexColumn === undefined || props.showIndexColumn;
+  const [detailColumnData, setDetailColumnData] = useState<API.TableColumnItem[]>([]);
+
+  // detailColumnData按group分组
+  const detailColumnDataGroup = detailColumnData.reduce((prev, cur) => {
+    const group = prev.find((x) => x.group === cur.group);
+    if (group) {
+      if (cur.groupDescription && !group.description) {
+        group.description = cur.groupDescription;
+      }
+      group.columns.push(cur);
+    } else {
+      prev.push({
+        description: cur.groupDescription,
+        group: cur.group,
+        columns: [cur],
+      });
+    }
+    return prev;
+  }, [] as { group: string; description?: string, columns: API.TableColumnItem[] }[]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -200,7 +222,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
 
   const [advancedSearchFilter, setAdvancedSearchFilter] = useState<FilterGroupItem[]>([]);
   const [currentRow, setCurrentRow] = useState<T>();
-  const { query } = props;
+  const { query, searchPlaceholder } = props;
   return (
     <>
       <ProTable<T, U, ValueType>
@@ -209,15 +231,28 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         search={false}
         options={{
           search: {
-            placeholder: '关健字搜索',
+            placeholder: searchPlaceholder || '关健字搜索',
           },
           setting: false,
           fullScreen: true,
         }}
         onRow={(record) => {
           return {
-            onClick: () => {
+            onClick: async () => {
               if (props.showDescriptions) {
+                if (props.queryDetail !== undefined) {
+                  if (detailColumnData.length === 0) {
+                    // 查询详情列
+                    const res = await queryDetailColumns(props.moduleName);
+                    setDetailColumnData(res.success ? (res.data?.columns || []) : []);
+                  }
+
+                  const data = await queryDetail(props.queryDetail, record.id!);
+                  if (data) {
+                    setCurrentRow(data);
+                  }
+                  return;
+                }
                 setCurrentRow(record);
               }
             },
@@ -236,7 +271,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
                 }}
               />
             </Tooltip>,
-            <Tooltip key={'editTableColumn'} title={'自定义表格'}>
+            <Tooltip key={'editTableColumn'} title={'表格列配置'}>
               <EditTableColumnForm
                 data={columnData}
                 onOk={(list) => {
@@ -263,24 +298,129 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         scroll={{ x: tableWidth || 1000 }}
         columns={columnLoading ? [] : columns}
       />
-      <Drawer
-        width={600}
+      {/* <Modal
+        width={820}
+        open={!!currentRow}
+        onCancel={() => {
+          setCurrentRow(undefined);
+        }}
+        footer={null}
+      >
+        {currentRow !== undefined && (
+          <ProDescriptions
+            column={2}
+            // column={{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }}
+            title={'详情'}
+            dataSource={currentRow || {}}
+          >
+            {columnData
+              .filter(x => !x.hideInDescriptions && x.dataIndex !== 'option')
+              .sort(x => x.sort)
+              .map((x) => {
+                return (<ProDescriptions.Item
+                  key={x.dataIndex}
+                  dataIndex={x.dataIndex}
+                  label={x.title}
+                  valueType={x.valueType}
+                  valueEnum={x.valueEnum}
+                  tooltip={x.tooltip}
+                />);
+              })}
+          </ProDescriptions>
+        )}
+      </Modal> */}
+
+      {detailColumnData.length === 0 ? <Drawer
+        width={'50%'}
         open={!!currentRow}
         onClose={() => {
           setCurrentRow(undefined);
         }}
-        closable={false}
+        title={'详情'}
       >
         {currentRow !== undefined && (
           <ProDescriptions
-            column={1}
-            title={'详情'}
+            column={2}
+            title={false}
+            size={'small'}
+            bordered
             dataSource={currentRow || {}}
-            // @ts-ignore
-            columns={columnLoading ? [] : columns}
-          />
+          >
+            {(detailColumnData.length !== 0 ? detailColumnData : columnData)
+              .filter(x => !x.hideInDescriptions && x.dataIndex !== 'option')
+              .sort(x => x.sort)
+              .map((x) => {
+                return (<ProDescriptions.Item
+                  key={x.dataIndex}
+                  dataIndex={x.dataIndex}
+                  label={x.title}
+                  valueType={x.valueType}
+                  valueEnum={x.valueEnum}
+                  tooltip={x.tooltip}
+                  renderText={(value) => {
+                    if (x.propertyType === 'boolean') {
+                      return value ? '是' : '否';
+                    }
+                    return value;
+                  }}
+                />);
+              })}
+          </ProDescriptions>
         )}
-      </Drawer>
+      </Drawer> :
+        <Drawer
+          width={'50%'}
+          open={!!currentRow}
+          onClose={() => {
+            setCurrentRow(undefined);
+          }}
+          title={'详情'}
+        >
+          <Collapse defaultActiveKey={detailColumnDataGroup.map(x => x.group)}>
+            {detailColumnDataGroup.map((x) => {
+              return <>
+                <Collapse.Panel
+                  header={x.group === 'default' ? '基础信息' : x.group}
+                  key={x.group}
+                  extra={x.description ?
+                    <Tooltip title={x.description}>
+                      <InfoCircleOutlined />
+                    </Tooltip> : undefined
+                  }
+                >
+                  <ProDescriptions
+                    column={2}
+                    title={false}
+                    size={'small'}
+                    bordered
+                    dataSource={currentRow || {}}
+                  >
+                    {x.columns
+                      .filter(x => !x.hideInDescriptions && x.dataIndex !== 'option')
+                      .sort(x => x.sort)
+                      .map((x) => {
+                        return (<ProDescriptions.Item
+                          key={x.dataIndex}
+                          dataIndex={x.dataIndex}
+                          label={x.title}
+                          valueType={x.valueType}
+                          valueEnum={x.valueEnum}
+                          tooltip={x.tooltip}
+                          renderText={(value) => {
+                            if (x.propertyType === 'boolean') {
+                              return value ? '是' : '否';
+                            }
+                            return value;
+                          }}
+                        />);
+                      })}
+                  </ProDescriptions>
+                </Collapse.Panel>
+              </>;
+            })}
+          </Collapse>
+        </Drawer>
+      }
     </>
   );
 }

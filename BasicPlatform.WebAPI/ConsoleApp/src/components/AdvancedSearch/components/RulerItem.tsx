@@ -293,8 +293,18 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
       if (item.operator === 'between') {
         return (
           <RangePicker
+            presets={[
+              { label: '今天', value: [dayjs(), dayjs()] },
+              { label: '昨天', value: [dayjs().add(-1, 'd'), dayjs().add(-1, 'd')] },
+              { label: '最近七天', value: [dayjs().add(-7, 'd'), dayjs()] },
+              { label: '最近十四天', value: [dayjs().add(-14, 'd'), dayjs()] },
+              { label: '最近一个月', value: [dayjs().add(-30, 'd'), dayjs()] },
+              { label: '最近三个月', value: [dayjs().add(-90, 'd'), dayjs()] },
+              { label: '最近半年', value: [dayjs().add(-6, 'M'), dayjs()] },
+              { label: '最近一年', value: [dayjs().add(-1, 'y'), dayjs()] },
+            ]}
             style={{ width: '350px' }}
-            placeholder={['开始时间', '结束时间']}
+            placeholder={['开始日期', '结束日期']}
             value={
               item.value === '' || item.value === undefined || item.value?.split(',')?.length !== 2
                 ? null
