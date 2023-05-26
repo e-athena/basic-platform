@@ -4,6 +4,7 @@ using Athena.InstantMessaging;
 using Athena.InstantMessaging.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
+using Microsoft.Extensions.Options;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -32,12 +33,14 @@ public class AccountController : ControllerBase
     /// <summary>
     /// 登录
     /// </summary>
+    /// <param name="options"></param>
     /// <param name="mediator"></param>
     /// <param name="cacheManager"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
     public async Task<dynamic> LoginAsync(
+        [FromServices] IOptions<JwtConfig> options,
         [FromServices] IMediator mediator,
         [FromServices] ICacheManager cacheManager,
         [FromBody] LoginRequest request
@@ -83,15 +86,15 @@ public class AccountController : ControllerBase
             new(ClaimTypes.Name, info.UserName),
             new("RealName", info.RealName)
         };
-
+        var jwtConfig = options.Value;
         var sessionCode = Guid.NewGuid().ToString("N").ToUpper();
-        var cacheTime = TimeSpan.FromMinutes(30);
+        var cacheTime = TimeSpan.FromSeconds(jwtConfig.Expires);
         var key = string.Format(SsoCacheKey.CurrentUserInfo, sessionCode);
         await cacheManager.SetAsync(key, info, cacheTime);
         // 设置会话过期时间
         await cacheManager.SetAsync(
             string.Format(SsoCacheKey.SessionExpiry, sessionCode),
-            DateTime.Now.AddMinutes(30),
+            DateTime.Now.AddSeconds(jwtConfig.Expires),
             cacheTime
         );
         var token = _securityContextAccessor.CreateToken(claims);
