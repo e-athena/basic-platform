@@ -262,24 +262,22 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         toolBarRender={(action, rows) => [
           ...(props.toolBarRender ? props.toolBarRender(action, rows) : []),
           ...[
-            <Tooltip key={'advancedSearch'} title={'自定义查询'}>
-              <AdvancedSearch
-                data={columnData.filter((d) => d.dataIndex !== 'option')}
-                historyFilters={advancedSearchFilter}
-                onSearch={(d) => {
-                  setAdvancedSearchFilter(d);
-                }}
-              />
-            </Tooltip>,
-            <Tooltip key={'editTableColumn'} title={'表格列配置'}>
-              <EditTableColumnForm
-                data={columnData}
-                onOk={(list) => {
-                  setColumnData(list);
-                  setColumnLoading(true);
-                }}
-              />
-            </Tooltip>,
+            <AdvancedSearch
+              key={'advancedSearch'}
+              data={columnData.filter((d) => d.dataIndex !== 'option')}
+              historyFilters={advancedSearchFilter}
+              onSearch={(d) => {
+                setAdvancedSearchFilter(d);
+              }}
+            />,
+            <EditTableColumnForm
+              key={'editTableColumn'}
+              data={columnData}
+              onOk={(list) => {
+                setColumnData(list);
+                setColumnLoading(true);
+              }}
+            />,
           ],
         ]}
         // @ts-ignore

@@ -1,6 +1,6 @@
 import UserModal from '@/components/UserModal';
 import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
-import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space } from 'antd';
+import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space, theme } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
@@ -15,6 +15,8 @@ type RulerItemProps = {
 };
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
+  const { useToken } = theme;
+  const { token } = useToken();
   // const rulerSelect = [
   //   {
   //     label: '等于',
@@ -418,7 +420,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
     onChange(newItem);
   }
   return (
-    <div style={{ margin: '5px 0', border: '1px solid #f2f2f2', padding: '5px 10px' }}>
+    <div style={{ margin: '5px 0', border: `1px solid ${token.colorBorder}`, padding: '5px 10px', borderRadius: 8 }}>
       <Row gutter={[24, 24]}>
         <Col span={90}>
           {item.index && item.index > 0 ? (
