@@ -164,24 +164,53 @@ public class UtilController : ControllerBase
         [FromServices] IApplicationQueryService applicationQueryService)
     {
         var appList = await applicationQueryService.GetListAsync();
+
+        // 有配置前端地址的应用
+        var list = appList
+            .Where(p => !string.IsNullOrEmpty(p.FrontendUrl))
+            .ToList();
+
+        // 可正常访问的应用
+        var healthyList = new List<string>();
+
+        await Parallel.ForEachAsync(list, async (app, index) =>
+        {
+            try
+            {
+                var res = await app.FrontendUrl.GetAsync(cancellationToken: index);
+                if (res.StatusCode == 200)
+                {
+                    healthyList.Add(app.ClientId);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "应用前端地址不可访问，应用ID:{ClientId},前端地址:{Url}", app.ClientId, app.FrontendUrl);
+            }
+        });
+
         return new
         {
-            Apps = appList.Where(p => !string.IsNullOrEmpty(p.FrontendUrl)).Select(p => new
-            {
-                Name = p.ClientId,
-                Entry = p.FrontendUrl,
-                Credentials = true
-            }).ToList<dynamic>(),
-            Routes = appList.Where(p => !string.IsNullOrEmpty(p.FrontendUrl)).Select(p => new
-            {
-                Path = $"/app/{p.ClientId}/*",
-                MicroApp = p.ClientId,
-                MicroAppProps = new
+            Apps = appList
+                .Where(p => healthyList.Contains(p.ClientId))
+                .Select(p => new
                 {
-                    AutoCaptureError = true,
-                    ClassName = "micro-app",
-                }
-            }).ToList<dynamic>(),
+                    Name = p.ClientId,
+                    Entry = p.FrontendUrl,
+                    Credentials = true
+                }).ToList<dynamic>(),
+            Routes = appList
+                .Where(p => healthyList.Contains(p.ClientId))
+                .Select(p => new
+                {
+                    Path = $"/app/{p.ClientId}/*",
+                    MicroApp = p.ClientId,
+                    MicroAppProps = new
+                    {
+                        AutoCaptureError = true,
+                        ClassName = "micro-app",
+                    }
+                }).ToList<dynamic>(),
         };
     }
 
