@@ -18,9 +18,20 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
   const [selectedResources, setSelectedResources] = useState<ResourceModel[]>(
     props.resources || [],
   );
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(
-    dataSource.map((item) => item.code),
-  );
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(() => {
+    // 获取树形的code
+    const getTreeCodes = (items: API.ResourceInfo[]) => {
+      let codes: string[] = [];
+      items.forEach((item) => {
+        codes.push(item.code);
+        if (item.children) {
+          codes = codes.concat(getTreeCodes(item.children));
+        }
+      });
+      return codes;
+    };
+    return getTreeCodes(dataSource); //dataSource.map((item) => item.code);
+  });
   useEffect(() => {
     if (props.onChange !== undefined) {
       props.onChange(
@@ -35,7 +46,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
       title: '名称',
       dataIndex: 'name',
       hideInSearch: true,
-      width: 150,
+      width: 220,
     },
     {
       title: '菜单',

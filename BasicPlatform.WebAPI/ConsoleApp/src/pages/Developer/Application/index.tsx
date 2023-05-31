@@ -136,6 +136,7 @@ const TableList: React.FC = () => {
         defaultColumns={defaultColumns}
         query={query}
         moduleName={'Application'}
+        showDescriptions
         toolBarRender={() => [
           <Access
             key={'add'}

@@ -26,6 +26,7 @@ type ProTablePlusProps<T, U, ValueType = 'text'> = {
   /** 是否显示详情 */
   showDescriptions?: boolean;
   queryDetail?: (id: string) => Promise<ApiResponse<any>>;
+  /** 搜索框提示内容 */
   searchPlaceholder?: string;
 } & Partial<ProTableProps<T, U, ValueType>>;
 
@@ -97,7 +98,8 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         const find = columns.find((x) => x.dataIndex === item.dataIndex);
         if (find !== undefined) {
           find.title = find.title || item.title;
-          find.hideInTable = find.dataIndex === 'option' ? find.hideInTable : item.hideInTable;
+          // find.hideInTable = find.dataIndex === 'option' ? find.hideInTable : item.hideInTable;
+          find.hideInTable = find.hideInTable || item.hideInTable;
           find.width = item.width || find.width;
           find.fixed = item.fixed !== 'left' && item.fixed !== 'right' ? undefined : item.fixed;
           find.index = item.sort || i;
@@ -215,7 +217,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         });
       }
     };
-    if (columnLoading && columns.length > 0) {
+    if (columnLoading && (columns.length > 0 || props.defaultColumns?.length === 0)) {
       fetch();
     }
   }, [columnLoading, columns]);

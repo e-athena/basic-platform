@@ -71,11 +71,6 @@ const TableList: React.FC = () => {
       valueType: 'avatar',
     },
     {
-      title: '用户名',
-      dataIndex: 'userName',
-      copyable: true,
-    },
-    {
       title: '性别',
       dataIndex: 'gender',
       hideInSearch: true,

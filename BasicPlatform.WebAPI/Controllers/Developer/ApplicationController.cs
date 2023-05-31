@@ -8,7 +8,7 @@ namespace BasicPlatform.WebAPI.Controllers.Developer;
 /// <summary>
 /// 应用管理
 /// </summary>
-[Menu("应用管理",
+[FrontEndRouting("应用管理",
     ModuleCode = "developer",
     ModuleName = "开发者中心",
     ModuleIcon = "ControlOutlined",

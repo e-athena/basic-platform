@@ -57,7 +57,13 @@ public interface IUserQueryService
     /// </summary>
     /// <returns></returns>
     Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId);
-    
+
+    /// <summary>
+    /// 读取用户数据
+    /// </summary>
+    /// <returns></returns>
+    Task<List<SelectViewModel>> GetAllSelectListAsync();
+
     /// <summary>
     /// 读取ID
     /// </summary>

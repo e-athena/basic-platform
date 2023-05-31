@@ -253,7 +253,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         {
             throw FriendlyException.Of("找不到数据");
         }
-        
+
         result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
             ? $"{result.OrganizationPath},{result.OrganizationId}"
             : result.OrganizationId;
@@ -289,6 +289,24 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         var result = await Queryable
             .Where(p => p.Status == Status.Enabled)
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
+            .ToListAsync(t1 => new SelectViewModel
+            {
+                Label = t1.RealName,
+                Value = t1.Id,
+                Disabled = t1.Status == Status.Disabled,
+                Extend = t1.UserName
+            });
+
+        return result;
+    }
+
+    /// <summary>
+    /// 读取下拉选择框数据列表
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<SelectViewModel>> GetAllSelectListAsync()
+    {
+        var result = await Queryable
             .ToListAsync(t1 => new SelectViewModel
             {
                 Label = t1.RealName,

@@ -137,6 +137,16 @@ public class SubApplicationController : ControllerBase
         return _queryService.GetIdByUserNameAsync(userName);
     }
 
+    /// <summary>
+    /// 读取用户下拉列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<SelectViewModel>> GetAllUserSelectListAsync()
+    {
+        return _queryService.GetAllSelectListAsync();
+    }
+
     #endregion
 
     #region 部门

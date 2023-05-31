@@ -7,7 +7,7 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 /// <summary>
 /// 外部页面管理
 /// </summary>
-[Menu("扩展页面",
+[FrontEndRouting("扩展页面",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",

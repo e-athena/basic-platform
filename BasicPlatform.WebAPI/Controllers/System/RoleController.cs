@@ -8,7 +8,7 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 /// <summary>
 /// 角色管理
 /// </summary>
-[Menu("角色管理",
+[FrontEndRouting("角色管理",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",

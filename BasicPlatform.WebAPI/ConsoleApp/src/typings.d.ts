@@ -111,3 +111,10 @@ declare interface ColSelectItem {
   propertyType: string;
   enumOptions: any[];
 }
+
+/** 下载文件 */
+declare interface DownloadFileInfo {
+  fileName: string,
+  fileType: string,
+  fileToken: string,
+}

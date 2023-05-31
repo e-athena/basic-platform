@@ -7,7 +7,7 @@ namespace BasicPlatform.WebAPI.Controllers.Developer;
 /// <summary>
 /// 资源管理
 /// </summary>
-[Menu("资源管理",
+[FrontEndRouting("资源管理",
     ModuleCode = "developer",
     ModuleName = "开发者中心",
     ModuleIcon = "ControlOutlined",

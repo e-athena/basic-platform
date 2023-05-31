@@ -2,6 +2,15 @@ import { message, Modal } from 'antd';
 import { SortOrder } from 'antd/es/table/interface';
 
 /**
+ * 下载文件
+ * @param {*} file 文件信息
+ */
+export const downloadFile = (file: DownloadFileInfo) => {
+  const params = `?FileName=${file.fileName}&FileType=${file.fileType}&FileToken=${file.fileToken}`;
+  window.open(`${API_URL}/api/File/DownloadTempFile${params}`);
+};
+
+/**
  * 是否有权限
  * @param key 权限代码
  * @param resource API资源
@@ -29,6 +38,27 @@ export const hasPermission = (keys: string[], resource: API.ResourceInfo | null)
   return keys.some((p) => permissions?.includes(p));
 };
 
+/** 读取资源信息 */
+export const getMenuResource = (items: API.ResourceInfo[], path: string): API.ResourceInfo | null => {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item.path === path) {
+      return item;
+    }
+    if (item.children) {
+      const child = getMenuResource(item.children, path);
+      if (child) {
+        return child;
+      }
+    }
+  }
+  return null;
+};
+
+// 根据pathname与菜单中的path进行匹配，判断是否有访问权限，
+const hasPath = (items: API.ResourceInfo[], path: string) => {
+  return getMenuResource(items, path) !== null;
+};
 /**
  * 是否有菜单权限
  * @param pathname 路由
@@ -42,16 +72,22 @@ export const hasMenuPermission = (
   if (modules === undefined || modules === null || modules?.length === 0) {
     return false;
   }
+  let hasPermission = false;
   // 从子级中读取对应的菜单信息
   for (let i = 0; i < modules.length; i++) {
     const module = modules[i];
-    const item = module.children?.find((p) => p.path === pathname);
+    if (!module.children) {
+      continue;
+    }
+    const item = hasPath(module.children, pathname);
     if (item) {
-      return true;
+      hasPermission = true;
+      break;
     }
   }
-  return false;
+  return hasPermission;
 };
+
 /**
  * 查询详情
  * @param {*} func
@@ -95,6 +131,36 @@ export async function submitHandle<T>(
     hide();
     if (res.success) {
       message.success(`${aTips}成功`);
+      return true;
+    }
+    Modal.error({
+      title: `${aTips}失败`,
+      content: res.message,
+    });
+    return false;
+  } catch (error) {
+    hide();
+    return false;
+  }
+}
+/**
+ * 导出Excel文件处理
+ * @param {*} func
+ * @param {*} fields
+ */
+export async function exportExcelHandle<T>(
+  func: (values: T) => Promise<ApiResponse<DownloadFileInfo>>,
+  fields: T,
+  tips?: string,
+): Promise<boolean> {
+  const aTips = tips || '导出';
+  const hide = message.loading(`${aTips}中`, 0);
+  try {
+    const res = await func(fields);
+    hide();
+    if (res.success && res.data) {
+      message.success(`${aTips}成功`);
+      downloadFile(res.data);
       return true;
     }
     Modal.error({
@@ -191,3 +257,9 @@ export const generateTextImage = (text: string, width: number, height: number) =
 
   return cvs.toDataURL('image/jpeg', 1);
 };
+
+/** 是否嵌入乾坤 */
+export const isQiankun = () => {
+  // @ts-ignore
+  return window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ !== undefined;
+}
