@@ -19,7 +19,7 @@
         <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.8-pre2" />
         <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.2" />
         <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.1.1" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.4.1" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.4.2" />
         <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="6.2.0-pre1.1" />
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.13" />
         <PackageReference Include="Athena.Infrastructure.Logger.FreeSql" Version="6.3.1.3" />

@@ -238,7 +238,7 @@ public class UserController : CustomControllerBase
         {
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetMenuResources(assembly, GlobalConstant.DefaultAppId));
+                list.AddRange(service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId));
             }
 
             result.Add(new ApplicationResourceInfo
@@ -259,7 +259,7 @@ public class UserController : CustomControllerBase
 
             foreach (var assembly in assemblies)
             {
-                list.AddRange(service.GetPermissionMenuResources(assembly, keys, GlobalConstant.DefaultAppId));
+                list.AddRange(service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId));
             }
 
             result.Add(new ApplicationResourceInfo
@@ -322,7 +322,7 @@ public class UserController : CustomControllerBase
         var assembly = Assembly.GetExecutingAssembly();
         if (accessor.IsRoot)
         {
-            systemResources = service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+            systemResources = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
         }
         else
         {
@@ -331,7 +331,7 @@ public class UserController : CustomControllerBase
                 .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
                 .Select(p => p.Key)
                 .ToList();
-            systemResources = service.GetPermissionMenuResources(assembly, keys, GlobalConstant.DefaultAppId);
+            systemResources = service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId);
         }
 
         result.Add(new MenuTreeInfo
