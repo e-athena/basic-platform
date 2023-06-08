@@ -58,7 +58,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
   const { onRemoveItem, item, onChange, colSelect } = props;
   const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
-    console.log(item);
+    // console.log(item);
     return [];
   };
   const getRulerSelect = () => {
@@ -429,11 +429,11 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
               placeholder="与或"
               options={[
                 {
-                  label: '与(&&)',
+                  label: '并且',
                   value: 'and',
                 },
                 {
-                  label: '或(||)',
+                  label: '或者',
                   value: 'or',
                 },
               ]}

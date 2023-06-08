@@ -3,6 +3,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { Button, Empty, message, Modal, Select, Space, theme, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import RulerItem from './components/RulerItem';
+import { useKeyPress } from 'ahooks';
 
 type EditTableColumnFormProps = {
   onCancel?: () => void;
@@ -23,6 +24,9 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
   const { open, onCancel, onSearch, data, historyFilters } = props;
   const [selfOpen, setSelfOpen] = useState<boolean>(false);
   const [filterGroups, setFilterGroups] = useState<FilterGroupItem[]>(historyFilters || []);
+  useKeyPress(['meta.k', 'ctrl.k'], () => {
+    setSelfOpen(!selfOpen);
+  });
   useEffect(() => {
     if (open || selfOpen) {
       // 如果分组为空，添加一个默认分组

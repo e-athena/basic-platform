@@ -26,6 +26,8 @@ declare const APP_NAV_THEME_KEY: string;
 declare const APP_SESSION_CODE_KEY: string;
 /** 登录路径 */
 declare const LOGIN_PATH: string;
+/** CDN地址 */
+declare const CDN_ADDRESS: string;
 
 /**
  * 分页结构
