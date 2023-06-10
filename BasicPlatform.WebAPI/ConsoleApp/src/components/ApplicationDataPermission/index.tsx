@@ -60,6 +60,7 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
               children: (
                 <DataPermission
                   data={p.dataPermissionGroups || []}
+                  extraSelectList={p.extraSelectList}
                   onChange={(values) => {
                     let changeValues: API.UserDataPermission[] = [];
                     for (let i = 0; i < values.length; i++) {

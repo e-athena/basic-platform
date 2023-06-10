@@ -1,3 +1,6 @@
+// Global using directives
+
+global using Athena.Infrastructure.DataPermission.Attributes;
 global using Athena.Infrastructure.Domain;
 global using Athena.Infrastructure.Messaging.Requests;
 global using Athena.Infrastructure.Messaging.Responses;
@@ -8,7 +11,6 @@ global using Athena.Infrastructure.Securities;
 global using BasicPlatform.AppService.Resources.Models;
 global using BasicPlatform.Infrastructure.Enums;
 global using BasicPlatform.Domain.Models;
-global using BasicPlatform.AppService.DataPermissions.Attributes;
 global using Athena.Infrastructure.FrontEndTables;
 global using Athena.Infrastructure.QueryFilters;
 global using System.Text.Json;

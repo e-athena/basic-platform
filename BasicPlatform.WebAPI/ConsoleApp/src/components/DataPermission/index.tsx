@@ -6,6 +6,7 @@ import QueryPolicyModal from './components/QueryPolicyModal';
 
 type DataPermissionProps = {
   data: API.DataPermissionGroup[];
+  extraSelectList?: API.SelectInfo[];
   onChange: (data: API.DataPermissionGroup[]) => void;
 };
 
@@ -253,6 +254,7 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
           open={queryPolicyOpen}
           resourceKey={currentRow?.resourceKey || ''}
           data={currentRow?.properties || []}
+          extraSelectList={props.extraSelectList}
         />
       )}
     </>

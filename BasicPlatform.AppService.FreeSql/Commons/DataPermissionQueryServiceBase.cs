@@ -8,7 +8,7 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
 {
     private readonly ISecurityContextAccessor _accessor;
     private readonly IFreeSql _freeSql;
-    private readonly ICacheManager? _cacheManager;
+    private readonly IDataPermissionService? _dataPermissionService;
 
     /// <summary>
     /// 
@@ -23,7 +23,8 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     {
         _freeSql = freeSql;
         _accessor = accessor;
-        _cacheManager = AthenaProvider.Provider?.GetService(typeof(ICacheManager)) as ICacheManager;
+        _dataPermissionService =
+            AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
     }
 
     /// <summary>
@@ -278,38 +279,14 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     /// <returns></returns>
     protected List<string> GetUserOrganizationIds(string? userId = null)
     {
-        List<string> QueryFunc()
+        userId ??= UserId;
+
+        if (_dataPermissionService == null || userId == null)
         {
-            userId ??= UserId;
-            // 兼任职信息表
-            var orgIds = _freeSql.Select<UserAppointment>()
-                .Where(p => p.UserId == userId)
-                .ToList(p => p.OrganizationId);
-
-            // 用户组织
-            var orgId = _freeSql.Select<User>()
-                .Where(p => p.Id == userId)
-                .First(p => p.OrganizationId);
-
-            if (!string.IsNullOrEmpty(orgId))
-            {
-                orgIds.Add(orgId);
-            }
-
-            return orgIds;
+            return new List<string>();
         }
 
-        if (_cacheManager == null)
-        {
-            return QueryFunc();
-        }
-
-        // Key
-        var key = string.Format(CacheConstant.UserOrganizationKey, userId ?? UserId);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
-
-        return _cacheManager.GetOrCreate(key, QueryFunc, expireTime) ?? new List<string>();
+        return _dataPermissionService.GetUserOrganizationIds(userId, null);
     }
 
     /// <summary>
@@ -318,46 +295,14 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     /// <returns></returns>
     protected List<string> GetUserOrganizationIdsTree(string? userId = null)
     {
-        List<string> QueryFunc()
+        userId ??= UserId;
+
+        if (_dataPermissionService == null || userId == null)
         {
-            userId ??= UserId;
-            // 查询用户所在的组织
-            var list = GetUserOrganizationIds(userId);
-
-            if (list.Count == 0)
-            {
-                return list;
-            }
-
-            var filters = list.Select(p => new QueryFilter
-            {
-                Key = "ParentPath",
-                Operator = "contains",
-                Value = p,
-                XOR = "or"
-            }).ToList();
-            // 生成查询条件
-            var filterWhere = QueryableExtensions.MakeFilterWhere<Organization>(filters, false);
-            // 查询用户组织架构的下级组织
-            var orgIds = _freeSql.Select<Organization>()
-                .Where(filterWhere)
-                .ToList(p => p.Id);
-            list.AddRange(orgIds);
-
-            // 数据去重
-            return list.GroupBy(p => p).Select(p => p.Key).ToList();
+            return new List<string>();
         }
 
-        if (_cacheManager == null)
-        {
-            return QueryFunc();
-        }
-
-        // Key
-        var key = string.Format(CacheConstant.UserOrganizationsKey, userId ?? UserId);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
-        return _cacheManager.GetOrCreate(key, QueryFunc, expireTime) ?? new List<string>();
+        return _dataPermissionService.GetUserOrganizationIdsTree(userId, null);
     }
 
     /// <summary>
@@ -366,100 +311,14 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     /// <returns></returns>
     private List<DataPermission> GetUserDataScopes(string? userId = null)
     {
-        if (_cacheManager == null)
+        userId ??= UserId;
+
+        if (_dataPermissionService == null || userId == null)
         {
-            return QueryFunc();
+            return new List<DataPermission>();
         }
 
-        List<DataPermission> QueryFunc()
-        {
-            userId ??= UserId;
-            var dataScopeList = _freeSql.Select<Role>()
-                .Where(p => _freeSql
-                    .Select<RoleUser>()
-                    .As("c")
-                    .Where(c => c.UserId == userId)
-                    .Any(c => c.RoleId == p.Id)
-                )
-                .ToList(p => new
-                {
-                    p.DataScope,
-                    p.DataScopeCustom
-                });
-
-            // 去重
-            dataScopeList = dataScopeList.GroupBy(p => p).Select(p => p.Key).ToList();
-
-            // 读取用户的角色数据权限
-            var list = _freeSql.Select<RoleDataPermission>()
-                // 读取用户的角色
-                .Where(p => _freeSql
-                    .Select<RoleUser>()
-                    .As("c")
-                    .Where(c => c.UserId == userId)
-                    .Any(c => c.RoleId == p.RoleId)
-                )
-                // 启用的
-                .Where(p => p.Enabled)
-                .ToList(p => new DataPermission
-                {
-                    ResourceKey = p.ResourceKey,
-                    DataScope = p.DataScope
-                });
-
-            // 读取用户的数据权限
-            var userPermissionList = _freeSql.Select<UserDataPermission>()
-                .Where(p => p.UserId == userId)
-                // 启用的
-                .Where(p => p.Enabled)
-                // 读取未过期的
-                .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
-                .ToList(p => new DataPermission
-                {
-                    ResourceKey = p.ResourceKey,
-                    DataScope = p.DataScope
-                });
-
-            // 以用户的为准，因为可对用户进行个性化设置
-            foreach (var item in userPermissionList)
-            {
-                // 查询
-                var single = list
-                    .Where(p => p.DataScope != item.DataScope)
-                    .FirstOrDefault(p => p.ResourceKey == item.ResourceKey);
-                if (single == null)
-                {
-                    list.Add(item);
-                    continue;
-                }
-
-                single.DataScope = item.DataScope;
-                single.DataScopeCustom = item.DataScopeCustom;
-            }
-
-            // 去重
-            list = list
-                .GroupBy(p => p.ResourceKey)
-                .Select(p => p.First())
-                .ToList();
-
-            // 添加通用的数据范围
-            foreach (var item in dataScopeList)
-            {
-                list.Add(new DataPermission
-                {
-                    DataScope = item.DataScope
-                });
-            }
-
-            return list;
-        }
-
-        // Key
-        var key = string.Format(CacheConstant.UserDataScopesKey, userId ?? UserId);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
-        return _cacheManager.GetOrCreate(key, QueryFunc, expireTime) ?? new List<DataPermission>();
+        return _dataPermissionService.GetUserDataScopes(userId, null);
     }
 
     #endregion

@@ -1,5 +1,3 @@
-using BasicPlatform.AppService.DataPermissions;
-
 namespace BasicPlatform.AppService.FreeSql;
 
 /// <summary>
@@ -91,6 +89,11 @@ public class DefaultDataPermissionService : IDataPermissionService
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<QueryFilterGroup>();
     }
 
+    public List<string> GetUserOrganizationIds(string userId, string? appId)
+    {
+        return GetUserOrganizationIdsAsync(userId, appId).ConfigureAwait(false).GetAwaiter().GetResult();
+    }
+
     /// <summary>
     /// 获取用户所在组织/部门列表
     /// </summary>
@@ -130,6 +133,11 @@ public class DefaultDataPermissionService : IDataPermissionService
         var expireTime = TimeSpan.FromMinutes(30);
 
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
+    }
+
+    public List<string> GetUserOrganizationIdsTree(string userId, string? appId)
+    {
+        return GetUserOrganizationIdsTreeAsync(userId, appId).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -174,5 +182,110 @@ public class DefaultDataPermissionService : IDataPermissionService
         // 过期时间
         var expireTime = TimeSpan.FromMinutes(30);
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
+    }
+
+    public List<DataPermission> GetUserDataScopes(string userId, string? appId)
+    {
+        return GetUserDataScopesAsync(userId, appId).ConfigureAwait(false).GetAwaiter().GetResult();
+    }
+
+    public async Task<List<DataPermission>> GetUserDataScopesAsync(string userId, string? appId)
+    {
+        if (_cacheManager == null)
+        {
+            return await QueryFunc();
+        }
+
+        async Task<List<DataPermission>> QueryFunc()
+        {
+            var dataScopeList = await _freeSql.Select<Role>()
+                .Where(p => _freeSql
+                    .Select<RoleUser>()
+                    .As("c")
+                    .Where(c => c.UserId == userId)
+                    .Any(c => c.RoleId == p.Id)
+                )
+                .ToListAsync(p => new
+                {
+                    p.DataScope,
+                    p.DataScopeCustom
+                });
+
+            // 去重
+            dataScopeList = dataScopeList
+                .GroupBy(p => p)
+                .Select(p => p.Key)
+                .ToList();
+
+            // 读取用户的角色数据权限
+            var list = await _freeSql.Select<RoleDataPermission>()
+                // 读取用户的角色
+                .Where(p => _freeSql
+                    .Select<RoleUser>()
+                    .As("c")
+                    .Where(c => c.UserId == userId)
+                    .Any(c => c.RoleId == p.RoleId)
+                )
+                // 启用的
+                .Where(p => p.Enabled)
+                .ToListAsync(p => new DataPermission
+                {
+                    ResourceKey = p.ResourceKey,
+                    DataScope = p.DataScope
+                });
+
+            // 读取用户的数据权限
+            var userPermissionList = await _freeSql.Select<UserDataPermission>()
+                .Where(p => p.UserId == userId)
+                // 启用的
+                .Where(p => p.Enabled)
+                // 读取未过期的
+                .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
+                .ToListAsync(p => new DataPermission
+                {
+                    ResourceKey = p.ResourceKey,
+                    DataScope = p.DataScope
+                });
+
+            // 以用户的为准，因为可对用户进行个性化设置
+            foreach (var item in userPermissionList)
+            {
+                // 查询
+                var single = list
+                    .Where(p => p.DataScope != item.DataScope)
+                    .FirstOrDefault(p => p.ResourceKey == item.ResourceKey);
+                if (single == null)
+                {
+                    list.Add(item);
+                    continue;
+                }
+
+                single.DataScope = item.DataScope;
+                single.DataScopeCustom = item.DataScopeCustom;
+            }
+
+            // 去重
+            list = list
+                .GroupBy(p => p.ResourceKey)
+                .Select(p => p.First())
+                .ToList();
+
+            // 添加通用的数据范围
+            foreach (var item in dataScopeList)
+            {
+                list.Add(new DataPermission
+                {
+                    DataScope = item.DataScope
+                });
+            }
+
+            return list;
+        }
+
+        // Key
+        var key = string.Format(CacheConstant.UserDataScopesKey, userId);
+        // 过期时间
+        var expireTime = TimeSpan.FromMinutes(30);
+        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<DataPermission>();
     }
 }

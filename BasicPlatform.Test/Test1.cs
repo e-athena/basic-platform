@@ -1,7 +1,6 @@
-using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Athena.Infrastructure.Caching;
-using BasicPlatform.AppService.DataPermissions;
+using Athena.Infrastructure.DataPermission;
 
 namespace BasicPlatform.Test;
 

@@ -130,6 +130,7 @@ const TableList: React.FC = () => {
         <ProCard colSpan="270px">
           <OrganizationTree
             ref={orgActionRef}
+            maxHeight={window.innerHeight - 266}
             onSelect={(key) => {
               setOrganizationId(key);
             }}
@@ -151,6 +152,7 @@ const TableList: React.FC = () => {
             params={{
               parentId: organizationId,
             }}
+            scrollY={window.innerHeight - 406}
             toolBarRender={() => [
               <Access
                 key={'add'}

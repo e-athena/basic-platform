@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Commons;
 public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityCore, new()
 {
     private readonly ISecurityContextAccessor _accessor;
-    private readonly ICacheManager? _cacheManager;
+    private readonly IDataPermissionService? _dataPermissionService;
 
     /// <summary>
     /// 
@@ -18,7 +18,7 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
         base(unitOfWorkManager)
     {
         _accessor = accessor;
-        _cacheManager = AthenaProvider.Provider?.GetService(typeof(ICacheManager)) as ICacheManager;
+        _dataPermissionService = AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
     }
 
     #region 新增
@@ -144,38 +144,15 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
     /// 读取用户组织架构ID列表
     /// </summary>
     /// <returns></returns>
-    private List<string> GetUserOrganizationIds()
+    protected List<string> GetUserOrganizationIds(string? userId = null)
     {
-        // Key
-        var key = string.Format(CacheConstant.UserOrganizationKey, UserId);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
+        userId ??= UserId;
 
-        List<string> QueryFunc()
+        if (_dataPermissionService == null || userId == null)
         {
-            // 兼任职信息表
-            var orgIds = QueryNoTracking<UserAppointment>()
-                .Where(p => p.UserId == UserId)
-                .ToList(p => p.OrganizationId);
-
-            // 用户组织
-            var orgId = QueryNoTracking<User>()
-                .Where(p => p.Id == UserId)
-                .First(p => p.OrganizationId);
-
-            if (!string.IsNullOrEmpty(orgId))
-            {
-                orgIds.Add(orgId);
-            }
-
-            return orgIds;
+            return new List<string>();
         }
 
-        if (_cacheManager == null)
-        {
-            return QueryFunc();
-        }
-
-        return _cacheManager.GetOrCreate(key, QueryFunc, expireTime) ?? new List<string>();
+        return _dataPermissionService.GetUserOrganizationIds(userId, null);
     }
 }

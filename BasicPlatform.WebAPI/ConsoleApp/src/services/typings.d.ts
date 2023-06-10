@@ -82,6 +82,7 @@ declare namespace API {
     applicationId: string;
     applicationName: string;
     dataPermissionGroups: DataPermissionGroup[];
+    extraSelectList?: SelectInfo[];
   };
 
   /** 数据权限组 */

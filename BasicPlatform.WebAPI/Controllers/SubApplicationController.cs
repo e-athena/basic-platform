@@ -1,3 +1,4 @@
+using Athena.Infrastructure.QueryFilters;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Positions;
@@ -72,8 +73,7 @@ public class SubApplicationController : ControllerBase
     {
         return _mediator.SendAsync(request, cancellationToken);
     }
-
-
+    
     /// <summary>
     /// 读取用户资源
     /// </summary>
@@ -146,6 +146,80 @@ public class SubApplicationController : ControllerBase
     {
         return _queryService.GetAllSelectListAsync();
     }
+
+    #region 数据查询权限相关
+
+    /// <summary>
+    /// 读取用户读取查询过滤器
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="userId">用户ID</param>
+    /// <param name="resourceKey">资源Key</param>
+    /// <param name="appId">应用ID</param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<QueryFilterGroup>> GetUserPolicyQueryFilterGroupsAsync(
+        [FromServices] IDataPermissionService service,
+        [FromQuery] string userId,
+        [FromQuery] string resourceKey,
+        [FromQuery] string? appId
+    )
+    {
+        return service.GetPolicyQueryFilterGroupsAsync(userId, resourceKey, appId);
+    }
+
+    /// <summary>
+    /// 读取用户组织架构ID列表
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="userId">用户ID</param>
+    /// <param name="appId">应用ID</param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<string>> GetUserOrganizationIdsAsync(
+        [FromServices] IDataPermissionService service,
+        [FromQuery] string userId,
+        [FromQuery] string? appId
+    )
+    {
+        return service.GetUserOrganizationIdsAsync(userId, appId);
+    }
+
+    /// <summary>
+    /// 读取用户组织架构及下级组织架构ID列表
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="userId">用户ID</param>
+    /// <param name="appId">应用ID</param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<string>> GetUserOrganizationIdsTreeAsync(
+        [FromServices] IDataPermissionService service,
+        [FromQuery] string userId,
+        [FromQuery] string? appId
+    )
+    {
+        return service.GetUserOrganizationIdsTreeAsync(userId, appId);
+    }
+
+    /// <summary>
+    /// 读取用户角色的数据范围列表
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="userId">用户ID</param>
+    /// <param name="appId">应用ID</param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<DataPermission>> GetUserDataScopesAsync(
+        [FromServices] IDataPermissionService service,
+        [FromQuery] string userId,
+        [FromQuery] string? appId
+    )
+    {
+        return service.GetUserDataScopesAsync(userId, appId);
+    }
+
+    #endregion
 
     #endregion
 

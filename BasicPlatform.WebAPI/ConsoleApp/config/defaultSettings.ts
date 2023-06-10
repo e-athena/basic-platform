@@ -36,6 +36,7 @@ const Settings: ProLayoutProps & {
   token: {},
   siderMenuType: 'sub',
   splitMenus: true,
+  footerRender: false,
 };
 
 export default Settings;

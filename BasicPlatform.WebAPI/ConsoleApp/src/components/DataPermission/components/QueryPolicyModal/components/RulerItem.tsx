@@ -13,13 +13,16 @@ type RulerItemProps = {
   onChange: (value: FilterItem) => void;
   onRemoveItem?: () => void;
   onSelectUser?: (value: FilterItem) => void;
+  extraSelectList?: API.SelectInfo[];
 };
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
-  const { onRemoveItem, item, onChange, colSelect } = props;
+  const { onRemoveItem, item, extraSelectList, onChange, colSelect } = props;
   const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
-    // console.log(item);
+    if (item.key && (extraSelectList || []).length > 0) {
+      return extraSelectList?.filter(p => item.key === p.extend) || [];
+    }
     return [];
   };
   const getRulerSelect = () => {
@@ -230,7 +233,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         <Select
           autoClearSearchValue
           options={getOptions()}
-          mode="tags"
+          // mode="tags"
           style={{ width: '350px' }}
           placeholder="请选择"
           value={item.value === undefined || item.value === '' ? [] : [item.value]}

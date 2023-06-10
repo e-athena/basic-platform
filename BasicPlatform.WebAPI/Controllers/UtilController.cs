@@ -60,15 +60,17 @@ public class UtilController : ControllerBase
             try
             {
                 var res = await resourceUrl.GetAsync()
-                    .ReceiveJson<ApiResult<List<DataPermissionGroup>>>();
+                    .ReceiveJson<ApiResult<ApplicationDataPermissionInfo>>();
 
-                if (res.Data != null && res.Success && res.Data.Count > 0)
+                if (res.Data != null && res.Success)
                 {
+                    var d = res.Data;
                     result.Add(new ApplicationDataPermissionInfo
                     {
                         ApplicationId = app.ClientId,
                         ApplicationName = app.Name,
-                        DataPermissionGroups = res.Data
+                        DataPermissionGroups = d.DataPermissionGroups,
+                        ExtraSelectList = d.ExtraSelectList
                     });
                 }
             }
