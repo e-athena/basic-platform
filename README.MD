@@ -32,7 +32,13 @@
    > cd BasicPlatform.WebAPI
    > dotnet run
    > ```
-   > 如果需要更换数据库，可以在`appsettings.json`中修改`ConnectionStrings`，框架将自动识别数据库类型。当前支持自动识别的有`Sqlite`、`MySql`、`SqlServer`、`PostgreSQL`，如需要支持其他数据库，可以自行指定在AddCustomFreeSql中指定`DateType`。支持FreeSql支持的所有数据库。
+   > 如果需要更换数据库，可以在`appsettings.json`中修改`ConnectionStrings`
+   >> 指定数据库连接字符串格式(Sqlite)如下：
+   >> ```
+   >> sqlite,Data Source=test_local.db;
+   >> ```
+   >> 框架能自动识别以上格式并自动设置数据库类型。 
+   >> 格式说明：使用逗号分配，前一段为数据库类型，后一段为数据库连接字符串。支持的数据库类型有：sqlite、mysql、sqlserver、postgresql、oracle。
 3. cd到Web目录下，执行`npm install`命令
     > 安装依赖包
     > ```shell
