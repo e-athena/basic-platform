@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Roles.Requests;
+using BasicPlatform.Domain.Models.Roles;
 
 namespace BasicPlatform.AppService.FreeSql.Roles;
 
@@ -133,30 +134,25 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleDataPermissionsRequest request, CancellationToken cancellationToken)
     {
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<RoleDataPermission>(
-            p => p.RoleId == request.Id, cancellationToken
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        
+        // 分配权限
+        entity.AssignDataPermissions(request
+                .Permissions
+                .Select(p => new RoleDataPermission(
+                    p.ApplicationId,
+                    request.Id,
+                    p.ResourceKey,
+                    p.DataScope,
+                    p.DataScopeCustom,
+                    p.PolicyResourceKey,
+                    p.QueryFilterGroups,
+                    p.Enabled)
+                )
+                .ToList(),
+            UserId
         );
-        if (request.Permissions.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var roleDataPermissions = request
-            .Permissions
-            .Select(p => new RoleDataPermission(
-                p.ApplicationId,
-                request.Id,
-                p.ResourceKey,
-                p.DataScope,
-                p.DataScopeCustom,
-                p.PolicyResourceKey,
-                p.QueryFilterGroups,
-                p.Enabled)
-            )
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleDataPermissions, cancellationToken);
-        return request.Id;
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 }

@@ -1,3 +1,6 @@
+using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Users;
+
 namespace BasicPlatform.AppService.FreeSql;
 
 /// <summary>
@@ -82,7 +85,7 @@ public class DefaultDataPermissionService : IDataPermissionService
         }
 
         // Key
-        var key = string.Format(CacheConstant.UserPolicyFilterGroupQuery, userId, resourceKey);
+        var key = string.Format(CacheConstant.UserPolicyFilterGroupQueryKey, userId, resourceKey);
         // 过期时间
         var expireTime = TimeSpan.FromMinutes(30);
 

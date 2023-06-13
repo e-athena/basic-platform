@@ -28,14 +28,24 @@ public static class CacheConstant
     public const string UserOrganizationsKey = "user:{0}:UserOrganizations";
 
     /// <summary>
-    /// 用户策略查询缓存键
+    /// 用户策略过滤组缓存键
     /// </summary>
-    public const string UserPolicyFilterGroupQuery = "user:{0}:UserPolicyFilterGroupQuery:{1}";
+    public const string UserPolicyFilterGroupQueryKey = "user:{0}:UserPolicyFilterGroupQuery:{1}";
+
+    /// <summary>
+    /// 用户策略过滤组缓存键
+    /// </summary>
+    public const string UserPolicyFilterGroupQueryPatternKey = "user:{0}:UserPolicyFilterGroupQuery:*";
 
     /// <summary>
     /// 用户策略查询缓存键
     /// </summary>
     public const string UserPolicyQueryKey = "user:{0}:UserPolicyQuery:{1}";
+
+    /// <summary>
+    /// 用户策略查询缓存键
+    /// </summary>
+    public const string UserPolicyQueryPatternKey = "user:{0}:UserPolicyQuery:*";
 
     #endregion
 }

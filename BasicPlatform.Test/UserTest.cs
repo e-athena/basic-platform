@@ -1,5 +1,6 @@
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.Test;
 

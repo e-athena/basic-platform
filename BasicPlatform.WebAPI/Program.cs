@@ -28,6 +28,7 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
 
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
+services.AddCustomDataPermission(configuration);
 services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);

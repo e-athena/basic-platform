@@ -1,3 +1,5 @@
+using BasicPlatform.Domain.Models.Users;
+
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>

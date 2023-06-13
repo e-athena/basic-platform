@@ -1,4 +1,6 @@
 using BasicPlatform.AppService.Users.Requests;
+using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
 
@@ -197,33 +199,27 @@ public class UserRequestHandler : AppServiceBase<User>,
             throw FriendlyException.Of("不能给自己分配权限");
         }
 
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<UserDataPermission>(
-            p => p.UserId == request.Id, cancellationToken
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+
+        // 分配权限
+        entity.AssignDataPermissions(request
+                .Permissions
+                .Select(p => new UserDataPermission(
+                    p.ApplicationId,
+                    request.Id,
+                    p.ResourceKey,
+                    p.DataScope,
+                    p.DataScopeCustom,
+                    p.PolicyResourceKey,
+                    p.QueryFilterGroups,
+                    p.Enabled,
+                    request.ExpireAt)
+                )
+                .ToList(),
+            UserId
         );
-        if (request.Permissions.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var userDataPermissions = request
-            .Permissions
-            .Select(p => new UserDataPermission(
-                p.ApplicationId,
-                request.Id,
-                p.ResourceKey,
-                p.DataScope,
-                p.DataScopeCustom,
-                p.PolicyResourceKey,
-                p.QueryFilterGroups,
-                p.Enabled,
-                request.ExpireAt)
-            )
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(userDataPermissions, cancellationToken);
-
-        return request.Id;
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>

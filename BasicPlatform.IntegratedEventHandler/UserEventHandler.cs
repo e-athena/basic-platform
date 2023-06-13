@@ -1,5 +1,5 @@
-using BasicPlatform.Domain.Events.Users;
-using BasicPlatform.Domain.Models;
+using BasicPlatform.Domain.Models.Users;
+using BasicPlatform.Domain.Models.Users.Events;
 
 namespace BasicPlatform.IntegratedEventHandler;
 

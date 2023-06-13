@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj"/>
+        <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="6.2.1"/>
+        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="6.2.5" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Roles.Models;
+using BasicPlatform.Domain.Models.Roles;
 
 namespace BasicPlatform.AppService.Roles.Responses;
 

@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Users.Models;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.Users.Responses;
 

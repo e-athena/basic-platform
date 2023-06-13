@@ -1,4 +1,6 @@
 using BasicPlatform.AppService.Resources.Requests;
+using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Resources;
 
