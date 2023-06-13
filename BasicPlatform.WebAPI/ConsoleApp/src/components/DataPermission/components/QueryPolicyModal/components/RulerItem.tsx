@@ -55,6 +55,14 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
     if (getOptions().length > 0) {
       return [
         {
+          label: '等于',
+          value: '==',
+        },
+        {
+          label: '不等于',
+          value: '!=',
+        },
+        {
           label: '属于',
           value: 'in',
         },
@@ -227,43 +235,25 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         </Space>
       );
     }
-    const options = getOptions();
-    if (options.length > 0) {
-      return (
-        <Select
-          autoClearSearchValue
-          options={getOptions()}
-          // mode="tags"
-          style={{ width: '350px' }}
-          placeholder="请选择"
-          value={item.value === undefined || item.value === '' ? [] : [item.value]}
-          onChange={(value) => {
-            const newItem = { ...item };
-            if (value.length === 0) {
-              newItem.value = undefined;
-            } else {
-              newItem.value = value[value.length - 1];
-            }
-            onChange(newItem);
-          }}
-        />
-      );
-    }
-    // 如果是枚举类型
-    if (item.propertyType === 'enum') {
+    let options = getOptions();
+    // 如果是枚举类型或者扩展类型
+    if (item.propertyType === 'enum' || options.length > 0) {
+      if (item.propertyType === 'enum') {
+        options = colSelect.find((p) => p.value === item.key)?.enumOptions || [];
+      }
       let mode: string | undefined = 'tags';
-      if (item.operator === '==') {
+      if (item.operator === '==' || item.operator === '!=') {
         mode = undefined;
       }
       let value: string[] | string | undefined = [];
       if (item.value === undefined || item.value === '') {
-        if (item.operator === '==') {
+        if (item.operator === '==' || item.operator === '!=') {
           value = undefined;
         } else {
           value = [];
         }
       } else {
-        if (item.operator === '==') {
+        if (item.operator === '==' || item.operator === '!=') {
           // 如果上一个值是数组，那么就取第一个
           const arr = item.value.split(',');
           value = arr.length > 0 ? arr[0] : item.value;
@@ -274,7 +264,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
       return (
         <Select
           autoClearSearchValue
-          options={colSelect.find((p) => p.value === item.key)?.enumOptions}
+          options={options}
           mode={mode as 'tags' | undefined}
           style={{ width: '350px' }}
           placeholder="请选择"
@@ -283,7 +273,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           onChange={(value) => {
             const newItem = { ...item };
             if (value) {
-              if (item.operator === '==') {
+              if (item.operator === '==' || item.operator === '!=') {
                 newItem.value = value as string;
               } else {
                 newItem.value = (value as string[]).join(',');

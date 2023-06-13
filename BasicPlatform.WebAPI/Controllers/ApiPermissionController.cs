@@ -26,7 +26,7 @@ public class ApiPermissionController : ControllerBase
     public async Task<IList<MenuTreeInfo>> GetMenuResourcesAsync()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var result = _service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+        var result = _service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
         return await Task.FromResult(result);
     }
 

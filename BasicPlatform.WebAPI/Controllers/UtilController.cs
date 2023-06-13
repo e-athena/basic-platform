@@ -28,7 +28,7 @@ public class UtilController : ControllerBase
     public async Task<IList<MenuTreeInfo>> GetMenuResourcesAsync([FromServices] IApiPermissionService service)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var result = service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+        var result = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
         return await Task.FromResult(result);
     }
 
@@ -98,7 +98,7 @@ public class UtilController : ControllerBase
         #region 系统资源
 
         var assembly = Assembly.GetExecutingAssembly();
-        var defaultList = service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+        var defaultList = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
         result.Add(new ApplicationResourceInfo
         {
             ApplicationId = GlobalConstant.DefaultAppId,
