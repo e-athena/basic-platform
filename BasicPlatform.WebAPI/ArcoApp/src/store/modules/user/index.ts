@@ -12,22 +12,24 @@ import useAppStore from '../app';
 
 const useUserStore = defineStore('user', {
   state: (): UserState => ({
-    name: undefined,
+    userName: undefined,
+    realName: undefined,
     avatar: undefined,
-    job: undefined,
-    organization: undefined,
-    location: undefined,
+    userId: undefined,
     email: undefined,
-    introduction: undefined,
-    personalWebsite: undefined,
-    jobName: undefined,
-    organizationName: undefined,
-    locationName: undefined,
-    phone: undefined,
-    registrationDate: undefined,
-    accountId: undefined,
-    certification: undefined,
-    role: '',
+    signature: undefined,
+    title: undefined,
+    group: undefined,
+    tags: undefined,
+    notifyCount: 0,
+    unreadCount: 0,
+    country: undefined,
+    geographic: {
+      province: undefined,
+      city: undefined,
+    },
+    address: undefined,
+    phoneNumber: undefined,
   }),
 
   getters: {
@@ -37,12 +39,6 @@ const useUserStore = defineStore('user', {
   },
 
   actions: {
-    switchRoles() {
-      return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'admin' : 'user';
-        resolve(this.role);
-      });
-    },
     // Set user's information
     setInfo(partial: Partial<UserState>) {
       this.$patch(partial);
@@ -56,15 +52,19 @@ const useUserStore = defineStore('user', {
     // Get user's information
     async info() {
       const res = await getUserInfo();
-
-      this.setInfo(res.data);
+      if (res.success) {
+        this.setInfo(res.data);
+      }
     },
 
     // Login
     async login(loginForm: LoginData) {
       try {
         const res = await userLogin(loginForm);
-        setToken(res.data.token);
+        if (res.success && res?.data.currentAuthority) {
+          setToken(res.data.currentAuthority);
+          return;
+        }
       } catch (err) {
         clearToken();
         throw err;

@@ -34,7 +34,7 @@
     "@arco-design/web-vue": "^2.44.7",
     "@vueuse/core": "^9.3.0",
     "axios": "^0.24.0",
-    "dayjs": "^1.11.5",
+    "dayjs": "^1.11.7",
     "echarts": "^5.4.0",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",

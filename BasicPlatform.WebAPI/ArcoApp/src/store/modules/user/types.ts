@@ -1,19 +1,21 @@
 export type RoleType = '' | '*' | 'admin' | 'user';
 export interface UserState {
-  name?: string;
+  userName?: string;
+  realName?: string;
   avatar?: string;
-  job?: string;
-  organization?: string;
-  location?: string;
+  userId?: string;
   email?: string;
-  introduction?: string;
-  personalWebsite?: string;
-  jobName?: string;
-  organizationName?: string;
-  locationName?: string;
-  phone?: string;
-  registrationDate?: string;
-  accountId?: string;
-  certification?: number;
-  role: RoleType;
+  signature?: string;
+  title?: string;
+  group?: string;
+  tags?: { key?: string; label?: string }[];
+  notifyCount?: number;
+  unreadCount?: number;
+  country?: string;
+  geographic?: {
+    province?: { label?: string; key?: string };
+    city?: { label?: string; key?: string };
+  };
+  address?: string;
+  phoneNumber?: string;
 }

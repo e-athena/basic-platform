@@ -3,6 +3,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Message, Modal } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import { getToken } from '@/utils/auth';
+import { ApiPagingResponse, ApiResponse } from '@/types/global';
 
 export interface HttpResponse<T = unknown> {
   status: number;
@@ -26,7 +27,8 @@ axios.interceptors.request.use(
       if (!config.headers) {
         config.headers = {};
       }
-      config.headers.Authorization = `Bearer ${token}`;
+      // config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = token;
     }
     return config;
   },
@@ -37,17 +39,17 @@ axios.interceptors.request.use(
 );
 // add response interceptors
 axios.interceptors.response.use(
-  (response: AxiosResponse<HttpResponse>) => {
+  (response: AxiosResponse<ApiResponse | ApiPagingResponse>) => {
     const res = response.data;
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    if (!res.success) {
       Message.error({
-        content: res.msg || 'Error',
+        content: res.message || 'Error',
         duration: 5 * 1000,
       });
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (
-        [50008, 50012, 50014].includes(res.code) &&
+        [50008, 50012, 50014].includes(res.statusCode) &&
         response.config.url !== '/api/user/info'
       ) {
         Modal.error({
@@ -63,13 +65,13 @@ axios.interceptors.response.use(
           },
         });
       }
-      return Promise.reject(new Error(res.msg || 'Error'));
+      return Promise.reject(new Error(res.message || 'Error'));
     }
     return res;
   },
   (error) => {
     Message.error({
-      content: error.msg || 'Request Error',
+      content: error.message || 'Request Error',
       duration: 5 * 1000,
     });
     return Promise.reject(error);
