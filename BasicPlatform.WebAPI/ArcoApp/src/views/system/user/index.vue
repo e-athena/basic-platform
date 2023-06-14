@@ -15,17 +15,17 @@
   import ProTable from '@/components/pro-table/index.vue';
   import { h } from 'vue';
   import { ProTableColumnData } from '@/components/pro-table/typing';
+  import { Avatar } from '@arco-design/web-vue';
   import { query } from './service';
 
   const columns: ProTableColumnData[] = [
     {
       title: '头像',
       dataIndex: 'avatar',
-      width: 120,
       render: ({ record }) => {
-        return h('img', {
-          src: record.avatar,
-          width: 32,
+        return h(Avatar, {
+          imageUrl: record.avatar,
+          size: 16,
         });
       },
     },

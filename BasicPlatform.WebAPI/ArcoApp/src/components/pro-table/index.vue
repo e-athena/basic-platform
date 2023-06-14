@@ -14,15 +14,41 @@
               <a-button>导入</a-button>
             </template>
           </a-upload>
+          <a-button>
+            <template #icon>
+              <icon-download />
+            </template>
+            下载
+          </a-button>
         </a-space>
       </a-col>
       <a-col :span="8" style="text-align: right">
-        <a-button>
-          <template #icon>
-            <icon-download />
-          </template>
-          下载
-        </a-button>
+        <a-space>
+          <a-input-search
+            :placeholder="props.searchPlaceholder || '关键字'"
+            search-button
+          />
+          <a-button>
+            <template #icon>
+              <icon-search />
+            </template>
+          </a-button>
+          <a-button>
+            <template #icon>
+              <icon-settings />
+            </template>
+          </a-button>
+          <a-button>
+            <template #icon>
+              <icon-swap />
+            </template>
+          </a-button>
+          <a-button>
+            <template #icon>
+              <icon-fullscreen />
+            </template>
+          </a-button>
+        </a-space>
       </a-col>
     </a-row>
     <a-table
@@ -32,6 +58,7 @@
       :data="renderData"
       :bordered="false"
       :columns="columns"
+      stripe
       @page-change="onPageChange"
     />
   </a-card>
@@ -178,202 +205,113 @@
     for (let i = 0; i < list.length; i += 1) {
       const item = list[i];
       const find = defaultColumns.find((x) => x.dataIndex === item.dataIndex);
+      const nItem =
+        find === undefined
+          ? ({
+              ...item,
+              hideInTable: item.hideInTable,
+              ellipsis: item.ellipsis || true,
+              index: item.sort || i,
+            } as ProTableColumnData)
+          : find;
       if (find !== undefined) {
-        find.title = find.title || item.title;
-        find.hideInTable = find.hideInTable || item.hideInTable;
-        find.hideInDescriptions =
-          find.hideInDescriptions || item.hideInDescriptions;
-        find.width = item.width || find.width;
-        find.fixed =
+        nItem.title = find.title || item.title;
+        nItem.hideInTable = find.hideInTable || item.hideInTable;
+        nItem.hideInDescriptions =
+          nItem.hideInDescriptions || item.hideInDescriptions;
+        nItem.width = item.width || find.width;
+        nItem.fixed =
           item.fixed !== 'left' && item.fixed !== 'right'
             ? undefined
             : item.fixed;
-        find.index = item.sort || i;
-        // 以下属性如果为ture时则不覆盖
-        if (item.sorter) {
-          find.sortable = {
-            sortDirections: ['ascend', 'descend'],
-          };
-        }
-        if (item.filters) {
-          find.filterable = {
-            filters: [
-              {
-                text: '> 20000',
-                value: '20000',
-              },
-              {
-                text: '> 30000',
-                value: '30000',
-              },
-            ],
-            filter: (value, record) => record.salary > value,
-            multiple: true,
-          };
-        }
-        find.ellipsis = find.ellipsis ? find.ellipsis : item.ellipsis;
-        // find.valueEnum = find.valueEnum ? find.valueEnum : item.valueEnum;
-        if (
-          props.showDescriptions &&
-          ((props.detailColumnName === undefined && i === 0) ||
-            props.detailColumnName === item.dataIndex)
-        ) {
-          find.render = ({ record }) => {
-            return h(
-              Button,
-              {
-                type: 'text',
-                size: 'small',
-                onClick: async (e) => {
-                  e.stopPropagation();
-                  if (props.queryDetail !== undefined) {
-                    if (detailColumnData.value.length === 0) {
-                      // 查询详情列
-                      const res = await queryDetailColumns(props.moduleName);
-                      detailColumnData.value = res.success
-                        ? res.data.columns || []
-                        : [];
-                    }
-                    const data = await queryDetail(
-                      props.queryDetail,
-                      record.id
-                    );
-                    if (data) {
-                      currentRow.value = data;
-                    }
-                    return;
-                  }
-                  currentRow.value = record;
-                },
-              },
-              record[find.dataIndex as string]
-            );
-          };
-        }
-        // 如果是日期类型，则需要格式化
-        if (item.valueType === 'dateTime' || item.valueType === 'date') {
-          switch (item.valueType) {
-            case 'dateTime':
-              find.render = ({ record }) => {
-                const text = record[item.dataIndex as string];
-                return text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '';
-              };
-              break;
-            case 'date':
-              find.render = ({ record }) => {
-                const text = record[item.dataIndex as string];
-                return text ? dayjs(text).format('YYYY-MM-DD') : '';
-              };
-              break;
-            default:
-              break;
-          }
-        }
-
-        result.push(find);
-      } else {
-        const nItem: ProTableColumnData = {
-          ...item,
-          hideInTable: item.hideInTable,
-          ellipsis: item.ellipsis || true,
-          index: item.sort || i,
-        } as ProTableColumnData;
-        // 以下属性如果为ture时则不覆盖
-        if (item.sorter) {
-          nItem.sortable = {
-            sortDirections: ['ascend', 'descend'],
-          };
-        }
-        if (item.filters) {
-          nItem.filterable = {
-            filters: (item.enumOptions || []).map((p: SelectInfo) => ({
-              text: p.label,
-              value: p.value,
-            })),
-            filter: (value, record) => {
-              return value.some((p) => {
-                return (
-                  parseInt(p as string, 10) === record[item.dataIndex as string]
-                );
-              });
-            },
-            multiple: true,
-          };
-        }
-        if (item.propertyType === 'boolean') {
-          nItem.render = ({ record }) => {
-            const flag = record[item.dataIndex as string] as boolean;
-            return flag ? '是' : '否';
-          };
-          // nItem.valueEnum = {
-          //   false: { text: '否', status: 'Default' },
-          //   true: { text: '是', status: 'Success' },
-          // };
-        }
-        if (item.dataIndex.includes('UserId') && item.hideInTable === false) {
-          console.log(nItem);
-          // nItem.valueType = 'select';
-          // nItem.valueEnum = userListValueEnums;
-        }
-        // 如果是日期类型，则需要格式化
-        if (item.valueType === 'dateTime' || item.valueType === 'date') {
-          switch (item.valueType) {
-            case 'dateTime':
-              nItem.render = ({ record }) => {
-                const text = record[item.dataIndex as string];
-                return text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '';
-              };
-              break;
-            case 'date':
-              nItem.render = ({ record }) => {
-                const text = record[item.dataIndex as string];
-                return text ? dayjs(text).format('YYYY-MM-DD') : '';
-              };
-              break;
-            default:
-              break;
-          }
-        }
-        if (
-          props.showDescriptions &&
-          ((props.detailColumnName === undefined && i === 0) ||
-            props.detailColumnName === item.dataIndex)
-        ) {
-          nItem.render = ({ record }) => {
-            return h(
-              Button,
-              {
-                type: 'text',
-                size: 'small',
-                onClick: async (e) => {
-                  e.stopPropagation();
-                  if (props.queryDetail !== undefined) {
-                    if (detailColumnData.value.length === 0) {
-                      // 查询详情列
-                      const res = await queryDetailColumns(props.moduleName);
-                      detailColumnData.value = res.success
-                        ? res.data.columns || []
-                        : [];
-                    }
-                    const data = await queryDetail(
-                      props.queryDetail,
-                      record.id
-                    );
-                    if (data) {
-                      currentRow.value = data;
-                    }
-                    return;
-                  }
-                  currentRow.value = record;
-                },
-              },
-              record[nItem.dataIndex as string]
-            );
-          };
-        }
-        console.log(nItem);
-        result.push(nItem);
+        nItem.index = item.sort || i;
       }
+      if (item.sorter) {
+        nItem.sortable = {
+          sortDirections: ['ascend', 'descend'],
+        };
+      }
+      if (item.filters) {
+        nItem.filterable = {
+          filters: (item.enumOptions || []).map((p: SelectInfo) => ({
+            text: p.label,
+            value: p.value,
+          })),
+          filter: (value, record) => {
+            return value.some((p) => {
+              return (
+                parseInt(p as string, 10) === record[item.dataIndex as string]
+              );
+            });
+          },
+          multiple: true,
+        };
+      }
+      if (item.propertyType === 'boolean') {
+        nItem.render = ({ record }) => {
+          const flag = record[item.dataIndex as string] as boolean;
+          return flag ? '是' : '否';
+        };
+      }
+      if (item.dataIndex.includes('UserId') && item.hideInTable === false) {
+        console.log(nItem);
+        // nItem.valueType = 'select';
+        // nItem.valueEnum = userListValueEnums;
+      }
+      // 如果是日期类型，则需要格式化
+      if (item.valueType === 'dateTime' || item.valueType === 'date') {
+        switch (item.valueType) {
+          case 'dateTime':
+            nItem.render = ({ record }) => {
+              const text = record[item.dataIndex as string];
+              return text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '';
+            };
+            break;
+          case 'date':
+            nItem.render = ({ record }) => {
+              const text = record[item.dataIndex as string];
+              return text ? dayjs(text).format('YYYY-MM-DD') : '';
+            };
+            break;
+          default:
+            break;
+        }
+      }
+      if (
+        props.showDescriptions &&
+        ((props.detailColumnName === undefined && i === 0) ||
+          props.detailColumnName === item.dataIndex)
+      ) {
+        nItem.render = ({ record }) => {
+          return h(
+            Button,
+            {
+              type: 'text',
+              size: 'small',
+              onClick: async (e) => {
+                e.stopPropagation();
+                if (props.queryDetail !== undefined) {
+                  if (detailColumnData.value.length === 0) {
+                    // 查询详情列
+                    const res = await queryDetailColumns(props.moduleName);
+                    detailColumnData.value = res.success
+                      ? res.data.columns || []
+                      : [];
+                  }
+                  const data = await queryDetail(props.queryDetail, record.id);
+                  if (data) {
+                    currentRow.value = data;
+                  }
+                  return;
+                }
+                currentRow.value = record;
+              },
+            },
+            record[nItem.dataIndex as string]
+          );
+        };
+      }
+      result.push(nItem);
     }
     // 计算宽度
     let width = 0;
@@ -419,7 +357,6 @@
     } else {
       columns.value = result.filter((x) => x.hideInTable !== true);
     }
-    // console.log(result, props.defaultColumns);
 
     // 检查数据是否有更新
     let isUpdate = false;
