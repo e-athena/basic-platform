@@ -13,5 +13,5 @@ public class AssignRoleUsersRequest : ITxRequest<string>
     /// <summary>
     /// 用户列表
     /// </summary>
-    public IList<string> UserIds { get; set; } = new List<string>();
+    public List<string> UserIds { get; set; } = new List<string>();
 }

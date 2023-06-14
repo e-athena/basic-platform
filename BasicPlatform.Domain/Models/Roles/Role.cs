@@ -116,7 +116,6 @@ public class Role : EntityCore, ICreator, IUpdater
         UpdatedOn = DateTime.Now;
     }
 
-
     /// <summary>
     /// 分配数据权限
     /// </summary>
@@ -126,5 +125,27 @@ public class Role : EntityCore, ICreator, IUpdater
     {
         LastUpdatedUserId = updatedUserId;
         ApplyEvent(new RoleDataPermissionAssignedEvent(permissions));
+    }
+
+    /// <summary>
+    /// 分配资源
+    /// </summary>
+    /// <param name="resources"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignResources(List<RoleResource> resources, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new RoleResourceAssignedEvent(resources));
+    }
+
+    /// <summary>
+    /// 分配用户
+    /// </summary>
+    /// <param name="users"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignUsers(List<string> users, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new RoleUserAssignedEvent(users));
     }
 }

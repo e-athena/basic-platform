@@ -107,23 +107,10 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<string> Handle(AssignRoleUsersRequest request, CancellationToken cancellationToken)
     {
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<RoleUser>(
-            p => p.RoleId == request.Id, cancellationToken
-        );
-        if (request.UserIds.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var roleResources = request
-            .UserIds
-            .Select(userId => new RoleUser(request.Id, userId))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
-
-        return request.Id;
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        entity.AssignUsers(request.UserIds, UserId);
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>
@@ -135,7 +122,7 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     public async Task<string> Handle(AssignRoleDataPermissionsRequest request, CancellationToken cancellationToken)
     {
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
-        
+
         // 分配权限
         entity.AssignDataPermissions(request
                 .Permissions
