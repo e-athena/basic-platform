@@ -16,7 +16,7 @@ export function updateUserCustomColumns(body: any) {
 }
 
 /** 用户下拉列表 */
-export function querySelectList(organizationId?: string) {
+export function queryUserSelectList(organizationId?: string) {
   return get<SelectInfo[]>('/api/User/GetSelectList', {
     organizationId: organizationId || null,
   });
