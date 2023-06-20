@@ -16,6 +16,11 @@ public class CreateApplicationRequest : ITxRequest<string>
     public string ClientId { get; set; } = null!;
 
     /// <summary>
+    /// 是否使用系统默认的客户端密钥
+    /// </summary>
+    public bool UseDefaultClientSecret { get; set; }
+
+    /// <summary>
     /// 前端地址
     /// </summary>
     public string? FrontendUrl { get; set; }

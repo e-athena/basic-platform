@@ -1,5 +1,5 @@
 import { submitHandle } from '@/utils/utils';
-import { ProFormText, ProFormTextArea, ModalForm, ProForm } from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea, ModalForm, ProForm, ProFormSwitch } from '@ant-design/pro-components';
 import { FormInstance, Select } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import { update, create } from '../service';
@@ -153,6 +153,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         }}
       />
       <ProFormTextArea name="remarks" label={'描述'} placeholder={'请输入'} />
+      <ProFormSwitch
+        name="useDefaultClientSecret"
+        label={'使用系统默认的客户端密钥'}
+      />
     </ModalForm>
   );
 };

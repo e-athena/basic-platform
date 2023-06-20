@@ -300,4 +300,16 @@ public class UtilController : ControllerBase
 
         return Ok("ok");
     }
+
+    /// <summary>
+    /// 检查授权
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [IgnoreApiResultFilter]
+    [Authorize]
+    public IActionResult CheckAuthAsync()
+    {
+        return Content("ok");
+    }
 }

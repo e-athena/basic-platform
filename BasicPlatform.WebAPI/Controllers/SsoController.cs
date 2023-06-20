@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Users.Models;
+using Microsoft.Extensions.Options;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -15,6 +16,7 @@ public class SsoController : ControllerBase
     private readonly IApplicationQueryService _applicationQueryService;
     private readonly ISecurityContextAccessor _securityContextAccessor;
     private readonly ICacheManager _cacheManager;
+    private readonly JwtConfig _jwtConfig;
 
     /// <summary>
     /// 
@@ -22,13 +24,16 @@ public class SsoController : ControllerBase
     /// <param name="cacheManager"></param>
     /// <param name="applicationQueryService"></param>
     /// <param name="securityContextAccessor"></param>
+    /// <param name="options"></param>
     public SsoController(ICacheManager cacheManager,
         IApplicationQueryService applicationQueryService,
-        ISecurityContextAccessor securityContextAccessor)
+        ISecurityContextAccessor securityContextAccessor,
+        IOptions<JwtConfig> options)
     {
         _cacheManager = cacheManager;
         _applicationQueryService = applicationQueryService;
         _securityContextAccessor = securityContextAccessor;
+        _jwtConfig = options.Value;
     }
 
     /// <summary>
@@ -71,14 +76,15 @@ public class SsoController : ControllerBase
             new(ClaimTypes.Name, currentUserInfo.UserName),
             new("RealName", currentUserInfo.RealName)
         };
+        var securityKey = app.UseDefaultClientSecret ? _jwtConfig.SecurityKey : app.ClientSecret;
         // 生成Token
         var authToken = _securityContextAccessor.CreateToken(new JwtConfig
         {
             AppId = clientId,
             Audience = clientId,
-            Issuer = "basic-platform-sso-center",
+            Issuer = _jwtConfig.Issuer,
             Expires = expireSeconds,
-            SecurityKey = app.ClientSecret
+            SecurityKey = securityKey
         }, claims);
         return authToken;
     }

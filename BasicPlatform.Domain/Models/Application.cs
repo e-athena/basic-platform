@@ -24,6 +24,11 @@ public class Application : EntityCore, ICreator, IUpdater
     public string ClientSecret { get; set; } = null!;
 
     /// <summary>
+    /// 是否使用系统默认的客户端密钥
+    /// </summary>
+    public bool UseDefaultClientSecret { get; set; }
+
+    /// <summary>
     /// 前端地址
     /// </summary>
     public string? FrontendUrl { get; set; }
@@ -84,17 +89,28 @@ public class Application : EntityCore, ICreator, IUpdater
     /// </summary>
     /// <param name="name"></param>
     /// <param name="clientId"></param>
+    /// <param name="useDefaultClientSecret"></param>
     /// <param name="frontendUrl"></param>
     /// <param name="apiUrl"></param>
     /// <param name="menuResourceRoute"></param>
     /// <param name="permissionResourceRoute"></param>
     /// <param name="remarks"></param>
     /// <param name="createdUserId"></param>
-    public Application(string name, string clientId, string? frontendUrl, string? apiUrl, string? menuResourceRoute,
-        string? permissionResourceRoute, string? remarks, string? createdUserId)
+    public Application(
+        string name,
+        string clientId,
+        bool useDefaultClientSecret,
+        string? frontendUrl,
+        string? apiUrl,
+        string? menuResourceRoute,
+        string? permissionResourceRoute,
+        string? remarks,
+        string? createdUserId
+    )
     {
         Name = name;
         ClientId = clientId;
+        UseDefaultClientSecret = useDefaultClientSecret;
         ClientSecret = Guid.NewGuid().ToString();
         FrontendUrl = frontendUrl;
         ApiUrl = apiUrl;
@@ -109,17 +125,23 @@ public class Application : EntityCore, ICreator, IUpdater
     /// </summary>
     /// <param name="name"></param>
     /// <param name="clientId"></param>
+    /// <param name="useDefaultClientSecret"></param>
     /// <param name="frontendUrl"></param>
     /// <param name="apiUrl"></param>
     /// <param name="menuResourceRoute"></param>
     /// <param name="permissionResourceRoute"></param>
     /// <param name="remarks"></param>
     /// <param name="updatedUserId"></param>
-    public void Update(string name, string clientId, string? frontendUrl, string? apiUrl, string? menuResourceRoute,
+    public void Update(
+        string name,
+        string clientId,
+        bool useDefaultClientSecret,
+        string? frontendUrl, string? apiUrl, string? menuResourceRoute,
         string? permissionResourceRoute, string? remarks, string? updatedUserId)
     {
         Name = name;
         ClientId = clientId;
+        UseDefaultClientSecret = useDefaultClientSecret;
         FrontendUrl = frontendUrl;
         ApiUrl = apiUrl;
         MenuResourceRoute = menuResourceRoute;

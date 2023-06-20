@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using BasicPlatform.AppService.Applications;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -42,6 +41,13 @@ public class SubApplicationFilterAttribute : ActionFilterAttribute
             return;
         }
 
+        // 检查是否已登录，如果使用默认配置，则有可能已经登录
+        if (contextAccessor.IsAuthenticated)
+        {
+            base.OnActionExecuting(context);
+            return;
+        }
+
         // 读取配置
         var appService = context
             .HttpContext
@@ -68,7 +74,7 @@ public class SubApplicationFilterAttribute : ActionFilterAttribute
             Issuer = "basic-platform-sso-center",
             Audience = contextAccessor.AppId!,
             SecurityKey = securityKey
-        }, contextAccessor.JwtTokenNotBearer, out var principal);
+        }, contextAccessor.JwtTokenNotBearer, out _);
         if (!pass)
         {
             context.Result = new JsonResult(new
@@ -80,47 +86,7 @@ public class SubApplicationFilterAttribute : ActionFilterAttribute
             base.OnActionExecuting(context);
             return;
         }
-        // // 读取子应用的用户信息，然后创建用于访问主应用的Token
-        // // 获取缓存管理器
-        // var cacheManager = context
-        //     .HttpContext
-        //     .RequestServices
-        //     .GetService(typeof(ICacheManager)) as ICacheManager;
-        // // 缓存key
-        // var cacheKey = $"{contextAccessor.AppId}:{principal!.FindFirstValue(ClaimTypes.NameIdentifier)}";
-        // // 读取缓存
-        // var token = cacheManager?.GetOrCreate(cacheKey, () =>
-        // {
-        //     // Claims
-        //     var claims = new List<Claim>
-        //     {
-        //         new(ClaimTypes.NameIdentifier, principal.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty),
-        //         new(ClaimTypes.Name, principal.FindFirstValue(ClaimTypes.Name) ?? string.Empty),
-        //     };
-        //     var role = principal.FindFirstValue(ClaimTypes.Role);
-        //     if (!string.IsNullOrEmpty(role))
-        //     {
-        //         claims.Add(new Claim(ClaimTypes.Role, role));
-        //     }
-        //
-        //     var roleName = principal.FindFirstValue("RoleName");
-        //     if (!string.IsNullOrEmpty(roleName))
-        //     {
-        //         claims.Add(new Claim("RoleName", roleName));
-        //     }
-        //
-        //     var realName = principal.FindFirstValue("RealName");
-        //     if (!string.IsNullOrEmpty(realName))
-        //     {
-        //         claims.Add(new Claim("RealName", realName));
-        //     }
-        //
-        //     // 创建Token
-        //     var token = contextAccessor.CreateToken(claims);
-        //     return token;
-        // }, TimeSpan.FromMinutes(30));
-        // // 设置到请求头Authorization中
-        // context.HttpContext.Request.Headers["Authorization"] = token;
+
         base.OnActionExecuting(context);
     }
 }
