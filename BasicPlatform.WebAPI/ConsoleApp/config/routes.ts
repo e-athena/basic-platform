@@ -109,6 +109,12 @@ export default [
         redirect: '/system/organization',
       },
       {
+        path: '/system/tenant',
+        name: '租户管理',
+        component: './System/Tenant',
+        access: 'routeFilter',
+      },
+      {
         path: '/system/organization',
         name: '组织架构',
         component: './System/Organization',

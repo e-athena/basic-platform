@@ -4,12 +4,12 @@ using BasicPlatform.Domain.Models.Users.Events;
 namespace BasicPlatform.AppService.FreeSql.Users;
 
 /// <summary>
-/// 用户数据权限通知处理器
+/// 用户通知处理器
 /// </summary>
-public class UserDataPermissionNotificationHandler : AppServiceBase<User>,
+public class UserNotificationHandler : AppServiceBase<User>,
     IDomainEventHandler<UserDataPermissionAssignedEvent>
 {
-    public UserDataPermissionNotificationHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
+    public UserNotificationHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
     {
     }
@@ -31,6 +31,7 @@ public class UserDataPermissionNotificationHandler : AppServiceBase<User>,
         {
             return;
         }
+
         // 新增新数据
         await RegisterNewRangeValueObjectAsync(notification.Permissions, cancellationToken);
     }

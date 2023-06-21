@@ -116,6 +116,20 @@ public static class ApiPermissionConstant
     /// 应用详情
     /// </summary>
     public const string ApplicationDetail = "application:detail";
+    
+    /// <summary>
+    /// 应用下拉列表
+    /// </summary>
+    public const string ApplicationSelectList = "application:select";
+
+    #endregion
+
+    #region 租户
+
+    /// <summary>
+    /// 租户详情
+    /// </summary>
+    public const string TenantDetail = "tenant:detail";
 
     #endregion
 }

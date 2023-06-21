@@ -23,6 +23,12 @@ public interface IApplicationQueryService
     Task<List<ApplicationModel>> GetListAsync();
 
     /// <summary>
+    /// 读取下拉列表
+    /// </summary>
+    /// <returns></returns>
+    Task<List<SelectViewModel>> GetSelectListAsync();
+
+    /// <summary>
     /// 读取分页列表
     /// </summary>
     /// <param name="request">请求类</param>

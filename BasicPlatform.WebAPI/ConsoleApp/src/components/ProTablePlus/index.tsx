@@ -1,4 +1,8 @@
-import { queryColumns, queryDetailColumns, updateUserCustomColumns } from '@/services/ant-design-pro/api';
+import {
+  queryColumns,
+  queryDetailColumns,
+  updateUserCustomColumns,
+} from '@/services/ant-design-pro/api';
 import { getFilter, getSorter, queryDetail } from '@/utils/utils';
 import {
   ParamsType,
@@ -75,12 +79,12 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
       });
     }
     return prev;
-  }, [] as { group: string; description?: string, columns: API.TableColumnItem[] }[]);
+  }, [] as { group: string; description?: string; columns: API.TableColumnItem[] }[]);
 
   useEffect(() => {
     const fetch = async () => {
       let list = columnData;
-      const defaultColumns = (props.defaultColumns || []);
+      const defaultColumns = props.defaultColumns || [];
       if (list.length === 0) {
         // 如果不是只使用本地配置的列，则从后台获取列配置
         if (!props.onlyUseLocalColumns) {
@@ -150,7 +154,11 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           find.filters = find.filters ? find.filters : item.filters;
           find.ellipsis = find.ellipsis ? find.ellipsis : item.ellipsis;
           find.valueEnum = find.valueEnum ? find.valueEnum : item.valueEnum;
-          if (props.showDescriptions && ((props.detailColumnName === undefined && i === 0) || props.detailColumnName === item.dataIndex)) {
+          if (
+            props.showDescriptions &&
+            ((props.detailColumnName === undefined && i === 0) ||
+              props.detailColumnName === item.dataIndex)
+          ) {
             find.render = (dom, record) => {
               return (
                 <Button
@@ -161,7 +169,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
                       if (detailColumnData.length === 0) {
                         // 查询详情列
                         const res = await queryDetailColumns(props.moduleName);
-                        setDetailColumnData(res.success ? (res.data?.columns || []) : []);
+                        setDetailColumnData(res.success ? res.data?.columns || [] : []);
                       }
                       const data = await queryDetail(props.queryDetail, record.id!);
                       if (data) {
@@ -176,7 +184,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
                   {dom}
                 </Button>
               );
-            }
+            };
           }
           result.push(find);
           continue;
@@ -194,10 +202,14 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           };
         }
         if (item.dataIndex.includes('UserId') && item.hideInTable === false) {
-          nItem.valueType = "select";
+          nItem.valueType = 'select';
           nItem.valueEnum = userListValueEnums;
         }
-        if (props.showDescriptions && ((props.detailColumnName === undefined && i === 0) || props.detailColumnName === item.dataIndex)) {
+        if (
+          props.showDescriptions &&
+          ((props.detailColumnName === undefined && i === 0) ||
+            props.detailColumnName === item.dataIndex)
+        ) {
           nItem.render = (dom, record) => {
             return (
               <Button
@@ -208,7 +220,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
                     if (detailColumnData.length === 0) {
                       // 查询详情列
                       const res = await queryDetailColumns(props.moduleName);
-                      setDetailColumnData(res.success ? (res.data?.columns || []) : []);
+                      setDetailColumnData(res.success ? res.data?.columns || [] : []);
                     }
                     const data = await queryDetail(props.queryDetail, record.id!);
                     if (data) {
@@ -223,7 +235,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
                 {dom}
               </Button>
             );
-          }
+          };
         }
         result.push(nItem);
       }
@@ -273,7 +285,6 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
       } else {
         setColumns(result);
       }
-      // console.log(result, props.defaultColumns);
 
       // 检查数据是否有更新
       let isUpdate = false;
@@ -331,6 +342,60 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
     }
   }, [columnLoading, props.defaultColumns]);
 
+  /** 渲染详情项 */
+  const renderProDescriptionsItem = (x: API.TableColumnItem) => {
+    if (x.valueType === 'image-list') {
+      return (
+        <ProDescriptions.Item
+          labelStyle={{ width: x.width || 100 }}
+          key={x.dataIndex}
+          dataIndex={x.dataIndex}
+          label={x.title === '' ? false : x.title}
+          tooltip={x.tooltip}
+          renderText={(value) => {
+            return (
+              <Space>
+                {(value || []).map((v: string) => {
+                  return <Image width={40} key={v} src={`${CDN_ADDRESS}/${v}`} />;
+                })}
+              </Space>
+            );
+          }}
+        />
+      );
+    }
+    if (x.dataIndex.includes('UserId')) {
+      return (
+        <ProDescriptions.Item
+          key={x.dataIndex}
+          dataIndex={x.dataIndex}
+          label={x.title}
+          tooltip={x.tooltip}
+          request={async () => {
+            const res = await querySelectList();
+            return res.data || [];
+          }}
+        />
+      );
+    }
+    return (
+      <ProDescriptions.Item
+        key={x.dataIndex}
+        dataIndex={x.dataIndex}
+        label={x.title}
+        valueType={x.valueType}
+        valueEnum={x.valueEnum}
+        tooltip={x.tooltip}
+        renderText={(value) => {
+          if (x.propertyType === 'boolean') {
+            return value ? '是' : '否';
+          }
+          return value;
+        }}
+      />
+    );
+  };
+
   return (
     <>
       <ProTable<T, U, ValueType>
@@ -381,80 +446,11 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         }}
         scroll={{
           x: tableWidth || 1000,
-          y: props.scrollY || window.innerHeight - 352
+          y: props.scrollY || window.innerHeight - 352,
         }}
         columns={columnLoading ? [] : columns}
       />
-      {detailColumnData.length === 0 ? <Drawer
-        width={'50%'}
-        open={!!currentRow}
-        onClose={() => {
-          setCurrentRow(undefined);
-        }}
-        title={'详情'}
-      >
-        {currentRow !== undefined && (
-          <ProDescriptions
-            column={2}
-            title={false}
-            size={'small'}
-            bordered
-            dataSource={currentRow || {}}
-          >
-            {(detailColumnData.length !== 0 ? detailColumnData : columnData)
-              .filter(x => !x.hideInDescriptions && x.dataIndex !== 'option')
-              .sort(x => x.sort)
-              .map((x) => {
-                if (x.valueType === 'image-list') {
-                  return (<ProDescriptions.Item
-                    // labelStyle={{ width: x.width || 100 }}
-                    key={x.dataIndex}
-                    dataIndex={x.dataIndex}
-                    label={x.title}
-                    tooltip={x.tooltip}
-                    renderText={(value) => {
-                      return <Space>
-                        {(value || []).map((v: string) => {
-                          return <Image
-                            width={40}
-                            key={v}
-                            src={`${CDN_ADDRESS}/${v}`}
-                          />;
-                        })}
-                      </Space>;
-                    }}
-                  />);
-                }
-                if (x.dataIndex.includes('UserId')) {
-                  return <ProDescriptions.Item
-                    key={x.dataIndex}
-                    dataIndex={x.dataIndex}
-                    label={x.title}
-                    tooltip={x.tooltip}
-                    request={async () => {
-                      const res = await querySelectList();
-                      return res.data || [];
-                    }}
-                  />
-                }
-                return (<ProDescriptions.Item
-                  key={x.dataIndex}
-                  dataIndex={x.dataIndex}
-                  label={x.title}
-                  valueType={x.valueType}
-                  valueEnum={x.valueEnum}
-                  tooltip={x.tooltip}
-                  renderText={(value) => {
-                    if (x.propertyType === 'boolean') {
-                      return value ? '是' : '否';
-                    }
-                    return value;
-                  }}
-                />);
-              })}
-          </ProDescriptions>
-        )}
-      </Drawer> :
+      {detailColumnData.length === 0 ? (
         <Drawer
           width={'50%'}
           open={!!currentRow}
@@ -463,83 +459,64 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           }}
           title={'详情'}
         >
-          <Collapse defaultActiveKey={detailColumnDataGroup.map(x => x.group)}>
+          {currentRow !== undefined && (
+            <ProDescriptions
+              column={2}
+              title={false}
+              size={'small'}
+              bordered
+              dataSource={currentRow || {}}
+            >
+              {(detailColumnData.length !== 0 ? detailColumnData : columnData)
+                .filter((x) => !x.hideInDescriptions && x.dataIndex !== 'option')
+                .sort((x) => x.sort)
+                .map((x) => renderProDescriptionsItem(x) as unknown as React.ReactNode)}
+            </ProDescriptions>
+          )}
+        </Drawer>
+      ) : (
+        <Drawer
+          width={'50%'}
+          open={!!currentRow}
+          onClose={() => {
+            setCurrentRow(undefined);
+          }}
+          title={'详情'}
+        >
+          <Collapse defaultActiveKey={detailColumnDataGroup.map((x) => x.group)}>
             {detailColumnDataGroup.map((x) => {
-              return <>
-                <Collapse.Panel
-                  header={x.group === 'default' ? '基础信息' : x.group}
-                  key={x.group}
-                  extra={x.description ?
-                    <Tooltip title={x.description}>
-                      <InfoCircleOutlined />
-                    </Tooltip> : undefined
-                  }
-                >
-                  <ProDescriptions
-                    column={2}
-                    title={false}
-                    size={'small'}
-                    bordered
-                    dataSource={currentRow || {}}
+              return (
+                <>
+                  <Collapse.Panel
+                    header={x.group === 'default' ? '基础信息' : x.group}
+                    key={x.group}
+                    extra={
+                      x.description ? (
+                        <Tooltip title={x.description}>
+                          <InfoCircleOutlined />
+                        </Tooltip>
+                      ) : undefined
+                    }
                   >
-                    {x.columns
-                      .filter(x => !x.hideInDescriptions && x.dataIndex !== 'option')
-                      .sort(x => x.sort)
-                      .map((x) => {
-                        if (x.valueType === 'image-list') {
-                          return (<ProDescriptions.Item
-                            labelStyle={{ width: x.width || 100 }}
-                            key={x.dataIndex}
-                            dataIndex={x.dataIndex}
-                            label={x.title}
-                            tooltip={x.tooltip}
-                            renderText={(value) => {
-                              return <Space>
-                                {(value || []).map((v: string) => {
-                                  return <Image
-                                    width={40}
-                                    key={v}
-                                    src={`${CDN_ADDRESS}/${v}`}
-                                  />;
-                                })}
-                              </Space>;
-                            }}
-                          />);
-                        }
-                        if (x.dataIndex.includes('UserId')) {
-                          return <ProDescriptions.Item
-                            key={x.dataIndex}
-                            dataIndex={x.dataIndex}
-                            label={x.title}
-                            tooltip={x.tooltip}
-                            request={async () => {
-                              const res = await querySelectList();
-                              return res.data || [];
-                            }}
-                          />
-                        }
-                        return (<ProDescriptions.Item
-                          key={x.dataIndex}
-                          dataIndex={x.dataIndex}
-                          label={x.title}
-                          valueType={x.valueType}
-                          valueEnum={x.valueEnum}
-                          tooltip={x.tooltip}
-                          renderText={(value) => {
-                            if (x.propertyType === 'boolean') {
-                              return value ? '是' : '否';
-                            }
-                            return value;
-                          }}
-                        />);
-                      })}
-                  </ProDescriptions>
-                </Collapse.Panel>
-              </>;
+                    <ProDescriptions
+                      column={2}
+                      title={false}
+                      size={'small'}
+                      bordered
+                      dataSource={currentRow || {}}
+                    >
+                      {x.columns
+                        .filter((x) => !x.hideInDescriptions && x.dataIndex !== 'option')
+                        .sort((x) => x.sort)
+                        .map((x) => renderProDescriptionsItem(x) as unknown as React.ReactNode)}
+                    </ProDescriptions>
+                  </Collapse.Panel>
+                </>
+              );
             })}
           </Collapse>
         </Drawer>
-      }
+      )}
     </>
   );
 }

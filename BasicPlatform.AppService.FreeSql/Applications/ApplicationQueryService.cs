@@ -49,6 +49,22 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     }
 
     /// <summary>
+    /// 读取下拉列表
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public Task<List<SelectViewModel>> GetSelectListAsync()
+    {
+        return QueryableNoTracking
+            .ToListAsync(p => new SelectViewModel
+            {
+                Value = p.Id,
+                Label = p.Name,
+                Disabled = p.Status == Status.Disabled
+            });
+    }
+
+    /// <summary>
     /// 读取分页数据
     /// </summary>
     /// <param name="request"></param>

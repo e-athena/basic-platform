@@ -151,3 +151,10 @@ export function queryAppList() {
     method: 'GET',
   });
 }
+
+/** 读取应用下拉列表 */
+export function queryAppSelectList() {
+  return request<ApiResponse<API.SelectInfo[]>>('/api/Application/GetSelectList', {
+    method: 'GET',
+  });
+}

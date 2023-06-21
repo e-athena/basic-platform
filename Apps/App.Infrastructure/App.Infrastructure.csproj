@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.13" />
         <PackageReference Include="Athena.InstantMessaging" Version="6.0.0" />
-        <PackageReference Include="Athena.Infrastructure" Version="6.2.7" />
+        <PackageReference Include="Athena.Infrastructure" Version="6.2.10" />
         <PackageReference Include="Flurl.Http" Version="3.2.4" />
         <PackageReference Include="NewLife.Core" Version="10.3.2023.503" />
     </ItemGroup>

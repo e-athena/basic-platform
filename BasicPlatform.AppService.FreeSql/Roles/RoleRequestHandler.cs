@@ -80,22 +80,15 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleResourcesRequest request, CancellationToken cancellationToken)
     {
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<RoleResource>(
-            p => p.RoleId == request.Id, cancellationToken
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        entity.AssignResources(request
+                .Resources
+                .Select(p => new RoleResource(p.ApplicationId, request.Id, p.Key, p.Code))
+                .ToList(),
+            UserId
         );
-        if (request.Resources.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var roleResources = request
-            .Resources
-            .Select(p => new RoleResource(p.ApplicationId, request.Id, p.Key, p.Code))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
-        return request.Id;
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>

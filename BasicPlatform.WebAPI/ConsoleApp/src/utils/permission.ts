@@ -62,6 +62,21 @@ export default {
     /** 读取服务器信息 */
     get: 'ServerController_Get',
   },
+  /** 租户管理 */
+  tenant: {
+    /** 读取列表 */
+    getPagingAsync: 'TenantController_GetPagingAsync',
+    /** 详情 */
+    getAsync: 'tenant:detail',
+    /** 创建 */
+    postAsync: 'TenantController_PostAsync',
+    /** 更新 */
+    putAsync: 'TenantController_PutAsync',
+    /** 状态变更 */
+    statusChangeAsync: 'TenantController_StatusChangeAsync',
+    /** 分配资源 */
+    assignResourcesAsync: 'TenantController_AssignResourcesAsync',
+  },
   /** 员工访问记录 */
   userAccessRecord: {
     /** 读取列表 */
@@ -89,13 +104,13 @@ export default {
     getResourcesAsync: 'UserController_GetResourcesAsync',
     /** 读取外部页面列表 */
     getExternalPagesAsync: 'UserController_GetExternalPagesAsync',
-    /** 读取用户资源 */
-    getUserResourceAsync: 'UserController_GetUserResourceAsync',
   },
   /** 应用管理 */
   application: {
     /** 读取列表 */
     getPagingAsync: 'ApplicationController_GetPagingAsync',
+    /** 读取列表 */
+    getListAsync: 'ApplicationController_GetListAsync',
     /** 详情 */
     getAsync: 'application:detail',
     /** 创建 */
@@ -109,5 +124,7 @@ export default {
   resource: {
     /** 同步资源 */
     syncAsync: 'ResourceController_SyncAsync',
+    /** 读取子应用资源 */
+    getSubAppResourcesAsync: 'ResourceController_GetSubAppResourcesAsync',
   },
 };
