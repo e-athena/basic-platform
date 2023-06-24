@@ -1,6 +1,3 @@
-using Athena.Infrastructure.Exceptions;
-using Athena.Infrastructure.Jwt;
-
 namespace App.Infrastructure.Services.Impls;
 
 /// <summary>
@@ -24,6 +21,7 @@ public class DefaultServiceBase
     {
         return url
             .WithHeader("AppId", _accessor.AppId)
+            .WithHeader("TenantId", _accessor.TenantId)
             .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
             .OnError(act =>
             {

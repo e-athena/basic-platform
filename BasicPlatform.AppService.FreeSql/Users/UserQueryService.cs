@@ -6,6 +6,7 @@ using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Tenants;
 using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
@@ -19,10 +20,9 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     private readonly IRoleQueryService _roleQueryService;
 
     public UserQueryService(
-        IFreeSql freeSql,
+        FreeSqlMultiTenancy freeSql,
         ISecurityContextAccessor accessor,
-        IRoleQueryService roleQueryService
-    ) : base(freeSql, accessor)
+        IRoleQueryService roleQueryService) : base(freeSql, accessor)
     {
         _roleQueryService = roleQueryService;
     }
@@ -139,6 +139,36 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// <returns></returns>
     public async Task<GetUserByUserNameResponse> GetByUserNameAsync(string userName)
     {
+        // 如果是租户环境
+        if (IsTenantEnvironment)
+        {
+            // 判断租户是否生效或过期
+            var tenant = await DefaultQueryNoTracking<Tenant>()
+                .Where(p => p.Code == TenantId)
+                .ToOneAsync();
+
+            if (tenant == null)
+            {
+                throw FriendlyException.Of("租户不存在");
+            }
+
+            if (tenant.Status == Status.Disabled)
+            {
+                throw FriendlyException.Of("租户不可用，请联系管理员");
+            }
+
+            if (tenant.EffectiveTime > DateTime.Now)
+            {
+                throw FriendlyException.Of($"租户订阅未生效，生效日期({tenant.EffectiveTime:yyyy-MM-dd})");
+            }
+
+            var expiredTime = tenant.ExpiredTime?.AddDays(1).AddSeconds(-1);
+            if (expiredTime != null && expiredTime < DateTime.Now)
+            {
+                throw FriendlyException.Of($"租户订阅于{expiredTime.Value:yyyy-MM-dd HH:mm:ss}过期");
+            }
+        }
+
         var result = await Query()
             .Where(p => p.UserName == userName)
             .ToOneAsync(p => new GetUserByUserNameResponse
@@ -343,6 +373,19 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         if (userId == null)
         {
             throw FriendlyException.Of("请传入用户Id");
+        }
+
+        // 如果是租户管理员，直接返回授权的所有资源
+        if (IsTenantAdmin)
+        {
+            return await DefaultQueryNoTracking<TenantResource>()
+                .Where(p => p.Tenant.Code == TenantId)
+                .ToListAsync(p => new ResourceModel
+                {
+                    ApplicationId = p.ApplicationId,
+                    Key = p.ResourceKey,
+                    Code = p.ResourceCode
+                });
         }
 
         var result = await GetResourceCodeInfoAsync(userId, appId);

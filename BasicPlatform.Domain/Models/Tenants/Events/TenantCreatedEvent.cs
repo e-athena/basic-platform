@@ -50,7 +50,7 @@ public class TenantCreatedEvent : EventBase
     /// 订阅过期时间
     /// <remarks>为空时永久有效</remarks>
     /// </summary>
-    public DateTime? ExpireTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// 状态
@@ -68,7 +68,7 @@ public class TenantCreatedEvent : EventBase
     public List<TenantApplication> Applications { get; set; }
 
     public TenantCreatedEvent(string name, string code, string contactName, string contactPhoneNumber,
-        string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime, DateTime? expireTime,
+        string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime, DateTime? expiredTime,
         Status status, string? createdUserId, List<TenantApplication> applications)
     {
         Name = name;
@@ -79,7 +79,7 @@ public class TenantCreatedEvent : EventBase
         ConnectionString = connectionString;
         Remarks = remarks;
         EffectiveTime = effectiveTime;
-        ExpireTime = expireTime;
+        ExpiredTime = expiredTime;
         Status = status;
         CreatedUserId = createdUserId;
         Applications = applications;

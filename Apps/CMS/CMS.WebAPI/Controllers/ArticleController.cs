@@ -9,7 +9,7 @@ namespace CMS.WebAPI.Controllers;
 /// <summary>
 /// 文章管理管理
 /// </summary>
-[Menu("文章管理",
+[FrontEndRouting("文章管理",
     ModuleCode = "content",
     ModuleName = "内容模块",
     ModuleRoutePath = "/content",

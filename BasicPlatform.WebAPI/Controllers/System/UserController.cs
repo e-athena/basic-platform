@@ -199,7 +199,8 @@ public class UserController : CustomControllerBase
     /// <param name="organizationId">组织Id</param>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(ApiPermissionConstant.UserSelectList, IsVisible = false)]
+    // [ApiPermission(ApiPermissionConstant.UserSelectList, IsVisible = false)]
+    [SkipApiPermissionVerification]
     public Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId = null)
     {
         return _queryService.GetSelectListAsync(organizationId);

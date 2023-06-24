@@ -1,6 +1,7 @@
 import { AlertFilled, AlertOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { SelectLang as UmiSelectLang, useModel } from '@umijs/max';
-import { Switch, message } from 'antd';
+import { useLocalStorageState } from 'ahooks';
+import { Switch, Tag, message } from 'antd';
 import React from 'react';
 
 export type SiderTheme = 'light' | 'dark';
@@ -30,6 +31,16 @@ export const Question = () => {
     </div>
   );
 };
+
+export const TenantInfo = () => {
+  const [tenantCode] = useLocalStorageState<string>(APP_TENANT_CODE_KEY);
+  if (!tenantCode) {
+    return null;
+  }
+  return (
+    <Tag color="purple">{tenantCode}</Tag>
+  );
+}
 
 export const NavTheme = () => {
   const { initialState, setInitialState } = useModel('@@initialState');

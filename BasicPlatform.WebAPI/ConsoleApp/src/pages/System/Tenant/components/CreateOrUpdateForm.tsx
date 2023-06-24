@@ -28,7 +28,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           applicationId: item.value,
           applicationName: item.label,
           connectionString: null,
-          expireTime: null,
+          expiredTime: null,
         } as unknown as API.TenantApplicationItem)));
       }
     }
@@ -180,7 +180,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                     placeholder={'为空时立即生效'}
                   />
                   <ProFormDatePicker
-                    name="expireTime"
+                    name="expiredTime"
                     label={'订阅过期日期'}
                     width="md"
                     placeholder={'为空时表示永不过期'}
@@ -249,17 +249,16 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                     },
                     {
                       title: '失效日期',
-                      dataIndex: 'expireTime',
+                      dataIndex: 'expiredTime',
                       tooltip: '为空时表示永不过期',
                       width: 140,
                       valueType: 'date',
                       render(_, entity) {
-                        if (entity.expireTime !== undefined && entity.expireTime !== null && entity.expireTime !== '') {
-                          console.log(entity.expireTime)
+                        if (entity.expiredTime !== undefined && entity.expiredTime !== null && entity.expiredTime !== '') {
                           return <DatePicker
-                            value={dayjs(entity.expireTime)}
+                            value={dayjs(entity.expiredTime)}
                             onChange={(e) => {
-                              entity.expireTime = e === null ? null : e?.format('YYYY-MM-DD');
+                              entity.expiredTime = e === null ? null : e?.format('YYYY-MM-DD');
                               setDataSource([...dataSource]);
                             }}
                             placeholder={'请选择'}

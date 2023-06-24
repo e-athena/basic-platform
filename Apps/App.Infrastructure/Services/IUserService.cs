@@ -1,5 +1,4 @@
 using App.Infrastructure.Messaging.Requests;
-using App.Infrastructure.Models;
 
 namespace App.Infrastructure.Services;
 

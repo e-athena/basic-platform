@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Applications;
-using BasicPlatform.AppService.Applications.Models;
 using BasicPlatform.AppService.Applications.Requests;
 using BasicPlatform.AppService.Applications.Responses;
 

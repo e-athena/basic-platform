@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Roles.Requests;
+using BasicPlatform.AppService.Users;
 using BasicPlatform.Domain.Models.Roles;
 
 namespace BasicPlatform.AppService.FreeSql.Roles;
@@ -14,9 +15,13 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     IRequestHandler<AssignRoleUsersRequest, string>,
     IRequestHandler<AssignRoleDataPermissionsRequest, string>
 {
-    public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
+    private readonly IUserQueryService _userQueryService;
+
+    public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor,
+        IUserQueryService userQueryService)
         : base(unitOfWorkManager, contextAccessor)
     {
+        _userQueryService = userQueryService;
     }
 
     /// <summary>
@@ -80,6 +85,40 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleResourcesRequest request, CancellationToken cancellationToken)
     {
+        // 如果不是超级管理员，则需要检查分配的权限中是否有超过自己的权限，按ApplicationId分组，如果分配的权限中包含超过自己的权限，则抛出异常
+        if (!IsRoot)
+        {
+            var resources = await _userQueryService.GetUserResourceAsync(null, null);
+            var resourceKeys = resources
+                .GroupBy(p => p.ApplicationId)
+                .Select(p => new
+                {
+                    ApplicationId = p.Key,
+                    Keys = p.Select(k => k.Key).ToList()
+                }).ToList();
+
+            var assignResourceKeys = request
+                .Resources
+                .GroupBy(p => p.ApplicationId)
+                .Select(p => new
+                {
+                    ApplicationId = p.Key,
+                    Keys = p.Select(k => k.Key).ToList()
+                }).ToList();
+
+            if (assignResourceKeys
+                .Any(p =>
+                    !resourceKeys
+                        .Any(k =>
+                            k.ApplicationId == p.ApplicationId &&
+                            k.Keys.Any(p.Keys.Contains)
+                        )
+                ))
+            {
+                throw FriendlyException.Of("分配的权限中包含超过自己的权限，请检查！");
+            }
+        }
+
         var entity = await GetForUpdateAsync(request.Id, cancellationToken);
         entity.AssignResources(request
                 .Resources

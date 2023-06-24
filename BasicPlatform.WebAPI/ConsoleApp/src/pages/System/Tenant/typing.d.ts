@@ -1,4 +1,18 @@
 declare namespace API {
+
+  /** 同步数据库结构请求 */
+  type SyncTenantDatabaseRequest = {
+    code: string
+  }
+
+  /** 初始化 */
+  type InitTenantRequest = {
+    id: string;
+    code: string;
+    adminUserName?: string;
+    adminPassword?: string;
+  };
+
   /** 创建 */
   type CreateTenantItem = {
     name: string;
@@ -9,7 +23,7 @@ declare namespace API {
     connectionString: string;
     remarks: string;
     effectiveTime: string;
-    expireTime: string;
+    expiredTime: string;
     applications: TenantApplicationItem[];
   };
   /** 更新 */
@@ -28,9 +42,10 @@ declare namespace API {
     contactEmail?: string;
     connectionString: string;
     effectiveTime: string;
-    expireTime: string;
+    expiredTime: string;
     remarks: string;
     status: number;
+    isInitDatabase: boolean;
   } & Partial<CreatedItem> &
     Partial<UpdatedItem>;
 
@@ -59,6 +74,6 @@ declare namespace API {
     applicationId: string;
     applicationName: string;
     connectionString: string | null;
-    expireTime: string | null;
+    expiredTime: string | null;
   };
 }

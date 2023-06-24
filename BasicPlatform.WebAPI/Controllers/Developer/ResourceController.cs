@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Applications;
-using BasicPlatform.AppService.Resources.Models;
 using BasicPlatform.AppService.Resources.Requests;
 
 namespace BasicPlatform.WebAPI.Controllers.Developer;

@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.4.1"/>
+        <PackageReference Include="Athena.Infrastructure.SqlSugar" Version="6.0.1" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj"/>
+        <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj" />
     </ItemGroup>
 
 </Project>

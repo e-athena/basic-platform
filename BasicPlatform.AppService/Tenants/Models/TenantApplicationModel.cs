@@ -21,15 +21,20 @@ public class TenantApplicationModel
     public string ApplicationName { get; set; } = null!;
 
     /// <summary>
+    /// 应用接口地址
+    /// </summary>
+    public string? ApplicationApiUrl { get; set; }
+
+    /// <summary>
     /// 数据库链接字符串
     /// </summary>
-    public string? ConnectionString { get; set; } 
+    public string? ConnectionString { get; set; }
 
     /// <summary>
     /// 订阅过期时间
     /// <remarks>为空时永久有效</remarks>
     /// </summary>
-    public DateTime? ExpireTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// 是否启用

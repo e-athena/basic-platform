@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { Question, NavTheme } from '@/components/RightContent';
+import { Question, NavTheme, TenantInfo } from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
 import { MenuDataItem, Settings as LayoutSettings, PageLoading } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -112,6 +112,8 @@ export async function getInitialState(): Promise<{
   return {
     fetchMenuData,
     fetchUserInfo,
+    fetchApiResources,
+    fetchExternalPages,
     settings: defaultSettings as Partial<LayoutSettings>,
     customNavTheme: getNavTheme(),
     setCustomNavTheme: setNavTheme,
@@ -126,6 +128,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   // window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = theme;
   return {
     actionsRender: () => [
+      <TenantInfo key={'tenant'} />,
       <NavTheme key={'theme'} />,
       <Question key="doc" />,
       // <SelectLang key="SelectLang" />
@@ -254,11 +257,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

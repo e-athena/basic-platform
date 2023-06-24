@@ -13,6 +13,7 @@ services.AddCustomMediatR(
     Assembly.Load("BasicPlatform.AppService.FreeSql")
 );
 services.AddCustomServiceComponent(
+    Assembly.GetExecutingAssembly(),
     Assembly.Load("BasicPlatform.AppService.FreeSql"),
     Assembly.Load("BasicPlatform.Infrastructure")
 );
@@ -24,11 +25,16 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
 {
     // Dashboard
     capOptions.UseDashboard();
-}, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
+}, new[]
+{
+    Assembly.Load("BasicPlatform.IntegratedEventHandler"),
+    Assembly.Load("BasicPlatform.ProcessManager"), 
+});
 
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
 services.AddCustomDataPermission(configuration);
+services.AddCustomBasicAuth(configuration);
 services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
@@ -43,7 +49,6 @@ host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
 var app = builder.Build();
 
 app.UseAthenaProvider();
-app.UseCustomFreeSqlMultiTenancy();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -55,8 +60,9 @@ app.UseCors();
 //启用验证
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 app.UseCustomAuditLog();
+app.UseCustomFreeSqlMultiTenancy();
+app.MapControllers();
 app.MapCustomSignalR();
 app.MapSpaFront();
 app.MapHealth();

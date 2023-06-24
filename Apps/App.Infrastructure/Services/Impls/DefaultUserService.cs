@@ -1,9 +1,4 @@
 using App.Infrastructure.Messaging.Requests;
-using App.Infrastructure.Models;
-using Athena.Infrastructure.Attributes;
-using Athena.Infrastructure.Exceptions;
-using Athena.Infrastructure.Jwt;
-using Athena.Infrastructure.Messaging.Responses;
 
 namespace App.Infrastructure.Services.Impls;
 

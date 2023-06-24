@@ -11,9 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission.FreeSql" Version="6.0.3" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.4.1" />
-        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.13" />
+        <PackageReference Include="Athena.Infrastructure.DataPermission.FreeSql" Version="6.0.4" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.5.1-preview.20230624.1" />
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.15" />
     </ItemGroup>
 
 </Project>

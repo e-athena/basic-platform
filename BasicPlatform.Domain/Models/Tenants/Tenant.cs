@@ -45,6 +45,11 @@ public class Tenant : EntityCore, ICreator, IUpdater
     public string ConnectionString { get; set; } = null!;
 
     /// <summary>
+    /// 是否已初始化数据库
+    /// </summary>
+    public bool IsInitDatabase { get; set; }
+
+    /// <summary>
     /// 备注
     /// </summary>
     public string? Remarks { get; set; }
@@ -58,7 +63,7 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// 订阅过期时间
     /// <remarks>为空时永久有效</remarks>
     /// </summary>
-    public DateTime? ExpireTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// 状态
@@ -89,14 +94,14 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// <param name="contactEmail"></param>
     /// <param name="remarks"></param>
     /// <param name="effectiveTime"></param>
-    /// <param name="expireTime"></param>
+    /// <param name="expiredTime"></param>
     /// <param name="createdUserId"></param>
     /// <param name="applications"></param>
     /// <param name="contactName"></param>
     /// <param name="contactPhoneNumber"></param>
     public Tenant(string id, string name, string code, string contactName, string contactPhoneNumber,
         string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime,
-        DateTime? expireTime, string? createdUserId, List<TenantApplication> applications) : base(id)
+        DateTime? expiredTime, string? createdUserId, List<TenantApplication> applications) : base(id)
     {
         Name = name;
         Code = code;
@@ -106,12 +111,12 @@ public class Tenant : EntityCore, ICreator, IUpdater
         ConnectionString = SecurityHelper.Encrypt(connectionString);
         Remarks = remarks;
         EffectiveTime = effectiveTime;
-        ExpireTime = expireTime;
+        ExpiredTime = expiredTime;
         CreatedUserId = createdUserId;
         Status = Status.Enabled;
 
         ApplyEvent(new TenantCreatedEvent(name, code, contactName, contactPhoneNumber, contactEmail,
-            connectionString, remarks, effectiveTime, expireTime, Status, createdUserId, applications));
+            connectionString, remarks, effectiveTime, expiredTime, Status, createdUserId, applications));
     }
 
     /// <summary>
@@ -123,28 +128,35 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// <param name="connectionString"></param>
     /// <param name="remarks"></param>
     /// <param name="effectiveTime"></param>
-    /// <param name="expireTime"></param>
+    /// <param name="expiredTime"></param>
     /// <param name="lastUpdatedUserId"></param>
     /// <param name="contactName"></param>
     /// <param name="contactPhoneNumber"></param>
     /// <param name="applications"></param>
     public void Update(string name, string code, string contactName, string contactPhoneNumber,
         string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime,
-        DateTime? expireTime, string? lastUpdatedUserId, List<TenantApplication> applications)
+        DateTime? expiredTime, string? lastUpdatedUserId, List<TenantApplication> applications)
     {
         Name = name;
         Code = code;
         ContactName = contactName;
         ContactPhoneNumber = contactPhoneNumber;
         ContactEmail = contactEmail;
-        ConnectionString = SecurityHelper.Encrypt(connectionString);
+        var connectString = SecurityHelper.Encrypt(connectionString);
+        // 如果数据库链接字符串有变更，则重置数据库初始化状态
+        if (ConnectionString != connectString)
+        {
+            IsInitDatabase = false;
+        }
+
+        ConnectionString = connectString;
         Remarks = remarks;
         EffectiveTime = effectiveTime;
-        ExpireTime = expireTime;
+        ExpiredTime = expiredTime;
         LastUpdatedUserId = lastUpdatedUserId;
 
         ApplyEvent(new TenantUpdatedEvent(name, code, contactName, contactPhoneNumber, contactEmail,
-            connectionString, remarks, effectiveTime, expireTime, lastUpdatedUserId, applications));
+            connectionString, remarks, effectiveTime, expiredTime, lastUpdatedUserId, applications));
     }
 
     /// <summary>
@@ -167,5 +179,14 @@ public class Tenant : EntityCore, ICreator, IUpdater
         LastUpdatedUserId = lastUpdatedUserId;
 
         ApplyEvent(new TenantResourceAssignedEvent(resources));
+    }
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    public void InitDatabase(string? lastUpdatedUserId)
+    {
+        IsInitDatabase = true;
+        LastUpdatedUserId = lastUpdatedUserId;
     }
 }

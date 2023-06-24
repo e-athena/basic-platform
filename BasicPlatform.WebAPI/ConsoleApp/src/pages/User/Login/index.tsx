@@ -18,11 +18,12 @@ import {
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, SelectLang, useIntl, useModel, Helmet, history } from '@umijs/max';
 import { parse } from 'querystring';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, message, Tabs, Tag } from 'antd';
 import Settings from '../../../../config/defaultSettings';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { setSessionCode, setToken } from '@/utils/token';
+import { useLocalStorageState } from 'ahooks';
 
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -94,12 +95,25 @@ const LoginMessage: React.FC<{
   );
 };
 
+type QueryProps = {
+  clientId?: string;
+  redirectUrl?: string;
+  t_code?: string;
+};
+
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-  const query = parse(history.location.search.split('?')[1], '&');
-  const { clientId, redirectUrl } = query;
+  const query: QueryProps = parse(history.location.search.split('?')[1], '&');
+  const { clientId, redirectUrl, t_code } = query;
+  const [tenantCode, setTenantCode] = useLocalStorageState<string | undefined>(APP_TENANT_CODE_KEY);
+  console.log(tenantCode);
+  useEffect(() => {
+    if (t_code && t_code !== tenantCode) {
+      setTenantCode(t_code);
+    }
+  }, [t_code]);
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -144,7 +158,7 @@ const Login: React.FC = () => {
       if (clientId) {
         values.clientId = clientId as string;
       }
-      const res = await login({ ...values, type });
+      const res = await login({ ...values, type, tenantId: tenantCode });
       if (res.success) {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -222,8 +236,25 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
+          logo={<img alt="logo" src="https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png" width={44} height={44} />}
+          title={<>
+            <span>Athena Pro</span>
+            {tenantCode && <Tag
+              color="purple"
+              closable
+              onClose={(e) => {
+                e.stopPropagation();
+                setTenantCode(undefined);
+                // Modal.confirm({
+                //   title: '确认切换租户？',
+                //   content: '切换租户后，当前登录信息将失效，需要重新登录。',
+                //   onOk: () => {
+                //     setTenantCode(undefined);
+                //     window.location.reload();
+                //   }
+                // });
+              }}>{tenantCode}</Tag>}
+          </>}
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             rememberMe: true,

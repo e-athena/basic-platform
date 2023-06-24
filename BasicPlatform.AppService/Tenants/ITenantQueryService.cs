@@ -25,4 +25,19 @@ public interface ITenantQueryService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<GetTenantDetailResponse> GetAsync(string id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 读取信息
+    /// </summary>
+    /// <param name="code">编码</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<GetTenantDetailResponse> GetByCodeAsync(string code, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 读取连接字符串
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    Task<string> GetConnectionStringAsync(string code);
 }

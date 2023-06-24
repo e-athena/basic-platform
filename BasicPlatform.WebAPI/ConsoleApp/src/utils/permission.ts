@@ -76,6 +76,10 @@ export default {
     statusChangeAsync: 'TenantController_StatusChangeAsync',
     /** 分配资源 */
     assignResourcesAsync: 'TenantController_AssignResourcesAsync',
+    /** 初始化 */
+    initAsync: 'TenantController_InitAsync',
+    /** 同步数据库 */
+    syncStructureAsync: 'TenantController_SyncStructureAsync',
   },
   /** 员工访问记录 */
   userAccessRecord: {
@@ -100,6 +104,8 @@ export default {
     assignDataPermissionsAsync: 'UserController_AssignDataPermissionsAsync',
     /** 重置密码 */
     resetPasswordAsync: 'UserController_ResetPasswordAsync',
+    /** 下拉列表 */
+    getSelectListAsync: 'UserController_GetSelectListAsync',
     /** 读取资源 */
     getResourcesAsync: 'UserController_GetResourcesAsync',
     /** 读取外部页面列表 */

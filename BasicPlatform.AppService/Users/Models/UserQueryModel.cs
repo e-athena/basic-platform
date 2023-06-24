@@ -81,6 +81,12 @@ public class UserQueryModel : QueryModelBase
     public bool IsInitPassword { get; set; }
 
     /// <summary>
+    /// 是否为租户管理员
+    /// </summary>
+    [TableColumn(Ignore = true)]
+    public bool IsTenantAdmin { get; set; }
+
+    /// <summary>
     /// 是否启用
     /// </summary>
     [TableColumn(HideInTable = true, Ignore = true)]

@@ -4,7 +4,6 @@ using Athena.InstantMessaging;
 using Athena.InstantMessaging.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
-using Microsoft.Extensions.Options;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -84,7 +83,9 @@ public class AccountController : ControllerBase
             new(ClaimTypes.Role, role),
             new("RoleName", roleName),
             new(ClaimTypes.Name, info.UserName),
-            new("RealName", info.RealName)
+            new("RealName", info.RealName),
+            new("IsTenantAdmin", info.IsTenantAdmin ? "true" : "false"),
+            new("TenantId", _securityContextAccessor.TenantId ?? string.Empty)
         };
         var jwtConfig = options.Value;
         var sessionCode = Guid.NewGuid().ToString("N").ToUpper();

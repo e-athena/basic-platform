@@ -1,4 +1,6 @@
 using BasicPlatform.AppService.Applications;
+using BasicPlatform.AppService.Users;
+using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -10,13 +12,16 @@ namespace BasicPlatform.WebAPI.Controllers;
 public class UtilController : ControllerBase
 {
     private readonly ILogger<UtilController> _logger;
+    private readonly ISecurityContextAccessor _securityContextAccessor;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="loggerFactory"></param>
-    public UtilController(ILoggerFactory loggerFactory)
+    /// <param name="securityContextAccessor"></param>
+    public UtilController(ILoggerFactory loggerFactory, ISecurityContextAccessor securityContextAccessor)
     {
+        _securityContextAccessor = securityContextAccessor;
         _logger = loggerFactory.CreateLogger<UtilController>();
     }
 
@@ -38,7 +43,7 @@ public class UtilController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     public async Task<IList<ApplicationDataPermissionInfo>> GetApplicationDataPermissionResourcesAsync(
-        [FromServices] IApplicationQueryService applicationQueryService
+        [FromServices] ISubApplicationService subApplicationService
     )
     {
         var result = new List<ApplicationDataPermissionInfo>();
@@ -51,35 +56,9 @@ public class UtilController : ControllerBase
             DataPermissionGroups = defaultList
         });
 
-        // 读取应用信息
-        var apps = await applicationQueryService.GetListAsync();
-
-        foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.PermissionResourceRoute)))
-        {
-            var resourceUrl = $"{app.ApiUrl}{app.PermissionResourceRoute}";
-            try
-            {
-                var res = await resourceUrl.GetAsync()
-                    .ReceiveJson<ApiResult<ApplicationDataPermissionInfo>>();
-
-                if (res.Data != null && res.Success)
-                {
-                    var d = res.Data;
-                    result.Add(new ApplicationDataPermissionInfo
-                    {
-                        ApplicationId = app.ClientId,
-                        ApplicationName = app.Name,
-                        DataPermissionGroups = d.DataPermissionGroups,
-                        ExtraSelectList = d.ExtraSelectList
-                    });
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "加载应用数据权限失败，应用ID:{ClientId},数据权限地址:{Url}", app.ClientId, resourceUrl);
-            }
-        }
-
+        // 其他业务应用
+        var subApplicationResources = await subApplicationService.GetDataPermissionResourcesAsync();
+        result.AddRange(subApplicationResources);
         return result;
     }
 
@@ -88,9 +67,11 @@ public class UtilController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Authorize]
     public async Task<IList<ApplicationResourceInfo>> GetApplicationMenuResourcesAsync(
+        [FromServices] IUserQueryService userQueryService,
         [FromServices] IApiPermissionService service,
-        [FromServices] IApplicationQueryService applicationQueryService
+        [FromServices] ISubApplicationService subApplicationService
     )
     {
         var result = new List<ApplicationResourceInfo>();
@@ -98,7 +79,22 @@ public class UtilController : ControllerBase
         #region 系统资源
 
         var assembly = Assembly.GetExecutingAssembly();
-        var defaultList = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
+        IList<MenuTreeInfo> defaultList;
+        IList<ResourceModel>? resources = null;
+        if (_securityContextAccessor.IsRoot)
+        {
+            defaultList = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
+        }
+        else
+        {
+            resources = await userQueryService.GetUserResourceAsync(null, null);
+            var keys = resources
+                .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Select(p => p.Key)
+                .ToList();
+            defaultList = service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId);
+        }
+
         result.Add(new ApplicationResourceInfo
         {
             ApplicationId = GlobalConstant.DefaultAppId,
@@ -109,32 +105,8 @@ public class UtilController : ControllerBase
         #endregion
 
         // 其他业务应用
-        var apps = await applicationQueryService.GetListAsync();
-
-        foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
-        {
-            var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
-            try
-            {
-                var res = await resourceUrl.GetAsync()
-                    .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
-
-                if (res.Data != null && res.Success && res.Data.Count > 0)
-                {
-                    result.Add(new ApplicationResourceInfo
-                    {
-                        ApplicationId = app.ClientId,
-                        ApplicationName = app.Name,
-                        Resources = res.Data
-                    });
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "加载应用资源失败，应用ID:{ClientId},资源地址:{Url}", app.ClientId, resourceUrl);
-            }
-        }
-
+        var subApplicationResources = await subApplicationService.GetMenuResourcesAsync(resources);
+        result.AddRange(subApplicationResources);
         return result;
     }
 

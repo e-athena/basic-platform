@@ -50,7 +50,7 @@ public class TenantModel : ModelBase
     /// 订阅过期时间
     /// <remarks>为空时永久有效</remarks>
     /// </summary>
-    public DateTime? ExpireTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// 子应用

@@ -1,6 +1,3 @@
-using Athena.Infrastructure.Attributes;
-using Athena.Infrastructure.Jwt;
-using Athena.Infrastructure.Messaging.Responses;
 using Athena.Infrastructure.ViewModels;
 
 namespace App.Infrastructure.Services.Impls;

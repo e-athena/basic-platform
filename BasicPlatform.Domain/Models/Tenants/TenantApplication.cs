@@ -37,7 +37,7 @@ public class TenantApplication : ValueObject
     /// 订阅过期时间
     /// <remarks>为空时永久有效</remarks>
     /// </summary>
-    public DateTime? ExpireTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// 是否启用
@@ -59,14 +59,14 @@ public class TenantApplication : ValueObject
     /// <param name="tenantId"></param>
     /// <param name="applicationId"></param>
     /// <param name="connectionString"></param>
-    /// <param name="expireTime"></param>
+    /// <param name="expiredTime"></param>
     /// <param name="createdUserId"></param>
     /// <param name="isEnabled"></param>
     public TenantApplication(
         string tenantId,
         string applicationId,
         string connectionString,
-        DateTime? expireTime,
+        DateTime? expiredTime,
         string? createdUserId,
         bool isEnabled
     )
@@ -74,7 +74,7 @@ public class TenantApplication : ValueObject
         TenantId = tenantId;
         ApplicationId = applicationId;
         ConnectionString = connectionString != string.Empty ? SecurityHelper.Encrypt(connectionString) : string.Empty;
-        ExpireTime = expireTime;
+        ExpiredTime = expiredTime;
         CreatedUserId = createdUserId;
         IsEnabled = isEnabled;
     }

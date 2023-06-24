@@ -57,6 +57,7 @@ declare namespace API {
     clientId?: string;
     rememberMe?: boolean;
     type?: string;
+    tenantId?: string;
   };
 
   type ErrorResponse = {

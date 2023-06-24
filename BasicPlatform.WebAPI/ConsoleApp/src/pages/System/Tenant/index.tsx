@@ -1,21 +1,23 @@
-import { query, detail, statusChange } from './service';
-import { PlusOutlined, FormOutlined, CopyOutlined, ShareAltOutlined, MoreOutlined } from '@ant-design/icons';
+import { query, detail, statusChange, syncStructure } from './service';
+import { PlusOutlined, FormOutlined, CopyOutlined, ShareAltOutlined, MoreOutlined, DatabaseOutlined, SyncOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
-import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Dropdown, Modal, Switch, message } from 'antd';
+import { FormattedMessage, useModel, useLocation, Access, history } from '@umijs/max';
+import { Button, Dropdown, Modal, Switch, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail, submitHandle } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ProTablePlus from '@/components/ProTablePlus';
 import IconStatus from '@/components/IconStatus';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import AuthorizationForm from './components/AuthorizationForm';
+import InitForm from './components/InitForm';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
   const [resourceModalOpen, handleResourceModalOpen] = useState<boolean>(false);
+  const [initModalOpen, handleInitModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.TenantDetailItem>();
@@ -25,18 +27,35 @@ const TableList: React.FC = () => {
   const showOption: boolean = hasPermission([
     permission.tenant.postAsync,
     permission.tenant.putAsync,
-    permission.tenant.assignResourcesAsync
+    permission.tenant.assignResourcesAsync,
+    permission.tenant.initAsync
   ], resource);
   const showMoreOption: boolean = hasPermission(
     [
       permission.tenant.postAsync,
-      permission.tenant.assignResourcesAsync
+      permission.tenant.assignResourcesAsync,
+      permission.tenant.initAsync
     ],
     resource,
   );
 
   /**需要重写的Column */
   const [defaultColumns] = useState<ProColumns<API.TenantListItem>[]>([
+    {
+      dataIndex: 'code',
+      render(_, entity) {
+        return <Tooltip placement={'top'} title={'点击登录'}>
+          <Button
+            shape="circle"
+            type={'link'}
+            onClick={() => {
+              history.push(`/user/login?t_code=${entity.code}`);
+            }}>
+            {entity.code}
+          </Button>
+        </Tooltip>
+      },
+    },
     {
       title: '状态',
       dataIndex: 'status',
@@ -97,6 +116,23 @@ const TableList: React.FC = () => {
             label: '分配资源',
           });
         }
+        if (canAccessible(permission.tenant.initAsync, resource)) {
+          moreItems.push({
+            key: 'init',
+            icon: <DatabaseOutlined />,
+            label: '初始化',
+            title: '初始化数据库及创建超级管理员',
+            disabled: entity.isInitDatabase
+          });
+        }
+        if (canAccessible(permission.tenant.syncStructureAsync, resource)) {
+          moreItems.push({
+            key: 'sync',
+            icon: <SyncOutlined />,
+            label: '同步表结构',
+            title: '同步主应用和所有子应用的数据库结构'
+          });
+        }
         return [
           <Access
             key={'edit'}
@@ -124,6 +160,15 @@ const TableList: React.FC = () => {
                 items: moreItems,
                 onClick: async ({ key, domEvent }) => {
                   domEvent.stopPropagation();
+                  if (key === 'init') {
+                    domEvent.stopPropagation();
+                    const data = await queryDetail(detail, entity.id!);
+                    if (data) {
+                      setCurrentRow(data);
+                      handleInitModalOpen(true);
+                    }
+                    return;
+                  }
                   if (key === 'resource') {
                     const data = await queryDetail(detail, entity.id!);
                     if (data) {
@@ -140,6 +185,20 @@ const TableList: React.FC = () => {
                       setCurrentRow(data);
                       handleCreateOrUpdateModalOpen(true);
                     }
+                    return;
+                  }
+                  if (key === 'sync') {
+                    domEvent.stopPropagation();
+                    Modal.confirm({
+                      title: '操作提示',
+                      content: `确定要同步{${entity.name}}的数据库结构吗？`,
+                      onOk: async () => {
+                        const succeed = await submitHandle(syncStructure, entity.code, '同步');
+                        if (succeed) {
+                          actionRef.current?.reload();
+                        }
+                      }
+                    });
                     return;
                   }
                 },
@@ -205,6 +264,22 @@ const TableList: React.FC = () => {
           tenantResources={currentRow!.resources}
           tenantId={currentRow!.id!}
         />
+      )}
+      {initModalOpen && currentRow !== undefined && (
+        <InitForm
+          onCancel={() => {
+            handleInitModalOpen(false);
+            setCurrentRow(undefined);
+          }}
+          onSuccess={() => {
+            handleInitModalOpen(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+          open={initModalOpen}
+          values={currentRow} />
       )}
       <CreateOrUpdateForm
         onCancel={() => {

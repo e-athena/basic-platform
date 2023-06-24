@@ -43,13 +43,13 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
             request.ConnectionString,
             request.Remarks,
             request.EffectiveTime,
-            request.ExpireTime,
+            request.ExpiredTime,
             UserId,
             request.Applications.Select(x =>
                     new TenantApplication(id,
                         x.ApplicationId,
                         x.ConnectionString ?? string.Empty,
-                        x.ExpireTime,
+                        x.ExpiredTime,
                         UserId,
                         x.IsEnabled
                     ))
@@ -87,14 +87,14 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
             request.ConnectionString,
             request.Remarks,
             request.EffectiveTime,
-            request.ExpireTime,
+            request.ExpiredTime,
             UserId,
             request.Applications.Select(x =>
                     new TenantApplication(
                         request.Id!,
                         x.ApplicationId,
                         x.ConnectionString ?? string.Empty,
-                        x.ExpireTime,
+                        x.ExpiredTime,
                         UserId,
                         x.IsEnabled
                     ))

@@ -92,6 +92,7 @@ public class DefaultSecurityContextAccessor : ISecurityContextAccessor
     public string RealName => "开发者";
     public string UserName => "root";
     public bool IsRoot => true;
+    public bool IsTenantAdmin => false;
     public string? TenantId => null;
     public string? Role => null;
     public IList<string>? Roles { get; } = null;

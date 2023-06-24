@@ -259,7 +259,7 @@ export type TableColumnItem = {
   /** 列标题 */
   title: string;
   /** 列宽度 */
-  width: number | null;
+  width?: number | null;
   /** 在表格中隐藏 */
   hideInTable: boolean;
   /** 在搜索中隐藏 */

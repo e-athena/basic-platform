@@ -132,6 +132,11 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     public bool IsInitPassword { get; set; } = true;
 
+    /// <summary>
+    /// 是否为租户管理员
+    /// </summary>
+    public bool IsTenantAdmin { get; set; }
+
     public User()
     {
     }
@@ -150,8 +155,10 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="organizationId">所属组织ID</param>
     /// <param name="positionId">所属职位ID</param>
     /// <param name="createdUserId">创建人</param>
+    /// <param name="isTenantAdmin">是否为租户管理员</param>
     public User(string userName, string? password, string? avatar, string realName, Gender gender, string? nickName,
-        string? phoneNumber, string? email, string organizationId, string? positionId, string? createdUserId)
+        string? phoneNumber, string? email, string organizationId, string? positionId, string? createdUserId,
+        bool isTenantAdmin)
     {
         password ??= "123456";
         UserName = userName;
@@ -165,12 +172,19 @@ public class User : EntityCore, ICreator, IUpdater
         OrganizationId = organizationId;
         PositionId = positionId;
         CreatedUserId = createdUserId;
+        IsTenantAdmin = isTenantAdmin;
 
-        // 添加集成事件
-        ApplyEvent(new UserCreatedEvent
-        {
-            UserName = UserName
-        });
+        // 添加事件
+        ApplyEvent(new UserCreatedEvent(
+            userName,
+            realName,
+            gender,
+            nickName,
+            phoneNumber,
+            email,
+            isTenantAdmin,
+            createdUserId
+        ));
     }
 
     /// <summary>

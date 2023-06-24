@@ -1,5 +1,3 @@
-using App.Infrastructure.Models;
-
 namespace App.Infrastructure.Messaging.Requests;
 
 public class UpdateUserCustomColumnsRequest

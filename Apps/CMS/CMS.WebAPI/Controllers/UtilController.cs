@@ -17,29 +17,7 @@ public class UtilController : ControllerBase
     {
         _logger = loggerFactory.CreateLogger<UtilController>();
     }
-
-    /// <summary>
-    /// 读取菜单资源
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public IList<MenuTreeInfo> GetMenuResources([FromServices] IApiPermissionService service)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        return service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
-    }
-
-    /// <summary>
-    /// 读取应用数据权限资源
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public IList<DataPermissionGroup> GetDataPermissionResources()
-    {
-        var assembly = Assembly.Load("CMS.QueryServices");
-        return DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
-    }
-
+    
     /// <summary>
     /// 释放内存
     /// </summary>

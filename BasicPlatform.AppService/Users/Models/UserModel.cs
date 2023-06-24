@@ -34,7 +34,7 @@ public class UserModel : ModelBase
     /// 昵称
     /// </summary>
     public string? NickName { get; set; }
-    
+
     /// <summary>
     /// 手机号
     /// </summary>
@@ -66,4 +66,9 @@ public class UserModel : ModelBase
     /// 是否初始密码
     /// </summary>
     public bool IsInitPassword { get; set; }
+
+    /// <summary>
+    /// 是否为租户管理员
+    /// </summary>
+    public bool IsTenantAdmin { get; set; }
 }

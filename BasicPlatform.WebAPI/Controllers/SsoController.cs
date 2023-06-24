@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Users.Models;
-using Microsoft.Extensions.Options;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -74,7 +73,9 @@ public class SsoController : ControllerBase
         {
             new(ClaimTypes.NameIdentifier, currentUserInfo.Id!),
             new(ClaimTypes.Name, currentUserInfo.UserName),
-            new("RealName", currentUserInfo.RealName)
+            new("RealName", currentUserInfo.RealName),
+            new("IsTenantAdmin", currentUserInfo.IsTenantAdmin ? "true" : "false"),
+            new("TenantId", _securityContextAccessor.TenantId ?? string.Empty)
         };
         var securityKey = app.UseDefaultClientSecret ? _jwtConfig.SecurityKey : app.ClientSecret;
         // 生成Token

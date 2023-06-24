@@ -9,6 +9,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// </summary>
 public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
+    IRequestHandler<CreateTenantSuperUserRequest, string>,
     IRequestHandler<UpdateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>,
     IRequestHandler<AssignUserResourcesRequest, string>,
@@ -53,7 +54,8 @@ public class UserRequestHandler : AppServiceBase<User>,
             request.Email,
             request.OrganizationId,
             request.PositionId,
-            UserId
+            UserId,
+            false
         );
         await RegisterNewAsync(entity, cancellationToken);
 
@@ -67,6 +69,40 @@ public class UserRequestHandler : AppServiceBase<User>,
             await RegisterNewRangeValueObjectAsync(userRoles, cancellationToken);
         }
 
+        return entity.Id;
+    }
+
+    /// <summary>
+    /// 创建租户超级用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<string> Handle(CreateTenantSuperUserRequest request, CancellationToken cancellationToken)
+    {
+        // 如果要创建租户管理员，则当前租户不能有用户，否则提示异常
+        var any = await QueryableNoTracking.AnyAsync(cancellationToken);
+        if (any)
+        {
+            throw FriendlyException.Of("只能创建一个租户管理员");
+        }
+
+        var entity = new User(
+            request.UserName,
+            request.Password,
+            request.Avatar,
+            request.RealName,
+            request.Gender,
+            request.NickName,
+            request.PhoneNumber,
+            request.Email,
+            string.Empty,
+            string.Empty,
+            UserId,
+            true
+        );
+        await RegisterNewAsync(entity, cancellationToken);
         return entity.Id;
     }
 
@@ -184,7 +220,6 @@ public class UserRequestHandler : AppServiceBase<User>,
 
         return request.Id;
     }
-
 
     /// <summary>
     /// 分配数据权限

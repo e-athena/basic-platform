@@ -2,6 +2,7 @@ using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Applications.Models;
 using BasicPlatform.AppService.Applications.Requests;
 using BasicPlatform.AppService.Applications.Responses;
+using BasicPlatform.Domain.Models.Tenants;
 
 namespace BasicPlatform.AppService.FreeSql.Applications;
 
@@ -13,7 +14,8 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
 {
     private readonly ICacheManager _cacheManager;
 
-    public ApplicationQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor, ICacheManager cacheManager) :
+    public ApplicationQueryService(FreeSqlMultiTenancy freeSql, ISecurityContextAccessor accessor,
+        ICacheManager cacheManager) :
         base(freeSql, accessor)
     {
         _cacheManager = cacheManager;
@@ -30,7 +32,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
         var cacheKey = $"sso:application:secret:{clientId}";
         return _cacheManager.GetOrCreate(cacheKey, () =>
         {
-            return QueryableNoTracking
+            return DefaultQueryableNoTracking
                 .Where(p => p.ClientId == clientId)
                 .ToOne(p => p.ClientSecret);
         }, TimeSpan.FromMinutes(30));
@@ -43,6 +45,28 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     /// <exception cref="NotImplementedException"></exception>
     public async Task<List<ApplicationModel>> GetListAsync()
     {
+        // 如果是租户环境
+        if (IsTenantEnvironment)
+        {
+            // 读取租户应用
+            return await DefaultQueryNoTracking<TenantApplication>()
+                .Where(p => p.IsEnabled)
+                .Where(p => p.Application.Status == Status.Enabled)
+                .ToListAsync(p => new ApplicationModel
+                {
+                    Id = p.Application.Id,
+                    Name = p.Application.Name,
+                    ClientId = p.Application.ClientId,
+                    ClientSecret = p.Application.ClientSecret,
+                    UseDefaultClientSecret = p.Application.UseDefaultClientSecret,
+                    FrontendUrl = p.Application.FrontendUrl,
+                    ApiUrl = p.Application.ApiUrl,
+                    MenuResourceRoute = p.Application.MenuResourceRoute,
+                    PermissionResourceRoute = p.Application.PermissionResourceRoute,
+                    Remarks = p.Application.Remarks
+                });
+        }
+
         return await QueryableNoTracking
             .Where(p => p.Status == Status.Enabled)
             .ToListAsync<ApplicationModel>();
@@ -99,9 +123,30 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     /// <param name="clientId"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task<ApplicationModel?> GetByClientIdAsync(string clientId)
+    public async Task<ApplicationModel?> GetByClientIdAsync(string clientId)
     {
-        return QueryableNoTracking
+        // 如果是租户环境
+        if (IsTenantEnvironment)
+        {
+            // 读取租户应用
+            return await DefaultQueryNoTracking<TenantApplication>()
+                .Where(p => p.Application.ClientId == clientId)
+                .ToOneAsync(p => new ApplicationModel
+                {
+                    Id = p.Application.Id,
+                    Name = p.Application.Name,
+                    ClientId = p.Application.ClientId,
+                    ClientSecret = p.Application.ClientSecret,
+                    UseDefaultClientSecret = p.Application.UseDefaultClientSecret,
+                    FrontendUrl = p.Application.FrontendUrl,
+                    ApiUrl = p.Application.ApiUrl,
+                    MenuResourceRoute = p.Application.MenuResourceRoute,
+                    PermissionResourceRoute = p.Application.PermissionResourceRoute,
+                    Remarks = p.Application.Remarks
+                });
+        }
+
+        return await QueryableNoTracking
             .Where(p => p.ClientId == clientId)
             .ToOneAsync<ApplicationModel>()!;
     }

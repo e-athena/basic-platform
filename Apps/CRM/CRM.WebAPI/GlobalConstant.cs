@@ -8,5 +8,5 @@ public static class GlobalConstant
     /// <summary>
     /// 默认应用Id
     /// </summary>
-    public const string DefaultAppId = "xdxd_supplier";
+    public const string DefaultAppId = "crm";
 }

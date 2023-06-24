@@ -161,6 +161,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
                         .map((func) => ({
                           key: func.key,
                           code: func.value,
+                          applicationId: entity.appId,
                         }));
                     });
                   }
@@ -177,6 +178,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
                   }
                   if (checked) {
                     setSelectedResources([...selectedResources, ...(funcKeys2 || [])]);
+                    console.log([...selectedResources, ...(funcKeys2 || [])]);
                   } else {
                     setSelectedResources(
                       selectedResources.filter((c) => !funcKeys2.map((p) => p.key).includes(c.key)),

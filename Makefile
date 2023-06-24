@@ -31,6 +31,14 @@ run-build-help:
 
 # 构建与推送 end
 
-.PHONY:webapi
-webapi:
+.PHONY:web-api
+web-api:
 	dotnet run --project ./BasicPlatform.WebAPI
+
+.PHONY:cms-api
+cms-api:
+	dotnet run --project ./Apps/CMS/CMS.WebAPI
+
+.PHONY:cms-app
+cms-app:
+	cd ./Apps/CMS/CMS.WebAPI/CMSWeb && yarn start

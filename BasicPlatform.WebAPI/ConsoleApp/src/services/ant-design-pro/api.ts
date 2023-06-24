@@ -25,7 +25,11 @@ export async function login(
   body: API.LoginParams,
   options?: { [key: string]: any },
 ): Promise<ApiResponse<API.LoginResult>> {
-  return request<ApiResponse<API.LoginResult>>('/api/account/login', {
+  let url = '/api/account/login';
+  if (body.tenantId) {
+    url += `?tenant_id=${body.tenantId}`;
+  }
+  return request<ApiResponse<API.LoginResult>>(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

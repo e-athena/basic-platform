@@ -1,6 +1,9 @@
+using Athena.Infrastructure.Enums;
 using BasicPlatform.AppService.Tenants;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Tenants.Responses;
+using BasicPlatform.AppService.Users.Requests;
+using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers.System;
 
@@ -125,6 +128,45 @@ public class TenantController : CustomControllerBase
         CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.TenantDetail
+    })]
+    public async Task InitAsync(
+        [FromServices] IFreeSql freeSql,
+        [FromBody] CreateTenantSuperUserRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        freeSql.SyncStructure("BasicPlatform.Domain");
+        await _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 同步数据库
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="service"></param>
+    /// <param name="code"></param>
+    [HttpGet]
+    public async Task SyncStructureAsync(
+        [FromServices] IFreeSql freeSql,
+        [FromServices] ISubApplicationService service,
+        [FromQuery] string code
+    )
+    {
+        await service.SyncDatabaseAsync(code);
+        freeSql.SyncStructure("BasicPlatform.Domain");
     }
 
     #endregion

@@ -20,19 +20,19 @@ public class TenantQueryModel : QueryModelBase
     /// <summary>
     /// 联系人姓名
     /// </summary>
-    [TableColumn(Sort = 6, Width = 100)]
+    [TableColumn(Title = "联系人", Sort = 6, Width = 100)]
     public string ContactName { get; set; } = null!;
 
     /// <summary>
     /// 联系人手机号
     /// </summary>
-    [TableColumn(Sort = 7, Width = 100)]
+    [TableColumn(Title = "手机号", Sort = 7, Width = 115)]
     public string ContactPhoneNumber { get; set; } = null!;
 
     /// <summary>
     /// 联系人电子邮箱
     /// </summary>
-    [TableColumn(Sort = 8, Width = 100)]
+    [TableColumn(Title = "邮箱", Sort = 8)]
     public string? ContactEmail { get; set; } = null!;
 
     /// <summary>
@@ -51,12 +51,12 @@ public class TenantQueryModel : QueryModelBase
     /// 过期时间
     /// </summary>
     [TableColumn(Tooltip = "订阅过期时间，为空时永久有效。", Sort = 20)]
-    public DateTime? ExpireTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// 备注
     /// </summary>
-    [TableColumn(Sort = 25)]
+    [TableColumn(Sort = 25, HideInTable = true)]
     public string? Remarks { get; set; }
 
     /// <summary>
@@ -64,4 +64,10 @@ public class TenantQueryModel : QueryModelBase
     /// </summary>
     [TableColumn(Sort = 30, Width = 110)]
     public Status Status { get; set; }
+
+    /// <summary>
+    /// 是否已初始化数据库
+    /// </summary>
+    [TableColumn(Title = "初始化", Tooltip = "是否已初始化数据和创建超级管理员", Sort = 35, Width = 90)]
+    public bool IsInitDatabase { get; set; }
 }
