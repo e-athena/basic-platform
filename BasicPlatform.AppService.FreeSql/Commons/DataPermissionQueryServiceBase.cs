@@ -4,25 +4,27 @@ namespace BasicPlatform.AppService.FreeSql.Commons;
 /// 数据权限查询服务基类
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : FullEntityCore, new()
+public class DataPermissionQueryServiceBase<T> : AppQueryServiceBase<T> where T : FullEntityCore, new()
 {
-    private readonly ISecurityContextAccessor _accessor;
     private readonly IFreeSql _freeSql;
     private readonly IDataPermissionService? _dataPermissionService;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="freeSql"></param>
-    /// <param name="accessor"></param>
     public DataPermissionQueryServiceBase(
         IFreeSql freeSql,
         ISecurityContextAccessor accessor
-    ) :
-        base(freeSql)
+    ) : base(freeSql, accessor)
     {
         _freeSql = freeSql;
-        _accessor = accessor;
+        _dataPermissionService =
+            AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
+    }
+
+    public DataPermissionQueryServiceBase(
+        FreeSqlMultiTenancy multiTenancy,
+        ISecurityContextAccessor accessor
+    ) : base(multiTenancy, accessor)
+    {
+        _freeSql = multiTenancy;
         _dataPermissionService =
             AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
     }
@@ -120,7 +122,7 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
     private ISelect<T1> QueryWithPermission<T1>(ISelect<T1> query) where T1 : class
     {
         // 如果是开发者帐号。则不需要过滤
-        if (IsRoot)
+        if (IsRoot || IsTenantAdmin)
         {
             return query;
         }
@@ -255,21 +257,6 @@ public class DataPermissionQueryServiceBase<T> : QueryServiceBase<T> where T : F
 
         return QueryableExtensions.MakeFilterWhere<TResult>(filters, false);
     }
-
-    /// <summary>
-    /// 用户ID
-    /// </summary>
-    protected string? UserId => _accessor.UserId;
-
-    /// <summary>
-    /// 是否为开发者帐号
-    /// </summary>
-    protected bool IsRoot => _accessor.IsRoot;
-
-    /// <summary>
-    /// 租户ID
-    /// </summary>
-    protected string? TenantId => _accessor.TenantId;
 
     #region 数据查询权限相关
 
