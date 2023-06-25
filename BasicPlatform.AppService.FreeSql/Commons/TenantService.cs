@@ -15,7 +15,7 @@ public class TenantService : ITenantService
         _freeSql = freeSql;
     }
 
-    public async Task<TenantInfo?> GetAsync(string? tenantCode)
+    public async Task<TenantInfo?> GetAsync(string tenantCode, string? appId)
     {
         var result = await _freeSql.Queryable<Tenant>()
             .Where(p => p.Code == tenantCode)

@@ -31,8 +31,9 @@ public class TenantProcessManager : TenantServiceBase<Tenant>,
         {
             return;
         }
+
         // 事务处理
-        await UseTransactionAsync(string.Empty, async () =>
+        await UseTransactionAsync(string.Empty, null, async () =>
         {
             // 读取租户信息
             var entity = await Queryable

@@ -95,7 +95,8 @@ public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryServi
                     .ToList(x => new TenantApplicationModel
                     {
                         ApplicationName = x.Application.Name,
-                        ApplicationApiUrl = x.Application.ApiUrl
+                        ApplicationApiUrl = x.Application.ApiUrl,
+                        ApplicationClientId = x.Application.ClientId,
                     })
             }, cancellationToken);
         if (entity is null)
@@ -111,12 +112,14 @@ public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryServi
     /// 读取租户连接字符串
     /// </summary>
     /// <param name="code"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task<string> GetConnectionStringAsync(string code)
+    public Task<string> GetConnectionStringAsync(string code, string appId)
     {
         return DefaultQueryNoTracking<TenantApplication>()
             .Where(p => p.Tenant.Code == code)
+            .Where(p => p.Application.ClientId == appId || p.ApplicationId == appId)
             .Where(p => p.IsEnabled)
             .ToOneAsync(p => p.ConnectionString);
     }

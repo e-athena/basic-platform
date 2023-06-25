@@ -49,10 +49,10 @@ public class UserUpdatedEvent : EventBase
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    public string PositionId { get; set; }
+    public string? PositionId { get; set; }
 
     public UserUpdatedEvent(string id, string userName, string? avatar, string realName, Gender gender,
-        string? nickName, string? phoneNumber, string? email, string organizationId, string positionId)
+        string? nickName, string? phoneNumber, string? email, string organizationId, string? positionId)
     {
         UserName = userName;
         Avatar = avatar;

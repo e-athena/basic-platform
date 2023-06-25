@@ -18,7 +18,8 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
         base(unitOfWorkManager)
     {
         _accessor = accessor;
-        _dataPermissionService = AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
+        _dataPermissionService =
+            AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
     }
 
     #region 新增
@@ -104,6 +105,11 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
     protected string IpAddress => _accessor.IpAddress;
 
     /// <summary>
+    /// 是否为租户管理员
+    /// </summary>
+    protected bool IsTenantAdmin => _accessor.IsTenantAdmin;
+
+    /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="id"></param>
@@ -130,7 +136,7 @@ public class DataPermissionServiceBase<T> : ServiceBase<T> where T : FullEntityC
     {
         get
         {
-            if (IsRoot)
+            if (IsRoot || IsTenantAdmin)
             {
                 return null;
             }

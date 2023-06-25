@@ -133,6 +133,23 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
+    /// 读取租户超级管理员信息
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<UserModel> GetTenantSuperAdminAsync()
+    {
+        var result = await QueryableNoTracking.Where(p => p.IsTenantAdmin).FirstAsync<UserModel>();
+        if (result == null)
+        {
+            throw FriendlyException.Of("帐号未初始化");
+        }
+
+        result.Password = string.Empty;
+        return result;
+    }
+
+    /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="userName"></param>

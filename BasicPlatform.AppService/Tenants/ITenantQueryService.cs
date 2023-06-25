@@ -1,4 +1,3 @@
-using BasicPlatform.AppService.Tenants.Models;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Tenants.Responses;
 
@@ -38,6 +37,7 @@ public interface ITenantQueryService
     /// 读取连接字符串
     /// </summary>
     /// <param name="code"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
-    Task<string> GetConnectionStringAsync(string code);
+    Task<string> GetConnectionStringAsync(string code,string appId);
 }

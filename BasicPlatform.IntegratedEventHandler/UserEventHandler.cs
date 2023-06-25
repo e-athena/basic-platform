@@ -27,7 +27,7 @@ public class UserEventHandler : TenantQueryServiceBase<User>,
     [IntegratedEventSubscribe(nameof(UserCreatedEvent))]
     public async Task HandleAsync(UserCreatedEvent payload, CancellationToken cancellationToken = default)
     {
-        ChangeTenant(payload.TenantId);
+        ChangeTenant(payload.TenantId, payload.AppId);
         var res = await QueryableNoTracking.Where(p => p.Id == payload.GetId())
             .FirstAsync(cancellationToken);
 

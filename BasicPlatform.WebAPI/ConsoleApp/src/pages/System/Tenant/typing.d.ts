@@ -5,13 +5,37 @@ declare namespace API {
     code: string
   }
 
-  /** 初始化 */
-  type InitTenantRequest = {
-    id: string;
+  /** 创建超级管理员 */
+  type CreateTenantSuperAdminRequest = {
+    userName: string;
+    password: string;
+    avatar: string;
+    realName: string;
+    gender: number;
+    nickName: string;
+    phoneNumber: string;
+    email: string;
     code: string;
-    adminUserName?: string;
-    adminPassword?: string;
   };
+
+  /** 更新超级管理员 */
+  type UpdateTenantSuperAdminRequest = {
+    id: string;
+  } & Partial<CreateTenantSuperAdminRequest>;
+
+  /** 超级管理员信息 */
+  type TenantSuperAdminItem = {
+    id?: string;
+    userName: string;
+    password?: string;
+    avatar?: string;
+    realName: string;
+    gender?: number;
+    nickName: string;
+    phoneNumber: string;
+    email?: string;
+    code: string;
+  }
 
   /** 创建 */
   type CreateTenantItem = {

@@ -1,5 +1,5 @@
 import pattern from '@/utils/pattern';
-import { submitHandle } from '@/utils/utils';
+import { generateTextImage, submitHandle } from '@/utils/utils';
 import {
   ProFormText,
   ModalForm,
@@ -8,21 +8,21 @@ import {
   FormInstance,
 } from '@ant-design/pro-components';
 import React from 'react';
-import { init } from '../service';
+import { createSuperAdmin, updateSuperAdmin } from '../service';
 
-type InitFormProps = {
+type CreateOrUpdateSuperAdminFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
   open: boolean;
-  values: API.TenantDetailItem;
+  values: API.TenantSuperAdminItem;
 };
 
-const InitForm: React.FC<InitFormProps> = (props) => {
+const CreateOrUpdateSuperAdminForm: React.FC<CreateOrUpdateSuperAdminFormProps> = (props) => {
   const formRef = React.useRef<FormInstance>();
   return (
     <ModalForm
       width={592}
-      title={'创建租户管理员'}
+      title={props.values.id ? '更新租户管理员信息' : '创建租户管理员'}
       open={props.open}
       formRef={formRef}
       modalProps={{
@@ -32,22 +32,28 @@ const InitForm: React.FC<InitFormProps> = (props) => {
         bodyStyle: { padding: '32px 40px 48px' },
         destroyOnClose: true,
       }}
-      onFinish={async (values: API.InitTenantRequest) => {
-        const succeed = await submitHandle(init, {
-          ...values,
-          code: props.values.code!,
-          id: props.values.id!,
-        });
+      onFinish={async (values: API.UpdateTenantSuperAdminRequest) => {
+        // 租户编码
+        values.code = props.values.code;
+        const isUpdate = props.values.id !== undefined;
+        if (isUpdate) {
+          values.id = props.values!.id!;
+        }
+        if (values.avatar === undefined) {
+          values.avatar = generateTextImage(values.realName!, 400, 400);
+        }
+        let succeed;
+        if (isUpdate) {
+          succeed = await submitHandle(updateSuperAdmin, values);
+        } else {
+          succeed = await submitHandle(createSuperAdmin, values as API.CreateTenantSuperAdminRequest);
+        }
         if (succeed) {
           props.onSuccess();
         }
       }}
       initialValues={{
-        ...props.values,
-        userName: props.values.contactPhoneNumber,
-        realName: props.values.contactName,
-        nickName: props.values.contactName,
-        phoneNumber: props.values.contactPhoneNumber,
+        ...props.values
       }}
     >
       <ProForm.Group>
@@ -124,4 +130,4 @@ const InitForm: React.FC<InitFormProps> = (props) => {
   );
 };
 
-export default InitForm;
+export default CreateOrUpdateSuperAdminForm;

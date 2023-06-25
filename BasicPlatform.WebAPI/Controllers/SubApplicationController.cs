@@ -324,14 +324,16 @@ public class SubApplicationController : ControllerBase
     /// </summary>
     /// <param name="service"></param>
     /// <param name="tenantCode"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
     [HttpGet]
     public Task<string> GetTenantConnectionStringAsync(
         [FromServices] ITenantQueryService service,
-        [FromQuery] string tenantCode
+        [FromQuery] string tenantCode,
+        [FromQuery] string appId
     )
     {
-        return service.GetConnectionStringAsync(tenantCode);
+        return service.GetConnectionStringAsync(tenantCode, appId);
     }
 
     #endregion

@@ -31,10 +31,19 @@ export function assignResources(data: API.AssignTenantResourcesRequest) {
   return put<API.AssignTenantResourcesRequest, string>('/api/Tenant/AssignResources', data);
 }
 
-/** 初始化 */
-export function init(data: API.InitTenantRequest) {
-  return put<API.InitTenantRequest, string>(`/api/Tenant/Init?tenant_id=${data.code}`, data);
+/** 读取超级管理员信息 */
+export function querySuperAdmin(code: string) {
+  return get<API.TenantSuperAdminItem>('/api/Tenant/GetSuperAdmin', { tenant_id: code });
 }
+/** 创建超级管理员 */
+export function createSuperAdmin(data: API.CreateTenantSuperAdminRequest) {
+  return post<API.CreateTenantSuperAdminRequest, string>(`/api/Tenant/CreateSuperAdmin?tenant_id=${data.code}`, data);
+}
+/** 更新超级管理员 */
+export function updateSuperAdmin(data: API.UpdateTenantSuperAdminRequest) {
+  return put<API.UpdateTenantSuperAdminRequest, string>(`/api/Tenant/UpdateSuperAdmin?tenant_id=${data.code}`, data);
+}
+
 /** 同步数据库结构 */
 export function syncStructure(code: string) {
   return get<string>('/api/Tenant/SyncStructure', { code });

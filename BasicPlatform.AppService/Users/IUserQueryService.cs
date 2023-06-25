@@ -33,6 +33,12 @@ public interface IUserQueryService
     Task<GetUserByIdResponse> GetAsync(string id, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 读租户超级管理员取信息
+    /// </summary>
+    /// <returns></returns>
+    Task<UserModel> GetTenantSuperAdminAsync();
+    
+    /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="userName">帐户名</param>

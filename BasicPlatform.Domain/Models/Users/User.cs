@@ -234,8 +234,12 @@ public class User : EntityCore, ICreator, IUpdater
         NickName = nickName;
         PhoneNumber = phoneNumber;
         Email = email;
-        OrganizationId = organizationId;
-        PositionId = positionId ?? throw FriendlyException.Of("职位不能为空");
+        if (!IsTenantAdmin)
+        {
+            OrganizationId = organizationId;
+            PositionId = positionId ?? throw FriendlyException.Of("职位不能为空");
+        }
+
         LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
 

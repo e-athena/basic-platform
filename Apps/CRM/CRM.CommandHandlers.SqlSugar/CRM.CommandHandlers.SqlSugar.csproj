@@ -11,7 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.SqlSugar" Version="6.0.1" />
+        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="6.2.7" />
+        <PackageReference Include="Athena.Infrastructure.SqlSugar" Version="6.0.2" />
         <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.15" />
     </ItemGroup>
 </Project>

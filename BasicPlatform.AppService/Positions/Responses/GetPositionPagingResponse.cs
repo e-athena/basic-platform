@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.Positions.Responses;
 /// <summary>
 /// 读取职位分页列表响应类
 /// </summary>
-[DataPermission(typeof(Position), "职位管理模块")]
+[DataPermission(typeof(Position), "职位管理模块", AppId = "system")]
 public class GetPositionPagingResponse : PositionQueryModel
 {
     /// <summary>

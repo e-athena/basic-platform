@@ -49,7 +49,7 @@ public class UserModel : ModelBase
     /// <summary>
     /// 所属组织ID
     /// </summary>
-    public string OrganizationId { get; set; } = null!;
+    public string? OrganizationId { get; set; }
 
     /// <summary>
     /// 所属职位ID

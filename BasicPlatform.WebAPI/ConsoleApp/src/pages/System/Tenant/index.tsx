@@ -1,5 +1,5 @@
-import { query, detail, statusChange, syncStructure } from './service';
-import { PlusOutlined, FormOutlined, CopyOutlined, ShareAltOutlined, MoreOutlined, DatabaseOutlined, SyncOutlined } from '@ant-design/icons';
+import { query, detail, statusChange, syncStructure, querySuperAdmin } from './service';
+import { PlusOutlined, FormOutlined, CopyOutlined, ShareAltOutlined, MoreOutlined, SyncOutlined, UserOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access, history } from '@umijs/max';
@@ -12,7 +12,7 @@ import ProTablePlus from '@/components/ProTablePlus';
 import IconStatus from '@/components/IconStatus';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import AuthorizationForm from './components/AuthorizationForm';
-import InitForm from './components/InitForm';
+import CreateOrUpdateSuperAdminForm from './components/CreateOrUpdateSuperAdminForm';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
@@ -21,6 +21,7 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.TenantDetailItem>();
+  const [currentSuperAdmin, setCurrentSuperAdmin] = useState<API.TenantSuperAdminItem>();
   const { getResource } = useModel('resource');
   const location = useLocation();
   const resource = getResource(location.pathname);
@@ -28,13 +29,13 @@ const TableList: React.FC = () => {
     permission.tenant.postAsync,
     permission.tenant.putAsync,
     permission.tenant.assignResourcesAsync,
-    permission.tenant.initAsync
+    permission.tenant.createSuperAdminAsync
   ], resource);
   const showMoreOption: boolean = hasPermission(
     [
       permission.tenant.postAsync,
       permission.tenant.assignResourcesAsync,
-      permission.tenant.initAsync
+      permission.tenant.createSuperAdminAsync
     ],
     resource,
   );
@@ -116,13 +117,12 @@ const TableList: React.FC = () => {
             label: '分配资源',
           });
         }
-        if (canAccessible(permission.tenant.initAsync, resource)) {
+        if (canAccessible(permission.tenant.createSuperAdminAsync, resource)) {
           moreItems.push({
-            key: 'init',
-            icon: <DatabaseOutlined />,
-            label: '初始化',
-            title: '初始化数据库及创建超级管理员',
-            disabled: entity.isInitDatabase
+            key: 'super-admin',
+            icon: <UserOutlined />,
+            label: '设置管理员',
+            title: '创建或编辑超级管理员'
           });
         }
         if (canAccessible(permission.tenant.syncStructureAsync, resource)) {
@@ -160,13 +160,22 @@ const TableList: React.FC = () => {
                 items: moreItems,
                 onClick: async ({ key, domEvent }) => {
                   domEvent.stopPropagation();
-                  if (key === 'init') {
+                  if (key === 'super-admin') {
                     domEvent.stopPropagation();
-                    const data = await queryDetail(detail, entity.id!);
-                    if (data) {
-                      setCurrentRow(data);
-                      handleInitModalOpen(true);
+                    const res = await querySuperAdmin(entity.code);
+                    if (res.success && res.data) {
+                      const d = { ...res.data, code: entity.code }
+                      setCurrentSuperAdmin(d);
+                    } else {
+                      setCurrentSuperAdmin({
+                        userName: entity.contactPhoneNumber,
+                        realName: entity.contactName,
+                        nickName: entity.contactName,
+                        phoneNumber: entity.contactPhoneNumber,
+                        code: entity.code,
+                      });
                     }
+                    handleInitModalOpen(true);
                     return;
                   }
                   if (key === 'resource') {
@@ -265,21 +274,21 @@ const TableList: React.FC = () => {
           tenantId={currentRow!.id!}
         />
       )}
-      {initModalOpen && currentRow !== undefined && (
-        <InitForm
+      {initModalOpen && currentSuperAdmin !== undefined && (
+        <CreateOrUpdateSuperAdminForm
           onCancel={() => {
             handleInitModalOpen(false);
-            setCurrentRow(undefined);
+            setCurrentSuperAdmin(undefined);
           }}
           onSuccess={() => {
             handleInitModalOpen(false);
-            setCurrentRow(undefined);
+            setCurrentSuperAdmin(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }}
           open={initModalOpen}
-          values={currentRow} />
+          values={currentSuperAdmin} />
       )}
       <CreateOrUpdateForm
         onCancel={() => {

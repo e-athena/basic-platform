@@ -7,8 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CRM.Commands\CRM.Commands.csproj" />
-      <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj" />
+        <PackageReference Include="Athena.Infrastructure.SqlSugar" Version="6.0.2" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\CRM.Commands\CRM.Commands.csproj" />
+        <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj" />
     </ItemGroup>
 
 </Project>

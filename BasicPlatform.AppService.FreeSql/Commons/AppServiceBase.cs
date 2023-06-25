@@ -34,29 +34,19 @@ public class AppServiceBase<T> : ServiceBase<T> where T : EntityCore, new()
     /// 租户ID
     /// </summary>
     protected string? TenantId => _accessor.TenantId;
-    
+
     /// <summary>
     /// IP地址
     /// </summary>
     protected string IpAddress => _accessor.IpAddress;
 
     /// <summary>
-    /// 读取信息
+    /// 是否为租户管理员
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="FriendlyException"></exception>
-    protected async Task<T> GetForEditAsync(string? id)
-    {
-        var entity = await Queryable
-            .Where(p => p.Id == id)
-            .ToOneAsync();
+    protected bool IsTenantAdmin => _accessor.IsTenantAdmin;
 
-        if (entity == null)
-        {
-            throw FriendlyException.Of("无权限操作或找不到数据。");
-        }
-
-        return entity;
-    }
+    /// <summary>
+    /// 是否租户环境
+    /// </summary>
+    protected bool IsTenantEnvironment => !string.IsNullOrEmpty(TenantId);
 }

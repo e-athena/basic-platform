@@ -26,6 +26,11 @@ public class TenantApplicationModel
     public string? ApplicationApiUrl { get; set; }
 
     /// <summary>
+    /// 应用客户端ID
+    /// </summary>
+    public string? ApplicationClientId { get; set; }
+
+    /// <summary>
     /// 数据库链接字符串
     /// </summary>
     public string? ConnectionString { get; set; }

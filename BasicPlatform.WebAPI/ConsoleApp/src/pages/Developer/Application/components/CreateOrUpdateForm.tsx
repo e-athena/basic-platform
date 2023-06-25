@@ -34,6 +34,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       modalProps={{
         onCancel: () => {
           props.onCancel();
+          setApiUrl('');
         },
         bodyStyle: { padding: '32px 40px 48px' },
         destroyOnClose: true,
@@ -51,9 +52,12 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         const succeed = await submitHandle(req, values);
         if (succeed) {
           props.onSuccess();
+          setApiUrl('');
         }
       }}
       initialValues={{
+        menuResourceRoute: '/api/external/get-menu-resources',
+        permissionResourceRoute: '/api/external/get-data-permission-resources',
         ...props?.values,
         apiUrl: props?.values?.apiUrl?.replace(apiUrlAgreement, ''),
         frontendUrl: props?.values?.frontendUrl?.replace(frontendUrlAgreement, ''),

@@ -14,5 +14,6 @@ global using System.Text;
 global using App.Infrastructure.Messaging.Requests;
 global using App.Infrastructure.Models;
 global using App.Infrastructure.Services;
+global using MediatR;
 global using Serilog;
 global using Serilog.Debugging;

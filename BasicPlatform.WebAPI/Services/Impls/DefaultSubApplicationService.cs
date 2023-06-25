@@ -170,6 +170,7 @@ public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationS
                 {
                     var res = await GetRequest(url)
                         .WithHeader("TenantId", tenantCode)
+                        .WithHeader("AppId", app.ApplicationClientId)
                         .GetAsync(cancellationToken)
                         .ReceiveJson<ApiResult<string>>();
                     if (res.Data == "ok")

@@ -26,15 +26,22 @@ public class TenantService : DefaultServiceBase, ITenantService
     /// 读取租户信息
     /// </summary>
     /// <param name="tenantCode"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
-    public async Task<TenantInfo?> GetAsync(string? tenantCode)
+    public async Task<TenantInfo?> GetAsync(string tenantCode, string? appId)
     {
         var cacheKey = $"tenant:connection-string:{tenantCode}";
+        if (!string.IsNullOrEmpty(appId))
+        {
+            cacheKey += ":" + appId;
+        }
+
         return await _cacheManager.GetOrCreateAsync(cacheKey, async () =>
         {
             const string url = $"{ApiUrl}/api/SubApplication/GetTenantConnectionString";
             var result = await GetRequest(url)
                 .SetQueryParam("tenantCode", tenantCode)
+                .SetQueryParam("appId", appId)
                 .GetJsonAsync<ApiResult<string>>();
 
             if (!result.Success)
@@ -48,7 +55,7 @@ public class TenantService : DefaultServiceBase, ITenantService
                 return new TenantInfo
                 {
                     ConnectionString = connectionString,
-                    DbKey = tenantCode!
+                    DbKey = tenantCode
                 };
             }
 

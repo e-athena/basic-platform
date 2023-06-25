@@ -34,6 +34,7 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
 services.AddCustomDataPermission(configuration);
+services.AddCustomBasicAuth(configuration);
 services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
@@ -59,8 +60,9 @@ app.UseCors();
 //启用验证
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 app.UseCustomAuditLog();
+app.UseCustomSqlSugarMultiTenancy();
+app.MapControllers();
 app.MapCustomSignalR();
 // app.MapSpaFront();
 // app.MapHealth();

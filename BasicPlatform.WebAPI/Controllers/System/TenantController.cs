@@ -1,7 +1,8 @@
-using Athena.Infrastructure.Enums;
 using BasicPlatform.AppService.Tenants;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Tenants.Responses;
+using BasicPlatform.AppService.Users;
+using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.WebAPI.Services;
 
@@ -131,28 +132,6 @@ public class TenantController : CustomControllerBase
     }
 
     /// <summary>
-    /// 初始化
-    /// </summary>
-    /// <param name="freeSql"></param>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    [HttpPut]
-    [ApiPermission(AdditionalRules = new[]
-    {
-        ApiPermissionConstant.TenantDetail
-    })]
-    public async Task InitAsync(
-        [FromServices] IFreeSql freeSql,
-        [FromBody] CreateTenantSuperUserRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        freeSql.SyncStructure("BasicPlatform.Domain");
-        await _mediator.SendAsync(request, cancellationToken);
-    }
-
-    /// <summary>
     /// 同步数据库
     /// </summary>
     /// <param name="freeSql"></param>
@@ -167,6 +146,64 @@ public class TenantController : CustomControllerBase
     {
         await service.SyncDatabaseAsync(code);
         freeSql.SyncStructure("BasicPlatform.Domain");
+    }
+
+    #endregion
+
+    #region 超级管理员
+
+    /// <summary>
+    /// 读取超级管理员
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(ApiPermissionConstant.TenantAdminDetail, IsVisible = false)]
+    public Task<UserModel> GetSuperAdminAsync([FromServices] IUserQueryService service)
+    {
+        return service.GetTenantSuperAdminAsync();
+    }
+
+    /// <summary>
+    /// 创建超级管理员
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.TenantAdminDetail
+    })]
+    public async Task CreateSuperAdminAsync(
+        [FromServices] IFreeSql freeSql,
+        [FromBody] CreateUserRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        freeSql.SyncStructure("BasicPlatform.Domain");
+        request.IsTenantAdmin = true;
+        await _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 更新超级管理员
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.TenantAdminDetail
+    })]
+    public async Task UpdateSuperAdminAsync(
+        [FromBody] UpdateUserRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        request.IsTenantAdmin = true;
+        await _mediator.SendAsync(request, cancellationToken);
     }
 
     #endregion
