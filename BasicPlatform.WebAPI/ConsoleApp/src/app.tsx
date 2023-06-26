@@ -25,6 +25,7 @@ const isDev = process.env.NODE_ENV === 'development';
 import { fetchSignalRConnectionNotice } from './signalr/connection';
 import { HubConnection } from '@microsoft/signalr';
 import { getNavTheme, setNavTheme } from '@/utils/navTheme';
+import { invoke } from '@tauri-apps/api';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -126,6 +127,18 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   // console.log(initialState?.customNavTheme);
   // @ts-ignore
   // window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = theme;
+
+  if (window.__TAURI_IPC__) {
+    // now we can call our Command!
+    // 在应用窗口中右键，打开开发者工具
+    // 你会看到控制台上输出了 "Hello, World!"！
+    invoke('greet', { name: 'World' })
+      // `invoke` 返回异步函数
+      .then((response) => {
+        console.log(response)
+      });
+  }
+
   return {
     actionsRender: () => [
       <TenantInfo key={'tenant'} />,

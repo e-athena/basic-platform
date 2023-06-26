@@ -6,6 +6,7 @@ specifiers:
   '@ant-design/pro-components': ^2.4.4
   '@ant-design/use-emotion-css': 1.0.4
   '@microsoft/signalr': ^7.0.4
+  '@tauri-apps/api': ^1.4.0
   '@testing-library/react': ^13.4.0
   '@twp0217/react-org-chart': ^1.1.2
   '@types/classnames': ^2.3.1
@@ -54,6 +55,7 @@ dependencies:
   '@ant-design/pro-components': 2.4.4_l36gyiwy57bc7unq5n3tipvjtm
   '@ant-design/use-emotion-css': 1.0.4_l36gyiwy57bc7unq5n3tipvjtm
   '@microsoft/signalr': 7.0.5
+  '@tauri-apps/api': 1.4.0
   '@twp0217/react-org-chart': 1.1.2_biqbaboplfbrettd7655fr4n2y
   '@umijs/route-utils': 2.2.2
   ahooks: 3.7.6_react@18.2.0
@@ -4041,6 +4043,11 @@ packages:
       react-dom: 18.2.0_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: true
+
+  /@tauri-apps/api/1.4.0:
+    resolution: {integrity: sha512-Jd6HPoTM1PZSFIzq7FB8VmMu3qSSyo/3lSwLpoapW+lQ41CL5Dow2KryLg+gyazA/58DRWI9vu/XpEeHK4uMdw==}
+    engines: {node: '>= 14.6.0', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+    dev: false
 
   /@testing-library/dom/8.20.0:
     resolution: {integrity: sha512-d9ULIT+a4EXLX3UU8FBjauG9NnsZHkHztXoIcTsOKoOw030fyjheN9svkTULjJxtYag9DZz5Jz5qkWZDPxTFwA==}

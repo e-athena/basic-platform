@@ -160,6 +160,7 @@ export default defineConfig({
   requestRecord: {},
   define: {
     API_URL: '',
+    RTC_URL: '',
     APP_TOKEN_KEY: 'basic_platform_token',
     APP_NAV_THEME_KEY: 'basic_platform_nav_theme',
     APP_SESSION_CODE_KEY: 'basic_platform_session_code',
