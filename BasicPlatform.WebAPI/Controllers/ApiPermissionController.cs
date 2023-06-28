@@ -26,7 +26,7 @@ public class ApiPermissionController : ControllerBase
     public async Task<IList<MenuTreeInfo>> GetMenuResourcesAsync()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var result = _service.GetMenuResources(assembly);
+        var result = _service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
         return await Task.FromResult(result);
     }
 
@@ -38,7 +38,7 @@ public class ApiPermissionController : ControllerBase
     public async Task<IList<string>> GetDuplicateResourceCodes()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var result = _service.GetDuplicateResourceCodes(assembly);
+        var result = _service.GetDuplicateResourceCodes(assembly, GlobalConstant.DefaultAppId);
         return await Task.FromResult(result);
     }
 
@@ -50,7 +50,7 @@ public class ApiPermissionController : ControllerBase
     public async Task<bool> HasDuplicateResourceCodes()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var result = _service.HasDuplicateResourceCodes(assembly);
+        var result = _service.HasDuplicateResourceCodes(assembly, GlobalConstant.DefaultAppId);
         return await Task.FromResult(result);
     }
 

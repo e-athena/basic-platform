@@ -2,7 +2,8 @@ using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
-using BasicPlatform.Infrastructure.Enums;
+using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Roles;
 
@@ -31,7 +32,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
             .ToPagingAsync(request, p => new GetRolePagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName
+                UpdatedUserName = p.LastUpdatedUser!.RealName
             }, cancellationToken);
         return result;
     }
@@ -107,6 +108,39 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     }
 
     /// <summary>
+    /// 读取下拉列表
+    /// </summary>
+    /// <param name="organizationId">组织架构Id</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<SelectViewModel>> GetSelectListAsync(string organizationId,
+        CancellationToken cancellationToken = default)
+    {
+        var list = await QueryNoTracking<OrganizationRole>()
+            .Where(p =>
+                QueryNoTracking<Organization>()
+                    .As("c")
+                    .Where(c => c.ParentPath.Contains(organizationId) || c.Id == organizationId)
+                    .Any(c => c.Id == p.OrganizationId)
+            )
+            .GroupBy(p => p.RoleId)
+            .ToListAsync(p => new
+            {
+                p.Value.Role.Status,
+                p.Value.Role.Name,
+                Id = p.Key
+            }, cancellationToken);
+        return list
+            .Select(p => new SelectViewModel
+            {
+                Disabled = p.Status == Status.Disabled,
+                Label = p.Name,
+                Value = p.Id
+            })
+            .ToList();
+    }
+
+    /// <summary>
     /// 读取用户拥有的角色
     /// </summary>
     /// <param name="userId"></param>
@@ -164,24 +198,10 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id)
     {
         return QueryNoTracking<RoleDataPermission>()
             .Where(p => p.RoleId == id)
             .ToListAsync<RoleDataPermissionModel>();
-    }
-
-    /// <summary>
-    /// 读取角色数据查询策略
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public Task<List<RoleDataQueryPolicyModel>> GetDataQueryPoliciesAsync(string id)
-    {
-        return QueryNoTracking<RoleDataQueryPolicy>()
-            .Where(p => p.RoleId == id)
-            .ToListAsync<RoleDataQueryPolicyModel>();
     }
 }

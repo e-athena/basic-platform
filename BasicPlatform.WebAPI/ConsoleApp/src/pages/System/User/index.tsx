@@ -14,7 +14,7 @@ import { Button, Dropdown, message, Modal, Switch, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 // import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import AuthorizationForm from './components/AuthorizationForm';
 import OrganizationTree from '@/components/OrganizationTree';
@@ -71,11 +71,6 @@ const TableList: React.FC = () => {
       valueType: 'avatar',
     },
     {
-      title: '用户名',
-      dataIndex: 'userName',
-      copyable: true,
-    },
-    {
       title: '性别',
       dataIndex: 'gender',
       hideInSearch: true,
@@ -112,7 +107,8 @@ const TableList: React.FC = () => {
               checkedChildren="启用"
               unCheckedChildren="禁用"
               checked={entity.status === 1}
-              onClick={async () => {
+              onClick={async (_, e) => {
+                e.stopPropagation();
                 const statusName = entity.status === 1 ? '禁用' : '启用';
                 Modal.confirm({
                   title: '操作提示',
@@ -186,16 +182,13 @@ const TableList: React.FC = () => {
               shape="circle"
               type={'link'}
               icon={<FormOutlined />}
-              onClick={async () => {
-                const hide = message.loading('正在查询', 0);
-                const res = await detail(entity.id);
-                hide();
-                if (res.success) {
-                  setCurrentRow(res.data);
+              onClick={async (e) => {
+                e.stopPropagation();
+                const data = await queryDetail(detail, entity.id);
+                if (data) {
+                  setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
-                  return;
                 }
-                message.error(res.message);
               }}
             >
               编辑
@@ -205,18 +198,15 @@ const TableList: React.FC = () => {
             <Dropdown
               menu={{
                 items: moreItems,
-                onClick: async ({ key }) => {
+                onClick: async ({ key, domEvent }) => {
+                  domEvent.stopPropagation();
                   if (key === 'auth') {
-                    const hide = message.loading('正在查询', 0);
-                    const res = await queryResourceCodeInfo(entity.id);
-                    hide();
-                    if (res.success) {
-                      setCurrentResourceCodeRow(res.data!);
+                    const data = await queryDetail(queryResourceCodeInfo, entity.id);
+                    if (data) {
+                      setCurrentResourceCodeRow(data);
                       setCurrentRow(entity as API.UserDetailInfo);
                       handleAuthorizationModalOpen(true);
-                      return;
                     }
-                    message.error(res.message);
                     return;
                   }
                   if (key === 'permission') {
@@ -254,7 +244,14 @@ const TableList: React.FC = () => {
               }}
               placement="bottom"
             >
-              <Button shape="circle" type={'link'} icon={<MoreOutlined />} />
+              <Button
+                shape="circle"
+                type={'link'}
+                icon={<MoreOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              />
             </Dropdown>
           </Access>,
         ];
@@ -274,6 +271,7 @@ const TableList: React.FC = () => {
       <ProCard split="vertical">
         <ProCard colSpan="270px">
           <OrganizationTree
+            maxHeight={window.innerHeight - 266}
             onSelect={(key) => {
               setOrganizationId(key);
             }}
@@ -295,6 +293,7 @@ const TableList: React.FC = () => {
             params={{
               organizationId: organizationId,
             }}
+            scrollY={window.innerHeight - 406}
             toolBarRender={() => [
               <Access key={'add'} accessible={canAccessible(permission.user.postAsync, resource)}>
                 <Button

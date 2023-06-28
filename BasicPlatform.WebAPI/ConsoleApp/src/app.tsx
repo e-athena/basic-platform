@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer';
-import { Question, SelectLang } from '@/components/RightContent';
+import { Question, NavTheme, TenantInfo } from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
-import type { MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-components';
+import { MenuDataItem, Settings as LayoutSettings, PageLoading } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -10,22 +10,29 @@ import { errorConfig } from './requestErrorConfig';
 import {
   currentUser as queryCurrentUser,
   queryUserResources,
+  queryApplicationMenuResources,
+  queryApplicationDataPermissionResources,
   queryExternalPages,
   addUserAccessRecord,
+  queryAppConfig,
 } from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import fixMenuItemIcon from './components/FixMenuItemIcon';
 import { recursionMenu } from './utils/menu';
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
+// const loginPath = '/user/login';
 import { fetchSignalRConnectionNotice } from './signalr/connection';
 import { HubConnection } from '@microsoft/signalr';
+import { getNavTheme, setNavTheme } from '@/utils/navTheme';
+import { invoke } from '@tauri-apps/api';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
+  customNavTheme?: 'realDark' | 'light' | undefined;
+  setCustomNavTheme?: (theme: string) => void;
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   loading?: boolean;
@@ -33,6 +40,10 @@ export async function getInitialState(): Promise<{
   fetchMenuData?: () => Promise<MenuDataItem[]>;
   fetchApiResources?: () => Promise<API.ResourceInfo[]>;
   apiResources?: API.ResourceInfo[];
+  fetchApplicationResources?: () => Promise<API.ApplicationMenuResourceInfo[]>;
+  fetchApplicationDataPermissionResources?: () => Promise<
+    API.ApplicationDataPermissionResourceInfo[]
+  >;
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
   externalPages?: API.ExternalPage[];
   noticeConnectionHub?: HubConnection;
@@ -47,12 +58,20 @@ export async function getInitialState(): Promise<{
       });
       return msg.data;
     } catch (error) {
-      history.push(loginPath);
+      history.push(LOGIN_PATH);
     }
     return undefined;
   };
   const fetchApiResources = async () => {
     const res = await queryUserResources();
+    return res.data || [];
+  };
+  const fetchApplicationResources = async () => {
+    const res = await queryApplicationMenuResources();
+    return res.data || [];
+  };
+  const fetchApplicationDataPermissionResources = async () => {
+    const res = await queryApplicationDataPermissionResources();
     return res.data || [];
   };
   const fetchExternalPages = async () => {
@@ -65,7 +84,7 @@ export async function getInitialState(): Promise<{
   };
   // 如果不是登录页面，执行
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  if (location.pathname !== LOGIN_PATH) {
     const currentUser = await fetchUserInfo();
     const apiResources = await fetchApiResources();
     const externalPages = await fetchExternalPages();
@@ -76,6 +95,8 @@ export async function getInitialState(): Promise<{
       fetchMenuData,
       fetchUserInfo,
       fetchApiResources,
+      fetchApplicationResources,
+      fetchApplicationDataPermissionResources,
       fetchExternalPages,
       noticeConnectionHub,
       fetchSignalRConnectionNotice,
@@ -85,20 +106,46 @@ export async function getInitialState(): Promise<{
       apiResources,
       externalPages,
       settings: defaultSettings as Partial<LayoutSettings>,
+      customNavTheme: getNavTheme(),
+      setCustomNavTheme: setNavTheme,
     };
   }
   return {
     fetchMenuData,
     fetchUserInfo,
+    fetchApiResources,
+    fetchExternalPages,
     settings: defaultSettings as Partial<LayoutSettings>,
+    customNavTheme: getNavTheme(),
+    setCustomNavTheme: setNavTheme,
   };
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
-  console.log(initialState?.settings)
+  // console.log(initialState?.settings);
+  // console.log(initialState?.customNavTheme);
+  // @ts-ignore
+  // window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ = theme;
+
+  if (window.__TAURI_IPC__) {
+    // now we can call our Command!
+    // 在应用窗口中右键，打开开发者工具
+    // 你会看到控制台上输出了 "Hello, World!"！
+    invoke('greet', { name: 'World' })
+      // `invoke` 返回异步函数
+      .then((response) => {
+        console.log(response)
+      });
+  }
+
   return {
-    actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [
+      <TenantInfo key={'tenant'} />,
+      <NavTheme key={'theme'} />,
+      <Question key="doc" />,
+      // <SelectLang key="SelectLang" />
+    ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -111,10 +158,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     menu: {
       locale: false,
-      params: initialState,
+      params: initialState?.currentUser,
       request: async () => {
-        // return initialState?.fetchMenuData?.() || [];
-        let basicMenus: API.ResourceInfo[] = [];
+        let basicMenus: API.ResourceInfo[];
         if (initialState?.apiResources === undefined) {
           basicMenus = (await initialState?.fetchApiResources?.()) || [];
           setInitialState({
@@ -193,8 +239,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       const { location } = history;
       // console.log('location', location);
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      if (!initialState?.currentUser && location.pathname !== LOGIN_PATH) {
+        history.push(LOGIN_PATH);
         return;
       }
       if (location.pathname !== '/') {
@@ -235,7 +281,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}
@@ -254,6 +300,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
+    // 根据操作系统设置自动切换主题
+    navTheme:
+      initialState?.customNavTheme === undefined
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'realDark'
+          : 'light'
+        : initialState?.customNavTheme,
   };
 };
 
@@ -264,4 +317,42 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  */
 export const request = {
   ...errorConfig,
+};
+
+export const qiankun = async () => {
+  const res = await queryAppConfig();
+  const config = res.data || {};
+  return {
+    ...config,
+  };
+  // const res = await queryApps();
+  // const apps = res.success ? res.data || [] : [];
+  // console.log(apps);
+  // return {
+  // 注册子应用信息
+  // apps,
+  // apps: [
+  //   {
+  //     name: 'xdxd',
+  //     entry: '//localhost:5119',
+  //     credentials: true
+  //   },
+  // ],
+  // routes: [
+  //   {
+  //     path: '/app/xdxd/*',
+  //     microApp: 'xdxd',
+  //     microAppProps: {
+  //       autoCaptureError: true,
+  //       className: 'micro-app',
+  //     },
+  //   },
+  // ],
+  // lifeCycles: {
+  //   // 所有子应用在挂载完成时，打印 props 信息
+  //   async afterMount(props: any) {
+  //     console.log(props);
+  //   },
+  // },
+  // };
 };

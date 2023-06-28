@@ -7,7 +7,7 @@ import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import IconStatus from '@/components/IconStatus';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import OrganizationTree from '@/components/OrganizationTree';
 import { useSize } from 'ahooks';
@@ -41,7 +41,8 @@ const TableList: React.FC = () => {
               checkedChildren="启用"
               unCheckedChildren="禁用"
               checked={entity.status === 1}
-              onClick={async () => {
+              onClick={async (_, e) => {
+                e.stopPropagation();
                 const statusName = entity.status === 1 ? '禁用' : '启用';
                 Modal.confirm({
                   title: '操作提示',
@@ -77,16 +78,13 @@ const TableList: React.FC = () => {
               shape="circle"
               type={'link'}
               icon={<FormOutlined />}
-              onClick={async () => {
-                const hide = message.loading('正在查询', 0);
-                const res = await detail(entity.id);
-                hide();
-                if (res.success) {
-                  setCurrentRow(res.data);
+              onClick={async (e) => {
+                e.stopPropagation();
+                const data = await queryDetail(detail, entity.id);
+                if (data) {
+                  setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
-                  return;
                 }
-                message.error(res.message);
               }}
             >
               编辑
@@ -108,6 +106,7 @@ const TableList: React.FC = () => {
       <ProCard split="vertical">
         <ProCard colSpan="270px">
           <OrganizationTree
+            maxHeight={window.innerHeight - 266}
             onSelect={(key) => {
               setOrganizationId(key);
             }}
@@ -129,6 +128,7 @@ const TableList: React.FC = () => {
             params={{
               organizationId: organizationId,
             }}
+            scrollY={window.innerHeight - 406}
             toolBarRender={() => [
               <Access
                 key={'add'}

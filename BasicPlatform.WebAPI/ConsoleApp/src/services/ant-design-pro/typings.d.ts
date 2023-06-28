@@ -28,6 +28,7 @@ declare namespace API {
     type?: string;
     currentAuthority?: string;
     errorMessage?: string;
+    sessionCode?: string;
   };
 
   type PageParams = {
@@ -40,11 +41,23 @@ declare namespace API {
     status?: string;
   };
 
+  type SSOLoginParams = {
+    authCode?: string;
+    sessionCode?: string;
+  };
+
+  type SSOAuthCodeParams = {
+    clientId: string;
+    sessionCode: string;
+  };
+
   type LoginParams = {
     username?: string;
     password?: string;
-    autoLogin?: boolean;
+    clientId?: string;
+    rememberMe?: boolean;
     type?: string;
+    tenantId?: string;
   };
 
   type ErrorResponse = {
@@ -78,7 +91,16 @@ declare namespace API {
     type?: NoticeIconItemType;
   };
 
+  /** 应用菜单资源 */
+  type ApplicationMenuResourceInfo = {
+    applicationId: string;
+    applicationName: string;
+    resources: ResourceInfo[];
+  };
+
+  /** 资源信息 */
   type ResourceInfo = {
+    appId?: string;
     parentCode?: string;
     path: string;
     name: string;
@@ -160,5 +182,22 @@ declare namespace API {
 
   type AddUserAccessRecordParams = {
     accessUrl: string;
+  };
+
+  type MicroConfig = {
+    apps: MicroAppInfo[];
+    routes: MicroRouteInfo[];
+  };
+
+  type MicroAppInfo = {
+    name: string;
+    entry: string;
+    credentials: boolean;
+  };
+
+  type MicroRouteInfo = {
+    path: string;
+    microApp: string;
+    microAppProps: any;
   };
 }

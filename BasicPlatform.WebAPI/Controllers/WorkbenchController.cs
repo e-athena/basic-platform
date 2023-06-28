@@ -3,7 +3,7 @@ namespace BasicPlatform.WebAPI.Controllers;
 /// <summary>
 /// 首页
 /// </summary>
-[Menu("工作台",
+[FrontEndRouting("工作台",
     ModuleCode = "dashboard",
     ModuleName = "Dashboard",
     ModuleRoutePath = "/dashboard",

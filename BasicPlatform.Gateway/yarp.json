@@ -1,12 +1,15 @@
 {
   "ReverseProxy": {
     "Routes": {
-      "Zipkin": {
-        "ClusterId": "zipkin",
+      "PaymentAPI": {
+        "ClusterId": "paymentApiCluster",
         "Match": {
-          "Path": "/zipkin/{**everything}"
+          "Path": "/payment/{**everything}"
         },
         "Transforms": [
+          {
+            "PathRemovePrefix": "/payment"
+          },
           {
             "RequestHeadersCopy": "true"
           },
@@ -15,8 +18,8 @@
           }
         ]
       },
-      "WebAPI": {
-        "ClusterId": "webApiCluster",
+      "BasicAPI": {
+        "ClusterId": "basicApiCluster",
         "Match": {
           "Path": "/basic_api/{**everything}"
         },
@@ -34,30 +37,27 @@
       }
     },
     "Clusters": {
-      "zipkin": {
+      "paymentApiCluster": {
         "Destinations": {
           "destination1": {
-            "Address": "http://localhost:9411"
+            "Address": "http://localhost:5155"
           }
         }
       },
-      "webApiCluster": {
+      "basicApiCluster": {
         "Destinations": {
           "destination1": {
             "Address": "http://localhost:5078"
-          },
-          "destination2": {
-            "Address": "http://localhost:7722"
           }
         },
         "HealthCheck": {
-          //          "Active": {
-          //            "Enabled": "true",
-          //            "Interval": "00:00:10",
-          //            "Timeout": "00:00:10",
-          //            "Policy": "ConsecutiveFailures",
-          //            "Path": "/health"
-          //          },
+          "Active": {
+            "Enabled": false,
+            "Interval": "00:00:10",
+            "Timeout": "00:00:10",
+            "Policy": "ConsecutiveFailures",
+            "Path": "/health"
+          },
           "Passive": {
             "Enabled": true,
             "Policy": "TransportFailureRate",

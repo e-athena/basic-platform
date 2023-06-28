@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Security.Claims;
 using Athena.Infrastructure.Jwt;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace BasicPlatform.Test;
@@ -46,19 +45,7 @@ public class TestBase
             Assembly.Load("BasicPlatform.Infrastructure")
         );
         services.AddCustomCsRedisCache(Configuration);
-        services.AddCustomFreeSql(Configuration, new HostingEnvironment
-        {
-            EnvironmentName = "Development"
-        }, aop =>
-        {
-            aop.CurdAfter += (_, e) =>
-            {
-                if (e.ElapsedMilliseconds > 200)
-                {
-                    Console.WriteLine($"执行SQL耗时 {e.ElapsedMilliseconds} ms");
-                }
-            };
-        });
+        services.AddCustomFreeSql(Configuration, true);
         services.AddCustomIntegrationEvent(Configuration,
             new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
         services.AddScoped<ISecurityContextAccessor, DefaultSecurityContextAccessor>();
@@ -79,9 +66,23 @@ public class DefaultSecurityContextAccessor : ISecurityContextAccessor
         return string.Empty;
     }
 
-    public string CreateToken(JwtConfig config, List<Claim> claims, string scheme = "Bearer")
+    public bool ValidateToken(JwtConfig config, string? token, out ClaimsPrincipal? principal)
     {
-        // throw new NotImplementedException();
+        throw new NotImplementedException();
+    }
+
+    public string CreateToken(JwtConfig config, List<Claim> claims, bool hasScheme = true, string scheme = "Bearer")
+    {
+        return string.Empty;
+    }
+
+    public string CreateTokenNotScheme(JwtConfig config, List<Claim> claims)
+    {
+        return string.Empty;
+    }
+
+    public string CreateTokenNotScheme(List<Claim> claims)
+    {
         return string.Empty;
     }
 
@@ -91,6 +92,7 @@ public class DefaultSecurityContextAccessor : ISecurityContextAccessor
     public string RealName => "开发者";
     public string UserName => "root";
     public bool IsRoot => true;
+    public bool IsTenantAdmin => false;
     public string? TenantId => null;
     public string? Role => null;
     public IList<string>? Roles { get; } = null;

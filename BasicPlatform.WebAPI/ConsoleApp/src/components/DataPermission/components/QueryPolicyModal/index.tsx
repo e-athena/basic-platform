@@ -4,12 +4,13 @@ import { Button, Empty, message, Modal, Select, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import RulerItem from './components/RulerItem';
 
-type EditTableColumnFormProps = {
+type QueryPolicyModalProps = {
   onCancel?: () => void;
   onOk: (data: FilterGroupItem[], saveTemplate: boolean) => void;
   open?: boolean;
   resourceKey: string;
   data: API.DataPermissionProperty[];
+  extraSelectList?: API.SelectInfo[];
   historyFilters?: FilterGroupItem[];
   title?: string;
 };
@@ -19,7 +20,7 @@ type EditTableColumnFormProps = {
  * @param props
  * @returns
  */
-const QueryPolicyModal: React.FC<EditTableColumnFormProps> = (props) => {
+const QueryPolicyModal: React.FC<QueryPolicyModalProps> = (props) => {
   const { open, onCancel, onOk, data, historyFilters } = props;
   const [selfOpen, setSelfOpen] = useState<boolean>(false);
   const [filterGroups, setFilterGroups] = useState<FilterGroupItem[]>(historyFilters || []);
@@ -246,14 +247,15 @@ const QueryPolicyModal: React.FC<EditTableColumnFormProps> = (props) => {
                 <RulerItem
                   key={index}
                   item={{ ...item, groupIndex, index }}
+                  extraSelectList={props.extraSelectList}
                   colSelect={data.map(
                     (p) =>
-                      ({
-                        label: p.label,
-                        value: p.value,
-                        propertyType: p.propertyType,
-                        enumOptions: p.enumOptions,
-                      } as ColSelectItem),
+                    ({
+                      label: p.label,
+                      value: p.value,
+                      propertyType: p.propertyType,
+                      enumOptions: p.enumOptions,
+                    } as ColSelectItem),
                   )}
                   onChange={(value) => {
                     // 更新

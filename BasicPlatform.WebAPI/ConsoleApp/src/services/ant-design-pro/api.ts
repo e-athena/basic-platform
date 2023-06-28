@@ -25,12 +25,31 @@ export async function login(
   body: API.LoginParams,
   options?: { [key: string]: any },
 ): Promise<ApiResponse<API.LoginResult>> {
-  return request<ApiResponse<API.LoginResult>>('/api/account/login', {
+  let url = '/api/account/login';
+  if (body.tenantId) {
+    url += `?tenant_id=${body.tenantId}`;
+  }
+  return request<ApiResponse<API.LoginResult>>(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     data: body,
+    skipErrorHandler: true,
+    ...(options || {}),
+  });
+}
+/** 读取授权Token */
+export async function getAuthToken(
+  params: API.SSOAuthCodeParams,
+  options?: { [key: string]: any },
+): Promise<ApiResponse<API.LoginResult>> {
+  return request<ApiResponse<API.LoginResult>>('/api/sso/getAuthToken', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
     skipErrorHandler: true,
     ...(options || {}),
   });
@@ -44,49 +63,6 @@ export async function getNotices(options?: { [key: string]: any }) {
   });
 }
 
-/** 获取规则列表 GET /api/rule */
-export async function rule(
-  params: {
-    // query
-    /** 当前的页码 */
-    current?: number;
-    /** 页面的容量 */
-    pageSize?: number;
-  },
-  options?: { [key: string]: any },
-) {
-  return request<API.RuleList>('/api/rule', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 新建规则 PUT /api/rule */
-export async function updateRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 新建规则 POST /api/rule */
-export async function addRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
-/** 删除规则 DELETE /api/rule */
-export async function removeRule(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/rule', {
-    method: 'DELETE',
-    ...(options || {}),
-  });
-}
 /** 查询外部页面 GET /api/User/GetExternalPages */
 export async function queryExternalPages(options?: { [key: string]: any }) {
   return request<ApiResponse<API.ExternalPage[]>>('/api/User/GetExternalPages', {
@@ -100,6 +76,26 @@ export async function queryUserResources(options?: { [key: string]: any }) {
     method: 'GET',
     ...(options || {}),
   });
+}
+/** 查询应用菜单资源 GET /api/Util/GetApplicationMenuResources */
+export async function queryApplicationMenuResources(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ApplicationMenuResourceInfo[]>>(
+    '/api/Util/GetApplicationMenuResources',
+    {
+      method: 'GET',
+      ...(options || {}),
+    },
+  );
+}
+/** 查询应用数据权限资源 GET /api/Util/GetApplicationMenuResources */
+export async function queryApplicationDataPermissionResources(options?: { [key: string]: any }) {
+  return request<ApiResponse<API.ApplicationDataPermissionResourceInfo[]>>(
+    '/api/Util/GetApplicationDataPermissionResources',
+    {
+      method: 'GET',
+      ...(options || {}),
+    },
+  );
 }
 
 /** 查询菜单 GET /api/ApiPermission/GetMenuResources */
@@ -124,11 +120,45 @@ export function queryColumns(modelName: string) {
     method: 'GET',
   });
 }
+/** 详情数据列 */
+export function queryDetailColumns(modelName: string) {
+  return request<ApiResponse<API.TableColumnResponse>>(`/api/${modelName}/GetDetailColumns`, {
+    method: 'GET',
+  });
+}
 
 /** 更新数据列 */
 export function updateUserCustomColumns(body: any) {
   return request<ApiResponse<number>>('/api/user/updateUserCustomColumns', {
     method: 'POST',
     data: body,
+  });
+}
+
+/** 读取子应用 */
+export function queryApps() {
+  return request<ApiResponse<API.MicroAppInfo[]>>('/api/Util/GetAppList', {
+    method: 'GET',
+  });
+}
+
+/** 读取子应用配置 */
+export function queryAppConfig() {
+  return request<ApiResponse<API.MicroConfig>>('/api/Util/GetAppConfig', {
+    method: 'GET',
+  });
+}
+
+/** 读取应用列表 */
+export function queryAppList() {
+  return request<ApiResponse<API.ApplicationListItem[]>>('/api/Application/GetList', {
+    method: 'GET',
+  });
+}
+
+/** 读取应用下拉列表 */
+export function queryAppSelectList() {
+  return request<ApiResponse<API.SelectInfo[]>>('/api/Application/GetSelectList', {
+    method: 'GET',
   });
 }

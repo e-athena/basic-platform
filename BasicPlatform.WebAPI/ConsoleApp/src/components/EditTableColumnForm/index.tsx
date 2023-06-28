@@ -1,7 +1,7 @@
 import { DownOutlined, DragOutlined, SettingOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
 import { DragSortTable } from '@ant-design/pro-components';
-import { Button, Checkbox, Dropdown, InputNumber, message, Modal, Space, Tooltip } from 'antd';
+import { Button, Checkbox, Dropdown, InputNumber, message, Modal, Space, theme, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 
 type EditTableColumnFormProps = {
@@ -12,6 +12,8 @@ type EditTableColumnFormProps = {
 };
 
 const EditTableColumnForm: React.FC<EditTableColumnFormProps> = (props) => {
+  const { useToken } = theme;
+  const { token } = useToken();
   const { open, onCancel, onOk, data } = props;
   const [leftDataSource, setLeftDataSource] = useState<API.TableColumnItem[]>([]);
   const [rightDataSource, setRightDataSource] = useState<API.TableColumnItem[]>([]);
@@ -101,7 +103,7 @@ const EditTableColumnForm: React.FC<EditTableColumnFormProps> = (props) => {
               menu={{
                 items,
                 onClick: ({ key }) => {
-                  console.log(key);
+                  // console.log(key);
                   // 取消固定
                   if (key === '0') {
                     // 更新为空
@@ -188,7 +190,9 @@ const EditTableColumnForm: React.FC<EditTableColumnFormProps> = (props) => {
         style={{
           cursor: 'move',
           width: row.width ?? 200,
-          backgroundColor: '#f2f2f2',
+          backgroundColor: token.colorBgTextHover,
+          paddingLeft: 8,
+          paddingRight: 8,
         }}
       >
         <DragOutlined />
@@ -200,12 +204,14 @@ const EditTableColumnForm: React.FC<EditTableColumnFormProps> = (props) => {
   return (
     <>
       {props.open === undefined && (
-        <Button
-          type={'link'}
-          style={{ color: '#1f1f1f' }}
-          icon={<SettingOutlined />}
-          onClick={() => setSelfOpen(true)}
-        />
+        <Tooltip title={'表格列配置'}>
+          <Button
+            type={'link'}
+            style={{ color: token.colorText }}
+            icon={<SettingOutlined />}
+            onClick={() => setSelfOpen(true)}
+          />
+        </Tooltip>
       )}
       <Modal
         title="自定义列，勾选需要显示的列，拖动列名进行排序。"

@@ -6,7 +6,7 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 /// <summary>
 /// 员工访问记录
 /// </summary>
-[Menu("访问记录",
+[FrontEndRouting("访问记录",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",

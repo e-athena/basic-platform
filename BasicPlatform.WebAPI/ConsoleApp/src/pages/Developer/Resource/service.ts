@@ -1,7 +1,10 @@
 import { get } from '@/utils/request';
 
 /** 查询数据 */
-export function query(): Promise<ApiResponse<API.ResourceInfo[]>> {
+export function query(resourceUrl?: string): Promise<ApiResponse<API.ResourceInfo[]>> {
+  if (resourceUrl) {
+    return get('/api/Resource/GetSubAppResources', { resourceUrl });
+  }
   return get('/api/ApiPermission/GetMenuResources');
 }
 
@@ -10,12 +13,4 @@ export function query(): Promise<ApiResponse<API.ResourceInfo[]>> {
  */
 export async function sync(): Promise<ApiResponse<boolean>> {
   return get('/api/Resource/Sync');
-}
-
-/**
- * 重置资源
- * @returns
- */
-export async function reinitialize(): Promise<ApiResponse<boolean>> {
-  return get('/api/Resource/Reinitialize');
 }

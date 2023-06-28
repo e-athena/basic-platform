@@ -11,4 +11,9 @@ public class GetUserDataPermissionsResponse : UserDataPermissionModel
     /// 是否为角色权限
     /// </summary>
     public bool IsRolePermission { get; set; }
+
+    /// <summary>
+    /// 禁用选中
+    /// </summary>
+    public bool DisableChecked => IsRolePermission;
 }

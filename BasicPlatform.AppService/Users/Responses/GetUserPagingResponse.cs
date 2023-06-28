@@ -1,11 +1,12 @@
 using BasicPlatform.AppService.Users.Models;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.Users.Responses;
 
 /// <summary>
 /// 读取用户分页数据响应类
 /// </summary>
-[DataPermission(typeof(User), "用户管理模块")]
+[DataPermission(typeof(User), "用户管理模块", AppId = "system")]
 public class GetUserPagingResponse : UserQueryModel
 {
     /// <summary>

@@ -1,4 +1,6 @@
 using BasicPlatform.AppService.Roles.Requests;
+using BasicPlatform.AppService.Users;
+using BasicPlatform.Domain.Models.Roles;
 
 namespace BasicPlatform.AppService.FreeSql.Roles;
 
@@ -13,9 +15,13 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     IRequestHandler<AssignRoleUsersRequest, string>,
     IRequestHandler<AssignRoleDataPermissionsRequest, string>
 {
-    public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
+    private readonly IUserQueryService _userQueryService;
+
+    public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor,
+        IUserQueryService userQueryService)
         : base(unitOfWorkManager, contextAccessor)
     {
+        _userQueryService = userQueryService;
     }
 
     /// <summary>
@@ -77,26 +83,51 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public async Task<string> Handle(AssignRoleResourcesRequest request, CancellationToken cancellationToken)
     {
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<RoleResource>(
-            p => p.RoleId == request.Id, cancellationToken
-        );
-        if (request.Resources.Count <= 0)
+        // 如果不是超级管理员，则需要检查分配的权限中是否有超过自己的权限，按ApplicationId分组，如果分配的权限中包含超过自己的权限，则抛出异常
+        if (!IsRoot)
         {
-            return request.Id;
+            var resources = await _userQueryService.GetUserResourceAsync(null, null);
+            var resourceKeys = resources
+                .GroupBy(p => p.ApplicationId)
+                .Select(p => new
+                {
+                    ApplicationId = p.Key,
+                    Keys = p.Select(k => k.Key).ToList()
+                }).ToList();
+
+            var assignResourceKeys = request
+                .Resources
+                .GroupBy(p => p.ApplicationId)
+                .Select(p => new
+                {
+                    ApplicationId = p.Key,
+                    Keys = p.Select(k => k.Key).ToList()
+                }).ToList();
+
+            if (assignResourceKeys
+                .Any(p =>
+                    !resourceKeys
+                        .Any(k =>
+                            k.ApplicationId == p.ApplicationId &&
+                            k.Keys.Any(p.Keys.Contains)
+                        )
+                ))
+            {
+                throw FriendlyException.Of("分配的权限中包含超过自己的权限，请检查！");
+            }
         }
 
-        // 新增新数据
-        var roleResources = request
-            .Resources
-            .Select(p => new RoleResource(request.Id, p.Key, p.Code))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
-
-        return request.Id;
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        entity.AssignResources(request
+                .Resources
+                .Select(p => new RoleResource(p.ApplicationId, request.Id, p.Key, p.Code))
+                .ToList(),
+            UserId
+        );
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>
@@ -108,23 +139,10 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<string> Handle(AssignRoleUsersRequest request, CancellationToken cancellationToken)
     {
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<RoleUser>(
-            p => p.RoleId == request.Id, cancellationToken
-        );
-        if (request.UserIds.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var roleResources = request
-            .UserIds
-            .Select(userId => new RoleUser(request.Id, userId))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);
-
-        return request.Id;
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        entity.AssignUsers(request.UserIds, UserId);
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>
@@ -135,34 +153,25 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleDataPermissionsRequest request, CancellationToken cancellationToken)
     {
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<RoleDataPermission>(
-            p => p.RoleId == request.Id, cancellationToken
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+
+        // 分配权限
+        entity.AssignDataPermissions(request
+                .Permissions
+                .Select(p => new RoleDataPermission(
+                    p.ApplicationId,
+                    request.Id,
+                    p.ResourceKey,
+                    p.DataScope,
+                    p.DataScopeCustom,
+                    p.PolicyResourceKey,
+                    p.QueryFilterGroups,
+                    p.Enabled)
+                )
+                .ToList(),
+            UserId
         );
-        // 删除查询策略
-        await RegisterDeleteValueObjectAsync<RoleDataQueryPolicy>(
-            p => p.RoleId == request.Id, cancellationToken
-        );
-        if (request.Permissions.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var roleDataPermissions = request
-            .Permissions
-            .Select(p => new RoleDataPermission(request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleDataPermissions, cancellationToken);
-
-        // 新增查询策略
-        var roleDataQueryPolicies = request
-            .Permissions
-            .Select(p =>
-                new RoleDataQueryPolicy(request.Id, p.ResourceKey, p.PolicyResourceKey, p.QueryFilterGroups, p.Enabled))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(roleDataQueryPolicies, cancellationToken);
-
-        return request.Id;
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 }

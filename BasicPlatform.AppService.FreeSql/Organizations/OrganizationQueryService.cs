@@ -40,7 +40,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
             .ToPagingAsync(request, p => new GetOrganizationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName,
+                UpdatedUserName = p.LastUpdatedUser!.RealName,
                 LeaderName = p.Leader!.RealName
             });
 
@@ -72,16 +72,31 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     }
 
     /// <summary>
+    /// 读取ID
+    /// </summary>
+    /// <param name="name">名称</param>
+    /// <returns></returns>
+    public async Task<string> GetIdByNameAsync(string name)
+    {
+        var result = await QueryableNoTracking
+            .Where(p => p.Name == name)
+            .ToOneAsync(p => p.Id);
+        return result;
+    }
+
+    /// <summary>
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>
-    public async Task<List<TreeViewModel>> GetTreeListAsync()
+    public async Task<List<TreeViewModel>> GetTreeListAsync(string? parentId = null)
     {
-        var list = await QueryableNoTracking.ToListAsync();
+        var list = await QueryableNoTracking
+            .HasWhere(parentId, p => p.ParentPath.Contains(parentId!) || p.Id == parentId)
+            .ToListAsync();
         var result = new List<TreeViewModel>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
+        var pId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
         // 递归读取
-        GetTreeChildren(list, result, parentId);
+        GetTreeChildren(list, result, pId);
         return result;
     }
 
@@ -102,14 +117,15 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
     /// 获取全部组织架构人员树
     /// </summary>
     /// <returns></returns>
-    // ReSharper disable once IdentifierTypo
-    public async Task<List<CascaderViewModel>> GetCascaderListAsync()
+    public async Task<List<CascaderViewModel>> GetCascaderListAsync(string? parentId = null)
     {
-        var list = await QueryableNoTracking.ToListAsync();
+        var list = await QueryableNoTracking
+            .HasWhere(parentId, p => p.ParentPath.Contains(parentId!) || p.Id == parentId)
+            .ToListAsync();
         var result = new List<CascaderViewModel>();
-        var parentId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
+        var pId = list.MinBy(p => p.ParentPath.Length)?.ParentId;
         // 递归读取
-        GetTreeChildrenCascader(list, result, parentId);
+        GetTreeChildrenCascader(list, result, pId);
         return result;
     }
 

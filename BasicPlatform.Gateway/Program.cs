@@ -1,9 +1,6 @@
-using System.Threading.RateLimiting;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.AddYarpJson();
-
 builder.Services.AddCustomCors(builder.Configuration);
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));

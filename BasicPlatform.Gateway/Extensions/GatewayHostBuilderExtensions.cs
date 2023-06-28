@@ -1,3 +1,5 @@
+// ReSharper disable once CheckNamespace
+
 namespace Microsoft.AspNetCore.Builder;
 
 public static class GatewayHostBuilderExtensions
@@ -14,6 +16,10 @@ public static class GatewayHostBuilderExtensions
         {
             builder.AddJsonFile(
                     path: path,
+                    optional: optional,
+                    reloadOnChange: reloadOnChange
+                ).AddJsonFile(
+                    path: $"yarp.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json",
                     optional: optional,
                     reloadOnChange: reloadOnChange
                 )

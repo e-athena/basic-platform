@@ -1,6 +1,6 @@
 import UserModal from '@/components/UserModal';
 import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
-import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space } from 'antd';
+import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space, theme } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
@@ -15,6 +15,8 @@ type RulerItemProps = {
 };
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
+  const { useToken } = theme;
+  const { token } = useToken();
   // const rulerSelect = [
   //   {
   //     label: '等于',
@@ -56,7 +58,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
   const { onRemoveItem, item, onChange, colSelect } = props;
   const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
-    console.log(item);
+    // console.log(item);
     return [];
   };
   const getRulerSelect = () => {
@@ -293,8 +295,18 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
       if (item.operator === 'between') {
         return (
           <RangePicker
+            presets={[
+              { label: '今天', value: [dayjs(), dayjs()] },
+              { label: '昨天', value: [dayjs().add(-1, 'd'), dayjs().add(-1, 'd')] },
+              { label: '最近七天', value: [dayjs().add(-7, 'd'), dayjs()] },
+              { label: '最近十四天', value: [dayjs().add(-14, 'd'), dayjs()] },
+              { label: '最近一个月', value: [dayjs().add(-30, 'd'), dayjs()] },
+              { label: '最近三个月', value: [dayjs().add(-90, 'd'), dayjs()] },
+              { label: '最近半年', value: [dayjs().add(-6, 'M'), dayjs()] },
+              { label: '最近一年', value: [dayjs().add(-1, 'y'), dayjs()] },
+            ]}
             style={{ width: '350px' }}
-            placeholder={['开始时间', '结束时间']}
+            placeholder={['开始日期', '结束日期']}
             value={
               item.value === '' || item.value === undefined || item.value?.split(',')?.length !== 2
                 ? null
@@ -408,7 +420,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
     onChange(newItem);
   }
   return (
-    <div style={{ margin: '5px 0', border: '1px solid #f2f2f2', padding: '5px 10px' }}>
+    <div style={{ margin: '5px 0', border: `1px solid ${token.colorBorder}`, padding: '5px 10px', borderRadius: 8 }}>
       <Row gutter={[24, 24]}>
         <Col span={90}>
           {item.index && item.index > 0 ? (
@@ -417,11 +429,11 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
               placeholder="与或"
               options={[
                 {
-                  label: '与(&&)',
+                  label: '并且',
                   value: 'and',
                 },
                 {
-                  label: '或(||)',
+                  label: '或者',
                   value: 'or',
                 },
               ]}

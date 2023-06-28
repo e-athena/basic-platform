@@ -5,6 +5,9 @@ using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
+using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Tenants;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
 
@@ -17,10 +20,9 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     private readonly IRoleQueryService _roleQueryService;
 
     public UserQueryService(
-        IFreeSql freeSql,
+        FreeSqlMultiTenancy freeSql,
         ISecurityContextAccessor accessor,
-        IRoleQueryService roleQueryService
-    ) : base(freeSql, accessor)
+        IRoleQueryService roleQueryService) : base(freeSql, accessor)
     {
         _roleQueryService = roleQueryService;
     }
@@ -63,7 +65,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .ToPagingAsync(request, p => new GetUserPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName,
+                UpdatedUserName = p.LastUpdatedUser!.RealName,
                 OrganizationName = p.Organization!.Name,
                 PositionName = p.Position!.Name
             });
@@ -116,10 +118,9 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             throw FriendlyException.Of("找不到数据");
         }
 
-        if (!string.IsNullOrEmpty(result.OrganizationPath))
-        {
-            result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
-        }
+        result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
+            ? $"{result.OrganizationPath},{result.OrganizationId}"
+            : result.OrganizationId;
 
         // 读取角色
         var roleIds = await Query<RoleUser>()
@@ -132,12 +133,59 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
+    /// 读取租户超级管理员信息
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<UserModel> GetTenantSuperAdminAsync()
+    {
+        var result = await QueryableNoTracking.Where(p => p.IsTenantAdmin).FirstAsync<UserModel>();
+        if (result == null)
+        {
+            throw FriendlyException.Of("帐号未初始化");
+        }
+
+        result.Password = string.Empty;
+        return result;
+    }
+
+    /// <summary>
     /// 读取信息
     /// </summary>
     /// <param name="userName"></param>
     /// <returns></returns>
     public async Task<GetUserByUserNameResponse> GetByUserNameAsync(string userName)
     {
+        // 如果是租户环境
+        if (IsTenantEnvironment)
+        {
+            // 判断租户是否生效或过期
+            var tenant = await DefaultQueryNoTracking<Tenant>()
+                .Where(p => p.Code == TenantId)
+                .ToOneAsync();
+
+            if (tenant == null)
+            {
+                throw FriendlyException.Of("租户不存在");
+            }
+
+            if (tenant.Status == Status.Disabled)
+            {
+                throw FriendlyException.Of("租户不可用，请联系管理员");
+            }
+
+            if (tenant.EffectiveTime > DateTime.Now)
+            {
+                throw FriendlyException.Of($"租户订阅未生效，生效日期({tenant.EffectiveTime:yyyy-MM-dd})");
+            }
+
+            var expiredTime = tenant.ExpiredTime?.AddDays(1).AddSeconds(-1);
+            if (expiredTime != null && expiredTime < DateTime.Now)
+            {
+                throw FriendlyException.Of($"租户订阅于{expiredTime.Value:yyyy-MM-dd HH:mm:ss}过期");
+            }
+        }
+
         var result = await Query()
             .Where(p => p.UserName == userName)
             .ToOneAsync(p => new GetUserByUserNameResponse
@@ -233,19 +281,21 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// </summary>
     /// <returns></returns>
     /// <exception cref="FriendlyException"></exception>
-    public async Task<GetCurrentUserResponse> GetCurrentUserAsync()
+    public async Task<GetCurrentUserResponse> GetCurrentUserAsync(string? userId = null)
     {
-        if (string.IsNullOrEmpty(UserId))
+        userId ??= UserId;
+        if (string.IsNullOrEmpty(userId))
         {
             throw FriendlyException.Of("用户未登录");
         }
 
         var result = await QueryableNoTracking
-            .Where(p => p.Id == UserId)
+            .Where(p => p.Id == userId)
             .ToOneAsync(p => new GetCurrentUserResponse
             {
                 OrganizationName = p.Organization!.Name,
-                PositionName = p.Position!.Name
+                PositionName = p.Position!.Name,
+                OrganizationPath = p.Organization!.ParentPath
             });
 
         if (result == null)
@@ -253,8 +303,19 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             throw FriendlyException.Of("找不到数据");
         }
 
+        result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
+            ? $"{result.OrganizationPath},{result.OrganizationId}"
+            : result.OrganizationId;
+
+        // 读取角色
+        var roleIds = await Query<RoleUser>()
+            .Where(p => p.UserId == userId)
+            .ToListAsync(p => p.RoleId);
+
+        result.RoleIds.AddRange(roleIds);
+
         // 用户拥有的资源代码
-        result.ResourceCodes = await GetResourceCodesAsync(UserId);
+        result.ResourceCodes = await GetResourceCodesAsync(userId, null);
 
         return result;
     }
@@ -289,15 +350,62 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
+    /// 读取下拉选择框数据列表
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<SelectViewModel>> GetAllSelectListAsync()
+    {
+        var result = await Queryable
+            .ToListAsync(t1 => new SelectViewModel
+            {
+                Label = t1.RealName,
+                Value = t1.Id,
+                Disabled = t1.Status == Status.Disabled,
+                Extend = t1.UserName
+            });
+
+        return result;
+    }
+
+    /// <summary>
+    /// 读取ID
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    public Task<string> GetIdByUserNameAsync(string userName)
+    {
+        return QueryNoTracking().Where(p => p.UserName == userName).FirstAsync(p => p.Id);
+    }
+
+    /// <summary>
     /// 读取用户资源
     /// </summary>
     /// <param name="userId"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<List<ResourceModel>> GetUserResourceAsync(string? userId)
+    public async Task<List<ResourceModel>> GetUserResourceAsync(string? userId, string? appId)
     {
         userId ??= UserId;
-        var result = await GetResourceCodeInfoAsync(userId!);
+        if (userId == null)
+        {
+            throw FriendlyException.Of("请传入用户Id");
+        }
+
+        // 如果是租户管理员，直接返回授权的所有资源
+        if (IsTenantAdmin)
+        {
+            return await DefaultQueryNoTracking<TenantResource>()
+                .Where(p => p.Tenant.Code == TenantId)
+                .ToListAsync(p => new ResourceModel
+                {
+                    ApplicationId = p.ApplicationId,
+                    Key = p.ResourceKey,
+                    Code = p.ResourceCode
+                });
+        }
+
+        var result = await GetResourceCodeInfoAsync(userId, appId);
         // 去重
         return result
             .RoleResources
@@ -319,12 +427,25 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
+    /// 读取用户外部页面列表
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IList<ExternalPageModel>> GetUserExternalPagesAsync(string userId)
+    {
+        // 读取公共的和自己创建的
+        var result = await QueryNoTracking<ExternalPage>()
+            .Where(p => p.OwnerId == null || p.OwnerId == userId)
+            .ToListAsync<ExternalPageModel>();
+        return result;
+    }
+
+    /// <summary>
     /// 读取用户资源代码
     /// </summary>
     /// <param name="userId"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public async Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync(string userId)
+    public async Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync(string userId, string? appId)
     {
         var roleResources = new List<ResourceModel>();
         // 用户拥有的角色
@@ -333,9 +454,11 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         {
             // 角色资源
             roleResources = await QueryNoTracking<RoleResource>()
+                .HasWhere(appId, p => p.ApplicationId == appId)
                 .Where(p => roleIds.Contains(p.RoleId))
                 .ToListAsync(p => new ResourceModel
                 {
+                    ApplicationId = p.ApplicationId,
                     Key = p.ResourceKey,
                     Code = p.ResourceCode
                 });
@@ -343,11 +466,13 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 
         // 用户资源
         var userResources = await QueryNoTracking<UserResource>()
+            .HasWhere(appId, p => p.ApplicationId == appId)
             .Where(p => p.UserId == userId)
             // 读取未过期的
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new ResourceModel
             {
+                ApplicationId = p.ApplicationId,
                 Key = p.ResourceKey,
                 Code = p.ResourceCode
             });
@@ -363,10 +488,11 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// 读取用户资源代码列表
     /// </summary>
     /// <param name="userId"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
-    public async Task<List<string>> GetResourceCodesAsync(string userId)
+    public async Task<List<string>> GetResourceCodesAsync(string userId, string? appId)
     {
-        var userResources = await GetUserResourceAsync(userId);
+        var userResources = await GetUserResourceAsync(userId, appId);
         var list = new List<string>();
         foreach (var model in userResources)
         {
@@ -390,6 +516,24 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     }
 
     /// <summary>
+    /// 读取用户自定表格列列表
+    /// </summary>
+    /// <param name="appId"></param>
+    /// <param name="moduleName">模块名</param>
+    /// <param name="userId">用户ID</param>
+    /// <returns></returns>
+    public Task<List<UserCustomColumnModel>> GetUserCustomColumnsAsync(string? appId, string moduleName,
+        string? userId)
+    {
+        userId ??= UserId;
+        return QueryNoTracking<UserCustomColumn>()
+            .Where(p => p.AppId == appId)
+            .Where(p => p.ModuleName == moduleName)
+            .Where(p => p.UserId == userId)
+            .ToListAsync<UserCustomColumnModel>();
+    }
+
+    /// <summary>
     /// 读取用户数据权限
     /// </summary>
     /// <param name="id"></param>
@@ -406,10 +550,13 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             )
             .ToListAsync(p => new GetUserDataPermissionsResponse
             {
+                ApplicationId = p.ApplicationId,
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
                 DataScopeCustom = p.DataScopeCustom,
+                PolicyResourceKey = p.PolicyResourceKey,
+                Policy = p.Policy
             });
         foreach (var item in list)
         {
@@ -423,10 +570,13 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new GetUserDataPermissionsResponse
             {
+                ApplicationId = p.ApplicationId,
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
                 DataScopeCustom = p.DataScopeCustom,
+                PolicyResourceKey = p.PolicyResourceKey,
+                Policy = p.Policy
             });
 
         // 以用户的为准，因为可对用户进行个性化设置
@@ -434,7 +584,6 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         {
             // 查询
             var single = list
-                .Where(p => p.DataScope != item.DataScope)
                 .FirstOrDefault(p => p.ResourceKey == item.ResourceKey);
             if (single == null)
             {
@@ -444,6 +593,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 
             single.DataScope = item.DataScope;
             single.DataScopeCustom = item.DataScopeCustom;
+            single.Policy = item.Policy;
         }
 
         // 去重

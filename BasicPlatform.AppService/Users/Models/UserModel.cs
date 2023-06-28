@@ -34,7 +34,7 @@ public class UserModel : ModelBase
     /// 昵称
     /// </summary>
     public string? NickName { get; set; }
-    
+
     /// <summary>
     /// 手机号
     /// </summary>
@@ -49,12 +49,12 @@ public class UserModel : ModelBase
     /// <summary>
     /// 所属组织ID
     /// </summary>
-    public string OrganizationId { get; set; } = null!;
+    public string? OrganizationId { get; set; }
 
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    public string PositionId { get; set; } = null!;
+    public string? PositionId { get; set; }
 
     /// <summary>
     /// 状态
@@ -66,4 +66,9 @@ public class UserModel : ModelBase
     /// 是否初始密码
     /// </summary>
     public bool IsInitPassword { get; set; }
+
+    /// <summary>
+    /// 是否为租户管理员
+    /// </summary>
+    public bool IsTenantAdmin { get; set; }
 }

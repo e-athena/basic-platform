@@ -1,5 +1,6 @@
 using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Requests;
+using BasicPlatform.Domain.Models.Roles;
 
 namespace BasicPlatform.Test;
 

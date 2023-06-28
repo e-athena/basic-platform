@@ -1,3 +1,5 @@
+using BasicPlatform.Domain.Models.Users;
+
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>
@@ -76,12 +78,12 @@ public class ExternalPage : EntityCore, ICreator, IUpdater
     /// 最后更新人Id
     /// </summary>
     [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
-    public virtual User? UpdatedUser { get; set; }
+    public virtual User? LastUpdatedUser { get; set; }
 
     public ExternalPage()
     {
@@ -124,7 +126,7 @@ public class ExternalPage : EntityCore, ICreator, IUpdater
         Remarks = remarks;
         CreatedUserId = createdUserId;
     }
-    
+
     /// <summary>
     /// 更新
     /// </summary>
@@ -160,6 +162,6 @@ public class ExternalPage : EntityCore, ICreator, IUpdater
         Layout = layout;
         Sort = sort;
         Remarks = remarks;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 }

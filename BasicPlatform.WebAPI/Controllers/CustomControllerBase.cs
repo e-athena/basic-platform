@@ -1,3 +1,5 @@
+using System.Security.Claims;
+
 namespace BasicPlatform.WebAPI.Controllers;
 
 /// <summary>
@@ -11,4 +13,8 @@ namespace BasicPlatform.WebAPI.Controllers;
 [ApiPermissionAuthorizeFilter]
 public class CustomControllerBase : ControllerBase
 {
+    /// <summary>
+    /// 用户ID
+    /// </summary>
+    protected string? UserId => HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 }

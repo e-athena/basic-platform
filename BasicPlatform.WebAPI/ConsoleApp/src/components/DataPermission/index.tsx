@@ -6,6 +6,7 @@ import QueryPolicyModal from './components/QueryPolicyModal';
 
 type DataPermissionProps = {
   data: API.DataPermissionGroup[];
+  extraSelectList?: API.SelectInfo[];
   onChange: (data: API.DataPermissionGroup[]) => void;
 };
 
@@ -21,11 +22,13 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (loading && props.data.length > 0) {
+    if (loading) {
       setLoading(false);
-      setDataSources(props.data);
-      setSegmentedOptioins(props.data.map((item) => item.displayName!));
-      setCurrentSegmented(props.data[0].displayName!);
+      if (props.data.length > 0) {
+        setDataSources(props.data);
+        setSegmentedOptioins(props.data.map((item) => item.displayName!));
+        setCurrentSegmented(props.data[0].displayName!);
+      }
     }
   }, [loading, props.data]);
 
@@ -253,6 +256,7 @@ const DataPermission: React.FC<DataPermissionProps> = (props) => {
           open={queryPolicyOpen}
           resourceKey={currentRow?.resourceKey || ''}
           data={currentRow?.properties || []}
+          extraSelectList={props.extraSelectList}
         />
       )}
     </>

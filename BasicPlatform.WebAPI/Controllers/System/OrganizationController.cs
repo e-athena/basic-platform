@@ -7,7 +7,7 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 /// <summary>
 /// 组织架构管理
 /// </summary>
-[Menu("组织管理",
+[FrontEndRouting("组织管理",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",
@@ -40,7 +40,7 @@ public class OrganizationController : CustomControllerBase
     /// <param name="commonService"></param>
     /// <returns></returns>
     [HttpGet]
-    [AllowAnonymous]
+    [SkipApiPermissionVerification]
     [ApiPermission(IsVisible = false)]
     public Task<GetTableColumnsResponse> GetColumnsAsync(
         [FromServices] ICommonService commonService)
@@ -152,7 +152,7 @@ public class OrganizationController : CustomControllerBase
     }
 
     /// <summary>
-    /// 获取组织架构级联人员信息
+    /// 获取组织架构级联信息
     /// </summary>
     /// <returns></returns>
     [HttpGet]

@@ -1,8 +1,9 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
-import { Button, Empty, message, Modal, Select, Space } from 'antd';
+import { Button, Empty, message, Modal, Select, Space, theme, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import RulerItem from './components/RulerItem';
+import { useKeyPress } from 'ahooks';
 
 type EditTableColumnFormProps = {
   onCancel?: () => void;
@@ -18,9 +19,14 @@ type EditTableColumnFormProps = {
  * @returns
  */
 const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
+  const { useToken } = theme;
+  const { token } = useToken();
   const { open, onCancel, onSearch, data, historyFilters } = props;
   const [selfOpen, setSelfOpen] = useState<boolean>(false);
   const [filterGroups, setFilterGroups] = useState<FilterGroupItem[]>(historyFilters || []);
+  useKeyPress(['meta.k', 'ctrl.k'], () => {
+    setSelfOpen(!selfOpen);
+  });
   useEffect(() => {
     if (open || selfOpen) {
       // 如果分组为空，添加一个默认分组
@@ -43,12 +49,14 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
   return (
     <>
       {props.open === undefined && (
-        <Button
-          type={'link'}
-          style={{ color: '#1f1f1f' }}
-          icon={<SearchOutlined />}
-          onClick={() => setSelfOpen(true)}
-        />
+        <Tooltip title={'自定义查询'}>
+          <Button
+            type={'link'}
+            style={{ color: token.colorText }}
+            icon={<SearchOutlined />}
+            onClick={() => setSelfOpen(true)}
+          />
+        </Tooltip>
       )}
       <Modal
         title="自定义查询"
@@ -242,12 +250,12 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
                     .filter((p) => !p.hideInSearch)
                     .map(
                       (p) =>
-                        ({
-                          label: p.title,
-                          value: p.propertyName,
-                          propertyType: p.propertyType,
-                          enumOptions: p.enumOptions,
-                        } as ColSelectItem),
+                      ({
+                        label: p.title,
+                        value: p.propertyName,
+                        propertyType: p.propertyType,
+                        enumOptions: p.enumOptions,
+                      } as ColSelectItem),
                     )}
                   onChange={(value) => {
                     // 更新

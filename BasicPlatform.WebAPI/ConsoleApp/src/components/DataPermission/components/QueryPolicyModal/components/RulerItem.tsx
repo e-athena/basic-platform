@@ -1,5 +1,6 @@
 import UserModal from '@/components/UserModal';
 import { TransferUserInfo } from '@/components/UserModal/components/TransferForm';
+import { SelectOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Select, DatePicker, Radio, InputNumber, Input, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -12,51 +13,16 @@ type RulerItemProps = {
   onChange: (value: FilterItem) => void;
   onRemoveItem?: () => void;
   onSelectUser?: (value: FilterItem) => void;
+  extraSelectList?: API.SelectInfo[];
 };
 
 const RulerItem: React.FC<RulerItemProps> = (props) => {
-  // const rulerSelect = [
-  //   {
-  //     label: '等于',
-  //     value: '==',
-  //   },
-  //   {
-  //     label: '不等于',
-  //     value: '!=',
-  //   },
-  //   {
-  //     label: '大于',
-  //     value: '>',
-  //   },
-  //   {
-  //     label: '小于',
-  //     value: '<',
-  //   },
-  //   {
-  //     label: '大于等于',
-  //     value: '>=',
-  //   },
-  //   {
-  //     label: '小于等于',
-  //     value: '<=',
-  //   },
-  //   {
-  //     label: '包含',
-  //     value: 'contains',
-  //   },
-  //   {
-  //     label: '属于',
-  //     value: 'in',
-  //   },
-  //   {
-  //     label: '含有任意一个',
-  //     value: 'intersect',
-  //   },
-  // ];
-  const { onRemoveItem, item, onChange, colSelect } = props;
+  const { onRemoveItem, item, extraSelectList, onChange, colSelect } = props;
   const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
   const getOptions = () => {
-    // console.log(item);
+    if (item.key && (extraSelectList || []).length > 0) {
+      return extraSelectList?.filter(p => item.key === p.extend) || [];
+    }
     return [];
   };
   const getRulerSelect = () => {
@@ -88,6 +54,14 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
     // 有额外规则
     if (getOptions().length > 0) {
       return [
+        {
+          label: '等于',
+          value: '==',
+        },
+        {
+          label: '不等于',
+          value: '!=',
+        },
         {
           label: '属于',
           value: 'in',
@@ -187,7 +161,49 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
   };
   const getValueDom = () => {
     if (item.key?.includes('UserId')) {
-      return (
+      return item.operator === '==' ? (
+        <Select
+          autoClearSearchValue
+          options={[
+            {
+              label: '{当前用户}',
+              value: '{SelfUserId}',
+            },
+            {
+              label: '{当前用户所在部门}',
+              value: '{SelfOrganizationId}',
+            },
+            {
+              label: '{当前用户所在部门及下级部门}',
+              value: '{SelfOrganizationChildrenIds}',
+            },
+            ...(item.extras || []),
+          ]}
+          style={{ width: 350 }}
+          placeholder="请选择"
+          onChange={(value) => {
+            const newItem = { ...item };
+            newItem.extras = [];
+            newItem.value = value;
+            onChange(newItem);
+          }}
+          value={(item.extras || []).length > 0 ? item.extras![0].value : item.value}
+          dropdownRender={(menu) => (
+            <>
+              {menu}
+              <Button
+                type={'link'}
+                icon={<SelectOutlined />}
+                onClick={() => {
+                  setUserModalOpen(true);
+                }}
+              >
+                选择其他用户
+              </Button>
+            </>
+          )}
+        />
+      ) : (
         <Space direction="horizontal">
           {item.operator !== undefined && item.operator === 'in' ? (
             <Select
@@ -219,43 +235,25 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
         </Space>
       );
     }
-    const options = getOptions();
-    if (options.length > 0) {
-      return (
-        <Select
-          autoClearSearchValue
-          options={getOptions()}
-          mode="tags"
-          style={{ width: '350px' }}
-          placeholder="请选择"
-          value={item.value === undefined || item.value === '' ? [] : [item.value]}
-          onChange={(value) => {
-            const newItem = { ...item };
-            if (value.length === 0) {
-              newItem.value = undefined;
-            } else {
-              newItem.value = value[value.length - 1];
-            }
-            onChange(newItem);
-          }}
-        />
-      );
-    }
-    // 如果是枚举类型
-    if (item.propertyType === 'enum') {
+    let options = getOptions();
+    // 如果是枚举类型或者扩展类型
+    if (item.propertyType === 'enum' || options.length > 0) {
+      if (item.propertyType === 'enum') {
+        options = colSelect.find((p) => p.value === item.key)?.enumOptions || [];
+      }
       let mode: string | undefined = 'tags';
-      if (item.operator === '==') {
+      if (item.operator === '==' || item.operator === '!=') {
         mode = undefined;
       }
       let value: string[] | string | undefined = [];
       if (item.value === undefined || item.value === '') {
-        if (item.operator === '==') {
+        if (item.operator === '==' || item.operator === '!=') {
           value = undefined;
         } else {
           value = [];
         }
       } else {
-        if (item.operator === '==') {
+        if (item.operator === '==' || item.operator === '!=') {
           // 如果上一个值是数组，那么就取第一个
           const arr = item.value.split(',');
           value = arr.length > 0 ? arr[0] : item.value;
@@ -266,7 +264,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
       return (
         <Select
           autoClearSearchValue
-          options={colSelect.find((p) => p.value === item.key)?.enumOptions}
+          options={options}
           mode={mode as 'tags' | undefined}
           style={{ width: '350px' }}
           placeholder="请选择"
@@ -275,7 +273,7 @@ const RulerItem: React.FC<RulerItemProps> = (props) => {
           onChange={(value) => {
             const newItem = { ...item };
             if (value) {
-              if (item.operator === '==') {
+              if (item.operator === '==' || item.operator === '!=') {
                 newItem.value = value as string;
               } else {
                 newItem.value = (value as string[]).join(',');

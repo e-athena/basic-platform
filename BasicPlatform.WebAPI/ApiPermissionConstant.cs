@@ -16,6 +16,7 @@ public static class ApiPermissionConstant
     /// 角色下拉列表
     /// </summary>
     public const string RoleDetail = "role:detail";
+
     /// <summary>
     /// 角色数据权限
     /// </summary>
@@ -106,6 +107,34 @@ public static class ApiPermissionConstant
     /// 职位下拉列表
     /// </summary>
     public const string PositionDetail = "position:detail";
+
+    #endregion
+
+    #region 应用
+
+    /// <summary>
+    /// 应用详情
+    /// </summary>
+    public const string ApplicationDetail = "application:detail";
+
+    /// <summary>
+    /// 应用下拉列表
+    /// </summary>
+    public const string ApplicationSelectList = "application:select";
+
+    #endregion
+
+    #region 租户
+
+    /// <summary>
+    /// 租户详情
+    /// </summary>
+    public const string TenantDetail = "tenant:detail";
+
+    /// <summary>
+    /// 租户超级管理员详情
+    /// </summary>
+    public const string TenantAdminDetail = "tenantAdmin:detail";
 
     #endregion
 }

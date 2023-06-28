@@ -4,7 +4,7 @@
 ## 特性
 - 基于`.NET6`开发
 - 前端使用`Ant Design Pro`，`UmiJs`
-- 根据数据库连接字符串自动识别数据库类型，支持`Sqlite`、`MySql`、`SqlServer`、`PostgreSQL`等数据库
+- 支持自动根据数据库连接字符串识别数据库类型。当前支持自动识别的有`Sqlite`、`MySql`、`SqlServer`、`PostgreSQL`，如需要支持其他数据库，可以自行指定在AddCustomFreeSql中指定`DateType`。支持FreeSql支持的所有数据库。
 - 支持自定义查询，可根据数据列表上的字段进行查询
 - 支持列设置，可根据需要显示或隐藏数据列表上的字段
 - 支持基于角色的授权(资源权限，数据权限)。
@@ -13,6 +13,7 @@
   - 基本授权：支持`全部数据`、`本人数据`、`本部门数据`、`本部门及以下数据`、`自定义数据（部门）`。
   - 自定义授权：支持自定义数据权限，可根据需要自定义数据权限，可选字段为列表上的字段。
 - 支持`领域事件`和`集成事件`，用于解耦业务逻辑和实现最终一致性。
+- 支持实时通知，基于`SignalR`实现。
 
 ## 演示地址
 [http://basic.zhengjinfan.cn](http://basic.zhengjinfan.cn)
@@ -31,14 +32,13 @@
    > cd BasicPlatform.WebAPI
    > dotnet run
    > ```
-   > 如果需要指定数据库连接字符串，可以在`appsettings.json`中修改`ConnectionStrings`节点
-   > ```json
-   > "ConnectionStrings": {
-   >    "Default": "Data Source=test_local.db;",
-   >    "LoggerCenter": "Data Source=test_local_log.db;",
-   >    "CAP": "127.0.0.1,connectTimeout=30000,keepAlive=60,syncTimeout=5000"
-   > }
-   > ```
+   > 如果需要更换数据库，可以在`appsettings.json`中修改`ConnectionStrings`
+   >> 指定数据库连接字符串格式(Sqlite)如下：
+   >> ```
+   >> sqlite,Data Source=test_local.db;
+   >> ```
+   >> 框架能自动识别以上格式并自动设置数据库类型。 
+   >> 格式说明：使用逗号分配，前一段为数据库类型，后一段为数据库连接字符串。支持的数据库类型有：sqlite、mysql、sqlserver、postgresql、oracle。
 3. cd到Web目录下，执行`npm install`命令
     > 安装依赖包
     > ```shell
@@ -52,3 +52,11 @@
 6. 输入帐号密码登录 
    > 帐号：root
    > 密码：ant.design
+
+## QQ群
+> 298736682
+
+## 免责声明
+- 仓库源码完全免费开源商用。
+- 不能以任何形式用于非法为目的的行为。
+- 任何基于本软件而产生的一切法律纠纷和责任，均于作者无关。

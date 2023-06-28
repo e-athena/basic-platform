@@ -28,7 +28,7 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
         ISelect<Organization>? organizationQuery = null;
         if (request.OrganizationId != null)
         {
-            organizationQuery = QueryNoTracking<Organization>()
+            organizationQuery = QuerySkipPermission<Organization>()
                 .As("o")
                 // 当前组织架构及下级组织架构
                 .Where(p => p.ParentPath.Contains(request.OrganizationId!) || p.Id == request.OrganizationId);
@@ -40,7 +40,7 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
             .ToPagingAsync(UserId, request, p => new GetPositionPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.UpdatedUser!.RealName,
+                UpdatedUserName = p.LastUpdatedUser!.RealName,
                 OrganizationName = p.Organization!.Name
             }, cancellationToken);
         return result;
@@ -65,10 +65,9 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
             throw FriendlyException.Of("职位不存在");
         }
 
-        if (!string.IsNullOrEmpty(result.OrganizationPath))
-        {
-            result.OrganizationPath = $"{result.OrganizationPath},{result.OrganizationId}";
-        }
+        result.OrganizationPath = !string.IsNullOrEmpty(result.OrganizationPath)
+            ? $"{result.OrganizationPath},{result.OrganizationId}"
+            : result.OrganizationId;
 
         return result;
     }
@@ -84,8 +83,8 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
         CancellationToken cancellationToken = default
     )
     {
-        return await QueryableNoTracking
-            .Where(p => p.OrganizationId == organizationId || string.IsNullOrEmpty(p.OrganizationId))
+        return await QueryableSkipPermission
+            .Where(p => p.OrganizationId == organizationId || p.OrganizationId == null)
             .ToListAsync(p => new SelectViewModel
             {
                 Disabled = p.Status == Status.Disabled,

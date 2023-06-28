@@ -34,6 +34,7 @@ const UserModal: React.FC<UserModalProps> = (props) => {
         <ProCard split="vertical" bordered>
           <ProCard colSpan="250px">
             <OrganizationTree
+              maxHeight={500}
               onSelect={(key) => {
                 setOrganizationId(key);
               }}

@@ -2,7 +2,7 @@ import { submitHandle } from '@/utils/utils';
 import { ModalForm } from '@ant-design/pro-components';
 import React from 'react';
 import { assignResources } from '../service';
-import Authorization from '@/components/Authorization';
+import Authorization from '@/components/ApplicationAuthorization';
 
 type AuthorizationFormProps = {
   onCancel: () => void;
@@ -17,7 +17,7 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
   const [resources, setResources] = React.useState<ResourceModel[]>([]);
   return (
     <ModalForm
-      width={860}
+      width={960}
       title={props.title || '资源授权'}
       open={props.open}
       modalProps={{
@@ -25,7 +25,7 @@ const AuthorizationForm: React.FC<AuthorizationFormProps> = (props) => {
           props.onCancel();
         },
         // bodyStyle: { padding: '32px 40px 48px' },
-        bodyStyle: { padding: '10px 0' },
+        // bodyStyle: { padding: '10px 0' },
         destroyOnClose: true,
       }}
       onFinish={async () => {

@@ -1,3 +1,5 @@
+using BasicPlatform.Domain.Models.Users;
+
 namespace BasicPlatform.Domain.Models;
 
 /// <summary>
@@ -60,7 +62,7 @@ public class DataQueryPolicy : EntityCore, ICreator, IUpdater
     /// 最后更新人Id
     /// </summary>
     [MaxLength(36)]
-    public string? UpdatedUserId { get; set; }
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
@@ -94,7 +96,7 @@ public class DataQueryPolicy : EntityCore, ICreator, IUpdater
     public void Update(IList<QueryFilterGroup> policy, string? updatedUserId)
     {
         Policy = JsonSerializer.Serialize(policy);
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 
     /// <summary>
@@ -105,6 +107,6 @@ public class DataQueryPolicy : EntityCore, ICreator, IUpdater
     public void ChangeStatus(Status status, string? updatedUserId)
     {
         Status = status;
-        UpdatedUserId = updatedUserId;
+        LastUpdatedUserId = updatedUserId;
     }
 }

@@ -11,7 +11,7 @@ import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
 import { Button, Drawer, message, Modal, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import permission from '@/utils/permission';
-import { canAccessible, hasPermission } from '@/utils/utils';
+import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
 import ExternalPageTree, { ExternalPageTreeInstance } from './components/ExternalPageTree';
 import FixIcon from '@/components/FixIcon';
@@ -124,16 +124,13 @@ const TableList: React.FC = () => {
               type={'link'}
               icon={<FormOutlined />}
               disabled={entity.isPublic && !isRoot}
-              onClick={async () => {
-                const hide = message.loading('正在查询', 0);
-                const res = await detail(entity.id!);
-                hide();
-                if (res.success) {
-                  setCurrentRow(res.data);
+              onClick={async (e) => {
+                e.stopPropagation();
+                const data = await queryDetail(detail, entity.id!);
+                if (data) {
+                  setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
-                  return;
                 }
-                message.error(res.message);
               }}
             >
               编辑

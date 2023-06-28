@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Athena.Infrastructure.Exceptions;
 using Athena.Infrastructure.Mvc.Messaging.Requests;
 using Athena.InstantMessaging;
 using Athena.InstantMessaging.Models;
@@ -33,12 +32,16 @@ public class AccountController : ControllerBase
     /// <summary>
     /// 登录
     /// </summary>
+    /// <param name="options"></param>
     /// <param name="mediator"></param>
+    /// <param name="cacheManager"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
     public async Task<dynamic> LoginAsync(
+        [FromServices] IOptions<JwtConfig> options,
         [FromServices] IMediator mediator,
+        [FromServices] ICacheManager cacheManager,
         [FromBody] LoginRequest request
     )
     {
@@ -80,15 +83,28 @@ public class AccountController : ControllerBase
             new(ClaimTypes.Role, role),
             new("RoleName", roleName),
             new(ClaimTypes.Name, info.UserName),
-            new("RealName", info.RealName)
+            new("RealName", info.RealName),
+            new("IsTenantAdmin", info.IsTenantAdmin ? "true" : "false"),
+            new("TenantId", _securityContextAccessor.TenantId ?? string.Empty)
         };
-
+        var jwtConfig = options.Value;
+        var sessionCode = Guid.NewGuid().ToString("N").ToUpper();
+        var cacheTime = TimeSpan.FromSeconds(jwtConfig.Expires);
+        var key = string.Format(SsoCacheKey.CurrentUserInfo, sessionCode);
+        await cacheManager.SetAsync(key, info, cacheTime);
+        // 设置会话过期时间
+        await cacheManager.SetAsync(
+            string.Format(SsoCacheKey.SessionExpiry, sessionCode),
+            DateTime.Now.AddSeconds(jwtConfig.Expires),
+            cacheTime
+        );
         var token = _securityContextAccessor.CreateToken(claims);
         return new
         {
             Status = "ok",
             Type = "account",
             CurrentAuthority = token,
+            SessionCode = sessionCode
         };
     }
 
@@ -120,6 +136,7 @@ public class AccountController : ControllerBase
                 user.ResourceCodes
             );
         }
+
         // 发送上线通知
         await noticeHubService.SendMessageToAllAsync(new InstantMessaging<string>
         {

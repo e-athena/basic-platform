@@ -1,4 +1,6 @@
 using BasicPlatform.AppService.Users.Requests;
+using BasicPlatform.Domain.Models.Roles;
+using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
 
@@ -32,6 +34,19 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <returns></returns>
     public async Task<string> Handle(CreateUserRequest request, CancellationToken cancellationToken)
     {
+        // 如果是租户环境下并且是创建租户管理员
+        if (IsTenantEnvironment && request.IsTenantAdmin)
+        {
+            // 如果要创建租户管理员，则当前租户不能有用户，否则提示异常
+            var any = await QueryableNoTracking
+                .Where(p => p.IsTenantAdmin)
+                .AnyAsync(cancellationToken);
+            if (any)
+            {
+                throw FriendlyException.Of("只能创建一个租户管理员");
+            }
+        }
+
         var exists = await QueryableNoTracking
             .Where(p => p.UserName == request.UserName)
             .AnyAsync(cancellationToken);
@@ -49,9 +64,10 @@ public class UserRequestHandler : AppServiceBase<User>,
             request.NickName,
             request.PhoneNumber,
             request.Email,
-            request.OrganizationId,
+            request.OrganizationId ?? string.Empty,
             request.PositionId,
-            UserId
+            UserId,
+            request.IsTenantAdmin
         );
         await RegisterNewAsync(entity, cancellationToken);
 
@@ -102,7 +118,7 @@ public class UserRequestHandler : AppServiceBase<User>,
             request.NickName,
             request.PhoneNumber,
             request.Email,
-            request.OrganizationId,
+            request.OrganizationId ?? string.Empty,
             request.PositionId,
             UserId
         );
@@ -176,13 +192,12 @@ public class UserRequestHandler : AppServiceBase<User>,
         // 新增新数据
         var userResources = request
             .Resources
-            .Select(p => new UserResource(request.Id, p.Key, p.Code, request.ExpireAt))
+            .Select(p => new UserResource(p.ApplicationId, request.Id, p.Key, p.Code, request.ExpireAt))
             .ToList();
         await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
 
         return request.Id;
     }
-
 
     /// <summary>
     /// 分配数据权限
@@ -196,24 +211,28 @@ public class UserRequestHandler : AppServiceBase<User>,
         {
             throw FriendlyException.Of("不能给自己分配权限");
         }
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<UserDataPermission>(
-            p => p.UserId == request.Id, cancellationToken
+
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+
+        // 分配权限
+        entity.AssignDataPermissions(request
+                .Permissions
+                .Select(p => new UserDataPermission(
+                    p.ApplicationId,
+                    request.Id,
+                    p.ResourceKey,
+                    p.DataScope,
+                    p.DataScopeCustom,
+                    p.PolicyResourceKey,
+                    p.QueryFilterGroups,
+                    p.Enabled,
+                    request.ExpireAt)
+                )
+                .ToList(),
+            UserId
         );
-        if (request.Permissions.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var userDataPermissions = request
-            .Permissions
-            .Select(p => new UserDataPermission
-                (request.Id, p.ResourceKey, p.DataScope, p.DataScopeCustom, p.Enabled, request.ExpireAt))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(userDataPermissions, cancellationToken);
-
-        return request.Id;
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>
@@ -266,22 +285,24 @@ public class UserRequestHandler : AppServiceBase<User>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<long> Handle(UpdateUserCustomColumnsRequest request, CancellationToken cancellationToken)
     {
+        request.UserId ??= UserId;
         // 未登录
-        if (string.IsNullOrEmpty(UserId))
+        if (string.IsNullOrEmpty(request.UserId))
         {
             return -1;
         }
 
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserCustomColumn>(
-            p => p.UserId == UserId && p.ModuleName == request.ModuleName, cancellationToken
+            p => p.UserId == request.UserId && p.ModuleName == request.ModuleName, cancellationToken
         );
 
         // 新增新数据
         var userCustomColumns = request
             .Columns
             .Select(p => new UserCustomColumn(
-                UserId,
+                request.UserId,
+                request.AppId,
                 request.ModuleName,
                 p.DataIndex,
                 p.Width,

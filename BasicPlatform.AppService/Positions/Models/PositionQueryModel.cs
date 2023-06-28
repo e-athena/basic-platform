@@ -37,6 +37,6 @@ public class PositionQueryModel : QueryModelBase
     /// <summary>
     /// 排序
     /// </summary>
-    [TableColumn(Sort = 3, Width = 90, Align = "center")]
+    [TableColumn(Sort = 3, Width = 90, Align = TableColumnAlign.Center)]
     public int Sort { get; set; }
 }

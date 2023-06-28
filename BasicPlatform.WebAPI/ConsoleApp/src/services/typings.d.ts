@@ -42,6 +42,7 @@ declare namespace API {
     hideInTable: boolean;
     /** 在搜索中隐藏 */
     hideInSearch: boolean;
+    hideInDescriptions: boolean;
     /** 是否必须 */
     required: boolean;
     /** 固定到左侧 */
@@ -50,7 +51,7 @@ declare namespace API {
     sort: number;
     /** 超出宽度显示省略号 */
     ellipsis?: boolean;
-    // /** 是否可复制 */ 有bug,先不显示
+    // /** 是否可复制 */
     // copyable?: boolean;
     /** 文字对齐方式 */
     align?: 'left' | 'center' | 'right';
@@ -62,12 +63,26 @@ declare namespace API {
     valueType?: any;
     /** 枚举值类型 */
     valueEnum?: any;
+    /** 提示 */
+    tooltip?: string;
     /** 属性类型 */
     propertyType: string;
     /** 属性名称 */
     propertyName: string;
     /** 枚举 */
     enumOptions?: any[];
+    /** 分组 */
+    group: string;
+    /** 分组详情 */
+    groupDescription?: string;
+  };
+
+  /** 应用数据权限资源 */
+  type ApplicationDataPermissionResourceInfo = {
+    applicationId: string;
+    applicationName: string;
+    dataPermissionGroups: DataPermissionGroup[];
+    extraSelectList?: SelectInfo[];
   };
 
   /** 数据权限组 */
@@ -78,6 +93,7 @@ declare namespace API {
 
   /** 数据权限 */
   type DataPermission = {
+    appId?: string;
     displayName?: string;
     resourceKey: string;
     dataScope: number;
@@ -92,6 +108,7 @@ declare namespace API {
 
   /** 分配数据权限 */
   type DataPermissionItem = {
+    applicationId?: string;
     resourceKey: string;
     dataScope: number;
     enabled: boolean;
@@ -107,5 +124,18 @@ declare namespace API {
     key: string;
     propertyType?: string;
     enumOptions?: SelectInfo[];
+  };
+
+  /** 数据权限 */
+  type UserDataPermission = {
+    applicationId?: string;
+    resourceKey: string;
+    dataScope: number;
+    enabled: boolean;
+    disableChecked?: boolean;
+    dataScopeCustom?: string;
+    dataScopeCustoms: string[];
+    queryFilterGroups?: FilterGroupItem[];
+    policyResourceKey: string;
   };
 }

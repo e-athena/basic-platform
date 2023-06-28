@@ -14,7 +14,7 @@ public class AssignUserResourcesRequest : ITxRequest<string>
     /// 资源列表
     /// </summary>
     public IList<ResourceModel> Resources { get; set; } = new List<ResourceModel>();
-    
+
     /// <summary>
     /// 有效期至
     /// <remarks>为空时永久有效</remarks>

@@ -7,6 +7,7 @@ export type OrganizationTreeInstance = {
 };
 type OrganizationTreeProps = {
   onSelect?: (key: string | null) => void;
+  maxHeight?: number;
 };
 const OrganizationTree = forwardRef((props: OrganizationTreeProps, forwardedRef: any) => {
   const [dataSource, setDataSource] = useState<API.TreeInfo[]>();
@@ -39,6 +40,8 @@ const OrganizationTree = forwardRef((props: OrganizationTreeProps, forwardedRef:
           showLine={{
             showLeafIcon: false,
           }}
+          // blockNode
+          height={props.maxHeight}
           // showIcon={true}
           defaultExpandAll={true}
           onSelect={(selectedKeys: React.Key[]) => {

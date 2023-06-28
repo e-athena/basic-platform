@@ -1,5 +1,4 @@
-using BasicPlatform.AppService.DataPermissions;
-using BasicPlatform.AppService.DataPermissions.Models;
+using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
@@ -10,7 +9,7 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 /// <summary>
 /// 用户管理
 /// </summary>
-[Menu("用户管理",
+[FrontEndRouting("用户管理",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",
@@ -19,20 +18,24 @@ namespace BasicPlatform.WebAPI.Controllers.System;
     Sort = 0,
     Description = "系统基于角色授权，每个角色对不同的功能模块具备添删改查以及自定义权限等多种权限设定"
 )]
+// ReSharper disable once InconsistentNaming
 public class UserController : CustomControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IUserQueryService _queryService;
+    private readonly ILogger<UserController> _logger;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="queryService"></param>
-    public UserController(IMediator mediator, IUserQueryService queryService)
+    /// <param name="loggerFactory"></param>
+    public UserController(IMediator mediator, IUserQueryService queryService, ILoggerFactory loggerFactory)
     {
         _mediator = mediator;
         _queryService = queryService;
+        _logger = loggerFactory.CreateLogger<UserController>();
     }
 
     #region 基础接口
@@ -43,7 +46,7 @@ public class UserController : CustomControllerBase
     /// <param name="commonService"></param>
     /// <returns></returns>
     [HttpGet]
-    [AllowAnonymous]
+    [SkipApiPermissionVerification]
     [ApiPermission(IsVisible = false)]
     public Task<GetTableColumnsResponse> GetColumnsAsync(
         [FromServices] ICommonService commonService)
@@ -180,7 +183,6 @@ public class UserController : CustomControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns>新密码</returns>
     [HttpPost]
-    [AllowAnonymous]
     public Task<string> ResetPasswordAsync([FromBody] ResetUserPasswordRequest request,
         CancellationToken cancellationToken)
     {
@@ -197,33 +199,209 @@ public class UserController : CustomControllerBase
     /// <param name="organizationId">组织Id</param>
     /// <returns></returns>
     [HttpGet]
+    [SkipApiPermissionVerification]
     [ApiPermission(ApiPermissionConstant.UserSelectList, IsVisible = false)]
     public Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId = null)
     {
         return _queryService.GetSelectListAsync(organizationId);
     }
 
+    #region 先注释，因为可能重复了。
+
+    // /// <summary>
+    // /// 读取应用资源
+    // /// </summary>
+    // /// <returns></returns>
+    // [HttpGet]
+    // [ApiPermission(IsVisible = false)]
+    // [AllowAnonymous]
+    // public async Task<IList<ApplicationResourceInfo>> GetApplicationResourcesAsync(
+    //     [FromServices] IApiPermissionService service,
+    //     [FromServices] ISecurityContextAccessor accessor,
+    //     [FromServices] IConfiguration configuration,
+    //     [FromServices] IApplicationQueryService applicationQueryService
+    // )
+    // {
+    //     var result = new List<ApplicationResourceInfo>();
+    //
+    //     #region 系统资源
+    //
+    //     var assemblies = new List<Assembly>
+    //     {
+    //         Assembly.GetExecutingAssembly()
+    //     };
+    //     var resourceAssemblies = configuration.GetSection("ResourceAssemblies").Get<List<string>>();
+    //     if (resourceAssemblies != null)
+    //     {
+    //         assemblies.AddRange(resourceAssemblies.Select(Assembly.Load));
+    //     }
+    //
+    //     var list = new List<MenuTreeInfo>();
+    //     if (accessor.IsRoot)
+    //     {
+    //         foreach (var assembly in assemblies)
+    //         {
+    //             list.AddRange(service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId));
+    //         }
+    //
+    //         result.Add(new ApplicationResourceInfo
+    //         {
+    //             ApplicationId = GlobalConstant.DefaultAppId,
+    //             ApplicationName = "系统应用",
+    //             Resources = list
+    //         });
+    //     }
+    //     else
+    //     {
+    //         var resources = await _queryService.GetUserResourceAsync(null, null);
+    //         var keys = resources
+    //             .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId ||
+    //                         string.IsNullOrEmpty(p.ApplicationId))
+    //             .Select(p => p.Key)
+    //             .ToList();
+    //
+    //         foreach (var assembly in assemblies)
+    //         {
+    //             list.AddRange(
+    //                 service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId));
+    //         }
+    //
+    //         result.Add(new ApplicationResourceInfo
+    //         {
+    //             ApplicationId = GlobalConstant.DefaultAppId,
+    //             ApplicationName = "系统应用",
+    //             Resources = list
+    //         });
+    //     }
+    //
+    //     #endregion
+    //
+    //     // 读取应用信息
+    //     var apps = await applicationQueryService.GetListAsync();
+    //
+    //     foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
+    //     {
+    //         var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
+    //         try
+    //         {
+    //             var res = await resourceUrl.GetAsync()
+    //                 .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
+    //
+    //             if (res.Data != null && res.Success && res.Data.Count > 0)
+    //             {
+    //                 result.Add(new ApplicationResourceInfo
+    //                 {
+    //                     ApplicationId = app.ClientId,
+    //                     ApplicationName = app.Name,
+    //                     Resources = res.Data
+    //                 });
+    //             }
+    //         }
+    //         catch (Exception e)
+    //         {
+    //             _logger.LogWarning(e, "加载应用资源失败，应用ID:{ClientId},资源地址:{Url}", app.ClientId, resourceUrl);
+    //         }
+    //     }
+    //
+    //     return result;
+    // }
+
+    #endregion
+
     /// <summary>
     /// 读取资源
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(IsVisible = false)]
     [AllowAnonymous]
     public async Task<IList<MenuTreeInfo>> GetResourcesAsync(
         [FromServices] IApiPermissionService service,
-        [FromServices] ISecurityContextAccessor accessor
+        [FromServices] ISecurityContextAccessor accessor,
+        [FromServices] IApplicationQueryService applicationQueryService
     )
     {
+        IList<MenuTreeInfo> result = new List<MenuTreeInfo>();
+
+        #region 系统应用
+
+        IList<MenuTreeInfo> systemResources;
         var assembly = Assembly.GetExecutingAssembly();
         if (accessor.IsRoot)
         {
-            return service.GetMenuResources(assembly);
+            systemResources = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
+        }
+        else
+        {
+            var resources = await _queryService.GetUserResourceAsync(null, null);
+            var keys = resources
+                .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Select(p => p.Key)
+                .ToList();
+            systemResources =
+                service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId);
         }
 
-        var resources = await _queryService.GetUserResourceAsync(null);
-        var keys = resources.Select(p => p.Key).ToList();
-        var result = service.GetPermissionMenuResources(assembly, keys);
+        result.Add(new MenuTreeInfo
+        {
+            AppId = GlobalConstant.DefaultAppId,
+            Code = "basic_platform",
+            Description = "系统应用",
+            Icon = "AppstoreOutlined",
+            IsAuth = false,
+            IsVisible = true,
+            Name = "系统应用",
+            Path = "/",
+            Sort = 0,
+            Children = systemResources.ToList()
+        });
+
+        #endregion
+
+        #region 其他应用
+
+        // 其他业务应用
+        var apps = await applicationQueryService.GetListAsync();
+
+        foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
+        {
+            var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
+            try
+            {
+                var res = await resourceUrl.GetAsync()
+                    .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
+
+                if (res.Data != null && res.Success && res.Data.Count > 0)
+                {
+                    foreach (var item in res.Data)
+                    {
+                        item.Path = "/app/" + app.ClientId + item.Path;
+                        foreach (var child in item.Children ?? new List<MenuTreeInfo>())
+                        {
+                            child.Path = "/app/" + app.ClientId + child.Path;
+                        }
+                    }
+
+                    result.Add(new MenuTreeInfo
+                    {
+                        AppId = app.ClientId,
+                        Code = app.ClientId,
+                        Icon = "AppstoreOutlined",
+                        IsAuth = false,
+                        IsVisible = true,
+                        Name = app.Name,
+                        Path = "/app/" + app.ClientId,
+                        Sort = 0,
+                        Children = res.Data
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "加载应用资源失败，应用ID:{ClientId},资源地址:{Url}", app.ClientId, resourceUrl);
+            }
+        }
+
+        #endregion
 
         return result;
     }
@@ -233,11 +411,12 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(IsVisible = false)]
     [AllowAnonymous]
-    public Task<IList<ExternalPageModel>> GetExternalPagesAsync()
+    public Task<IList<ExternalPageModel>> GetExternalPagesAsync(string? userId = null)
     {
-        return _queryService.GetCurrentUserExternalPagesAsync();
+        return string.IsNullOrEmpty(userId)
+            ? _queryService.GetCurrentUserExternalPagesAsync()
+            : _queryService.GetUserExternalPagesAsync(userId);
     }
 
     /// <summary>
@@ -247,9 +426,9 @@ public class UserController : CustomControllerBase
     [HttpGet]
     [AllowAnonymous]
     [ApiPermission(ApiPermissionConstant.UserResourceCodeInfo, IsVisible = false)]
-    public Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync([FromQuery] string id)
+    public Task<GetUserResourceCodeInfoResponse> GetResourceCodeInfoAsync([FromQuery] string id, string? appId)
     {
-        return _queryService.GetResourceCodeInfoAsync(id);
+        return _queryService.GetResourceCodeInfoAsync(id, appId);
     }
 
     /// <summary>
@@ -257,22 +436,10 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(ApiPermissionConstant.UserDataPermissions, IsVisible = false)]
-    public async Task<IList<DataPermissionGroup>> GetDataPermissionsAsync([FromQuery] string id)
+    [ApiPermission(ApiPermissionConstant.RoleDataPermissions, IsVisible = false)]
+    public Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync([FromQuery] string id)
     {
-        var result = await _queryService.GetDataPermissionsAsync(id);
-        var assembly = Assembly.Load("BasicPlatform.AppService");
-        return DataPermissionHelper.GetGroupList(
-            assembly,
-            result.Select(p => new DataPermission
-            {
-                ResourceKey = p.ResourceKey,
-                DataScopeCustom = p.DataScopeCustom,
-                DataScope = p.DataScope,
-                Enabled = p.Enabled,
-                DisableChecked = p.IsRolePermission
-            }).ToList()
-        );
+        return _queryService.GetDataPermissionsAsync(id);
     }
 
     #endregion

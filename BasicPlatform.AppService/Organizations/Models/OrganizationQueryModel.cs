@@ -14,7 +14,7 @@ public class OrganizationQueryModel : QueryModelBase
     /// <summary>
     /// 名称
     /// </summary>
-    [TableColumn(Sort = 0, Width = 150, Fixed = "left")]
+    [TableColumn(Sort = 0, Width = 150, Fixed = TableColumnFixed.Left)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>

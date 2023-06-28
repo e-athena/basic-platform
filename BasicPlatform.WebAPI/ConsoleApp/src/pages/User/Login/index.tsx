@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
+import { getAuthToken, login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   AlipayCircleOutlined,
@@ -16,12 +16,14 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { FormattedMessage, SelectLang, useIntl, useModel, Helmet, history } from '@umijs/max';
+import { parse } from 'querystring';
+import { Alert, message, Tabs, Tag } from 'antd';
 import Settings from '../../../../config/defaultSettings';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { setToken } from '@/utils/token';
+import { setSessionCode, setToken } from '@/utils/token';
+import { useLocalStorageState } from 'ahooks';
 
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -40,7 +42,16 @@ const ActionIcons = () => {
 
   return (
     <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName} />
+      <AlipayCircleOutlined
+        key="AlipayCircleOutlined"
+        className={langClassName}
+        onClick={() => {
+          // console.log(window.location)
+          // window.location.href = 'http://localhost:5218/SSO/Login?clientId=web1&redirectUrl=' + window.location.href;
+          window.location.href =
+            'http://localhost:5079/user/login-redirect?clientId=web1&redirectUrl=http%3A%2F%2Flocalhost%3A5079%2F%23%2Fuser%2Flogin%3Fredirect%3D%252F';
+        }}
+      />
       <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName} />
       <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName} />
     </>
@@ -63,7 +74,7 @@ const Lang = () => {
   });
 
   return (
-    <div className={langClassName} data-lang>
+    <div className={langClassName} data-lang="true">
       {SelectLang && <SelectLang />}
     </div>
   );
@@ -84,10 +95,25 @@ const LoginMessage: React.FC<{
   );
 };
 
+type QueryProps = {
+  clientId?: string;
+  redirectUrl?: string;
+  t_code?: string;
+};
+
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
+  const query: QueryProps = parse(history.location.search.split('?')[1], '&');
+  const { clientId, redirectUrl, t_code } = query;
+  const [tenantCode, setTenantCode] = useLocalStorageState<string | undefined>(APP_TENANT_CODE_KEY);
+  console.log(tenantCode);
+  useEffect(() => {
+    if (t_code && t_code !== tenantCode) {
+      setTenantCode(t_code);
+    }
+  }, [t_code]);
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -129,7 +155,10 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const res = await login({ ...values, type });
+      if (clientId) {
+        values.clientId = clientId as string;
+      }
+      const res = await login({ ...values, type, tenantId: tenantCode });
       if (res.success) {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -137,11 +166,35 @@ const Login: React.FC = () => {
         });
         message.success(defaultLoginSuccessMessage);
         setToken(res.data!.currentAuthority!);
+        setSessionCode(res.data!.sessionCode!);
         await fetchUserInfo();
         await fetchApiResources();
-        const urlParams = new URL(window.location.href).searchParams;
-        // history.push(urlParams.get('redirect') || '/');
-        location.href = urlParams.get('redirect') || '/';
+        const urlParams = parse(window.location.href.split('?')[1], '&');
+        if (redirectUrl !== undefined && clientId !== undefined) {
+          const code = res.data?.sessionCode;
+          // 读取子应用授权Token
+          const tokenRes = await getAuthToken({
+            clientId: clientId as string,
+            sessionCode: code as string,
+          });
+          if (!tokenRes.success) {
+            message.error('跳转失败，请重试。');
+            return;
+          }
+          const url = redirectUrl as string;
+          if (url !== undefined && url?.includes('?')) {
+            let host = url.split('?')[0];
+            const urlParams = parse(url.split('login-redirect?')[1], '&');
+            const redirect = urlParams?.redirect;
+            const param =
+              redirect === undefined ? '' : `&redirect=${encodeURIComponent(redirect as string)}`;
+            window.location.href = `${host}?token=${tokenRes.data}&source=sso${param}`;
+            return;
+          }
+          window.location.href = `${redirectUrl}?token=${tokenRes.data}&source=sso`;
+        } else {
+          history.push((urlParams?.redirect as string) || '/');
+        }
         return;
       }
       // 如果失败去设置用户错误信息
@@ -183,11 +236,28 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
+          logo={<img alt="logo" src="https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png" width={44} height={44} />}
+          title={<>
+            <span>Athena Pro</span>
+            {tenantCode && <Tag
+              color="purple"
+              closable
+              onClose={(e) => {
+                e.stopPropagation();
+                setTenantCode(undefined);
+                // Modal.confirm({
+                //   title: '确认切换租户？',
+                //   content: '切换租户后，当前登录信息将失效，需要重新登录。',
+                //   onOk: () => {
+                //     setTenantCode(undefined);
+                //     window.location.reload();
+                //   }
+                // });
+              }}>{tenantCode}</Tag>}
+          </>}
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
-            autoLogin: true,
+            rememberMe: true,
           }}
           actions={[
             <FormattedMessage
@@ -367,7 +437,7 @@ const Login: React.FC = () => {
               marginBottom: 24,
             }}
           >
-            <ProFormCheckbox noStyle name="autoLogin">
+            <ProFormCheckbox noStyle name="rememberMe">
               <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
             </ProFormCheckbox>
             <a

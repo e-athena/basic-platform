@@ -1,3 +1,7 @@
+using BasicPlatform.AppService.Applications;
+using BasicPlatform.AppService.Users;
+using BasicPlatform.WebAPI.Services;
+
 namespace BasicPlatform.WebAPI.Controllers;
 
 /// <summary>
@@ -8,24 +12,199 @@ namespace BasicPlatform.WebAPI.Controllers;
 public class UtilController : ControllerBase
 {
     private readonly ILogger<UtilController> _logger;
+    private readonly ISecurityContextAccessor _securityContextAccessor;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="loggerFactory"></param>
-    public UtilController(ILoggerFactory loggerFactory)
+    /// <param name="securityContextAccessor"></param>
+    public UtilController(ILoggerFactory loggerFactory, ISecurityContextAccessor securityContextAccessor)
     {
+        _securityContextAccessor = securityContextAccessor;
         _logger = loggerFactory.CreateLogger<UtilController>();
+    }
+
+    /// <summary>
+    /// 读取菜单资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<MenuTreeInfo>> GetMenuResourcesAsync([FromServices] IApiPermissionService service)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var result = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
+        return await Task.FromResult(result);
+    }
+
+    /// <summary>
+    /// 读取应用数据权限资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IList<ApplicationDataPermissionInfo>> GetApplicationDataPermissionResourcesAsync(
+        [FromServices] ISubApplicationService subApplicationService
+    )
+    {
+        var result = new List<ApplicationDataPermissionInfo>();
+        var assembly = Assembly.Load("BasicPlatform.AppService");
+        var defaultList = DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
+        result.Add(new ApplicationDataPermissionInfo
+        {
+            ApplicationId = GlobalConstant.DefaultAppId,
+            ApplicationName = "系统应用",
+            DataPermissionGroups = defaultList
+        });
+
+        // 其他业务应用
+        var subApplicationResources = await subApplicationService.GetDataPermissionResourcesAsync();
+        result.AddRange(subApplicationResources);
+        return result;
+    }
+
+    /// <summary>
+    /// 读取应用菜单资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Authorize]
+    public async Task<IList<ApplicationResourceInfo>> GetApplicationMenuResourcesAsync(
+        [FromServices] IUserQueryService userQueryService,
+        [FromServices] IApiPermissionService service,
+        [FromServices] ISubApplicationService subApplicationService
+    )
+    {
+        var result = new List<ApplicationResourceInfo>();
+
+        #region 系统资源
+
+        var assembly = Assembly.GetExecutingAssembly();
+        IList<MenuTreeInfo> defaultList;
+        IList<ResourceModel>? resources = null;
+        if (_securityContextAccessor.IsRoot)
+        {
+            defaultList = service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
+        }
+        else
+        {
+            resources = await userQueryService.GetUserResourceAsync(null, null);
+            var keys = resources
+                .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Select(p => p.Key)
+                .ToList();
+            defaultList = service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId);
+        }
+
+        result.Add(new ApplicationResourceInfo
+        {
+            ApplicationId = GlobalConstant.DefaultAppId,
+            ApplicationName = "系统应用",
+            Resources = defaultList
+        });
+
+        #endregion
+
+        // 其他业务应用
+        var subApplicationResources = await subApplicationService.GetMenuResourcesAsync(resources);
+        result.AddRange(subApplicationResources);
+        return result;
+    }
+
+    /// <summary>
+    /// 读取应用列表
+    /// </summary>
+    /// <param name="applicationQueryService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<List<dynamic>> GetAppListAsync(
+        [FromServices] IApplicationQueryService applicationQueryService)
+    {
+        var apps = await applicationQueryService.GetListAsync();
+        return apps.Where(p => !string.IsNullOrEmpty(p.FrontendUrl)).Select(p => new
+        {
+            Name = p.ClientId,
+            Entry = p.FrontendUrl,
+            Credentials = true
+        }).ToList<dynamic>();
+    }
+
+    /// <summary>
+    /// 读取应用配置
+    /// </summary>
+    /// <param name="applicationQueryService"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<dynamic> GetAppConfigAsync(
+        [FromServices] IApplicationQueryService applicationQueryService)
+    {
+        var appList = await applicationQueryService.GetListAsync();
+
+        // 有配置前端地址的应用
+        var list = appList
+            .Where(p => !string.IsNullOrEmpty(p.FrontendUrl))
+            .ToList();
+
+        // 可正常访问的应用
+        var healthyList = new List<string>();
+
+        await Parallel.ForEachAsync(list, async (app, index) =>
+        {
+            try
+            {
+                var res = await app.FrontendUrl.GetAsync(cancellationToken: index);
+                if (res.StatusCode == 200)
+                {
+                    healthyList.Add(app.ClientId);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "应用前端地址不可访问，应用ID:{ClientId},前端地址:{Url}", app.ClientId, app.FrontendUrl);
+            }
+        });
+
+        return new
+        {
+            Apps = appList
+                .Where(p => healthyList.Contains(p.ClientId))
+                .Select(p => new
+                {
+                    Name = p.ClientId,
+                    Entry = p.FrontendUrl,
+                    Credentials = true
+                }).ToList<dynamic>(),
+            Routes = appList
+                .Where(p => healthyList.Contains(p.ClientId))
+                .Select(p => new
+                {
+                    Path = $"/app/{p.ClientId}/*",
+                    MicroApp = p.ClientId,
+                    MicroAppProps = new
+                    {
+                        AutoCaptureError = true,
+                        ClassName = "micro-app",
+                    }
+                }).ToList<dynamic>(),
+        };
     }
 
     /// <summary>
     /// 同步数据库结构
     /// </summary>
     /// <param name="freeSql"></param>
+    /// <param name="accessor"></param>
     /// <returns></returns>
     [HttpGet]
-    public IActionResult SyncStructure([FromServices] IFreeSql freeSql)
+    [Authorize]
+    public IActionResult SyncStructure(
+        [FromServices] IFreeSql freeSql,
+        [FromServices] ISecurityContextAccessor accessor)
     {
+        if (!accessor.IsRoot)
+        {
+            throw FriendlyException.Of("只有超级管理员才能执行此操作");
+        }
+
         freeSql.SyncStructure("BasicPlatform.Domain");
         return Ok("ok");
     }
@@ -92,5 +271,17 @@ public class UtilController : ControllerBase
         }
 
         return Ok("ok");
+    }
+
+    /// <summary>
+    /// 检查授权
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [IgnoreApiResultFilter]
+    [Authorize]
+    public IActionResult CheckAuthAsync()
+    {
+        return Content("ok");
     }
 }

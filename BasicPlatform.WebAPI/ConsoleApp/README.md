@@ -55,3 +55,23 @@ npm test
 ## More
 
 You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+
+
+## 使用Tauri打包客户端软件
+
+### 1.安装Rust环境
+> https://tauri.app/zh-cn/v1/guides/getting-started/prerequisites
+
+### 2.安装tauri-cli
+> https://tauri.app/zh-cn/v1/guides/getting-started/setup/integrate
+
+### 3.打包
+``` bash
+npm run tauri build
+# or
+yarn tauri build
+# or
+pnpm tauri build
+# or
+cargo tauri build
+```

@@ -36,7 +36,7 @@ export function assignResources(data: API.AssignUserResourcesRequest) {
 }
 /** 数据权限列表 */
 export function dataPermission(id: string) {
-  return get<API.DataPermissionGroup[]>('/api/User/GetDataPermissions', { id });
+  return get<API.UserDataPermission[]>('/api/User/GetDataPermissions', { id });
 }
 /** 分配数据权限 */
 export function assignDataPermissions(data: API.AssignUserDataPermissionsRequest) {

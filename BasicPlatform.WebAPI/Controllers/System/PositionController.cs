@@ -7,7 +7,7 @@ namespace BasicPlatform.WebAPI.Controllers.System;
 /// <summary>
 /// 职位管理
 /// </summary>
-[Menu("职位管理",
+[FrontEndRouting("职位管理",
     ModuleCode = "system",
     ModuleName = "系统管理",
     ModuleRoutePath = "/system",
@@ -40,7 +40,7 @@ public class PositionController : CustomControllerBase
     /// <param name="commonService"></param>
     /// <returns></returns>
     [HttpGet]
-    [AllowAnonymous]
+    [SkipApiPermissionVerification]
     [ApiPermission(IsVisible = false)]
     public Task<GetTableColumnsResponse> GetColumnsAsync(
         [FromServices] ICommonService commonService)

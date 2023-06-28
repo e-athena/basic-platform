@@ -23,10 +23,17 @@ public interface IOrganizationQueryService
     Task<GetOrganizationByIdResponse?> GetAsync(string id);
 
     /// <summary>
+    /// 根据名称读取Id
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    Task<string> GetIdByNameAsync(string name);
+
+    /// <summary>
     /// 读取树形数据列表
     /// </summary>
     /// <returns></returns>
-    Task<List<TreeViewModel>> GetTreeListAsync();
+    Task<List<TreeViewModel>> GetTreeListAsync(string? parentId = null);
 
     /// <summary>
     /// 读取树形选择框数据列表
@@ -35,11 +42,12 @@ public interface IOrganizationQueryService
     Task<List<TreeSelectViewModel>> GetTreeSelectListAsync();
 
     /// <summary>
-    /// 获取组织架构级联人员信息
+    /// 获取级联列表
     /// </summary>
+    /// <param name="parentId">一级Id</param>
     /// <returns></returns>
-    Task<List<CascaderViewModel>> GetCascaderListAsync();
-    
+    Task<List<CascaderViewModel>> GetCascaderListAsync(string? parentId = null);
+
     /// <summary>
     /// 读取组织/部门数据
     /// </summary>

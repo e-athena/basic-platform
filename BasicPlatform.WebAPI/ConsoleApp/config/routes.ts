@@ -23,6 +23,22 @@ export default [
     ],
   },
   {
+    layout: false,
+    name: '跳转中',
+    path: '/user/login-redirect',
+    component: './User/LoginRedirect',
+  },
+  {
+    name: '个人中心',
+    path: '/user/center',
+    component: './User/Center',
+  },
+  {
+    name: '个人设置',
+    path: '/user/settings',
+    component: './User/Settings',
+  },
+  {
     path: '/',
     redirect: '/dashboard',
   },
@@ -75,6 +91,12 @@ export default [
         component: './Developer/Resource',
         access: 'routeFilter',
       },
+      {
+        path: '/developer/app',
+        name: '应用管理',
+        component: './Developer/Application',
+        access: 'routeFilter',
+      },
     ],
   },
   {
@@ -85,6 +107,12 @@ export default [
       {
         path: '/system',
         redirect: '/system/organization',
+      },
+      {
+        path: '/system/tenant',
+        name: '租户管理',
+        component: './System/Tenant',
+        access: 'routeFilter',
       },
       {
         path: '/system/organization',
@@ -129,12 +157,6 @@ export default [
         access: 'routeFilter',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/external/:id',

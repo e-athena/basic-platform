@@ -22,6 +22,14 @@ declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 declare const API_URL: string;
 declare const APP_TOKEN_KEY: string;
 declare const RTC_URL: string;
+declare const APP_NAV_THEME_KEY: string;
+declare const APP_SESSION_CODE_KEY: string;
+/** 登录路径 */
+declare const LOGIN_PATH: string;
+/** CDN地址 */
+declare const CDN_ADDRESS: string;
+/** 租户编码存储Key */
+declare const APP_TENANT_CODE_KEY: string;
 
 /**
  * 分页结构
@@ -80,6 +88,7 @@ declare interface ApiResponse<T = any> {
 
 /** 资源模型 */
 declare interface ResourceModel {
+  applicationId?: string;
   key: string;
   code: string;
 }
@@ -105,4 +114,11 @@ declare interface ColSelectItem {
   value: string;
   propertyType: string;
   enumOptions: any[];
+}
+
+/** 下载文件 */
+declare interface DownloadFileInfo {
+  fileName: string,
+  fileType: string,
+  fileToken: string,
 }
