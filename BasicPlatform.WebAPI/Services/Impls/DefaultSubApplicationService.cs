@@ -37,6 +37,28 @@ public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationS
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="resourceUrl"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<List<MenuTreeInfo>> GetMenuResourcesAsync(string resourceUrl)
+    {
+        try
+        {
+            var res = await GetRequest(resourceUrl)
+                .GetAsync()
+                .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
+            return res.Data ?? new List<MenuTreeInfo>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "读取资源错误，资源地址:{Url}", resourceUrl);
+            throw FriendlyException.Of("读取资源错误");
+        }
+    }
+
+    /// <summary>
     /// 读取菜单资源
     /// </summary>
     /// <param name="resources"></param>

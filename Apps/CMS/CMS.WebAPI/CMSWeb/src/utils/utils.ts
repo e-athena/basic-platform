@@ -1,5 +1,15 @@
 import { message, Modal } from 'antd';
 import { SortOrder } from 'antd/es/table/interface';
+import React from 'react';
+
+/**
+ * 下载文件
+ * @param {*} file 文件信息
+ */
+export const downloadFile = (file: DownloadFileInfo) => {
+  const params = `?FileName=${file.fileName}&FileType=${file.fileType}&FileToken=${file.fileToken}`;
+  window.open(`${API_URL}/api/File/DownloadTempFile${params}`);
+};
 
 /**
  * 是否有权限
@@ -29,6 +39,30 @@ export const hasPermission = (keys: string[], resource: API.ResourceInfo | null)
   return keys.some((p) => permissions?.includes(p));
 };
 
+/** 读取资源信息 */
+export const getMenuResource = (
+  items: API.ResourceInfo[],
+  path: string,
+): API.ResourceInfo | null => {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item.path === path) {
+      return item;
+    }
+    if (item.children) {
+      const child = getMenuResource(item.children, path);
+      if (child) {
+        return child;
+      }
+    }
+  }
+  return null;
+};
+
+// 根据pathname与菜单中的path进行匹配，判断是否有访问权限，
+const hasPath = (items: API.ResourceInfo[], path: string) => {
+  return getMenuResource(items, path) !== null;
+};
 /**
  * 是否有菜单权限
  * @param pathname 路由
@@ -42,16 +76,22 @@ export const hasMenuPermission = (
   if (modules === undefined || modules === null || modules?.length === 0) {
     return false;
   }
+  let hasPermission = false;
   // 从子级中读取对应的菜单信息
   for (let i = 0; i < modules.length; i++) {
     const module = modules[i];
-    const item = module.children?.find((p) => p.path === pathname);
+    if (!module.children) {
+      continue;
+    }
+    const item = hasPath(module.children, pathname);
     if (item) {
-      return true;
+      hasPermission = true;
+      break;
     }
   }
-  return false;
+  return hasPermission;
 };
+
 /**
  * 查询详情
  * @param {*} func
@@ -75,11 +115,53 @@ export async function queryDetail<T>(
     return undefined;
   } catch (error) {
     hide();
-    Modal.error({
-      title: '查询失败',
-      content: '请重试或联系管理员！',
-    });
     return undefined;
+  }
+}
+/**
+ * 提交处理
+ * @param {*} func
+ * @param {*} fields
+ */
+export async function batchSubmitHandle<T>(
+  func: (values: T) => Promise<ApiResponse<boolean | string>>,
+  fields: T[],
+  tips?: string,
+): Promise<boolean> {
+  const aTips = tips || '处理';
+  const hide = message.loading(`${aTips}中`, 0);
+  try {
+    const tasks = fields.map((field) => func(field));
+    const res = await Promise.all(tasks);
+    hide();
+    if (res.every((p) => p.success)) {
+      message.success(`${aTips}成功`);
+      return true;
+    }
+    Modal.error({
+      title: `${aTips}失败`,
+      content: React.createElement(
+        'div',
+        null,
+        res
+          .filter((p) => !p.success)
+          .map((p) =>
+            React.createElement(
+              'div',
+              {
+                style: {
+                  marginBottom: 5,
+                },
+              },
+              p.message,
+            ),
+          ),
+      ),
+    });
+    return false;
+  } catch (error) {
+    hide();
+    return false;
   }
 }
 /**
@@ -108,10 +190,36 @@ export async function submitHandle<T>(
     return false;
   } catch (error) {
     hide();
+    return false;
+  }
+}
+/**
+ * 导出Excel文件处理
+ * @param {*} func
+ * @param {*} fields
+ */
+export async function exportExcelHandle<T>(
+  func: (values: T) => Promise<ApiResponse<DownloadFileInfo>>,
+  fields: T,
+  tips?: string,
+): Promise<boolean> {
+  const aTips = tips || '导出';
+  const hide = message.loading(`${aTips}中`, 0);
+  try {
+    const res = await func(fields);
+    hide();
+    if (res.success && res.data) {
+      message.success(`${aTips}成功`);
+      downloadFile(res.data);
+      return true;
+    }
     Modal.error({
       title: `${aTips}失败`,
-      content: '请重试或联系管理员！',
+      content: res.message,
     });
+    return false;
+  } catch (error) {
+    hide();
     return false;
   }
 }
@@ -198,4 +306,10 @@ export const generateTextImage = (text: string, width: number, height: number) =
   ctx.fillText(firstName, size[0] / 2, size[1] / 2);
 
   return cvs.toDataURL('image/jpeg', 1);
+};
+
+/** 是否嵌入乾坤 */
+export const isQiankun = () => {
+  // @ts-ignore
+  return window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ !== undefined;
 };

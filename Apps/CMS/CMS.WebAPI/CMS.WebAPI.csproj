@@ -55,7 +55,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CMSWeb\" />
+        <EmbeddedResource Include="wwwroot/**/*" />
     </ItemGroup>
-
 </Project>

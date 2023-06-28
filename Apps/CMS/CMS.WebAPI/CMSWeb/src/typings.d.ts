@@ -138,3 +138,19 @@ declare interface StatusChangeRequest {
 declare interface IdRequest {
   id: string;
 }
+/** 状态变更请求 */
+declare interface StatusChangeRequest {
+  id: string;
+}
+
+/** ID请求 */
+declare interface IdRequest {
+  id: string;
+}
+
+/** 下载文件 */
+declare interface DownloadFileInfo {
+  fileName: string;
+  fileType: string;
+  fileToken: string;
+}

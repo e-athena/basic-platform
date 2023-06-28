@@ -8,8 +8,6 @@ namespace App.Infrastructure.Services.Impls;
 [Component]
 public class DefaultRoleService : DefaultServiceBase, IRoleService
 {
-    private const string ApiUrl = "http://localhost:5078";
-
     public DefaultRoleService(ISecurityContextAccessor accessor) : base(accessor)
     {
     }
@@ -21,7 +19,7 @@ public class DefaultRoleService : DefaultServiceBase, IRoleService
     /// <returns></returns>
     public async Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId = null)
     {
-        var url = $"{ApiUrl}/api/SubApplication/GetRoleSelectList";
+        var url = "/api/SubApplication/GetRoleSelectList";
         if (!string.IsNullOrEmpty(organizationId))
         {
             url += $"?organizationId={organizationId}";

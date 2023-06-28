@@ -3,6 +3,7 @@ using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
+using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers.System;
 
@@ -206,108 +207,6 @@ public class UserController : CustomControllerBase
         return _queryService.GetSelectListAsync(organizationId);
     }
 
-    #region 先注释，因为可能重复了。
-
-    // /// <summary>
-    // /// 读取应用资源
-    // /// </summary>
-    // /// <returns></returns>
-    // [HttpGet]
-    // [ApiPermission(IsVisible = false)]
-    // [AllowAnonymous]
-    // public async Task<IList<ApplicationResourceInfo>> GetApplicationResourcesAsync(
-    //     [FromServices] IApiPermissionService service,
-    //     [FromServices] ISecurityContextAccessor accessor,
-    //     [FromServices] IConfiguration configuration,
-    //     [FromServices] IApplicationQueryService applicationQueryService
-    // )
-    // {
-    //     var result = new List<ApplicationResourceInfo>();
-    //
-    //     #region 系统资源
-    //
-    //     var assemblies = new List<Assembly>
-    //     {
-    //         Assembly.GetExecutingAssembly()
-    //     };
-    //     var resourceAssemblies = configuration.GetSection("ResourceAssemblies").Get<List<string>>();
-    //     if (resourceAssemblies != null)
-    //     {
-    //         assemblies.AddRange(resourceAssemblies.Select(Assembly.Load));
-    //     }
-    //
-    //     var list = new List<MenuTreeInfo>();
-    //     if (accessor.IsRoot)
-    //     {
-    //         foreach (var assembly in assemblies)
-    //         {
-    //             list.AddRange(service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId));
-    //         }
-    //
-    //         result.Add(new ApplicationResourceInfo
-    //         {
-    //             ApplicationId = GlobalConstant.DefaultAppId,
-    //             ApplicationName = "系统应用",
-    //             Resources = list
-    //         });
-    //     }
-    //     else
-    //     {
-    //         var resources = await _queryService.GetUserResourceAsync(null, null);
-    //         var keys = resources
-    //             .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId ||
-    //                         string.IsNullOrEmpty(p.ApplicationId))
-    //             .Select(p => p.Key)
-    //             .ToList();
-    //
-    //         foreach (var assembly in assemblies)
-    //         {
-    //             list.AddRange(
-    //                 service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId));
-    //         }
-    //
-    //         result.Add(new ApplicationResourceInfo
-    //         {
-    //             ApplicationId = GlobalConstant.DefaultAppId,
-    //             ApplicationName = "系统应用",
-    //             Resources = list
-    //         });
-    //     }
-    //
-    //     #endregion
-    //
-    //     // 读取应用信息
-    //     var apps = await applicationQueryService.GetListAsync();
-    //
-    //     foreach (var app in apps.Where(p => !string.IsNullOrEmpty(p.MenuResourceRoute)))
-    //     {
-    //         var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
-    //         try
-    //         {
-    //             var res = await resourceUrl.GetAsync()
-    //                 .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
-    //
-    //             if (res.Data != null && res.Success && res.Data.Count > 0)
-    //             {
-    //                 result.Add(new ApplicationResourceInfo
-    //                 {
-    //                     ApplicationId = app.ClientId,
-    //                     ApplicationName = app.Name,
-    //                     Resources = res.Data
-    //                 });
-    //             }
-    //         }
-    //         catch (Exception e)
-    //         {
-    //             _logger.LogWarning(e, "加载应用资源失败，应用ID:{ClientId},资源地址:{Url}", app.ClientId, resourceUrl);
-    //         }
-    //     }
-    //
-    //     return result;
-    // }
-
-    #endregion
-
     /// <summary>
     /// 读取资源
     /// </summary>
@@ -317,7 +216,8 @@ public class UserController : CustomControllerBase
     public async Task<IList<MenuTreeInfo>> GetResourcesAsync(
         [FromServices] IApiPermissionService service,
         [FromServices] ISecurityContextAccessor accessor,
-        [FromServices] IApplicationQueryService applicationQueryService
+        [FromServices] IApplicationQueryService applicationQueryService,
+        [FromServices] ISubApplicationService subApplicationService
     )
     {
         IList<MenuTreeInfo> result = new List<MenuTreeInfo>();
@@ -367,12 +267,10 @@ public class UserController : CustomControllerBase
             var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
             try
             {
-                var res = await resourceUrl.GetAsync()
-                    .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
-
-                if (res.Data != null && res.Success && res.Data.Count > 0)
+                var data = await subApplicationService.GetMenuResourcesAsync(resourceUrl);
+                if (data.Count > 0)
                 {
-                    foreach (var item in res.Data)
+                    foreach (var item in data)
                     {
                         item.Path = "/app/" + app.ClientId + item.Path;
                         foreach (var child in item.Children ?? new List<MenuTreeInfo>())
@@ -391,7 +289,7 @@ public class UserController : CustomControllerBase
                         Name = app.Name,
                         Path = "/app/" + app.ClientId,
                         Sort = 0,
-                        Children = res.Data
+                        Children = data
                     });
                 }
             }

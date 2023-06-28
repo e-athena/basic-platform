@@ -8,8 +8,6 @@ namespace App.Infrastructure.Services.Impls;
 [Component]
 public class DefaultUserService : DefaultServiceBase, IUserService
 {
-    private const string ApiUrl = "http://localhost:5078";
-
     public DefaultUserService(ISecurityContextAccessor accessor) : base(accessor)
     {
     }
@@ -21,7 +19,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <returns></returns>
     public async Task<List<ExternalPageModel>> GetExternalPagesAsync(string userId)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetExternalPages";
+        const string url = "/api/SubApplication/GetExternalPages";
         var result = await GetRequest(url)
             .SetQueryParams(new
             {
@@ -41,7 +39,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     public async Task<List<UserCustomColumnModel>> GetUserCustomColumnsAsync(string? appId, string moduleName,
         string? userId)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetUserCustomColumns";
+        const string url = "/api/SubApplication/GetUserCustomColumns";
         var result = await GetRequest(url)
             .SetQueryParams(new
             {
@@ -66,7 +64,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <returns></returns>
     public async Task<List<ResourceModel>> GetUserResourceAsync(string userId, string appId)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetUserResource";
+        const string url = "/api/SubApplication/GetUserResource";
         var result = await GetRequest(url)
             .SetQueryParams(new
             {
@@ -90,7 +88,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <returns></returns>
     public async Task<List<string>> GetUserResourceCodesAsync(string userId, string appId)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetUserResourceCodes";
+        const string url = "/api/SubApplication/GetUserResourceCodes";
         var result = await GetRequest(url)
             .SetQueryParams(new
             {
@@ -113,7 +111,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <returns></returns>
     public async Task<GetUserInfoResponse?> GetUserInfoAsync(string userId)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetUserInfo";
+        const string url = "/api/SubApplication/GetUserInfo";
         var result = await GetRequest(url)
             .SetQueryParams(new
             {
@@ -131,7 +129,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <returns></returns>
     public async Task<string?> GetIdByUserNameAsync(string userName)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetUserIdByUserName";
+        const string url = "/api/SubApplication/GetUserIdByUserName";
         var result = await GetRequest(url)
             .SetQueryParams(new
             {
@@ -150,7 +148,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     public async Task<long> UpdateUserCustomColumnsAsync(UpdateUserCustomColumnsRequest request,
         CancellationToken cancellationToken)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/UpdateUserCustomColumns";
+        const string url = "/api/SubApplication/UpdateUserCustomColumns";
         var result = await GetRequest(url)
             .PostJsonAsync(request, cancellationToken)
             .ReceiveJson<ApiResult<long>>();
@@ -166,7 +164,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <exception cref="NotImplementedException"></exception>
     public async Task<string> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken = default)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/CreateUser";
+        const string url = "/api/SubApplication/CreateUser";
         var result = await GetRequest(url)
             .PostJsonAsync(request, cancellationToken)
             .ReceiveJson<ApiResult<string>>();
@@ -188,7 +186,7 @@ public class DefaultUserService : DefaultServiceBase, IUserService
     /// <exception cref="NotImplementedException"></exception>
     public async Task<string> UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/UpdateUser";
+        const string url = "/api/SubApplication/UpdateUser";
         var result = await GetRequest(url)
             .PostJsonAsync(request, cancellationToken)
             .ReceiveJson<ApiResult<string>>();

@@ -10,7 +10,6 @@ public class TenantService : DefaultServiceBase, ITenantService
 {
     private readonly ILogger<TenantService> _logger;
     private readonly ICacheManager _cacheManager;
-    private const string ApiUrl = "http://localhost:5078";
 
     public TenantService(
         ISecurityContextAccessor accessor,
@@ -38,7 +37,7 @@ public class TenantService : DefaultServiceBase, ITenantService
 
         return await _cacheManager.GetOrCreateAsync(cacheKey, async () =>
         {
-            const string url = $"{ApiUrl}/api/SubApplication/GetTenantConnectionString";
+            const string url = "/api/SubApplication/GetTenantConnectionString";
             var result = await GetRequest(url)
                 .SetQueryParam("tenantCode", tenantCode)
                 .SetQueryParam("appId", appId)

@@ -17,6 +17,7 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Authorize]
     public async Task<dynamic> CurrentUserAsync(
         [FromServices] INoticeHubService noticeHubService,
         [FromServices] IApiPermissionCacheService service,

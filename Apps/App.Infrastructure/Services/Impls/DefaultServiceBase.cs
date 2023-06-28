@@ -6,10 +6,17 @@ namespace App.Infrastructure.Services.Impls;
 public class DefaultServiceBase
 {
     private readonly ISecurityContextAccessor _accessor;
+    private readonly string _apiUrl = "http://localhost:5078";
 
     public DefaultServiceBase(ISecurityContextAccessor accessor)
     {
         _accessor = accessor;
+        var url = (AthenaProvider.Provider?.GetService(typeof(IConfiguration)) as IConfiguration)?
+            .GetSection("MainApplicationApiUrl").Value;
+        if (url != null)
+        {
+            _apiUrl = url;
+        }
     }
 
     /// <summary>
@@ -19,7 +26,7 @@ public class DefaultServiceBase
     /// <returns></returns>
     protected IFlurlRequest GetRequest(string url)
     {
-        return url
+        return $"{_apiUrl}{url}"
             .WithHeader("AppId", _accessor.AppId)
             .WithHeader("TenantId", _accessor.TenantId)
             .WithOAuthBearerToken(_accessor.JwtTokenNotBearer)
