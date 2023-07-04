@@ -33,7 +33,7 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
 services.AddCustomBasicAuth(configuration);
-services.AddCustomJwtAuthWithSignalR(configuration);
+services.AddCustomJwtAuth(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
 services.AddCustomStorageLogger(configuration);
@@ -61,7 +61,6 @@ app.UseAuthorization();
 app.UseCustomAuditLog();
 app.UseCustomFreeSqlMultiTenancy();
 app.MapControllers();
-app.MapCustomSignalR();
 app.MapSpaFront();
 app.MapHealth();
 

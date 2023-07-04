@@ -10,7 +10,10 @@ const Center = () => {
   const [current, setCurrent] = useState('basic');
 
   return (
-    <ProCard split="vertical">
+    <ProCard split="vertical" style={{
+      width: 1024,
+      margin: '0 auto'
+    }}>
       <ProCard
         colSpan={'250px'}
         bodyStyle={{

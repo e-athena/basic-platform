@@ -9,6 +9,11 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 public class UserNotificationHandler : AppServiceBase<User>,
     IDomainEventHandler<UserDataPermissionAssignedEvent>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public UserNotificationHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
     {
@@ -21,6 +26,7 @@ public class UserNotificationHandler : AppServiceBase<User>,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(UserDataPermissionAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据

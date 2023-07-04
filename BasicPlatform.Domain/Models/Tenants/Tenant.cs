@@ -167,7 +167,7 @@ public class Tenant : EntityCore, ICreator, IUpdater
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         LastUpdatedUserId = lastUpdatedUserId;
-        
+
         ApplyEvent(new TenantStatusChangedEvent(Status));
     }
 
@@ -190,5 +190,7 @@ public class Tenant : EntityCore, ICreator, IUpdater
     {
         IsInitDatabase = true;
         LastUpdatedUserId = lastUpdatedUserId;
+
+        ApplyEvent(new TenantDatabaseInitializedEvent(lastUpdatedUserId));
     }
 }

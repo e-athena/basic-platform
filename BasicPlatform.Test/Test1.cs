@@ -1,11 +1,25 @@
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Athena.Infrastructure.Caching;
 using Athena.Infrastructure.DataPermission;
+using Athena.Infrastructure.EventTracking.Helpers;
 
 namespace BasicPlatform.Test;
 
 public class Test1 : TestBase
 {
+    [Test]
+    public void Test0()
+    {
+        var res = EventTrackingHelper.GetEventTrackingTreeInfos(new List<Assembly>
+        {
+            Assembly.Load("BasicPlatform.AppService.FreeSql"),
+            Assembly.Load("BasicPlatform.IntegratedEventHandler"),
+            Assembly.Load("BasicPlatform.ProcessManager")
+        });
+        Assert.IsTrue(true);
+    }
+
     [Test]
     public void Test2()
     {
@@ -231,7 +245,7 @@ public class Test1 : TestBase
         });
         Assert.IsTrue(true);
     }
-    
+
     [Test]
     public void TestWeek()
     {
@@ -267,7 +281,7 @@ public class Test1 : TestBase
             Console.WriteLine(str.Length.ToString());
             Thread.Sleep(10);
         }
-        
+
         Assert.IsTrue(true);
     }
 }

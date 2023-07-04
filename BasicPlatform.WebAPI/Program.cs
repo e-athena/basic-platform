@@ -28,7 +28,7 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
 }, new[]
 {
     Assembly.Load("BasicPlatform.IntegratedEventHandler"),
-    Assembly.Load("BasicPlatform.ProcessManager"), 
+    Assembly.Load("BasicPlatform.ProcessManager"),
 });
 
 services.AddCustomCsRedisCache(configuration);
@@ -39,6 +39,7 @@ services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
 services.AddCustomStorageLogger(configuration);
+services.AddCustomEventTracking(configuration);
 services.AddCustomController().AddNewtonsoftJson();
 
 host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())

@@ -19,6 +19,12 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 {
     private readonly IRoleQueryService _roleQueryService;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="accessor"></param>
+    /// <param name="roleQueryService"></param>
     public UserQueryService(
         FreeSqlMultiTenancy freeSql,
         ISecurityContextAccessor accessor,

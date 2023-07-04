@@ -12,11 +12,22 @@ namespace BasicPlatform.AppService.FreeSql.Tenants;
 [Component]
 public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryService
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="multiTenancy"></param>
+    /// <param name="accessor"></param>
     public TenantQueryService(FreeSqlMultiTenancy multiTenancy, ISecurityContextAccessor accessor) : base(multiTenancy,
         accessor)
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public Task<Paging<GetTenantPagingResponse>> GetPagingAsync(GetTenantPagingRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -25,6 +36,13 @@ public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryServi
             .ToPagingAsync(request, p => new GetTenantPagingResponse(), cancellationToken);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="FriendlyException"></exception>
     public async Task<GetTenantDetailResponse> GetAsync(string id, CancellationToken cancellationToken = default)
     {
         var entity = await QueryableNoTracking.Where(p => p.Id == id)
@@ -77,6 +95,13 @@ public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryServi
         return entity;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="code"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="FriendlyException"></exception>
     public async Task<GetTenantDetailResponse> GetByCodeAsync(string code,
         CancellationToken cancellationToken = default)
     {

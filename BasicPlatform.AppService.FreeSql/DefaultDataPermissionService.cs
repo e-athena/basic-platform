@@ -12,6 +12,10 @@ public class DefaultDataPermissionService : IDataPermissionService
     private readonly IFreeSql _freeSql;
     private readonly ICacheManager? _cacheManager;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
     public DefaultDataPermissionService(IFreeSql freeSql)
     {
         _freeSql = freeSql;
@@ -92,6 +96,12 @@ public class DefaultDataPermissionService : IDataPermissionService
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<QueryFilterGroup>();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
     public List<string> GetUserOrganizationIds(string userId, string? appId)
     {
         return GetUserOrganizationIdsAsync(userId, appId).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -138,6 +148,12 @@ public class DefaultDataPermissionService : IDataPermissionService
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
     public List<string> GetUserOrganizationIdsTree(string userId, string? appId)
     {
         return GetUserOrganizationIdsTreeAsync(userId, appId).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -187,11 +203,23 @@ public class DefaultDataPermissionService : IDataPermissionService
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
     public List<DataPermission> GetUserDataScopes(string userId, string? appId)
     {
         return GetUserDataScopesAsync(userId, appId).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
     public async Task<List<DataPermission>> GetUserDataScopesAsync(string userId, string? appId)
     {
         if (_cacheManager == null)

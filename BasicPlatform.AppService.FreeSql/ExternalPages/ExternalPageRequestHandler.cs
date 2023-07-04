@@ -10,6 +10,11 @@ public class ExternalPageRequestHandler : AppServiceBase<ExternalPage>,
     IRequestHandler<UpdateExternalPageRequest, string>,
     IRequestHandler<DeleteExternalPageRequest, string>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public ExternalPageRequestHandler(
         UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor) : base(unitOfWorkManager, accessor)

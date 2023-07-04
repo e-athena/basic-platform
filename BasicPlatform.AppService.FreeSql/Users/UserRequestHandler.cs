@@ -20,6 +20,11 @@ public class UserRequestHandler : AppServiceBase<User>,
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="contextAccessor"></param>
     public UserRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
     {

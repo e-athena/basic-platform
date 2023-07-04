@@ -10,11 +10,22 @@ public class TenantService : ITenantService
 {
     private readonly IFreeSql _freeSql;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
     public TenantService(IFreeSql freeSql)
     {
         _freeSql = freeSql;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tenantCode"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    /// <exception cref="FriendlyException"></exception>
     public async Task<TenantInfo?> GetAsync(string tenantCode, string? appId)
     {
         var result = await _freeSql.Queryable<Tenant>()

@@ -11,6 +11,11 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
     IDomainEventHandler<RoleUserAssignedEvent>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public RoleNotificationHandler(UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
@@ -24,6 +29,7 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleResourceAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据
@@ -46,6 +52,7 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleDataPermissionAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据
@@ -68,6 +75,7 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleUserAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据

@@ -10,6 +10,11 @@ namespace BasicPlatform.AppService.FreeSql.Organizations;
 [Component(LifeStyle.Transient)]
 public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrganizationQueryService
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="accessor"></param>
     public OrganizationQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor) : base(freeSql, accessor)
     {
     }

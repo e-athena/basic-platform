@@ -20,7 +20,12 @@ declare module 'bizcharts-plugin-slider';
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 // 以下变量声明对应config.[env].ts文件内define的变量
 declare const API_URL: string;
+/** 应用ID */
+declare const APPID: string;
+/** 应用token key */
 declare const APP_TOKEN_KEY: string;
+/** 主应用token key */
+declare const MAIN_APP_TOKEN_KEY: string;
 declare const RTC_URL: string;
 declare const APP_NAV_THEME_KEY: string;
 declare const APP_SESSION_CODE_KEY: string;
@@ -30,8 +35,6 @@ declare const SSO_URL: string;
 declare const CDN_ADDRESS: string;
 /** 登录路径 */
 declare const LOGIN_PATH: string;
-/** 应用ID */
-declare const APPID: string;
 
 /**
  * 分页结构

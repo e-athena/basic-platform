@@ -244,7 +244,7 @@ public class User : EntityCore, ICreator, IUpdater
         UpdatedOn = DateTime.Now;
 
         // 添加领域事件
-        ApplyEvent(new UserUpdatedEvent(Id, userName, avatar, realName, gender,
+        ApplyEvent(new UserUpdatedEvent(userName, avatar, realName, gender,
             nickName, phoneNumber, email, organizationId, positionId)
         );
     }

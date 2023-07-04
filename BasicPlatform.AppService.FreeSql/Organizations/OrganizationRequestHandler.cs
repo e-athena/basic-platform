@@ -10,6 +10,11 @@ public class OrganizationRequestHandler : AppServiceBase<Organization>,
     IRequestHandler<UpdateOrganizationRequest, string>,
     IRequestHandler<OrganizationStatusChangeRequest, string>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public OrganizationRequestHandler(
         UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor) : base(unitOfWorkManager, accessor)

@@ -14,6 +14,12 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
 {
     private readonly ICacheManager _cacheManager;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="accessor"></param>
+    /// <param name="cacheManager"></param>
     public ApplicationQueryService(FreeSqlMultiTenancy freeSql, ISecurityContextAccessor accessor,
         ICacheManager cacheManager) :
         base(freeSql, accessor)

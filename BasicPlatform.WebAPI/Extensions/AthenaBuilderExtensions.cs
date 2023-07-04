@@ -31,6 +31,7 @@ public static class AthenaBuilderExtensions
             FileProvider = new EmbeddedFileProvider(typeof(AthenaBuilderExtensions).Assembly, EmbeddedFileNamespace)
         });
         app.UseCustomAuditLog();
+        
         app.UseRouter(configure: endpointRouteBuilder =>
         {
             endpointRouteBuilder.MapGet(pathMatch, httpContext =>

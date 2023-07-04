@@ -11,6 +11,10 @@ public class CommonService : ICommonService
 {
     private readonly IUserQueryService _userQueryService;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userQueryService"></param>
     public CommonService(IUserQueryService userQueryService)
     {
         _userQueryService = userQueryService;

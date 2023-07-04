@@ -1,6 +1,7 @@
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Roles.Events;
 using BasicPlatform.Domain.Models.Users.Events;
+using BasicPlatform.Infrastructure;
 
 namespace BasicPlatform.AppService.FreeSql;
 
@@ -15,6 +16,11 @@ public class CacheNotificationHandler :
     private readonly ICacheManager _cacheManager;
     private readonly IFreeSql _freeSql;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="cacheManager"></param>
+    /// <param name="freeSql"></param>
     public CacheNotificationHandler(ICacheManager cacheManager, IFreeSql freeSql)
     {
         _cacheManager = cacheManager;
@@ -27,6 +33,7 @@ public class CacheNotificationHandler :
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(UserUpdatedEvent notification, CancellationToken cancellationToken)
     {
         // 匹配用户缓存
@@ -42,6 +49,7 @@ public class CacheNotificationHandler :
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleDataPermissionAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 读取角色用户
@@ -74,6 +82,7 @@ public class CacheNotificationHandler :
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(UserDataPermissionAssignedEvent notification, CancellationToken cancellationToken)
     {
         var userId = notification.GetId();

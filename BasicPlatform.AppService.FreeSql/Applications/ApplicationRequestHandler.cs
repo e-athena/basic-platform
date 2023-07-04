@@ -10,6 +10,11 @@ public class ApplicationRequestHandler : AppServiceBase<Application>,
     IRequestHandler<UpdateApplicationRequest, string>,
     IRequestHandler<ApplicationStatusChangeRequest, string>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public ApplicationRequestHandler(
         UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor) : base(unitOfWorkManager, accessor)

@@ -17,6 +17,12 @@ public class RoleRequestHandler : AppServiceBase<Role>,
 {
     private readonly IUserQueryService _userQueryService;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="contextAccessor"></param>
+    /// <param name="userQueryService"></param>
     public RoleRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor,
         IUserQueryService userQueryService)
         : base(unitOfWorkManager, contextAccessor)

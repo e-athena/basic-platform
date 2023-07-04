@@ -9,6 +9,11 @@ public class DataPermissionQueryServiceBase<T> : AppQueryServiceBase<T> where T 
     private readonly IFreeSql _freeSql;
     private readonly IDataPermissionService? _dataPermissionService;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
+    /// <param name="accessor"></param>
     public DataPermissionQueryServiceBase(
         IFreeSql freeSql,
         ISecurityContextAccessor accessor
@@ -18,7 +23,12 @@ public class DataPermissionQueryServiceBase<T> : AppQueryServiceBase<T> where T 
         _dataPermissionService =
             AthenaProvider.Provider?.GetService(typeof(IDataPermissionService)) as IDataPermissionService;
     }
-
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="multiTenancy"></param>
+    /// <param name="accessor"></param>
     public DataPermissionQueryServiceBase(
         FreeSqlMultiTenancy multiTenancy,
         ISecurityContextAccessor accessor

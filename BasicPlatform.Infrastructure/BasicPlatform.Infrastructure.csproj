@@ -7,11 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Athena.Infrastructure.EventTracking" Version="6.0.0-preview.20230703.3" />
         <PackageReference Include="Athena.InstantMessaging" Version="6.0.0" />
         <PackageReference Include="NewLife.IP" Version="2.0.2023.401" />
-        <PackageReference Include="Athena.Infrastructure" Version="6.2.12" />
+        <PackageReference Include="Athena.Infrastructure" Version="6.2.14" />
         <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
         <PackageReference Include="Flurl.Http" Version="3.2.4" />
     </ItemGroup>
+
+    <!--    <ItemGroup>-->
+    <!--      <ProjectReference Include="..\Athena.Infrastructure.EventTracking\Athena.Infrastructure.EventTracking.csproj" />-->
+    <!--    </ItemGroup>-->
 
 </Project>

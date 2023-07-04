@@ -35,6 +35,14 @@ run-build-help:
 web-api:
 	dotnet run --project ./BasicPlatform.WebAPI
 
+.PHONY:web-app
+web-app:
+	cd ./BasicPlatform.WebAPI/ConsoleApp && yarn start
+
+.PHONY:web-dapr-api
+web-dapr-api:
+	dapr run --app-id basic-platform-app --app-port 5078
+
 .PHONY:cms-api
 cms-api:
 	dotnet run --project ./Apps/CMS/CMS.WebAPI

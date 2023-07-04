@@ -10,6 +10,11 @@ public class PositionRequestHandler : DataPermissionServiceBase<Position>,
     IRequestHandler<UpdatePositionRequest, string>,
     IRequestHandler<PositionStatusChangeRequest, string>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="contextAccessor"></param>
     public PositionRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
     {

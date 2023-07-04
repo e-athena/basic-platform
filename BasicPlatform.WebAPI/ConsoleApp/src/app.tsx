@@ -281,7 +281,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) {
+        return <PageLoading />;
+      }
       return (
         <>
           {children}
@@ -299,6 +301,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </>
       );
     },
+    // title:'111',
     ...initialState?.settings,
     // 根据操作系统设置自动切换主题
     navTheme:

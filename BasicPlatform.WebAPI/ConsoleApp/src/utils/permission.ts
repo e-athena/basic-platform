@@ -126,6 +126,28 @@ export default {
         /** 状态变更 */
         statusChangeAsync: 'ApplicationController_StatusChangeAsync',
     },
+    /** 事件追踪配置管理 */
+    eventTrackingConfig: {
+        /** 读取列表 */
+        getPagingAsync: 'EventTrackingConfigController_GetPagingAsync',
+        /** 根据ID读取 */
+        getAsync: 'EventTrackingConfigController_GetAsync',
+        /** 根据追踪特性列表 */
+        getSelectList: 'event-tracking-select-list',
+        /** 保存 */
+        saveAsync: 'EventTrackingConfigController_SaveAsync',
+        /** 删除 */
+        deleteAsync: 'EventTrackingConfigController_DeleteAsync',
+    },
+    /** 事件追踪管理 */
+    eventTracking: {
+        /** 读取列表 */
+        getPagingAsync: 'EventTrackingController_GetPagingAsync',
+        /** 根据ID读取 */
+        getAsync: 'EventTrackingController_GetAsync',
+        /** 根据ID读取 */
+        getDecompositionTreeGraphAsync: 'EventTrackingController_GetDecompositionTreeGraphAsync',
+    },
     /** 资源管理 */
     resource: {
         /** 同步资源 */

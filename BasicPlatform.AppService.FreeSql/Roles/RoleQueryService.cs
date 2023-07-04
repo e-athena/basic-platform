@@ -13,6 +13,10 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 [Component]
 public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="freeSql"></param>
     public RoleQueryService(IFreeSql freeSql) : base(freeSql)
     {
     }

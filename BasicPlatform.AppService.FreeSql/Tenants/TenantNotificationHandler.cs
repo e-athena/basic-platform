@@ -11,6 +11,11 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     IDomainEventHandler<TenantCreatedEvent>,
     IDomainEventHandler<TenantUpdatedEvent>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public TenantNotificationHandler(UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
@@ -24,6 +29,7 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(TenantResourceAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据
@@ -46,6 +52,7 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(TenantCreatedEvent notification, CancellationToken cancellationToken)
     {
         if (notification.Applications.Count == 0)
@@ -62,6 +69,7 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
+    [EventTracking]
     public async Task Handle(TenantUpdatedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据

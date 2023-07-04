@@ -10,8 +10,14 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
     IRequestHandler<CreateTenantRequest, string>,
     IRequestHandler<UpdateTenantRequest, string>,
     IRequestHandler<ChangeTenantStatusRequest, string>,
-    IRequestHandler<AssignTenantResourcesRequest, string>
+    IRequestHandler<AssignTenantResourcesRequest, string>,
+    IRequestHandler<InitTenantRequest, string>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="contextAccessor"></param>
     public TenantRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
     {
@@ -134,5 +140,24 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
             UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return request.Id;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="FriendlyException"></exception>
+    public async Task<string> Handle(InitTenantRequest request, CancellationToken cancellationToken)
+    {
+        var entity = await Queryable.Where(p => p.Code == request.Code).FirstAsync(cancellationToken);
+        if (entity == null)
+        {
+            throw FriendlyException.Of("租户不存在");
+        }
+        entity.InitDatabase(request.UserId ?? UserId);
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 }

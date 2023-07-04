@@ -55,7 +55,7 @@ export default [
         path: '/dashboard/workbench',
         name: '工作台',
         icon: 'smile',
-        component: './Welcome',
+        component: './Dashboard/Workbench',
       },
     ],
   },
@@ -96,6 +96,19 @@ export default [
         name: '应用管理',
         component: './Developer/Application',
         access: 'routeFilter',
+      },
+      {
+        path: '/developer/event-tracking',
+        name: '事件追踪',
+        component: './Developer/EventTracking',
+        access: 'routeFilter',
+        routes: [
+          {
+            path: '/developer/event-tracking/config',
+            name: '事件追踪配置',
+            component: './Developer/EventTracking/Config',
+          },
+        ],
       },
     ],
   },

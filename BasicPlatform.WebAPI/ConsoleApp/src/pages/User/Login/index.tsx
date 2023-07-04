@@ -108,7 +108,6 @@ const Login: React.FC = () => {
   const query: QueryProps = parse(history.location.search.split('?')[1], '&');
   const { clientId, redirectUrl, t_code } = query;
   const [tenantCode, setTenantCode] = useLocalStorageState<string | undefined>(APP_TENANT_CODE_KEY);
-  console.log(tenantCode);
   useEffect(() => {
     if (t_code && t_code !== tenantCode) {
       setTenantCode(t_code);
