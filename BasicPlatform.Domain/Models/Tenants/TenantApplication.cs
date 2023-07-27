@@ -49,6 +49,9 @@ public class TenantApplication : ValueObject
     /// </summary>
     public string? CreatedUserId { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public TenantApplication()
     {
     }

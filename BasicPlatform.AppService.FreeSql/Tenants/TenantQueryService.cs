@@ -74,8 +74,9 @@ public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryServi
 
         var tenantApplications = new List<TenantApplicationModel>();
 
-        foreach (var app in applications)
+        foreach (var group in applications.GroupBy(p => p.ClientId))
         {
+            var app = group.First();
             var item = entity
                 .Applications
                 .FirstOrDefault(p => p.ApplicationId == app.Id) ?? new TenantApplicationModel

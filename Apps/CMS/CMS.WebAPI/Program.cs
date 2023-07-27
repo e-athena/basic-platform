@@ -61,7 +61,7 @@ app.UseAuthorization();
 app.UseCustomAuditLog();
 app.UseCustomFreeSqlMultiTenancy();
 app.MapControllers();
-app.MapSpaFront();
+app.MapSpaFront<Program>();
 app.MapHealth();
 
 app.Run();

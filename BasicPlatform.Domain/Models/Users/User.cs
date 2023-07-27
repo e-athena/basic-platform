@@ -137,6 +137,9 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     public bool IsTenantAdmin { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public User()
     {
     }

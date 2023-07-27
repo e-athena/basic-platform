@@ -51,10 +51,16 @@ public class RoleResource : ValueObject
     public IList<string> ResourceCodes =>
         string.IsNullOrEmpty(ResourceCode) ? new List<string>() : ResourceCode.Split(",");
 
+    /// <summary>
+    /// 
+    /// </summary>
     public RoleResource()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public RoleResource(string? applicationId, string roleId, string resourceKey, string resourceCode)
     {
         ApplicationId = applicationId;

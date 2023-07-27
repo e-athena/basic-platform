@@ -1,5 +1,5 @@
 import { ModalForm } from '@ant-design/pro-components';
-import { Button, Empty, Space } from 'antd';
+import { Button, Empty, Space, message } from 'antd';
 import React, { useEffect } from 'react';
 import { FormOutlined, SubnodeOutlined } from '@ant-design/icons';
 import { DecompositionTreeGraph, DecompositionTreeGraphConfig, G6TreeGraphData } from '@ant-design/graphs';
@@ -18,8 +18,6 @@ type CreateOrUpdateFormProps = {
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   const [dataConfigs, setDataConfigs] = React.useState<API.EventTrackingConfigItem[]>([]);
-  // console.log(dataConfigs);
-
   const [currentConfig, setCurrentConfig] = React.useState<API.EventTrackingConfigItem>();
   const [hangleTarget, setHandleTarget] = React.useState<number>(0);
   const [dataSource, setDataSource] = React.useState<G6TreeGraphData>();
@@ -58,7 +56,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       },
       layout: {
         getWidth: () => {
-          return 60;
+          return 200;
         },
         getHeight: () => {
           return 120
@@ -82,6 +80,12 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                   setCurrentConfig(undefined);
                   setCurrentNode(undefined);
                   return;
+                }
+                // id是否为根节点
+                if (dataSource?.id === id) {
+                  // todo 待处理
+                  console.log('根节点');
+                  // return;
                 }
                 const node = findNode(dataSource!.children!, id);
                 setHandleTarget(0);
@@ -115,7 +119,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       },
       behaviors: [
         'drag-canvas',
-        // 'zoom-canvas',
+        'zoom-canvas',
         'drag-node'
       ],
     };
@@ -129,12 +133,22 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           onCancel: () => {
             props.onCancel();
             setDataConfigs([]);
+            setCurrentConfig(undefined);
+            setHandleTarget(0);
             setDataSource(undefined);
           },
           destroyOnClose: true,
           maskClosable: false,
         }}
         onFinish={async () => {
+          if (dataConfigs.length === 0) {
+            message.warning('请添加配置');
+            return;
+          }
+          if (dataConfigs.length === 1) {
+            message.warning('至少需要一个处理节点');
+            return;
+          }
           const succeed = await submitHandle(save, { configs: dataConfigs });
           if (succeed) {
             props.onSuccess();
@@ -165,9 +179,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           setCurrentConfig(undefined);
           setCurrentNode(undefined);
         }}
-        onSuccess={(item, node, target) => {
+        onSuccess={(items, node, target) => {
           // console.log(item, node,target);
           if (target === 0) {
+            const item = items[0];
             // 修改setDataConfigs
             const index = dataConfigs.findIndex(item => item.id === node.id);
             if (index !== -1) {
@@ -196,30 +211,30 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           }
           if (target === 1) {
             // 添加到setDataConfigs
-            setDataConfigs([...dataConfigs, item])
+            setDataConfigs([...dataConfigs, ...items])
             // 添加子节点
             node.children = node.children || [];
-            node.children.push({
-              id: item.id,
-              value: {
-                title: item.eventName,
-                items: [
-                  {
-                    text: "事件类型",
-                    value: item.eventTypeTitle,
-                  },
-                  {
-                    text: "事件处理器",
-                    value: item.processorName,
-                  },
-                  {
-                    text: "事件实体类型",
-                    value: item.eventTypeName,
-                  }
-                ]
-              },
-              children: [],
-            })
+            // node.children.push({
+            //   id: item.id,
+            //   value: {
+            //     title: item.eventName,
+            //     items: [
+            //       {
+            //         text: "事件类型",
+            //         value: item.eventTypeTitle,
+            //       },
+            //       {
+            //         text: "事件处理器",
+            //         value: item.processorName,
+            //       },
+            //       {
+            //         text: "事件实体类型",
+            //         value: item.eventTypeName,
+            //       }
+            //     ]
+            //   },
+            //   children: [],
+            // })
             setDataSource({ ...dataSource! });
           }
           handleNodeModalOpen(false);
@@ -235,9 +250,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         onCancel={() => {
           handleCreateRootNodeModalOpen(false);
         }}
-        onSuccess={(item, node) => {
+        onSuccess={(items, node) => {
           // 添加到setDataConfigs
-          setDataConfigs([item])
+          setDataConfigs(items)
           setDataSource(node);
           handleCreateRootNodeModalOpen(false)
         }}

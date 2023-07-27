@@ -10,6 +10,10 @@ public class RoleUserAssignedEvent : EventBase
     /// </summary>
     public List<string> UserIds { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userIds"></param>
     public RoleUserAssignedEvent(List<string> userIds)
     {
         UserIds = userIds;

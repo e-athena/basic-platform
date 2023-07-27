@@ -78,10 +78,25 @@ public class UserDataPermission : ValueObject
     /// </summary>
     public DateTime? ExpireAt { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public UserDataPermission()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="userId"></param>
+    /// <param name="resourceKey"></param>
+    /// <param name="dataScope"></param>
+    /// <param name="dataScopeCustom"></param>
+    /// <param name="policyResourceKey"></param>
+    /// <param name="policy"></param>
+    /// <param name="enabled"></param>
+    /// <param name="expireAt"></param>
     public UserDataPermission(
         string? applicationId,
         string userId,

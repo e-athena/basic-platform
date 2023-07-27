@@ -12,4 +12,3 @@ global using System.Text.Json;
 global using Athena.Infrastructure.QueryFilters;
 global using System.Text.Json.Serialization;
 global using Athena.Infrastructure.Helpers;
-global using BasicPlatform.Infrastructure;

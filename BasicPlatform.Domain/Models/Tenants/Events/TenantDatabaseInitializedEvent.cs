@@ -11,6 +11,10 @@ public class TenantDatabaseInitializedEvent : EventBase
     public string? LastUpdatedUserId { get; set; }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="lastUpdatedUserId"></param>
     public TenantDatabaseInitializedEvent(string? lastUpdatedUserId)
     {
         LastUpdatedUserId = lastUpdatedUserId;

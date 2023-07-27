@@ -28,6 +28,36 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     }
 
     /// <summary>
+    /// 读取环境列表
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<string>> GetEnvironmentListAsync()
+    {
+        var result = await QueryableNoTracking
+            .GroupBy(p => p.Environment)
+            .ToListAsync(p => p.Key);
+        // 开发环境
+        if (result.All(env => env != "Development"))
+        {
+            result.Add("Development");
+        }
+
+        // 测试环境
+        if (result.All(env => env != "Test"))
+        {
+            result.Add("Test");
+        }
+
+        // 生产环境
+        if (result.All(env => env != "Production"))
+        {
+            result.Add("Production");
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// 读取密钥
     /// </summary>
     /// <param name="clientId">客户端ID</param>
@@ -54,13 +84,14 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
         // 如果是租户环境
         if (IsTenantEnvironment)
         {
-            // 读取租户应用
             return await DefaultQueryNoTracking<TenantApplication>()
+                .Where(p => p.Application.Environment == AspNetCoreEnvironment)
                 .Where(p => p.IsEnabled)
                 .Where(p => p.Application.Status == Status.Enabled)
                 .ToListAsync(p => new ApplicationModel
                 {
                     Id = p.Application.Id,
+                    Environment = p.Application.Environment,
                     Name = p.Application.Name,
                     ClientId = p.Application.ClientId,
                     ClientSecret = p.Application.ClientSecret,
@@ -75,6 +106,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
 
         return await QueryableNoTracking
             .Where(p => p.Status == Status.Enabled)
+            .Where(p => p.Environment == AspNetCoreEnvironment)
             .ToListAsync<ApplicationModel>();
     }
 
@@ -103,6 +135,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     {
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
+            .HasWhere(request.Environment, p => p.Environment == request.Environment)
             .ToPagingAsync(request, p => new GetApplicationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,

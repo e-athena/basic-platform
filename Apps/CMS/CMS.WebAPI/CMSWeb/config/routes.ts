@@ -55,7 +55,7 @@ export default [
         path: '/dashboard/workbench',
         name: '工作台',
         icon: 'smile',
-        component: './Welcome',
+        component: './Dashboard/Workbench',
       },
     ],
   },

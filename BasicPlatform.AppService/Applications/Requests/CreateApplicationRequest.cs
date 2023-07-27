@@ -6,6 +6,11 @@ namespace BasicPlatform.AppService.Applications.Requests;
 public class CreateApplicationRequest : ITxRequest<string>
 {
     /// <summary>
+    /// 运行环境
+    /// </summary>
+    public string Environment { get; set; } = null!;
+
+    /// <summary>
     /// 名称
     /// </summary>
     public string Name { get; set; } = null!;

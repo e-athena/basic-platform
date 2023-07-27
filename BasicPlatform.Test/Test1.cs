@@ -9,6 +9,17 @@ namespace BasicPlatform.Test;
 public class Test1 : TestBase
 {
     [Test]
+    public void Test00()
+    {
+        var res = EventTrackingHelper.GetEventSelectList(new List<Assembly>
+        {
+            Assembly.Load("BasicPlatform.Domain")
+        });
+        Assert.That(res, Is.Not.Empty);
+        Assert.IsTrue(true);
+    }
+
+    [Test]
     public void Test0()
     {
         var res = EventTrackingHelper.GetEventTrackingTreeInfos(new List<Assembly>

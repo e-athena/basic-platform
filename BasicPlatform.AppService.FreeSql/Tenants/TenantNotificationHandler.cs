@@ -23,7 +23,7 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     }
 
     /// <summary>
-    /// 租户资源分配事件处理
+    /// 更新租户资源
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
@@ -46,7 +46,7 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     }
 
     /// <summary>
-    /// 租户创建事件处理
+    /// 添加租户子应用
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
@@ -65,7 +65,7 @@ public class TenantNotificationHandler : AppServiceBase<Tenant>,
     }
 
     /// <summary>
-    /// 租户更新事件处理
+    /// 更新租户子应用
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>

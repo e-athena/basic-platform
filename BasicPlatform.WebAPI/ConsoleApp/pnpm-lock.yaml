@@ -28,6 +28,7 @@ specifiers:
   classnames: ^2.3.2
   cross-env: ^7.0.3
   dayjs: ^1.11.7
+  e-athena-components: ^1.0.1
   eslint: ^8.34.0
   express: ^4.18.2
   gh-pages: ^3.2.3
@@ -67,6 +68,7 @@ dependencies:
   antd: 5.4.4_jb42yyeu5qxbfieyxjks6malva
   classnames: 2.3.2
   dayjs: 1.11.7
+  e-athena-components: 1.0.1
   lodash: 4.17.21
   moment: 2.29.4
   omit.js: 2.0.2
@@ -8286,6 +8288,10 @@ packages:
       '@babel/runtime': 7.21.0
       dva-core: 2.0.4_redux@4.2.1
     dev: true
+
+  /e-athena-components/1.0.1:
+    resolution: {integrity: sha512-YPUc+6or0k5aX7E2BruQevhT4UnBeR2pQ3SqbjLWZrC1jKTYpgCYGJSCvVzuWta1XISKOo1ExRf9nJuvzug8EQ==}
+    dev: false
 
   /ecc-jsbn/0.1.2:
     resolution: {integrity: sha512-eh9O+hwRHNbG4BLTjEl3nw044CkGm5X6LoaCf7LPp7UU8Qrt47JYNi6nPX8xjW97TKGKm1ouctg0QSpZe9qrnw==}

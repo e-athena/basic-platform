@@ -6,12 +6,20 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net6.0\BasicPlatform.Domain.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net6.0\BasicPlatform.Domain.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\BasicPlatform.Infrastructure\BasicPlatform.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Athena.Infrastructure.Domain" Version="6.5.3-preview.20230703.1" />
+      <PackageReference Include="Athena.Infrastructure.Domain" Version="6.5.3-preview.20230711.1" />
     </ItemGroup>
 
 </Project>

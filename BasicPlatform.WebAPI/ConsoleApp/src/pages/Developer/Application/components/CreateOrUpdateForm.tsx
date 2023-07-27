@@ -1,5 +1,5 @@
 import { submitHandle } from '@/utils/utils';
-import { ProFormText, ProFormTextArea, ModalForm, ProForm, ProFormSwitch } from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea, ModalForm, ProForm, ProFormSwitch, ProFormSelect } from '@ant-design/pro-components';
 import { FormInstance, Select } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import { update, create } from '../service';
@@ -17,7 +17,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   const [frontendUrlAgreement, setFrontendUrlAgreement] = useState<string>('http://');
   const [apiUrl, setApiUrl] = useState<string>('');
   useEffect(() => {
-    if (props.open && props.values?.id) {
+    if (props.open && props.values) {
       setApiUrlAgreement(props.values.apiUrl?.split('://')[0] + '://');
       if (props.values.frontendUrl) {
         setFrontendUrlAgreement(props.values.frontendUrl?.split('://')[0] + '://');
@@ -63,6 +63,26 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         frontendUrl: props?.values?.frontendUrl?.replace(frontendUrlAgreement, ''),
       }}
     >
+      <ProFormSelect
+        label={'运行环境'}
+        name="environment"
+        showSearch
+        allowClear
+        options={[
+          {
+            value: "Development",
+            label: '开发环境',
+          },
+          {
+            value: "Test",
+            label: '测试环境',
+          },
+          {
+            value: "Production",
+            label: '生产环境',
+          }
+        ]}
+      />
       <ProFormText
         name="name"
         label={'名称'}

@@ -23,6 +23,8 @@ namespace BasicPlatform.WebAPI.Controllers.Developer;
 public class EventTrackingConfigController : CustomControllerBase
 {
     private readonly ITrackConfigService _service;
+    private const string ConfigSelectList = "event-tracking-select-list";
+    private const string EventSelectList = "event-tracking-event-select-list";
 
     /// <summary>
     /// 
@@ -60,7 +62,7 @@ public class EventTrackingConfigController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission("event-tracking-select-list")]
+    [ApiPermission(ConfigSelectList)]
     public IList<EventTrackingInfo> GetSelectList()
     {
         return EventTrackingHelper.GetEventTrackingInfos(new List<Assembly>
@@ -68,6 +70,20 @@ public class EventTrackingConfigController : CustomControllerBase
             Assembly.Load("BasicPlatform.AppService.FreeSql"),
             Assembly.Load("BasicPlatform.IntegratedEventHandler"),
             Assembly.Load("BasicPlatform.ProcessManager")
+        });
+    }
+
+    /// <summary>
+    /// 根据事件下拉列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(EventSelectList)]
+    public IList<SelectViewModel> GetEventSelectList()
+    {
+        return EventTrackingHelper.GetEventSelectList(new List<Assembly>
+        {
+            Assembly.Load("BasicPlatform.Domain")
         });
     }
 
@@ -80,7 +96,8 @@ public class EventTrackingConfigController : CustomControllerBase
     [HttpPost]
     [ApiPermission(AdditionalRules = new[]
     {
-        "event-tracking-select-list"
+        ConfigSelectList,
+        EventSelectList
     })]
     public Task SaveAsync([FromBody] SaveTrackConfigRequest request, CancellationToken cancellationToken)
     {

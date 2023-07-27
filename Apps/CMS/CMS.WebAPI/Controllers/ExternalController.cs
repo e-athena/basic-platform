@@ -25,10 +25,20 @@ public class ExternalController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("get-data-permission-resources")]
-    public IList<DataPermissionGroup> GetDataPermissionResources()
+    public ApplicationDataPermissionInfo GetDataPermissionResources(
+        [FromServices] IEnumerable<IDataPermission> services
+    )
     {
+        var dataPermissionFactory = new DataPermissionFactory(services);
         var assembly = Assembly.Load("CMS.QueryServices");
-        return DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
+        var groupList = DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
+        return new ApplicationDataPermissionInfo
+        {
+            ApplicationId = GlobalConstant.DefaultAppId,
+            ApplicationName = "CMS",
+            DataPermissionGroups = groupList,
+            ExtraSelectList = dataPermissionFactory.GetSelectList()
+        };
     }
 
     /// <summary>

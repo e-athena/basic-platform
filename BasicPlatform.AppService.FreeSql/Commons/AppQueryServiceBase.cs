@@ -77,4 +77,10 @@ public class AppQueryServiceBase<T> : QueryServiceBase<T> where T : EntityCore, 
     {
         return DefaultFreeSql.Select<T1>().NoTracking();
     }
+
+    /// <summary>
+    /// ASP.NET Core 环境
+    /// </summary>
+    protected string AspNetCoreEnvironment =>
+        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 }

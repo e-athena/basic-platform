@@ -9,6 +9,12 @@ namespace BasicPlatform.Domain.Models;
 public class Application : EntityCore, ICreator, IUpdater
 {
     /// <summary>
+    /// 运行环境
+    /// </summary>
+    [MaxLength(32)]
+    public string Environment { get; set; } = "Development";
+
+    /// <summary>
     /// 名称
     /// </summary>
     public string Name { get; set; } = null!;
@@ -80,6 +86,9 @@ public class Application : EntityCore, ICreator, IUpdater
     /// </summary>
     public virtual User? LastUpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Application()
     {
     }
@@ -87,6 +96,7 @@ public class Application : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="environment"></param>
     /// <param name="name"></param>
     /// <param name="clientId"></param>
     /// <param name="useDefaultClientSecret"></param>
@@ -97,6 +107,7 @@ public class Application : EntityCore, ICreator, IUpdater
     /// <param name="remarks"></param>
     /// <param name="createdUserId"></param>
     public Application(
+        string environment,
         string name,
         string clientId,
         bool useDefaultClientSecret,
@@ -108,6 +119,7 @@ public class Application : EntityCore, ICreator, IUpdater
         string? createdUserId
     )
     {
+        Environment = environment;
         Name = name;
         ClientId = clientId;
         UseDefaultClientSecret = useDefaultClientSecret;

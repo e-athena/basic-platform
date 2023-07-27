@@ -24,3 +24,7 @@ export function remove(id: string) {
 export function querySelectList() {
   return get<API.EventTrackingConfigListItem[]>('/api/EventTrackingConfig/GetSelectList');
 }
+/** 读取事件列表 */
+export function queryEventSelectList() {
+  return get<API.SelectInfo[]>('/api/EventTrackingConfig/GetEventSelectList');
+}

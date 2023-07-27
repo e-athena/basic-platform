@@ -9,7 +9,7 @@ export default defineConfig({
 
   define: {
     API_URL: 'http://e-cms.zhengjinfan.cn',
-    RTC_URL: 'http://e-cms.zhengjinfan.cn',
+    RTC_URL: 'http://basic.zhengjinfan.cn',
     SSO_URL: 'http://basic.zhengjinfan.cn/#/user/login-redirect',
   },
 });

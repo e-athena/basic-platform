@@ -9,7 +9,6 @@ namespace BasicPlatform.ProcessManager;
 public class TenantProcessManager :
     IMessageHandler<UserCreatedEvent>
 {
-    private const string TopicGroup = "tenant.process.manager.group";
     private readonly IMediator _mediator;
 
     /// <summary>
@@ -29,7 +28,7 @@ public class TenantProcessManager :
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [EventTracking]
-    [IntegratedEventSubscribe(nameof(UserCreatedEvent), Group = TopicGroup)]
+    [IntegratedEventSubscribe(nameof(UserCreatedEvent), Group = nameof(TenantProcessManager))]
     public async Task HandleAsync(UserCreatedEvent payload, CancellationToken cancellationToken)
     {
         // 不是创建租户超级管理员，不处理

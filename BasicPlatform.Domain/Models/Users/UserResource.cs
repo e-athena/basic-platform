@@ -57,10 +57,22 @@ public class UserResource : ValueObject
     /// </summary>
     public DateTime? ExpireAt { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public UserResource()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="userId"></param>
+    /// <param name="resourceKey"></param>
+    /// <param name="resourceCode"></param>
+    /// <param name="expireAt"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public UserResource(
         string? applicationId,
         string userId, string resourceKey, string resourceCode,

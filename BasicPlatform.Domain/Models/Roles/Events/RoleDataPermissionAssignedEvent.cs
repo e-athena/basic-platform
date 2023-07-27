@@ -10,6 +10,10 @@ public class RoleDataPermissionAssignedEvent : EventBase
     /// </summary>
     public List<RoleDataPermission> Permissions { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="permissions"></param>
     public RoleDataPermissionAssignedEvent(List<RoleDataPermission> permissions)
     {
         Permissions = permissions;

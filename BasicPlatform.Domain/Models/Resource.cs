@@ -59,10 +59,21 @@ public class Resource : EntityCore, ICreator, IUpdater
     /// </summary>
     public virtual User? LastUpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Resource()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="key"></param>
+    /// <param name="sort"></param>
+    /// <param name="status"></param>
+    /// <param name="userId"></param>
     public Resource(string applicationId, string key, int sort, Status status, string? userId)
     {
         ApplicationId = applicationId;

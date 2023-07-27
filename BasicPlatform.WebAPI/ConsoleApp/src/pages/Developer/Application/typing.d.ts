@@ -1,6 +1,7 @@
 declare namespace API {
   /** 创建应用 */
   type CreateApplicationItem = {
+    environment?: string;
     name: string;
     clientId: string;
     frontendUrl?: string;
@@ -44,6 +45,6 @@ declare namespace API {
    * 分页请求参数
    */
   type ApplicationPagingParams = {
-    name?: string;
+    environment?: string;
   } & Partial<Record<string, any>>;
 }

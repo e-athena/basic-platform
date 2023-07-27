@@ -69,6 +69,9 @@ public class DataQueryPolicy : EntityCore, ICreator, IUpdater
     /// </summary>
     public User? UpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public DataQueryPolicy()
     {
     }

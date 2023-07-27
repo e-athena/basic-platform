@@ -85,6 +85,9 @@ public class ExternalPage : EntityCore, ICreator, IUpdater
     /// </summary>
     public virtual User? LastUpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public ExternalPage()
     {
     }

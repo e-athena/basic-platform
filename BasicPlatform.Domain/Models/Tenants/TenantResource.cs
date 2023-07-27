@@ -49,10 +49,21 @@ public class TenantResource : ValueObject
     public IList<string> ResourceCodes =>
         string.IsNullOrEmpty(ResourceCode) ? new List<string>() : ResourceCode.Split(",");
     
+    /// <summary>
+    /// 
+    /// </summary>
     public TenantResource()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="tenantId"></param>
+    /// <param name="resourceKey"></param>
+    /// <param name="resourceCode"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public TenantResource(string? applicationId, string tenantId, string resourceKey, string resourceCode)
     {
         ApplicationId = applicationId;

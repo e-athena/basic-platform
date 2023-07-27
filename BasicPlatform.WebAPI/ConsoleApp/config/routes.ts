@@ -80,11 +80,12 @@ export default [
     path: '/developer',
     name: '开发者中心',
     icon: 'crown',
+    component: './BasicLayout',
     routes: [
-      {
-        path: '/developer',
-        redirect: '/developer/resource',
-      },
+      // {
+      //   path: '/developer',
+      //   redirect: '/developer/resource',
+      // },
       {
         path: '/developer/resource',
         name: '资源管理',
@@ -116,11 +117,12 @@ export default [
     path: '/system',
     name: '系统管理',
     icon: 'crown',
+    component: './BasicLayout',
     routes: [
-      {
-        path: '/system',
-        redirect: '/system/organization',
-      },
+      // {
+      //   path: '/system',
+      //   redirect: '/system/organization',
+      // },
       {
         path: '/system/tenant',
         name: '租户管理',
@@ -172,7 +174,7 @@ export default [
     ],
   },
   {
-    path: '/external/:id',
+    path: '/external/:url',
     component: './ExternalPages',
   },
   {

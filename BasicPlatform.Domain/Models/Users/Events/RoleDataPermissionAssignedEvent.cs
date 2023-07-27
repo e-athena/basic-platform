@@ -10,6 +10,10 @@ public class UserDataPermissionAssignedEvent : EventBase
     /// </summary>
     public List<UserDataPermission> Permissions { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="permissions"></param>
     public UserDataPermissionAssignedEvent(List<UserDataPermission> permissions)
     {
         Permissions = permissions;

@@ -1,12 +1,11 @@
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Roles.Events;
 using BasicPlatform.Domain.Models.Users.Events;
-using BasicPlatform.Infrastructure;
 
 namespace BasicPlatform.AppService.FreeSql;
 
 /// <summary>
-/// 缓存通知处理器
+/// 缓存处理器
 /// </summary>
 public class CacheNotificationHandler :
     IDomainEventHandler<UserUpdatedEvent>,
@@ -28,7 +27,7 @@ public class CacheNotificationHandler :
     }
 
     /// <summary>
-    /// 用户更新成功事件
+    /// 清理用户缓存
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
@@ -43,7 +42,7 @@ public class CacheNotificationHandler :
     }
 
     /// <summary>
-    /// 角色数据权限分配事件处理
+    /// 清除角色用户数据权限相关的缓存
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
@@ -76,7 +75,7 @@ public class CacheNotificationHandler :
     }
 
     /// <summary>
-    /// 用户数据权限分配事件处理
+    /// 清除用户数据权限相关的缓存
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>

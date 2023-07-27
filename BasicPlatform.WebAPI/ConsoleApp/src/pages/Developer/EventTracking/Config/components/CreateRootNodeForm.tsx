@@ -1,31 +1,24 @@
 import { G6TreeGraphData } from '@ant-design/graphs';
-import { ModalForm, ProFormText, ProFormSelect, FormInstance } from '@ant-design/pro-components';
+import { ModalForm, ProFormSelect, FormInstance } from '@ant-design/pro-components';
 import React, { useEffect, useRef } from 'react';
-import { querySelectList } from '../service';
+import { querySelectList, queryEventSelectList } from '../service';
 
 type CreateRootNodeFormProps = {
   onCancel: () => void;
-  onSuccess: (item: API.EventTrackingConfigItem, node: G6TreeGraphData) => void;
+  onSuccess: (items: API.EventTrackingConfigItem[], node: G6TreeGraphData) => void;
   open: boolean;
 };
 
 const CreateRootNodeForm: React.FC<CreateRootNodeFormProps> = (props) => {
   const formRef = useRef<FormInstance>();
   const [selectList, setSelectList] = React.useState<API.SelectInfo[]>([]);
-  const [selectListDataSource, setSelectListDataSource] = React.useState<API.EventTrackingConfigListItem[]>([]);
+  const [configDataSource, setConfigDataSource] = React.useState<API.EventTrackingConfigListItem[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
       const res = await querySelectList();
       if (res.success && res.data !== undefined) {
-        const d = res.data.map(item => ({
-          label: item.eventTypeName,
-          value: item.eventTypeFullName
-        } as API.SelectInfo));
-        // 去重
-        const list = d.filter((item, index) => d.findIndex(i => i.value === item.value) === index);
-        setSelectList(list);
-        setSelectListDataSource(res.data);
+        setConfigDataSource(res.data);
       }
     }
     if (props.open) {
@@ -48,7 +41,9 @@ const CreateRootNodeForm: React.FC<CreateRootNodeFormProps> = (props) => {
         maskClosable: false
       }}
       onFinish={async (values: API.EventTrackingConfigItem) => {
-        values.eventTypeName = selectList.find(item => item.value === values.eventTypeFullName)!.label;
+        const items = [] as API.EventTrackingConfigItem[];
+        values.eventTypeFullName = configDataSource.find(item => item.eventTypeName === values.eventTypeName)!.eventTypeFullName;
+        values.eventName = selectList.find(x => x.value === values.eventTypeName)!.label;
         const node: G6TreeGraphData = {
           id: `e${new Date().getTime()}`,
           value: {
@@ -63,29 +58,64 @@ const CreateRootNodeForm: React.FC<CreateRootNodeFormProps> = (props) => {
           children: [],
         };
         values.id = node.id;
-        props.onSuccess(values, node);
+        items.push(values);
+        // 读取eventTypeFullName对应的处理器
+        const processorList = configDataSource.filter(x => x.eventTypeFullName === values.eventTypeFullName);
+        if (processorList.length > 0) {
+          // 添加为node的children
+          node.children = processorList.map((item, index) => ({
+            id: `e${new Date().getTime()}${index}`,
+            value: {
+              title: item.eventName,
+              items: [
+                {
+                  text: "事件类型",
+                  value: item.eventType === 1 ? '领域事件' : '集成事件'
+                },
+                {
+                  text: "事件处理器",
+                  value: item.processorName,
+                },
+                {
+                  text: "事件实体类型",
+                  value: item.eventTypeName,
+                }
+              ]
+            },
+            children: [],
+          }));
+          // 添加到items
+          items.push(...processorList.map((item, zIndex) => ({
+            ...item,
+            id: `e${new Date().getTime()}${zIndex}`,
+            configId: values.id,
+            parentId: values.id,
+          } as API.EventTrackingConfigItem)));
+        }
+        // console.log(items);
+
+        props.onSuccess(items, node);
       }}
     >
-      <ProFormText
-        name="eventName"
-        label={'事件名称'}
-        rules={[
-          {
-            required: true,
-            message: '请输入事件名称',
-          },
-        ]}
-      />
       <ProFormSelect
-        name="eventTypeFullName"
-        label={'事件实体类型'}
-        options={selectList}
+        name="eventTypeName"
+        label={'事件类型'}
+        request={async (params) => {
+          if (params.configs.length === 0) {
+            return [];
+          }
+          if (selectList.length > 0) {
+            return selectList.filter(item => configDataSource.find(config => config.eventTypeName === item.value));
+          }
+          const res = await queryEventSelectList();
+          const data = res.data || [];
+          setSelectList(data);
+          return data.filter(item => configDataSource.find(config => config.eventTypeName === item.value));
+        }}
+        params={{
+          configs: configDataSource
+        }}
         fieldProps={{
-          onChange(value) {
-            formRef.current?.setFieldsValue({
-              eventName: selectListDataSource.find(x => x.eventTypeFullName === value)?.eventName,
-            });
-          },
           showSearch: true,
           allowClear: true,
         }}

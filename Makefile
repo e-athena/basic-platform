@@ -39,6 +39,10 @@ web-api:
 web-app:
 	cd ./BasicPlatform.WebAPI/ConsoleApp && yarn start
 
+.PHONY:web-app-build
+web-app-build:
+	cd ./BasicPlatform.WebAPI/ConsoleApp && yarn build
+
 .PHONY:web-dapr-api
 web-dapr-api:
 	dapr run --app-id basic-platform-app --app-port 5078
@@ -50,3 +54,7 @@ cms-api:
 .PHONY:cms-app
 cms-app:
 	cd ./Apps/CMS/CMS.WebAPI/CMSWeb && yarn start
+
+.PHONY:cms-app-build
+cms-app-build:
+	cd ./Apps/CMS/CMS.WebAPI/CMSWeb && yarn build

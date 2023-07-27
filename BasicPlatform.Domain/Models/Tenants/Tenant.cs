@@ -80,6 +80,9 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// </summary>
     public string? LastUpdatedUserId { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Tenant()
     {
     }

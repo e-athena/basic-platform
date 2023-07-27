@@ -24,13 +24,13 @@ const ViewDrawer: React.FC<ViewDrawerProps> = (props) => {
         layout: 'follow',
       },
     },
-    height: window.innerHeight - 100,
+    height: window.innerHeight - 110,
     layout: {
       getWidth: () => {
-        return 60;
+        return 140;
       },
       getHeight: () => {
-        return 120
+        return 110
       },
     },
     edgeCfg: {
@@ -59,7 +59,7 @@ const ViewDrawer: React.FC<ViewDrawerProps> = (props) => {
     },
     behaviors: [
       'drag-canvas',
-      // 'zoom-canvas',
+      'zoom-canvas',
       'drag-node'
     ],
   };

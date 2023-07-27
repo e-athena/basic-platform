@@ -29,13 +29,22 @@ public class ApplicationRequestHandler : AppServiceBase<Application>,
     /// <returns></returns>
     public async Task<string> Handle(CreateApplicationRequest request, CancellationToken cancellationToken)
     {
+        var exists = await QueryableNoTracking
+            .Where(p => p.Environment == request.Environment)
+            .AnyAsync(x => x.ClientId == request.ClientId, cancellationToken);
         // 检查clientId是否已存在
-        if (await QueryableNoTracking.AnyAsync(x => x.ClientId == request.ClientId, cancellationToken))
+        if (exists)
         {
-            throw FriendlyException.Of("ClientId已存在");
+            if (request.Environment == null)
+            {
+                throw FriendlyException.Of("ClientId已存在");
+            }
+
+            throw FriendlyException.Of($"{request.Environment}环境下的ClientId已存在");
         }
 
         var entity = new Application(
+            request.Environment,
             request.Name,
             request.ClientId,
             request.UseDefaultClientSecret,
@@ -59,8 +68,10 @@ public class ApplicationRequestHandler : AppServiceBase<Application>,
     public async Task<string> Handle(UpdateApplicationRequest request, CancellationToken cancellationToken)
     {
         // 检查clientId是否已存在
-        if (await QueryableNoTracking.AnyAsync(x => x.ClientId == request.ClientId && x.Id != request.Id,
-                cancellationToken))
+        if (await QueryableNoTracking
+                .Where(p => p.Environment == request.Environment)
+                .Where(p => p.ClientId == request.ClientId)
+                .AnyAsync(x => x.Id != request.Id, cancellationToken))
         {
             throw FriendlyException.Of("ClientId已存在");
         }

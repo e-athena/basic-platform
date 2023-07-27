@@ -28,4 +28,5 @@ global using Athena.Infrastructure.Exceptions;
 global using Athena.Infrastructure.Mvc.Configs;
 global using BasicPlatform.AppService.Applications.Models;
 global using BasicPlatform.AppService.Resources.Models;
+global using Microsoft.Extensions.FileProviders;
 global using Microsoft.Extensions.Options;

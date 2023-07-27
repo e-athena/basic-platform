@@ -20,7 +20,7 @@ public class UserNotificationHandler : AppServiceBase<User>,
     }
 
     /// <summary>
-    /// 用户数据权限分配事件处理
+    /// 更新用户数据权限
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>

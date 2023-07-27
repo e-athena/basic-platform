@@ -149,7 +149,7 @@ public class DefaultDataPermissionService : IDataPermissionService
     }
 
     /// <summary>
-    /// 
+    /// 获取用户所有组织/部门及下级组织/部门列表
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="appId"></param>

@@ -8,7 +8,7 @@ import { LinkOutlined } from '@ant-design/icons';
 import './index.less';
 
 const ExternalPages: React.FC = () => {
-  const url = useParams<{ id: string }>();
+  const params = useParams<{ url: string }>();
 
   const [state, setState] = useRafState({
     width: 0,
@@ -32,10 +32,10 @@ const ExternalPages: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [lastUrl, setLastUrl] = useState<string>();
   useEffect(() => {
-    if (url.id !== lastUrl) {
+    if (params.url !== lastUrl) {
       setLoading(true);
     }
-  }, [url.id, lastUrl]);
+  }, [params.url, lastUrl]);
 
   return (
     <>
@@ -45,7 +45,7 @@ const ExternalPages: React.FC = () => {
             icon={<LinkOutlined />}
             onClick={() => {
               // 新窗口打开
-              window.open(url.id!);
+              window.open(params.url!);
             }}
           >
             新窗口打开
@@ -55,7 +55,7 @@ const ExternalPages: React.FC = () => {
       >
         <Spin spinning={loading}>
           <Iframe
-            url={url.id!}
+            url={params.url!}
             width="100%"
             height={`${state.height - 64}px`}
             // id="iframe"
@@ -67,7 +67,7 @@ const ExternalPages: React.FC = () => {
             allowFullScreen
             onLoad={() => {
               setLoading(false);
-              setLastUrl(url.id!);
+              setLastUrl(params.url!);
             }}
           />
         </Spin>

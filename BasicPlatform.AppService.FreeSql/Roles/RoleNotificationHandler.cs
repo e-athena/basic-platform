@@ -23,7 +23,7 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     }
 
     /// <summary>
-    /// 角色资源分配事件处理
+    /// 更新角色资源
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
@@ -46,7 +46,7 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     }
 
     /// <summary>
-    /// 角色数据权限分配事件处理
+    /// 更新角色数据权限
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
@@ -69,7 +69,7 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     }
 
     /// <summary>
-    /// 角色用户分配事件处理
+    /// 更新角色用户
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>

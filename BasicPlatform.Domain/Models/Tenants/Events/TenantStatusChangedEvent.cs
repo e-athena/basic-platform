@@ -10,6 +10,10 @@ public class TenantStatusChangedEvent : EventBase
     /// </summary>
     public Status Status { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="status"></param>
     public TenantStatusChangedEvent(Status status)
     {
         Status = status;

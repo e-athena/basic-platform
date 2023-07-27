@@ -45,6 +45,9 @@ public class UserAccessRecord : ValueObject
     /// </summary>
     public string? UserAgent { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public UserAccessRecord()
     {
     }

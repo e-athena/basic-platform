@@ -72,10 +72,24 @@ public class RoleDataPermission : ValueObject
     /// </summary>
     public bool Enabled { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public RoleDataPermission()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="roleId"></param>
+    /// <param name="resourceKey"></param>
+    /// <param name="dataScope"></param>
+    /// <param name="dataScopeCustom"></param>
+    /// <param name="policyResourceKey"></param>
+    /// <param name="policy"></param>
+    /// <param name="enabled"></param>
     public RoleDataPermission(
         string? applicationId,
         string roleId,
