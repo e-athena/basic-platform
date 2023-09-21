@@ -78,7 +78,6 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
     /// 读取列表
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public async Task<List<ApplicationModel>> GetListAsync()
     {
         // 如果是租户环境
@@ -136,7 +135,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .HasWhere(request.Environment, p => p.Environment == request.Environment)
-            .ToPagingAsync(request, p => new GetApplicationPagingResponse
+            .ToPagingAsync(UserId, request, p => new GetApplicationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.LastUpdatedUser!.RealName,

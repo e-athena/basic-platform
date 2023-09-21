@@ -1,6 +1,6 @@
-using CMS.Domain.Models.Events;
+using CMS.Domain.Models.Articles.Events;
 
-namespace CMS.Domain.Models;
+namespace CMS.Domain.Models.Articles;
 
 /// <summary>
 /// 文章

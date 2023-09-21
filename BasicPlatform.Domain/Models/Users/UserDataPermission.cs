@@ -13,12 +13,6 @@ public class UserDataPermission : ValueObject
     public string? ApplicationId { get; set; }
 
     /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; } = null!;
-
-    /// <summary>
     /// 用户ID
     /// </summary>
     /// <value></value>

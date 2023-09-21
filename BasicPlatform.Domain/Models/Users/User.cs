@@ -147,6 +147,7 @@ public class User : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="id"></param>
     /// <param name="userName">用户名</param>
     /// <param name="password">密码</param>
     /// <param name="avatar">头像</param>
@@ -159,9 +160,10 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="positionId">所属职位ID</param>
     /// <param name="createdUserId">创建人</param>
     /// <param name="isTenantAdmin">是否为租户管理员</param>
-    public User(string userName, string? password, string? avatar, string realName, Gender gender, string? nickName,
+    public User(string id, string userName, string? password, string? avatar, string realName, Gender gender,
+        string? nickName,
         string? phoneNumber, string? email, string organizationId, string? positionId, string? createdUserId,
-        bool isTenantAdmin)
+        bool isTenantAdmin) : base(id)
     {
         password ??= "123456";
         UserName = userName;

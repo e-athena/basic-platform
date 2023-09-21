@@ -1,6 +1,6 @@
 using Athena.Infrastructure.Event;
 
-namespace CMS.Domain.Models.Events;
+namespace CMS.Domain.Models.Articles.Events;
 
 /// <summary>
 /// 文章创建成功事件

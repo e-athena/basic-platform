@@ -10,6 +10,7 @@ namespace BasicPlatform.AppService.FreeSql;
 public class CacheNotificationHandler :
     IDomainEventHandler<UserUpdatedEvent>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
+    IDomainEventHandler<RoleColumnPermissionAssignedEvent>,
     IDomainEventHandler<UserDataPermissionAssignedEvent>
 {
     private readonly ICacheManager _cacheManager;
@@ -70,6 +71,37 @@ public class CacheNotificationHandler :
             var patternKey2 = string.Format(CacheConstant.UserPolicyQueryPatternKey, userId);
             await _cacheManager.RemovePatternAsync(patternKey2, cancellationToken);
             var patternKey = string.Format(CacheConstant.UserPolicyFilterGroupQueryPatternKey, userId);
+            await _cacheManager.RemovePatternAsync(patternKey, cancellationToken);
+        }
+    }
+
+    /// <summary>
+    /// 清除角色用户列权限相关的缓存
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
+    public async Task Handle(RoleColumnPermissionAssignedEvent notification, CancellationToken cancellationToken)
+    {
+        // 读取角色用户
+        var userIdList = await _freeSql.Queryable<RoleUser>()
+            .Where(p => p.RoleId == notification.GetId())
+            .ToListAsync(p => p.UserId, cancellationToken);
+
+        if (userIdList.Count == 0)
+        {
+            return;
+        }
+
+        // 用户ID去重
+        userIdList = userIdList.Distinct().ToList();
+
+        // 移除用户数据权限相关的缓存
+        foreach (var userId in userIdList)
+        {
+            var patternKey = string.Format(CacheConstant.UserColumnPermissionPatternKey, userId);
             await _cacheManager.RemovePatternAsync(patternKey, cancellationToken);
         }
     }

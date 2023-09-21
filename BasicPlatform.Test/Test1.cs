@@ -25,7 +25,6 @@ public class Test1 : TestBase
         var res = EventTrackingHelper.GetEventTrackingTreeInfos(new List<Assembly>
         {
             Assembly.Load("BasicPlatform.AppService.FreeSql"),
-            Assembly.Load("BasicPlatform.IntegratedEventHandler"),
             Assembly.Load("BasicPlatform.ProcessManager")
         });
         Assert.IsTrue(true);

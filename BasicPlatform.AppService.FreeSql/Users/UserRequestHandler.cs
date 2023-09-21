@@ -61,6 +61,7 @@ public class UserRequestHandler : AppServiceBase<User>,
         }
 
         var entity = new User(
+            request.Id ?? ObjectId.GenerateNewStringId(),
             request.UserName,
             request.Password,
             request.Avatar,

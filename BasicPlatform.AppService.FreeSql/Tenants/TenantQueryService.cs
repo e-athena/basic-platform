@@ -33,7 +33,7 @@ public class TenantQueryService : AppQueryServiceBase<Tenant>, ITenantQueryServi
     {
         return QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
-            .ToPagingAsync(request, p => new GetTenantPagingResponse(), cancellationToken);
+            .ToPagingAsync(UserId, request, p => new GetTenantPagingResponse(), cancellationToken);
     }
 
     /// <summary>

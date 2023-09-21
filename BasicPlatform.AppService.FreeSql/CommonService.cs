@@ -37,7 +37,7 @@ public class CommonService : ICommonService
             return new GetTableColumnsResponse
             {
                 ModuleName = moduleName,
-                Columns = sources.OrderBy(p => p.Sort).ToList()
+                Columns = await ColumnAuthAsync(moduleName, sources)
             };
         }
 
@@ -60,7 +60,36 @@ public class CommonService : ICommonService
         return new GetTableColumnsResponse
         {
             ModuleName = moduleName,
-            Columns = sources.OrderBy(p => p.Sort).ToList()
+            Columns = await ColumnAuthAsync(moduleName, sources)
         };
+    }
+
+    /// <summary>
+    /// 列权限处理
+    /// </summary>
+    /// <param name="moduleName"></param>
+    /// <param name="sources"></param>
+    /// <returns></returns>
+    private async Task<List<TableColumnInfo>> ColumnAuthAsync(string moduleName, IEnumerable<TableColumnInfo> sources)
+    {
+        // 处理列权限
+        var columns = await _userQueryService.GetColumnPermissionsAsync(moduleName);
+        if (columns.Count == 0)
+        {
+            return sources.OrderBy(p => p.Sort).ToList();
+        }
+
+        var news = new List<TableColumnInfo>();
+        foreach (var info in sources)
+        {
+            var item = columns.FirstOrDefault(p => p.ColumnKey == info.PropertyName);
+            // 如果为空或者启用则代表有权限查看
+            if (item == null || item.Enabled)
+            {
+                news.Add(info);
+            }
+        }
+
+        return news;
     }
 }

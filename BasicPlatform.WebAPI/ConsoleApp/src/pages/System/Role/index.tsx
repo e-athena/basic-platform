@@ -6,6 +6,7 @@ import {
   MoreOutlined,
   ShareAltOutlined,
   UserAddOutlined,
+  DeleteColumnOutlined,
 } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
@@ -21,12 +22,14 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import AuthorizationForm from './components/AuthorizationForm';
 import DataPermissionForm from './components/DataPermissionForm';
 import UserModal from '@/components/UserModal';
+import ColumnPermissionForm from './components/ColumnPermissionForm';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
   const [resourceModalOpen, handleResourceModalOpen] = useState<boolean>(false);
   const [userModalOpen, handleUserModalOpen] = useState<boolean>(false);
   const [permissionModalOpen, handlePermissionModalOpen] = useState<boolean>(false);
+  const [columnPermissionModalOpen, handleColumnPermissionModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RoleDetailItem>();
@@ -136,11 +139,18 @@ const TableList: React.FC = () => {
             label: '分配资源',
           });
         }
-        if (canAccessible(permission.role.assignResourcesAsync, resource)) {
+        if (canAccessible(permission.role.assignDataPermissionsAsync, resource)) {
           moreItems.push({
             key: 'permission',
             icon: <SafetyOutlined />,
             label: '分配权限',
+          });
+        }
+        if (canAccessible(permission.role.assignDataPermissionsAsync, resource)) {
+          moreItems.push({
+            key: 'columnPermission',
+            icon: <DeleteColumnOutlined />,
+            label: '分配列权限',
           });
         }
         if (canAccessible(permission.role.assignUsersAsync, resource)) {
@@ -185,6 +195,11 @@ const TableList: React.FC = () => {
                   if (key === 'permission') {
                     setCurrentRow(entity as any);
                     handlePermissionModalOpen(true);
+                    return;
+                  }
+                  if (key === 'columnPermission') { 
+                    setCurrentRow(entity as any);
+                    handleColumnPermissionModalOpen(true);
                     return;
                   }
                   if (key === 'user') {
@@ -296,6 +311,19 @@ const TableList: React.FC = () => {
             handlePermissionModalOpen(false);
           }}
           open={permissionModalOpen}
+          roleId={currentRow!.id!}
+        />
+      )}
+      {columnPermissionModalOpen && (
+        <ColumnPermissionForm
+          title={`${currentRow?.name} - 配置列权限`}
+          onCancel={() => {
+            handleColumnPermissionModalOpen(false);
+          }}
+          onSuccess={() => {
+            handleColumnPermissionModalOpen(false);
+          }}
+          open={columnPermissionModalOpen}
           roleId={currentRow!.id!}
         />
       )}

@@ -68,7 +68,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
             .HasWhere(request.Gender, p => request.Gender!.Contains(p.Gender))
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
             .HasWhere(userRoleQuery, p => userRoleQuery!.Any(d => d.UserId == p.Id))
-            .ToPagingAsync(request, p => new GetUserPagingResponse
+            .ToPagingAsync(UserId, request, p => new GetUserPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.LastUpdatedUser!.RealName,
@@ -605,6 +605,89 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         // 去重
         list = list
             .GroupBy(p => p.ResourceKey)
+            .Select(p => p.First())
+            .ToList();
+
+        return list;
+    }
+
+    /// <summary>
+    /// 读取用户列权限
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync(string type, string? userId)
+    {
+        userId ??= UserId;
+        // 读取用户的角色列权限
+        var list = await QueryNoTracking<RoleColumnPermission>()
+            .Where(p => p.ColumnType == type)
+            // 读取用户的角色
+            .Where(p => QueryNoTracking<RoleUser>()
+                .As("c")
+                .Where(c => c.UserId == userId)
+                .Any(c => c.RoleId == p.RoleId)
+            )
+            .ToListAsync(p => new GetUserColumnPermissionsResponse
+            {
+                AppId = p.AppId,
+                Enabled = p.Enabled,
+                ColumnType = p.ColumnType,
+                ColumnKey = p.ColumnKey,
+                IsEnableDataMask = p.IsEnableDataMask,
+                DataMaskType = p.DataMaskType,
+                MaskLength = p.MaskLength,
+                MaskPosition = p.MaskPosition,
+                MaskChar = p.MaskChar
+            });
+        foreach (var item in list)
+        {
+            item.IsRolePermission = true;
+        }
+
+        // 读取用户的数据权限
+        var userPermissionList = await QueryNoTracking<UserColumnPermission>()
+            .Where(p => p.ColumnType == type)
+            .Where(p => p.UserId == userId)
+            // 读取未过期的
+            .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
+            .ToListAsync(p => new GetUserColumnPermissionsResponse
+            {
+                AppId = p.AppId,
+                Enabled = p.Enabled,
+                ColumnType = p.ColumnType,
+                ColumnKey = p.ColumnKey,
+                IsEnableDataMask = p.IsEnableDataMask,
+                DataMaskType = p.DataMaskType,
+                MaskLength = p.MaskLength,
+                MaskPosition = p.MaskPosition,
+                MaskChar = p.MaskChar
+            });
+
+        // 以用户的为准，因为可对用户进行个性化设置
+        foreach (var item in userPermissionList)
+        {
+            // 查询
+            var single = list
+                .FirstOrDefault(p => p.ColumnKey == item.ColumnKey);
+            if (single == null)
+            {
+                list.Add(item);
+                continue;
+            }
+
+            single.Enabled = item.Enabled;
+            single.IsEnableDataMask = item.IsEnableDataMask;
+            single.DataMaskType = item.DataMaskType;
+            single.MaskLength = item.MaskLength;
+            single.MaskPosition = item.MaskPosition;
+            single.MaskChar = item.MaskChar;
+        }
+
+        // 去重
+        list = list
+            .GroupBy(p => p.ColumnKey)
             .Select(p => p.First())
             .ToList();
 

@@ -13,7 +13,8 @@ public class RoleRequestHandler : AppServiceBase<Role>,
     IRequestHandler<RoleStatusChangeRequest, string>,
     IRequestHandler<AssignRoleResourcesRequest, string>,
     IRequestHandler<AssignRoleUsersRequest, string>,
-    IRequestHandler<AssignRoleDataPermissionsRequest, string>
+    IRequestHandler<AssignRoleDataPermissionsRequest, string>,
+    IRequestHandler<AssignRoleColumnPermissionsRequest, string>
 {
     private readonly IUserQueryService _userQueryService;
 
@@ -174,6 +175,38 @@ public class RoleRequestHandler : AppServiceBase<Role>,
                     p.QueryFilterGroups,
                     p.Enabled)
                 )
+                .ToList(),
+            UserId
+        );
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
+    }
+
+    /// <summary>
+    /// 分配列数据权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Handle(AssignRoleColumnPermissionsRequest request, CancellationToken cancellationToken)
+    {
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+
+        // 分配权限
+        entity.AssignColumnPermissions(request
+                .Permissions
+                .Select(p => new RoleColumnPermission(
+                    p.AppId,
+                    request.Id,
+                    p.Enabled,
+                    p.ColumnType,
+                    p.ColumnKey,
+                    p.IsEnableDataMask,
+                    p.DataMaskType,
+                    p.MaskLength,
+                    p.MaskPosition,
+                    p.MaskChar
+                ))
                 .ToList(),
             UserId
         );

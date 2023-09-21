@@ -1,5 +1,6 @@
 using Athena.Infrastructure.Event.Interfaces;
-using CMS.Domain.Models.Events;
+using CMS.Domain.Models.Articles;
+using CMS.Domain.Models.Articles.Events;
 
 namespace CMS.AppService.FreeSql.DomainEventHandlers;
 

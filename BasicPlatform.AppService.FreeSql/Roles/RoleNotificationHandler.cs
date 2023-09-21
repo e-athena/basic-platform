@@ -9,6 +9,7 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 public class RoleNotificationHandler : AppServiceBase<Role>,
     IDomainEventHandler<RoleResourceAssignedEvent>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
+    IDomainEventHandler<RoleColumnPermissionAssignedEvent>,
     IDomainEventHandler<RoleUserAssignedEvent>
 {
     /// <summary>
@@ -18,7 +19,8 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     /// <param name="accessor"></param>
     public RoleNotificationHandler(UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor)
-        : base(unitOfWorkManager, accessor)
+        :
+        base(unitOfWorkManager, accessor)
     {
     }
 
@@ -57,6 +59,29 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<RoleDataPermission>(
+            p => p.RoleId == notification.GetId(), cancellationToken
+        );
+        if (notification.Permissions.Count <= 0)
+        {
+            return;
+        }
+
+        // 新增新数据
+        await RegisterNewRangeValueObjectAsync(notification.Permissions, cancellationToken);
+    }
+
+    /// <summary>
+    /// 更新角色列权限
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
+    public async Task Handle(RoleColumnPermissionAssignedEvent notification, CancellationToken cancellationToken)
+    {
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<RoleColumnPermission>(
             p => p.RoleId == notification.GetId(), cancellationToken
         );
         if (notification.Permissions.Count <= 0)

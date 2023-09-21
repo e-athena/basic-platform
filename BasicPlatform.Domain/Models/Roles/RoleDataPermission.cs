@@ -13,12 +13,6 @@ public class RoleDataPermission : ValueObject
     public string? ApplicationId { get; set; }
 
     /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; } = null!;
-
-    /// <summary>
     /// 角色ID
     /// </summary>
     /// <value></value>

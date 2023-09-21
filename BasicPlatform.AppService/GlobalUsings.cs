@@ -14,3 +14,4 @@ global using BasicPlatform.Domain.Models;
 global using Athena.Infrastructure.FrontEndTables;
 global using Athena.Infrastructure.QueryFilters;
 global using System.Text.Json;
+global using Athena.Infrastructure.ColumnPermissions.Models;

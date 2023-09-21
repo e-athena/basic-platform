@@ -8,9 +8,7 @@ using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.FreeSql.Users;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Users;
-using BasicPlatform.Domain.Models.Tenants.Events;
 using BasicPlatform.Domain.Models.Users.Events;
-using BasicPlatform.IntegratedEventHandler;
 using BasicPlatform.ProcessManager;
 using BasicPlatform.WebAPI.Services;
 
@@ -326,17 +324,6 @@ public class UtilController : ControllerBase
             EventType = EventType.DomainEvent
         };
         test.Add(sub1);
-        var sub2 = new TrackConfig
-        {
-            ConfigId = root.Id,
-            ParentId = root.Id,
-            EventName = "测试集成事件",
-            EventTypeName = nameof(UserCreatedEvent),
-            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
-            ProcessorName = nameof(UserEventHandler),
-            ProcessorFullName = typeof(UserEventHandler).FullName!,
-        };
-        test.Add(sub2);
         var sub3 = new TrackConfig
         {
             ConfigId = root.Id,
@@ -348,17 +335,6 @@ public class UtilController : ControllerBase
             ProcessorFullName = typeof(TenantProcessManager).FullName!,
         };
         test.Add(sub3);
-        var sub4 = new TrackConfig
-        {
-            ConfigId = root.Id,
-            ParentId = sub3.Id,
-            EventName = "测试租户已初始化事件",
-            EventTypeName = nameof(TenantDatabaseInitializedEvent),
-            EventTypeFullName = typeof(TenantDatabaseInitializedEvent).FullName!,
-            ProcessorName = nameof(UserEventHandler),
-            ProcessorFullName = typeof(UserEventHandler).FullName!,
-        };
-        test.Add(sub4);
 
         await service.SaveAsync(new SaveTrackConfigRequest
         {

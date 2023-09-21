@@ -128,6 +128,18 @@ public class Role : EntityCore, ICreator, IUpdater
     }
 
     /// <summary>
+    /// 分配列权限
+    /// </summary>
+    /// <param name="permissions"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignColumnPermissions(List<RoleColumnPermission> permissions, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new RoleColumnPermissionAssignedEvent(permissions));
+    }
+
+
+    /// <summary>
     /// 分配资源
     /// </summary>
     /// <param name="resources"></param>

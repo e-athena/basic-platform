@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
-import { Button, Empty, message, Modal, Select, Space, theme, Tooltip } from 'antd';
+import { Badge, Button, Empty, message, Modal, Select, Space, theme, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import RulerItem from './components/RulerItem';
 import { useKeyPress } from 'ahooks';
@@ -24,6 +24,13 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
   const { open, onCancel, onSearch, data, historyFilters } = props;
   const [selfOpen, setSelfOpen] = useState<boolean>(false);
   const [filterGroups, setFilterGroups] = useState<FilterGroupItem[]>(historyFilters || []);
+  // 通过filterGroups读取filters的总数
+  let count = 0;
+  for (let i = 0; i < filterGroups.length; i += 1) {
+    const group = filterGroups[i];
+    count += group.filters.length;
+  }
+
   useKeyPress(['meta.k', 'ctrl.k'], () => {
     setSelfOpen(!selfOpen);
   });
@@ -46,16 +53,49 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
       }
     }
   }, [open, selfOpen]);
+  // 关闭或取消
+  const onClose = () => {
+    onCancel?.();
+    setSelfOpen(false);
+    // 数据验证
+    if (filterGroups.length > 0) {
+      let errCount: number = 0;
+      for (let i = 0; i < filterGroups.length; i++) {
+        const group = filterGroups[i];
+        for (let j = 0; j < group.filters.length; j++) {
+          const filter = group.filters[j];
+          // 验证是否有空值
+          if (!filter.key || !filter.operator || !filter.value) {
+            // message.error(`第${i + 1}组第${j + 1}条数据有空值`);
+            errCount++;
+            break;
+          }
+        }
+      }
+      if (errCount > 0) {
+        setFilterGroups([]);
+        onSearch([]);
+      }
+    }
+  }
   return (
     <>
       {props.open === undefined && (
         <Tooltip title={'自定义查询'}>
-          <Button
+          {count === 0 ? <Button
             type={'link'}
             style={{ color: token.colorText }}
             icon={<SearchOutlined />}
             onClick={() => setSelfOpen(true)}
-          />
+          /> : <Badge count={count}>
+            <Button
+              type={'link'}
+              style={{ color: token.colorText }}
+              icon={<SearchOutlined />}
+              onClick={() => setSelfOpen(true)}
+            />
+          </Badge>}
+
         </Tooltip>
       )}
       <Modal
@@ -69,10 +109,7 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
           paddingTop: 15,
         }}
         destroyOnClose
-        onCancel={() => {
-          onCancel?.();
-          setSelfOpen(false);
-        }}
+        onCancel={onClose}
         footer={[
           <Button
             key={'add'}
@@ -110,10 +147,7 @@ const AdvancedSearch: React.FC<EditTableColumnFormProps> = (props) => {
           </Button>,
           <Button
             key="cancel"
-            onClick={() => {
-              onCancel?.();
-              setSelfOpen(false);
-            }}
+            onClick={onClose}
           >
             取消
           </Button>,

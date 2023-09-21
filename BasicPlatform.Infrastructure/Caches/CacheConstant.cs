@@ -38,6 +38,16 @@ public static class CacheConstant
     public const string UserPolicyFilterGroupQueryPatternKey = "user:{0}:UserPolicyFilterGroupQuery:*";
 
     /// <summary>
+    /// 用户列权限缓存键
+    /// </summary>
+    public const string UserColumnPermissionKey = "user:{0}:UserColumnPermission:{1}";
+
+    /// <summary>
+    /// 用户列权限缓存键
+    /// </summary>
+    public const string UserColumnPermissionPatternKey = "user:{0}:UserColumnPermission:*";
+
+    /// <summary>
     /// 用户策略查询缓存键
     /// </summary>
     public const string UserPolicyQueryKey = "user:{0}:UserPolicyQuery:{1}";

@@ -42,7 +42,7 @@ public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrga
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.ParentId))
             .HasWhere(request.Status, p => request.Status!.Contains(p.Status))
-            .ToPagingAsync(request, p => new GetOrganizationPagingResponse
+            .ToPagingAsync(UserId, request, p => new GetOrganizationPagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.LastUpdatedUser!.RealName,

@@ -68,7 +68,6 @@ public class EventTrackingConfigController : CustomControllerBase
         return EventTrackingHelper.GetEventTrackingInfos(new List<Assembly>
         {
             Assembly.Load("BasicPlatform.AppService.FreeSql"),
-            Assembly.Load("BasicPlatform.IntegratedEventHandler"),
             Assembly.Load("BasicPlatform.ProcessManager")
         });
     }

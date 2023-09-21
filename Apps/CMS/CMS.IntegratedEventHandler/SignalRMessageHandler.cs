@@ -1,7 +1,7 @@
 using Athena.Infrastructure.Event.Attributes;
 using Athena.InstantMessaging;
 using Athena.InstantMessaging.Models;
-using CMS.Domain.Models.Events;
+using CMS.Domain.Models.Articles.Events;
 
 namespace CMS.IntegratedEventHandler;
 

@@ -27,7 +27,6 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
     capOptions.UseDashboard();
 }, new[]
 {
-    Assembly.Load("BasicPlatform.IntegratedEventHandler"),
     Assembly.Load("BasicPlatform.ProcessManager"),
 });
 

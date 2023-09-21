@@ -1,3 +1,4 @@
+import { UserColumnProperty } from '@/components/ApplicationColumnPermission';
 import { get, paging, post, put } from '@/utils/request';
 
 /** 列表 */
@@ -39,4 +40,12 @@ export function dataPermission(id: string) {
 /** 分配数据权限 */
 export function assignDataPermissions(data: API.AssignRoleDataPermissionsRequest) {
   return put<API.AssignRoleDataPermissionsRequest, string>('/api/Role/AssignDataPermissions', data);
+}
+/** 列权限列表 */
+export function columnPermission(id: string) {
+  return get<UserColumnProperty[]>('/api/Role/GetColumnPermissions', { id });
+}
+/** 分配列权限 */
+export function assignColumnPermissions(data: API.AssignRoleColumnPermissionsRequest) {
+  return put<API.AssignRoleColumnPermissionsRequest, string>('/api/Role/AssignColumnPermissions', data);
 }

@@ -49,6 +49,13 @@ def main(argv):
     if image_name == '' or path_name == '':
         sys.exit()
 
+    # # 本地 publish
+    # publish_cmd = "dotnet publish -r linux-x64 \"./" + path_name + "/" + proj_name + ".csproj\" -c Release --no-self-contained"
+    # os.system(publish_cmd)
+    # # 执行命令
+    # make_cmd = "make run image={0} tag={1} path={2}".format(image_name, tag_name, path_name)
+    # os.system(make_cmd)
+    
     # 本地 publish
     os.system(
         "dotnet publish -r linux-x64 \"./" + path_name + "/" + proj_name + ".csproj\" -c Release --no-self-contained")
