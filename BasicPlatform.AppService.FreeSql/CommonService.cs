@@ -73,7 +73,7 @@ public class CommonService : ICommonService
     private async Task<List<TableColumnInfo>> ColumnAuthAsync(string moduleName, IEnumerable<TableColumnInfo> sources)
     {
         // 处理列权限
-        var columns = await _userQueryService.GetColumnPermissionsAsync(moduleName);
+        var columns = await _userQueryService.GetColumnPermissionsByModuleNameAsync(moduleName);
         if (columns.Count == 0)
         {
             return sources.OrderBy(p => p.Sort).ToList();

@@ -79,4 +79,35 @@ public class UserColumnPermission : ValueObject
     public UserColumnPermission()
     {
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="appId"></param>
+    /// <param name="userId"></param>
+    /// <param name="enabled"></param>
+    /// <param name="columnType"></param>
+    /// <param name="columnKey"></param>
+    /// <param name="isEnableDataMask"></param>
+    /// <param name="dataMaskType"></param>
+    /// <param name="maskLength"></param>
+    /// <param name="maskPosition"></param>
+    /// <param name="maskChar"></param>
+    /// <param name="expireAt"></param>
+    public UserColumnPermission(string? appId, string userId, bool enabled, string columnType, string columnKey,
+        bool isEnableDataMask, int dataMaskType, int maskLength, MaskPosition maskPosition, string maskChar,
+        DateTime? expireAt)
+    {
+        AppId = appId;
+        UserId = userId;
+        Enabled = enabled;
+        ColumnType = columnType;
+        ColumnKey = columnKey;
+        IsEnableDataMask = isEnableDataMask;
+        DataMaskType = dataMaskType;
+        MaskLength = maskLength;
+        MaskPosition = maskPosition;
+        MaskChar = maskChar;
+        ExpireAt = expireAt;
+    }
 }

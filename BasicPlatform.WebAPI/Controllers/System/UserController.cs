@@ -163,6 +163,23 @@ public class UserController : CustomControllerBase
     }
 
     /// <summary>
+    /// 分配列权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.RoleColumnPermissions
+    })]
+    public Task<string> AssignColumnPermissionsAsync([FromBody] AssignUserColumnPermissionsRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
     /// 更新表格列表信息
     /// </summary>
     /// <param name="request"></param>
@@ -334,10 +351,21 @@ public class UserController : CustomControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [ApiPermission(ApiPermissionConstant.RoleDataPermissions, IsVisible = false)]
+    [ApiPermission(ApiPermissionConstant.UserDataPermissions, IsVisible = false)]
     public Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync([FromQuery] string id)
     {
         return _queryService.GetDataPermissionsAsync(id);
+    }
+
+    /// <summary>
+    /// 读取列权限
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(ApiPermissionConstant.UserColumnPermissions, IsVisible = false)]
+    public Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync([FromQuery] string id)
+    {
+        return _queryService.GetColumnPermissionsAsync(id);
     }
 
     #endregion

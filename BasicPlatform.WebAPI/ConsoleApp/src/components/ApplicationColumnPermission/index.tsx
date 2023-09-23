@@ -37,13 +37,13 @@ const ApplicationColumnPermission: React.FC<ApplicationColumnPermissionProps> = 
         tabs={{
           tabPosition: 'top',
           activeKey: currentTab,
-          items: dataSource.map((p) => {
+          items: dataSource.map((d) => {
             return {
-              label: p.applicationName,
-              key: p.applicationId,
+              label: d.applicationName,
+              key: d.applicationId,
               children: (
                 <ColumnPermission
-                  data={(p.dataPermissionGroups || []).map(p => {
+                  data={(d.dataPermissionGroups || []).map(p => {
                     return {
                       displayName: p.displayName!,
                       items: p.items
@@ -52,7 +52,11 @@ const ApplicationColumnPermission: React.FC<ApplicationColumnPermissionProps> = 
                             displayName: item.displayName!,
                             groupKey: item.policyResourceKey!,
                             items: item.properties.filter(p => !p.key.includes("Id")).map((p) => {
-                              const child = props.selectedData?.find(c => c.columnKey === p.key && c.columnType === item.policyResourceKey);
+                              const child = props.selectedData?.find(c =>
+                                c.appId === d.applicationId &&
+                                c.columnKey === p.key &&
+                                c.columnType === item.policyResourceKey
+                              );
                               return {
                                 enabled: child === undefined ? true : child.enabled!,
                                 columnName: p.label,
@@ -71,24 +75,36 @@ const ApplicationColumnPermission: React.FC<ApplicationColumnPermissionProps> = 
                     };
                   })}
                   onChange={(values) => {
-                    let changeValues: UserColumnProperty[] = [];
+                    let changeValues: UserColumnProperty[] = [...props.selectedData];
                     for (let i = 0; i < values.length; i++) {
                       const group = values[i];
                       for (let j = 0; j < group.items.length; j++) {
                         const item = group.items[j];
-                        // 跳过未配置的
-                        if (
-                          item.items.length === item.items.filter(p => p.enabled).length &&
-                          item.items.filter(p => p.isEnableDataMask).length === 0
-                        ) {
-                          continue;
-                        }
+                        // // 跳过未配置的
+                        // if (
+                        //   item.items.length === item.items.filter(p => p.enabled).length &&
+                        //   item.items.filter(p => p.isEnableDataMask).length === 0
+                        // ) {
+                        //   continue;
+                        // }
                         for (let k = 0; k < item.items.length; k++) {
                           const kItem = item.items[k];
-                          changeValues.push({
-                            appId: p.applicationId,
-                            ...kItem,
-                          });
+                          const index = changeValues.findIndex(c =>
+                            c.appId === d.applicationId &&
+                            c.columnKey === kItem.columnKey &&
+                            c.columnType === kItem.columnType
+                          );
+                          if (index === -1) {
+                            changeValues.push({
+                              appId: d.applicationId,
+                              ...kItem,
+                            });
+                          } else {
+                            changeValues[index] = {
+                              appId: d.applicationId,
+                              ...kItem,
+                            };
+                          }
                         }
                       }
                     }

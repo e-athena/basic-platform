@@ -146,7 +146,7 @@ const TableList: React.FC = () => {
             label: '分配权限',
           });
         }
-        if (canAccessible(permission.role.assignDataPermissionsAsync, resource)) {
+        if (canAccessible(permission.role.assignColumnPermissionsAsync, resource)) {
           moreItems.push({
             key: 'columnPermission',
             icon: <DeleteColumnOutlined />,

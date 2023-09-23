@@ -614,19 +614,16 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
     /// <summary>
     /// 读取用户列权限
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="userId"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync(string type, string? userId)
+    public async Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync(string id)
     {
-        userId ??= UserId;
         // 读取用户的角色列权限
         var list = await QueryNoTracking<RoleColumnPermission>()
-            .Where(p => p.ColumnType == type)
             // 读取用户的角色
             .Where(p => QueryNoTracking<RoleUser>()
                 .As("c")
-                .Where(c => c.UserId == userId)
+                .Where(c => c.UserId == id)
                 .Any(c => c.RoleId == p.RoleId)
             )
             .ToListAsync(p => new GetUserColumnPermissionsResponse
@@ -648,8 +645,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
 
         // 读取用户的数据权限
         var userPermissionList = await QueryNoTracking<UserColumnPermission>()
-            .Where(p => p.ColumnType == type)
-            .Where(p => p.UserId == userId)
+            .Where(p => p.UserId == id)
             // 读取未过期的
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new GetUserColumnPermissionsResponse
@@ -664,6 +660,69 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
                 MaskPosition = p.MaskPosition,
                 MaskChar = p.MaskChar
             });
+
+        // 以用户的为准，因为可对用户进行个性化设置
+        foreach (var item in userPermissionList)
+        {
+            // 查询
+            var single = list
+                .FirstOrDefault(p => p.ColumnKey == item.ColumnKey);
+            if (single == null)
+            {
+                list.Add(item);
+                continue;
+            }
+
+            single.Enabled = item.Enabled;
+            single.IsEnableDataMask = item.IsEnableDataMask;
+            single.DataMaskType = item.DataMaskType;
+            single.MaskLength = item.MaskLength;
+            single.MaskPosition = item.MaskPosition;
+            single.MaskChar = item.MaskChar;
+        }
+
+        // 去重
+        list = list
+            .GroupBy(p => p.ColumnKey)
+            .Select(p => p.First())
+            .ToList();
+
+        return list;
+    }
+
+    /// <summary>
+    /// 读取用户列权限
+    /// </summary>
+    /// <param name="moduleName"></param>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    public async Task<List<UserColumnPermissionModel>> GetColumnPermissionsByModuleNameAsync(
+        string moduleName,
+        string? userId,
+        string? appId
+    )
+    {
+        userId ??= UserId;
+        // 读取用户的角色列权限
+        var list = await QueryNoTracking<RoleColumnPermission>()
+            .Where(p => p.ColumnType == moduleName)
+            .HasWhere(appId, p => p.AppId == appId)
+            // 读取用户的角色
+            .Where(p => QueryNoTracking<RoleUser>()
+                .As("c")
+                .Where(c => c.UserId == userId)
+                .Any(c => c.RoleId == p.RoleId)
+            )
+            .ToListAsync<UserColumnPermissionModel>();
+        // 读取用户的数据权限
+        var userPermissionList = await QueryNoTracking<UserColumnPermission>()
+            .Where(p => p.ColumnType == moduleName)
+            .Where(p => p.UserId == userId)
+            .HasWhere(appId, p => p.AppId == appId)
+            // 读取未过期的
+            .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
+            .ToListAsync<UserColumnPermissionModel>();
 
         // 以用户的为准，因为可对用户进行个性化设置
         foreach (var item in userPermissionList)

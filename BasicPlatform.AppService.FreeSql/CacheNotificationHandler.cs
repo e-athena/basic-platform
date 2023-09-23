@@ -11,7 +11,8 @@ public class CacheNotificationHandler :
     IDomainEventHandler<UserUpdatedEvent>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
     IDomainEventHandler<RoleColumnPermissionAssignedEvent>,
-    IDomainEventHandler<UserDataPermissionAssignedEvent>
+    IDomainEventHandler<UserDataPermissionAssignedEvent>,
+    IDomainEventHandler<UserColumnPermissionAssignedEvent>
 {
     private readonly ICacheManager _cacheManager;
     private readonly IFreeSql _freeSql;
@@ -120,6 +121,21 @@ public class CacheNotificationHandler :
         var patternKey2 = string.Format(CacheConstant.UserPolicyQueryPatternKey, userId);
         await _cacheManager.RemovePatternAsync(patternKey2, cancellationToken);
         var patternKey = string.Format(CacheConstant.UserPolicyFilterGroupQueryPatternKey, userId);
+        await _cacheManager.RemovePatternAsync(patternKey, cancellationToken);
+    }
+
+    /// <summary>
+    /// 清除用户数据权限相关的缓存
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
+    public async Task Handle(UserColumnPermissionAssignedEvent notification, CancellationToken cancellationToken)
+    {
+        var userId = notification.GetId();
+        var patternKey = string.Format(CacheConstant.UserColumnPermissionPatternKey, userId);
         await _cacheManager.RemovePatternAsync(patternKey, cancellationToken);
     }
 }

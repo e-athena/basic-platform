@@ -1,14 +1,15 @@
 import { submitHandle } from '@/utils/utils';
-import { ModalForm } from '@ant-design/pro-components';
+import { ModalForm, ProFormDateTimePicker } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
 import { columnPermission, assignColumnPermissions } from '../service';
 import ApplicationColumnPermission, { UserColumnProperty } from '@/components/ApplicationColumnPermission';
+import { Empty, Spin } from 'antd';
 
 type ColumnPermissionFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
   open: boolean;
-  roleId: string;
+  userId: string;
   title?: string;
 };
 
@@ -17,7 +18,7 @@ const ColumnPermissionForm: React.FC<ColumnPermissionFormProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     const fetch = async () => {
-      const result = await columnPermission(props.roleId);
+      const result = await columnPermission(props.userId);
       setLoading(false);
       if (result.success) {
         const data = result.data || [];
@@ -44,7 +45,7 @@ const ColumnPermissionForm: React.FC<ColumnPermissionFormProps> = (props) => {
         },
         destroyOnClose: true,
       }}
-      onFinish={async () => {
+      onFinish={async (values) => {
         let permissions: API.ColumnPermissionItem[] = [];
         // 根据columnType分组，然后将每组的数据转换成API.ColumnPermissionItem
         const groupByColumnType = (selectedData || []).reduce((prev, current) => {
@@ -75,7 +76,8 @@ const ColumnPermissionForm: React.FC<ColumnPermissionFormProps> = (props) => {
           }
         }
         const succeed = await submitHandle(assignColumnPermissions, {
-          id: props.roleId,
+          ...values,
+          id: props.userId,
           permissions,
         });
         if (succeed) {
@@ -84,13 +86,26 @@ const ColumnPermissionForm: React.FC<ColumnPermissionFormProps> = (props) => {
       }}
       loading={loading}
     >
-      {!loading && selectedData &&
+      <ProFormDateTimePicker
+        name="expireAt"
+        label="有效期至"
+        tooltip="权限授权的有效期，超过有效期将自动失效。"
+        placeholder={'请选择'}
+        formItemProps={{
+          style: {
+            marginBottom: 0,
+          },
+        }}
+      />
+      {!loading && selectedData ?
         <ApplicationColumnPermission
           onChange={(value) => {
             setSelectedData(value);
           }}
           selectedData={selectedData}
-        />
+        /> : <Spin>
+          <Empty description={'加载中'} />
+        </Spin>
       }
     </ModalForm>
   );

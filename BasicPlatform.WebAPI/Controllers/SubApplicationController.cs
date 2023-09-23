@@ -48,6 +48,23 @@ public class SubApplicationController : ControllerBase
         return _queryService.GetUserCustomColumnsAsync(appId, moduleName, userId);
     }
 
+    /// <summary>
+    /// 读取用户列权限
+    /// </summary>
+    /// <param name="appId"></param>
+    /// <param name="moduleName"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<List<UserColumnPermissionModel>> GetUserColumnPermissionsAsync(
+        string appId,
+        string moduleName,
+        string userId
+    )
+    {
+        return _queryService.GetColumnPermissionsByModuleNameAsync(moduleName, userId, appId);
+    }
+
     #region 用户
 
     /// <summary>

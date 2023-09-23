@@ -139,8 +139,20 @@ public interface IUserQueryService
     /// <summary>
     /// 读取用户列权限
     /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync(string id);
+
+    /// <summary>
+    /// 读取用户列权限
+    /// </summary>
     /// <param name="type"></param>
     /// <param name="userId"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
-    Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync(string type, string? userId = null);
+    Task<List<UserColumnPermissionModel>> GetColumnPermissionsByModuleNameAsync(
+        string type,
+        string? userId = null,
+        string? appId = null
+    );
 }

@@ -325,4 +325,15 @@ public class User : EntityCore, ICreator, IUpdater
         LastUpdatedUserId = updatedUserId;
         ApplyEvent(new UserDataPermissionAssignedEvent(permissions));
     }
+
+    /// <summary>
+    /// 分配列权限
+    /// </summary>
+    /// <param name="permissions"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignColumnPermissions(List<UserColumnPermission> permissions, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new UserColumnPermissionAssignedEvent(permissions));
+    }
 }
