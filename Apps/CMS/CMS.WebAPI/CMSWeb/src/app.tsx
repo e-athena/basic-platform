@@ -102,7 +102,8 @@ export async function getInitialState(): Promise<{
     const apiResources = await fetchApiResources();
     const externalPages = (await fetchExternalPages()) || [];
     // SignalR
-    const noticeConnectionHub = await fetchSignalRConnectionNotice();
+    // 如果是在主应用中，不需要连接通知中心
+    const noticeConnectionHub = isQiankun() ? undefined : (await fetchSignalRConnectionNotice());
     // const eventConnectionHub = await fetchSignalRConnectionEvent(token);
     return {
       fetchMenuData,

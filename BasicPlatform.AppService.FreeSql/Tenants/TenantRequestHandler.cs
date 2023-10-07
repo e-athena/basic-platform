@@ -6,7 +6,7 @@ namespace BasicPlatform.AppService.FreeSql.Tenants;
 /// <summary>
 /// 租户请求处理程序
 /// </summary>
-public class TenantRequestHandler : AppServiceBase<Tenant>,
+public class TenantRequestHandler : ServiceBase<Tenant>,
     IRequestHandler<CreateTenantRequest, string>,
     IRequestHandler<UpdateTenantRequest, string>,
     IRequestHandler<ChangeTenantStatusRequest, string>,
@@ -43,6 +43,7 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
             id,
             request.Name,
             request.Code,
+            request.IsolationLevel,
             request.ContactName,
             request.ContactPhoneNumber,
             request.ContactEmail,
@@ -53,8 +54,9 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
             UserId,
             request.Applications.Select(x =>
                     new TenantApplication(id,
-                        x.ApplicationId,
-                        x.ConnectionString ?? string.Empty,
+                        x.ApplicationClientId,
+                        x.IsolationLevel,
+                        x.ConnectionString,
                         x.ExpiredTime,
                         UserId,
                         x.IsEnabled
@@ -87,6 +89,7 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
         entity.Update(
             request.Name,
             request.Code,
+            request.IsolationLevel,
             request.ContactName,
             request.ContactPhoneNumber,
             request.ContactEmail,
@@ -98,8 +101,9 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
             request.Applications.Select(x =>
                     new TenantApplication(
                         request.Id!,
-                        x.ApplicationId,
-                        x.ConnectionString ?? string.Empty,
+                        x.ApplicationClientId,
+                        x.IsolationLevel,
+                        x.ConnectionString,
                         x.ExpiredTime,
                         UserId,
                         x.IsEnabled
@@ -156,6 +160,7 @@ public class TenantRequestHandler : AppServiceBase<Tenant>,
         {
             throw FriendlyException.Of("租户不存在");
         }
+
         entity.InitDatabase(request.UserId ?? UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;

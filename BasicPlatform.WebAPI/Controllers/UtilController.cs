@@ -34,6 +34,24 @@ public class UtilController : ControllerBase
         _securityContextAccessor = securityContextAccessor;
         _logger = loggerFactory.CreateLogger<UtilController>();
     }
+    
+    /// <summary>
+    /// 读取租户信息
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="tenantCode"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [BasicAuthFilter]
+    public Task<TenantInfo> GetTenantInfoAsync(
+        [FromServices] ITenantQueryService service,
+        [FromQuery] string tenantCode,
+        [FromQuery] string appId
+    )
+    {
+        return service.GetAsync(tenantCode, appId);
+    }
 
     /// <summary>
     /// 读取菜单资源
@@ -394,8 +412,75 @@ public class UtilController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public Task<GetTrackConfigInfoResponse?> GetTestConfigInfoAsync([FromServices] ITrackConfigService service, string id)
+    public Task<GetTrackConfigInfoResponse?> GetTestConfigInfoAsync([FromServices] ITrackConfigService service,
+        string id)
     {
         return service.GetAsync(id);
     }
+
+    /// <summary>
+    /// 根据目录读取所有目录及文件
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [IgnoreApiResultFilter]
+    public Task<List<DirectoryOrFile>> GetDirectoryInfoAsync(string path)
+    {
+        var dir = new DirectoryInfo(path);
+        return Task.FromResult(dir.GetDirectories().Select(GetDirectoryInfo).ToList());
+    }
+
+    private static readonly string[] IgnoreDirs =
+    {
+        ".git", "bin", "obj", "node_modules", "packages", "dist", "build", "logs", ".umi", ".umi-production", ".vscode",
+        ".idea", ".vs"
+    };
+
+    // 递归读取目录及文件
+    private static DirectoryOrFile GetDirectoryInfo(DirectoryInfo dir)
+    {
+        var result = new DirectoryOrFile
+        {
+            Name = dir.Name,
+            FullName = dir.FullName,
+            IsDirectory = true
+        };
+
+        if (IgnoreDirs.Contains(dir.Name))
+        {
+            return result;
+        }
+
+        foreach (var directory in dir.GetDirectories())
+        {
+            var dir1 = GetDirectoryInfo(directory);
+            if (IgnoreDirs.Contains(dir1.Name))
+            {
+                continue;
+            }
+
+            result.Directories.Add(dir1);
+        }
+
+        foreach (var file in dir.GetFiles())
+        {
+            result.Directories.Add(new DirectoryOrFile
+            {
+                Name = file.Name,
+                FullName = file.FullName,
+                IsDirectory = false
+            });
+        }
+
+        return result;
+    }
+}
+
+public class DirectoryOrFile
+{
+    public string Name { get; set; }
+    public string FullName { get; set; }
+    public bool IsDirectory { get; set; }
+    public List<DirectoryOrFile> Directories { get; set; } = new List<DirectoryOrFile>();
 }

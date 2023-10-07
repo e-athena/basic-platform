@@ -1,6 +1,6 @@
 import { submitHandle } from '@/utils/utils';
-import { ProFormText, ProFormTextArea, ModalForm, ProForm, ProFormDatePicker, ProCard, ProTable } from '@ant-design/pro-components';
-import { Checkbox, DatePicker, FormInstance, Input, message } from 'antd';
+import { ProFormText, ProFormTextArea, ModalForm, ProForm, ProFormDatePicker, ProCard, ProTable, ProFormRadio, ProFormDependency } from '@ant-design/pro-components';
+import { Checkbox, DatePicker, FormInstance, Input, Select, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { update, create } from '../service';
 import dayjs from 'dayjs';
@@ -27,6 +27,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           isEnabled: false,
           applicationId: item.value,
           applicationName: item.label,
+          isolationLevel: 2,
           connectionString: null,
           expiredTime: null,
         } as unknown as API.TenantApplicationItem)));
@@ -64,7 +65,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         const enabledApplications = dataSource.filter((item) => item.isEnabled);
         if (enabledApplications.length > 0) {
           const invalidApplication = enabledApplications.find((item) => item.connectionString === undefined || item.connectionString === null || item.connectionString === '');
-          if (invalidApplication !== undefined) {
+          if (invalidApplication !== undefined && invalidApplication.isolationLevel === 1) {
             message.error(`子应用【${invalidApplication.applicationName}】启用了，必须填写连接字符串`);
             return false;
           }
@@ -114,6 +115,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                     width="md"
                     tooltip={'唯一标识'}
                     placeholder={'请输入'}
+                    disabled={props.values?.id !== undefined}
                     rules={[
                       {
                         required: true,
@@ -122,18 +124,50 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                     ]}
                   />
                 </ProForm.Group>
-                <ProFormText
-                  name="connectionString"
-                  label={'数据库连接字符串'}
-                  tooltip={'用户租户数据隔离'}
-                  placeholder={'例：sqlite,Data Source=test_local.db;'}
+                <ProFormRadio.Group
+                  name="isolationLevel"
+                  label="数据隔离方式"
+                  tooltip={'独立数据库：每个租户独立的数据库，共享数据库：与主租户共享一个数据库'}
+                  disabled={props.values?.id !== undefined && props.values?.isInitDatabase}
+                  options={[
+                    {
+                      label: '独立数据库',
+                      value: 1,
+                    },
+                    {
+                      label: '共享数据库',
+                      value: 2,
+                    },
+                  ]}
                   rules={[
                     {
                       required: true,
-                      message: '请输入数据库连接字符串',
+                      message: '请选择',
                     },
                   ]}
                 />
+                <ProFormDependency name={['isolationLevel']}>
+                  {({ isolationLevel }) => {
+                    return (
+                      <>
+                        {isolationLevel === 1 && (
+                          <ProFormText
+                            name="connectionString"
+                            label={'数据库连接字符串'}
+                            tooltip={'用户租户数据隔离'}
+                            placeholder={'例：sqlite,Data Source=test_local.db;'}
+                            rules={[
+                              {
+                                required: true,
+                                message: '请输入数据库连接字符串',
+                              },
+                            ]}
+                          />
+                        )}
+                      </>
+                    );
+                  }}
+                </ProFormDependency>
                 <ProForm.Group>
                   <ProFormText
                     name="contactName"
@@ -231,6 +265,35 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                       ellipsis: true,
                     },
                     {
+                      title: '隔离方式',
+                      dataIndex: 'isolationLevel',
+                      width: 100,
+                      tooltip: '独立数据库：每个租户独立的数据库，共享数据库：与主租户共享一个数据库',
+                      render: (_, entity) => {
+                        return <>
+                          <Select
+                            value={entity.isolationLevel}
+                            style={{ width: 75 }}
+                            onChange={(value) => {
+                              entity.isolationLevel = value;
+                              setDataSource([...dataSource]);
+                            }}
+                            disabled={props.values?.id !== undefined && props.values?.isInitDatabase}
+                            options={[
+                              {
+                                label: '独立',
+                                value: 1,
+                              },
+                              {
+                                label: '共享',
+                                value: 2,
+                              },
+                            ]}
+                          />
+                        </>;
+                      },
+                    },
+                    {
                       title: '连接字符串',
                       dataIndex: 'connectionString',
                       tooltip: '数据库连接字符串',
@@ -240,6 +303,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                         return <Input
                           value={connectionString}
                           placeholder={'例：sqlite,Data Source=test_local.db;'}
+                          disabled={entity.isolationLevel === 2}
                           onChange={(e) => {
                             entity.connectionString = e.target.value;
                             setDataSource([...dataSource]);
@@ -268,7 +332,8 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                         return <DatePicker
                           value={null}
                           onChange={(e) => {
-                            console.log(e);
+                            entity.expiredTime = e === null ? null : e?.format('YYYY-MM-DD');
+                            setDataSource([...dataSource]);
                           }}
                           placeholder={'请选择'}
                         />

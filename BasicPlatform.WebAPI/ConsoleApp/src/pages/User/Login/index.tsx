@@ -212,6 +212,12 @@ const Login: React.FC = () => {
   };
   const { status, type: loginType, errorMessage } = userLoginState;
 
+  const appSettings: AppSettings = {
+    logo: 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
+    title: 'Athena Pro',
+    subTitle: '.NET Core下更好用且功能强大的通用基础权限管理平台'
+  };
+
   return (
     <div className={containerClassName}>
       <Helmet>
@@ -235,26 +241,19 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png" width={44} height={44} />}
+          logo={<img alt="logo" src={appSettings.logo || "https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png"} width={44} height={44} />}
           title={<>
-            <span>Athena Pro</span>
+            <span>{appSettings.title || 'Athena Pro'}</span>
             {tenantCode && <Tag
               color="purple"
               closable
               onClose={(e) => {
                 e.stopPropagation();
                 setTenantCode(undefined);
-                // Modal.confirm({
-                //   title: '确认切换租户？',
-                //   content: '切换租户后，当前登录信息将失效，需要重新登录。',
-                //   onOk: () => {
-                //     setTenantCode(undefined);
-                //     window.location.reload();
-                //   }
-                // });
               }}>{tenantCode}</Tag>}
           </>}
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          // subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          subTitle={appSettings.subTitle || 'Athena Pro'}
           initialValues={{
             rememberMe: true,
           }}

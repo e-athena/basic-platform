@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// <summary>
 /// 角色请求处理程序
 /// </summary>
-public class RoleRequestHandler : AppServiceBase<Role>,
+public class RoleRequestHandler : ServiceBase<Role>,
     IRequestHandler<CreateRoleRequest, string>,
     IRequestHandler<UpdateRoleRequest, string>,
     IRequestHandler<RoleStatusChangeRequest, string>,

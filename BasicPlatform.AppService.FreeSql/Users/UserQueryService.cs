@@ -15,7 +15,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// 用户服务接口实现类
 /// </summary>
 [Component(LifeStyle.Transient)]
-public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
+public class UserQueryService : QueryServiceBase<User>, IUserQueryService
 {
     private readonly IRoleQueryService _roleQueryService;
 
@@ -166,7 +166,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         if (IsTenantEnvironment)
         {
             // 判断租户是否生效或过期
-            var tenant = await DefaultQueryNoTracking<Tenant>()
+            var tenant = await MainQueryNoTracking<Tenant>()
                 .Where(p => p.Code == TenantId)
                 .ToOneAsync();
 
@@ -401,7 +401,7 @@ public class UserQueryService : AppQueryServiceBase<User>, IUserQueryService
         // 如果是租户管理员，直接返回授权的所有资源
         if (IsTenantAdmin)
         {
-            return await DefaultQueryNoTracking<TenantResource>()
+            return await MainQueryNoTracking<TenantResource>()
                 .Where(p => p.Tenant.Code == TenantId)
                 .ToListAsync(p => new ResourceModel
                 {

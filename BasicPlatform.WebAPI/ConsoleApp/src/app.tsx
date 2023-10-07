@@ -142,6 +142,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       });
   }
 
+  const appSettings: AppSettings = {
+    logo: 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
+    title: 'Athena Pro',
+  };
+
   return {
     actionsRender: () => [
       <TenantInfo key={'tenant'} />,
@@ -313,6 +318,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           ? 'realDark'
           : 'light'
         : initialState?.customNavTheme,
+    ...appSettings
   };
 };
 

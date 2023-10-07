@@ -8,7 +8,7 @@ namespace BasicPlatform.AppService.FreeSql.Organizations;
 /// 
 /// </summary>
 [Component(LifeStyle.Transient)]
-public class OrganizationQueryService : AppQueryServiceBase<Organization>, IOrganizationQueryService
+public class OrganizationQueryService : QueryServiceBase<Organization>, IOrganizationQueryService
 {
     /// <summary>
     /// 

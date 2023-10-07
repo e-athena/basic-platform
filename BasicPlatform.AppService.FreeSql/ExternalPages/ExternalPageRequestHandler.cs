@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.FreeSql.ExternalPages;
 /// <summary>
 /// 组织架构请求处理程序
 /// </summary>
-public class ExternalPageRequestHandler : AppServiceBase<ExternalPage>,
+public class ExternalPageRequestHandler : ServiceBase<ExternalPage>,
     IRequestHandler<CreateExternalPageRequest, string>,
     IRequestHandler<UpdateExternalPageRequest, string>,
     IRequestHandler<DeleteExternalPageRequest, string>

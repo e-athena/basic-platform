@@ -11,6 +11,7 @@ export type UserColumnProperty = {
 type ApplicationColumnPermissionProps = {
   onChange: (data: UserColumnProperty[]) => void;
   selectedData: UserColumnProperty[];
+  title: string;
 };
 
 const ApplicationColumnPermission: React.FC<ApplicationColumnPermissionProps> = (props) => {
@@ -43,6 +44,7 @@ const ApplicationColumnPermission: React.FC<ApplicationColumnPermissionProps> = 
               key: d.applicationId,
               children: (
                 <ColumnPermission
+                  title={props.title}
                   data={(d.dataPermissionGroups || []).map(p => {
                     return {
                       displayName: p.displayName!,

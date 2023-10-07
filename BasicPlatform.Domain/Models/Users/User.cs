@@ -6,7 +6,7 @@ namespace BasicPlatform.Domain.Models.Users;
 /// 用户
 /// </summary>
 [Table("authority_users")]
-public class User : EntityCore, ICreator, IUpdater
+public class User : FullEntityCore
 {
     /// <summary>
     /// 用户名
@@ -86,21 +86,9 @@ public class User : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 更新人

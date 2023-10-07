@@ -5,7 +5,7 @@ namespace BasicPlatform.Domain.Models.Users;
 /// </summary>
 [Table("authority_user_groups")]
 // ReSharper disable once ClassNeverInstantiated.Global
-public class UserGroup : EntityCore, ICreator, IUpdater
+public class UserGroup : FullEntityCore
 {
   /// <summary>
   /// 名称
@@ -29,21 +29,9 @@ public class UserGroup : EntityCore, ICreator, IUpdater
   public Status Status { get; set; } = Status.Enabled;
 
   /// <summary>
-  /// 创建人Id
-  /// </summary>
-  [MaxLength(36)]
-  public string? CreatedUserId { get; set; }
-
-  /// <summary>
   /// 创建人
   /// </summary>
   public virtual User? CreatedUser { get; set; }
-
-  /// <summary>
-  /// 最后更新人Id
-  /// </summary>
-  [MaxLength(36)]
-  public string? LastUpdatedUserId { get; set; }
 
   /// <summary>
   /// 最后更新人

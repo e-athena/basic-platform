@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.FreeSql.Applications;
 /// <summary>
 /// 网站系统应用请求处理程序
 /// </summary>
-public class ApplicationRequestHandler : AppServiceBase<Application>,
+public class ApplicationRequestHandler : ServiceBase<Application>,
     IRequestHandler<CreateApplicationRequest, string>,
     IRequestHandler<UpdateApplicationRequest, string>,
     IRequestHandler<ApplicationStatusChangeRequest, string>

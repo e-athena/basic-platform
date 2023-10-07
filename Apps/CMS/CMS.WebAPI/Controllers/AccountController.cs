@@ -1,6 +1,4 @@
 using Athena.Infrastructure.Jwt;
-using Athena.InstantMessaging;
-using Athena.InstantMessaging.Models;
 
 namespace CMS.WebAPI.Controllers;
 
@@ -19,7 +17,6 @@ public class AccountController : ControllerBase
     [HttpGet]
     [Authorize]
     public async Task<dynamic> CurrentUserAsync(
-        [FromServices] INoticeHubService noticeHubService,
         [FromServices] IApiPermissionCacheService service,
         [FromServices] ISecurityContextAccessor accessor,
         [FromServices] IUserService userService
@@ -47,14 +44,6 @@ public class AccountController : ControllerBase
                 user.ResourceCodes
             );
         }
-
-        // 发送上线通知
-        await noticeHubService.SendMessageToAllAsync(new InstantMessaging<string>
-        {
-            NoticeType = "OnlineNotice",
-            Data = $"{user.RealName}上线啦~",
-            Type = MessageType.Notice,
-        });
 
         return await Task.FromResult(new
         {

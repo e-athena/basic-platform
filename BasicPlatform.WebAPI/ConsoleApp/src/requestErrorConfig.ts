@@ -147,6 +147,10 @@ export const errorConfig: RequestConfig = {
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理
       const url = `${API_URL}${config?.url}`;
+      // 如果是登录接口，则不需要 token
+      if (config?.url?.includes('/api/account/login')) {
+        return { ...config, url };
+      }
       const authHeader = { Authorization: getToken() };
       config.headers = { ...config.headers, ...authHeader };
       return { ...config, url };

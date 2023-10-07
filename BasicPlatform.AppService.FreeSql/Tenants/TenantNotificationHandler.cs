@@ -6,7 +6,7 @@ namespace BasicPlatform.AppService.FreeSql.Tenants;
 /// <summary>
 /// 租户通知处理器
 /// </summary>
-public class TenantNotificationHandler : AppServiceBase<Tenant>,
+public class TenantNotificationHandler : ServiceBase<Tenant>,
     IDomainEventHandler<TenantResourceAssignedEvent>,
     IDomainEventHandler<TenantCreatedEvent>,
     IDomainEventHandler<TenantUpdatedEvent>

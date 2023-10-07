@@ -5,7 +5,7 @@ namespace BasicPlatform.AppService.FreeSql.Organizations;
 /// <summary>
 /// 组织架构请求处理程序
 /// </summary>
-public class OrganizationRequestHandler : AppServiceBase<Organization>,
+public class OrganizationRequestHandler : ServiceBase<Organization>,
     IRequestHandler<CreateOrganizationRequest, string>,
     IRequestHandler<UpdateOrganizationRequest, string>,
     IRequestHandler<OrganizationStatusChangeRequest, string>

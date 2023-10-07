@@ -3,7 +3,6 @@ using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Positions;
 using BasicPlatform.AppService.Roles;
-using BasicPlatform.AppService.Tenants;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
@@ -330,27 +329,6 @@ public class SubApplicationController : ControllerBase
         [FromQuery] string organizationId)
     {
         return service.GetSelectListAsync(organizationId);
-    }
-
-    #endregion
-
-    #region 租户
-
-    /// <summary>
-    /// 读取租户连接字符串
-    /// </summary>
-    /// <param name="service"></param>
-    /// <param name="tenantCode"></param>
-    /// <param name="appId"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<string> GetTenantConnectionStringAsync(
-        [FromServices] ITenantQueryService service,
-        [FromQuery] string tenantCode,
-        [FromQuery] string appId
-    )
-    {
-        return service.GetConnectionStringAsync(tenantCode, appId);
     }
 
     #endregion

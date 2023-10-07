@@ -16,6 +16,11 @@ public class TenantModel : ModelBase
     public string Code { get; set; } = null!;
 
     /// <summary>
+    /// 租户类型
+    /// </summary>
+    public TenantIsolationLevel IsolationLevel { get; set; }
+
+    /// <summary>
     /// 联系人姓名
     /// </summary>
     public string ContactName { get; set; } = null!;
@@ -34,7 +39,7 @@ public class TenantModel : ModelBase
     /// 数据库链接字符串
     /// <remarks>主应用的</remarks>
     /// </summary>
-    public string ConnectionString { get; set; } = null!;
+    public string? ConnectionString { get; set; }
 
     /// <summary>
     /// 备注

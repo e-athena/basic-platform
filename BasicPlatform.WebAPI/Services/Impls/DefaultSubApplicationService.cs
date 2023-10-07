@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Applications;
-using BasicPlatform.AppService.Tenants;
 
 namespace BasicPlatform.WebAPI.Services.Impls;
 

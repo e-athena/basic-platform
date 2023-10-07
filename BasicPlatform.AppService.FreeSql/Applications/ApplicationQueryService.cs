@@ -10,7 +10,7 @@ namespace BasicPlatform.AppService.FreeSql.Applications;
 /// 网站系统应用查询接口服务实现类
 /// </summary>
 [Component]
-public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplicationQueryService
+public class ApplicationQueryService : QueryServiceBase<Application>, IApplicationQueryService
 {
     private readonly ICacheManager _cacheManager;
 
@@ -68,7 +68,7 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
         var cacheKey = $"sso:application:secret:{clientId}";
         return _cacheManager.GetOrCreate(cacheKey, () =>
         {
-            return DefaultQueryableNoTracking
+            return MainQueryableNoTracking
                 .Where(p => p.ClientId == clientId)
                 .ToOne(p => p.ClientSecret);
         }, TimeSpan.FromMinutes(30));
@@ -83,24 +83,21 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
         // 如果是租户环境
         if (IsTenantEnvironment)
         {
-            return await DefaultQueryNoTracking<TenantApplication>()
-                .Where(p => p.Application.Environment == AspNetCoreEnvironment)
+            var clientIdList = await MainQueryNoTracking<TenantApplication>()
                 .Where(p => p.IsEnabled)
-                .Where(p => p.Application.Status == Status.Enabled)
-                .ToListAsync(p => new ApplicationModel
-                {
-                    Id = p.Application.Id,
-                    Environment = p.Application.Environment,
-                    Name = p.Application.Name,
-                    ClientId = p.Application.ClientId,
-                    ClientSecret = p.Application.ClientSecret,
-                    UseDefaultClientSecret = p.Application.UseDefaultClientSecret,
-                    FrontendUrl = p.Application.FrontendUrl,
-                    ApiUrl = p.Application.ApiUrl,
-                    MenuResourceRoute = p.Application.MenuResourceRoute,
-                    PermissionResourceRoute = p.Application.PermissionResourceRoute,
-                    Remarks = p.Application.Remarks
-                });
+                // .Where(p => p.Application.Status == Status.Enabled)
+                // .GroupBy(p => p.Application.ClientId)
+                .GroupBy(p => p.ApplicationClientId)
+                .ToListAsync(p => p.Key);
+            if (clientIdList == null || clientIdList.Count == 0)
+            {
+                return new List<ApplicationModel>();
+            }
+
+            return await MainQueryNoTracking<Application>()
+                .Where(p => p.Environment == AspNetCoreEnvironment)
+                .Where(p => clientIdList.Contains(p.ClientId))
+                .ToListAsync<ApplicationModel>();
         }
 
         return await QueryableNoTracking
@@ -166,22 +163,26 @@ public class ApplicationQueryService : AppQueryServiceBase<Application>, IApplic
         // 如果是租户环境
         if (IsTenantEnvironment)
         {
-            // 读取租户应用
-            return await DefaultQueryNoTracking<TenantApplication>()
-                .Where(p => p.Application.ClientId == clientId)
-                .ToOneAsync(p => new ApplicationModel
-                {
-                    Id = p.Application.Id,
-                    Name = p.Application.Name,
-                    ClientId = p.Application.ClientId,
-                    ClientSecret = p.Application.ClientSecret,
-                    UseDefaultClientSecret = p.Application.UseDefaultClientSecret,
-                    FrontendUrl = p.Application.FrontendUrl,
-                    ApiUrl = p.Application.ApiUrl,
-                    MenuResourceRoute = p.Application.MenuResourceRoute,
-                    PermissionResourceRoute = p.Application.PermissionResourceRoute,
-                    Remarks = p.Application.Remarks
-                });
+            return await MainQueryNoTracking<Application>()
+                .Where(p => p.ClientId == clientId)
+                .Where(p => p.Environment == AspNetCoreEnvironment)
+                .ToOneAsync<ApplicationModel>()!;
+            // // 读取租户应用
+            // return await MainQueryNoTracking<TenantApplication>()
+            //     .Where(p => p.Application.ClientId == clientId)
+            //     .ToOneAsync(p => new ApplicationModel
+            //     {
+            //         Id = p.Application.Id,
+            //         Name = p.Application.Name,
+            //         ClientId = p.Application.ClientId,
+            //         ClientSecret = p.Application.ClientSecret,
+            //         UseDefaultClientSecret = p.Application.UseDefaultClientSecret,
+            //         FrontendUrl = p.Application.FrontendUrl,
+            //         ApiUrl = p.Application.ApiUrl,
+            //         MenuResourceRoute = p.Application.MenuResourceRoute,
+            //         PermissionResourceRoute = p.Application.PermissionResourceRoute,
+            //         Remarks = p.Application.Remarks
+            //     });
         }
 
         return await QueryableNoTracking

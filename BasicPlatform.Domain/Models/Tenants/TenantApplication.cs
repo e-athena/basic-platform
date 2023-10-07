@@ -1,3 +1,5 @@
+using Athena.Infrastructure.Tenants;
+
 namespace BasicPlatform.Domain.Models.Tenants;
 
 /// <summary>
@@ -17,21 +19,31 @@ public class TenantApplication : ValueObject
     /// </summary>
     public virtual Tenant Tenant { get; set; } = null!;
 
-    /// <summary>
-    /// 应用ID
-    /// </summary>
-    [MaxLength(36)]
-    public string ApplicationId { get; set; } = null!;
+    // /// <summary>
+    // /// 应用ID
+    // /// </summary>
+    // [MaxLength(36)]
+    // public string ApplicationId { get; set; } = null!;
+    //
+    // /// <summary>
+    // /// 应用
+    // /// </summary>
+    // public virtual Application Application { get; set; } = null!;
 
     /// <summary>
-    /// 应用
+    /// 子应用客户端ID
     /// </summary>
-    public virtual Application Application { get; set; } = null!;
+    public string ApplicationClientId { get; set; } = null!;
+
+    /// <summary>
+    /// 租户类型
+    /// </summary>
+    public TenantIsolationLevel IsolationLevel { get; set; } = TenantIsolationLevel.Shared;
 
     /// <summary>
     /// 数据库链接字符串
     /// </summary>
-    public string ConnectionString { get; set; } = null!;
+    public string? ConnectionString { get; set; }
 
     /// <summary>
     /// 订阅过期时间
@@ -60,23 +72,26 @@ public class TenantApplication : ValueObject
     /// 创建
     /// </summary>
     /// <param name="tenantId"></param>
-    /// <param name="applicationId"></param>
+    /// <param name="applicationClientId"></param>
+    /// <param name="isolationLevel"></param>
     /// <param name="connectionString"></param>
     /// <param name="expiredTime"></param>
     /// <param name="createdUserId"></param>
     /// <param name="isEnabled"></param>
     public TenantApplication(
         string tenantId,
-        string applicationId,
-        string connectionString,
+        string applicationClientId,
+        TenantIsolationLevel isolationLevel,
+        string? connectionString,
         DateTime? expiredTime,
         string? createdUserId,
         bool isEnabled
     )
     {
         TenantId = tenantId;
-        ApplicationId = applicationId;
-        ConnectionString = connectionString != string.Empty ? SecurityHelper.Encrypt(connectionString) : string.Empty;
+        ApplicationClientId = applicationClientId;
+        IsolationLevel = isolationLevel;
+        ConnectionString = string.IsNullOrEmpty(connectionString) ? null : SecurityHelper.Encrypt(connectionString);
         ExpiredTime = expiredTime;
         CreatedUserId = createdUserId;
         IsEnabled = isEnabled;

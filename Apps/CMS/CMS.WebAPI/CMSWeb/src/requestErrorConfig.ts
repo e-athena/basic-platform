@@ -153,7 +153,12 @@ export const errorConfig: RequestConfig = {
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理
       const url = `${API_URL}${config?.url}`;
-      const authHeader = { Authorization: getToken() };
+      const authHeader: any = {
+        Authorization: getToken()
+      };
+      if (isQiankun()) {
+        authHeader.AppId = APPID;
+      }
       config.headers = { ...config.headers, ...authHeader };
       return { ...config, url };
     },

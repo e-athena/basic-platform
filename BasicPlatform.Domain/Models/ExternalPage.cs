@@ -6,7 +6,7 @@ namespace BasicPlatform.Domain.Models;
 /// 外部页面管理
 /// </summary>
 [Table("authority_external_pages")]
-public class ExternalPage : EntityCore, ICreator, IUpdater
+public class ExternalPage : FullEntityCore
 {
     /// <summary>
     /// 上级ID
@@ -64,21 +64,9 @@ public class ExternalPage : EntityCore, ICreator, IUpdater
     public string? Remarks { get; set; }
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人

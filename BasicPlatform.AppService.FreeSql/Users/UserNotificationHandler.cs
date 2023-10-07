@@ -6,7 +6,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// <summary>
 /// 用户通知处理器
 /// </summary>
-public class UserNotificationHandler : AppServiceBase<User>,
+public class UserNotificationHandler : ServiceBase<User>,
     IDomainEventHandler<UserDataPermissionAssignedEvent>,
     IDomainEventHandler<UserColumnPermissionAssignedEvent>
 {

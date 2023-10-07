@@ -9,6 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import React from 'react';
 import { createSuperAdmin, updateSuperAdmin } from '../service';
+import { Modal } from 'antd';
 
 type CreateOrUpdateSuperAdminFormProps = {
   onCancel: () => void;
@@ -42,14 +43,24 @@ const CreateOrUpdateSuperAdminForm: React.FC<CreateOrUpdateSuperAdminFormProps> 
         if (values.avatar === undefined) {
           values.avatar = generateTextImage(values.realName!, 400, 400);
         }
-        let succeed;
         if (isUpdate) {
-          succeed = await submitHandle(updateSuperAdmin, values);
+          const succeed = await submitHandle(updateSuperAdmin, values);
+          if (succeed) {
+            props.onSuccess();
+          }
         } else {
-          succeed = await submitHandle(createSuperAdmin, values as API.CreateTenantSuperAdminRequest);
-        }
-        if (succeed) {
-          props.onSuccess();
+          // 创建管理员后不能修改数据隔离方式，确定要创建吗？
+          Modal.confirm({
+            title: '系统提示',
+            content: '创建后将不能修改`数据隔离方式`，确定要创建吗？',
+            onOk: async () => {
+              const succeed = await submitHandle(createSuperAdmin, values as API.CreateTenantSuperAdminRequest);
+              if (succeed) {
+                props.onSuccess();
+              }
+            },
+          });
+          // succeed = await submitHandle(createSuperAdmin, values as API.CreateTenantSuperAdminRequest);
         }
       }}
       initialValues={{

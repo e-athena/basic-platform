@@ -16,6 +16,7 @@ export type ColumnConfigType = {
 type ColumnPermissionProps = {
   data: ColumnConfigGroup[];
   onChange: (data: ColumnConfigGroup[]) => void;
+  title: string;
 };
 
 const ColumnPermission: React.FC<ColumnPermissionProps> = (props) => {
@@ -154,7 +155,8 @@ const ColumnPermission: React.FC<ColumnPermissionProps> = (props) => {
       />
       {configOpen && currentRow && (
         <ColumnConfig
-          title={`${currentRow?.displayName} - 数据列权限配置`}
+          // title={`${currentRow?.displayName} - 数据列权限配置`}
+          title={`${currentRow?.displayName} - ${props.title}`}
           onCancel={() => {
             setCurrentRow(undefined);
             setConfigOpen(false);

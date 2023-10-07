@@ -6,7 +6,7 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// <summary>
 /// 角色通知处理器
 /// </summary>
-public class RoleNotificationHandler : AppServiceBase<Role>,
+public class RoleNotificationHandler : ServiceBase<Role>,
     IDomainEventHandler<RoleResourceAssignedEvent>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
     IDomainEventHandler<RoleColumnPermissionAssignedEvent>,

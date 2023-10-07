@@ -12,7 +12,7 @@ namespace CMS.AppService.FreeSql.Articles;
 /// 网站系统应用查询接口服务实现类
 /// </summary>
 [Component]
-public class ArticleQueryService : AppQueryServiceBase<Article>, IArticleQueryService
+public class ArticleQueryService : QueryServiceBase<Article>, IArticleQueryService
 {
     public ArticleQueryService(IFreeSql freeSql, ISecurityContextAccessor accessor) : base(freeSql, accessor)
     {

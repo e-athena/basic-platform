@@ -31,10 +31,22 @@ const LoginRedirect: React.FC = () => {
       });
     }
   };
+  const fetchApiResources = async () => {
+    const resources = await initialState?.fetchApiResources?.();
+    if (resources) {
+      flushSync(() => {
+        setInitialState((s) => ({
+          ...s,
+          apiResources: resources,
+        }));
+      });
+    }
+  };
   useEffect(() => {
     const fetch = async () => {
       setToken(query.token as string);
       await fetchUserInfo();
+      await fetchApiResources();
       let redirect = (query?.redirect as string) || '/';
       if (isQiankun()) {
         redirect = '/';

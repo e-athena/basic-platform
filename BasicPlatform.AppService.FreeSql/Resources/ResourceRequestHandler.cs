@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Resources;
 /// <summary>
 /// 资源请求处理程序
 /// </summary>
-public class ResourceRequestHandler : AppServiceBase<Resource>,
+public class ResourceRequestHandler : ServiceBase<Resource>,
     IRequestHandler<SyncResourceRequest, int>
 {
     /// <summary>

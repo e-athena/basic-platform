@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// <summary>
 /// 用户请求处理程序
 /// </summary>
-public class UserRequestHandler : AppServiceBase<User>,
+public class UserRequestHandler : ServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UpdateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>,

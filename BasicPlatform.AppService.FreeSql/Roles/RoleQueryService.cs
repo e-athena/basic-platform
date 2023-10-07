@@ -11,7 +11,7 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// 角色查询服务接口实现类
 /// </summary>
 [Component]
-public class RoleQueryService : AppQueryServiceBase<Role>, IRoleQueryService
+public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
 {
     /// <summary>
     /// 

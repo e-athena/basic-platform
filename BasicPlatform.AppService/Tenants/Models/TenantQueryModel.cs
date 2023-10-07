@@ -12,6 +12,12 @@ public class TenantQueryModel : QueryModelBase
     public string Name { get; set; } = null!;
 
     /// <summary>
+    /// 数据隔离方式
+    /// </summary>
+    [TableColumn(Sort = 1, Width = 140)]
+    public TenantIsolationLevel IsolationLevel { get; set; }
+
+    /// <summary>
     /// 编码
     /// </summary>
     [TableColumn(Sort = 5, Width = 100)]

@@ -32,6 +32,13 @@ declare const CDN_ADDRESS: string;
 /** 租户编码存储Key */
 declare const APP_TENANT_CODE_KEY: string;
 
+/** 应用设置 */
+declare interface AppSettings {
+  logo?: string;
+  title?: string;
+  subTitle?: string;
+}
+
 /**
  * 分页结构
  */

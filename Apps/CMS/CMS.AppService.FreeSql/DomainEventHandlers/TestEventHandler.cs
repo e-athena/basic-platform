@@ -7,7 +7,7 @@ namespace CMS.AppService.FreeSql.DomainEventHandlers;
 /// <summary>
 /// 测试领域事件
 /// </summary>
-public class TestEventHandler : AppServiceBase<Article>,
+public class TestEventHandler : ServiceBase<Article>,
     IDomainEventHandler<ArticlePublishedEvent>
 {
     public TestEventHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor) : base(

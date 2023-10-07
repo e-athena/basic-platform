@@ -6,17 +6,16 @@ namespace BasicPlatform.AppService.FreeSql.Commons;
 /// 租户服务
 /// </summary>
 [Component(LifeStyle.Singleton)]
-public class TenantService : ITenantService
+public class TenantService : QueryServiceBase<Tenant>, ITenantService
 {
-    private readonly IFreeSql _freeSql;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="freeSql"></param>
-    public TenantService(IFreeSql freeSql)
+    /// <param name="multiTenancy"></param>
+    /// <param name="accessor"></param>
+    public TenantService(FreeSqlMultiTenancy multiTenancy, ISecurityContextAccessor accessor) : base(multiTenancy, accessor)
     {
-        _freeSql = freeSql;
     }
 
     /// <summary>
@@ -28,15 +27,15 @@ public class TenantService : ITenantService
     /// <exception cref="FriendlyException"></exception>
     public async Task<TenantInfo?> GetAsync(string tenantCode, string? appId)
     {
-        var result = await _freeSql.Queryable<Tenant>()
+        var result = await MainQueryableNoTracking
             .Where(p => p.Code == tenantCode)
             .FirstAsync(p => new TenantInfo
             {
-                ConnectionString = p.ConnectionString,
+                ConnectionString = p.ConnectionString ?? string.Empty,
                 DbKey = p.Code,
-                DataType = null
+                IsolationLevel = p.IsolationLevel
             });
-        if (result == null)
+        if (result == null || result.IsolationLevel == TenantIsolationLevel.Shared)
         {
             return result;
         }

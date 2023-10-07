@@ -46,5 +46,5 @@ export function updateSuperAdmin(data: API.UpdateTenantSuperAdminRequest) {
 
 /** 同步数据库结构 */
 export function syncStructure(code: string) {
-  return get<string>('/api/Tenant/SyncStructure', { code });
+  return get<string>('/api/Tenant/SyncStructure', { code, tenant_id: code });
 }

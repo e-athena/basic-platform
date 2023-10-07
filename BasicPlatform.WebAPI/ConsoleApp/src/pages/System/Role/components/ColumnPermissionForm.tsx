@@ -31,7 +31,7 @@ const ColumnPermissionForm: React.FC<ColumnPermissionFormProps> = (props) => {
   return (
     <ModalForm
       // width={960}
-      title={props.title || '分配权限'}
+      title={props.title || '分配列权限'}
       open={props.open}
       modalProps={{
         onCancel: () => {
@@ -86,6 +86,7 @@ const ColumnPermissionForm: React.FC<ColumnPermissionFormProps> = (props) => {
     >
       {!loading && selectedData &&
         <ApplicationColumnPermission
+          title={props.title || '分配列权限'}
           onChange={(value) => {
             setSelectedData(value);
           }}
