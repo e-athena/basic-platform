@@ -98,6 +98,7 @@ declare namespace API {
     isEnabled: boolean;
     applicationId: string;
     applicationName: string;
+    applicationClientId: string;
     isolationLevel: number,
     connectionString: string | null;
     expiredTime: string | null;

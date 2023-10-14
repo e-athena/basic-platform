@@ -1,6 +1,3 @@
-using Athena.Infrastructure.Tenants;
-using BasicPlatform.Domain.Models.Tenants.Events;
-
 namespace BasicPlatform.Domain.Models.Tenants;
 
 /// <summary>
@@ -100,7 +97,7 @@ public class Tenant : FullEntityCore
     /// <param name="contactName"></param>
     /// <param name="contactPhoneNumber"></param>
     public Tenant(string id,
-        string name, string code,
+        string name, string? code,
         TenantIsolationLevel isolationLevel,
         string contactName,
         string contactPhoneNumber,
@@ -114,7 +111,7 @@ public class Tenant : FullEntityCore
     ) : base(id)
     {
         Name = name;
-        Code = code;
+        Code = code ?? ObjectId.GenerateNewStringId();;
         ContactName = contactName;
         ContactPhoneNumber = contactPhoneNumber;
         ContactEmail = contactEmail;
@@ -142,7 +139,7 @@ public class Tenant : FullEntityCore
         CreatedUserId = createdUserId;
         Status = Status.Enabled;
 
-        ApplyEvent(new TenantCreatedEvent(name, code, contactName, contactPhoneNumber, contactEmail,
+        ApplyEvent(new TenantCreatedEvent(name, Code, contactName, contactPhoneNumber, contactEmail,
             connectionString, remarks, effectiveTime, expiredTime, Status, createdUserId, applications));
     }
 

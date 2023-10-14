@@ -27,6 +27,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           isEnabled: false,
           applicationId: item.value,
           applicationName: item.label,
+          applicationClientId: item.extend,
           isolationLevel: 2,
           connectionString: null,
           expiredTime: null,
@@ -113,15 +114,15 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
                     name="code"
                     label={'编码'}
                     width="md"
-                    tooltip={'唯一标识'}
-                    placeholder={'请输入'}
+                    tooltip={'唯一标识，为空时自动生成。'}
+                    placeholder={'请输入，为空时自动生成。'}
                     disabled={props.values?.id !== undefined}
-                    rules={[
-                      {
-                        required: true,
-                        message: '请输入租户编码',
-                      },
-                    ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: '请输入租户编码',
+                  //   },
+                  // ]}
                   />
                 </ProForm.Group>
                 <ProFormRadio.Group

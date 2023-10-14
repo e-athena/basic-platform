@@ -13,6 +13,7 @@ import IconStatus from '@/components/IconStatus';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import AuthorizationForm from './components/AuthorizationForm';
 import CreateOrUpdateSuperAdminForm from './components/CreateOrUpdateSuperAdminForm';
+import { setItem } from '@/utils/storage';
 
 const TableList: React.FC = () => {
   const [createOrUpdateModalOpen, handleCreateOrUpdateModalOpen] = useState<boolean>(false);
@@ -43,6 +44,35 @@ const TableList: React.FC = () => {
   /**需要重写的Column */
   const [defaultColumns] = useState<ProColumns<API.TenantListItem>[]>([
     {
+      dataIndex: 'expiredTime',
+      render(_, entity) {
+
+        // 过期时间
+        // 1. 如果为null，显示永久有效且显示绿色
+        // 2. 已过期，显示已过期，显示格式为已过期多少天，显示灰色
+        // 3. 未过期，显示未过期，显示格式为: 剩余多少天，如果小于30天，显示红色，如果小于24小时，显示剩余多少小时
+        const expiredTime = entity.expiredTime;
+        const now = new Date();
+        const expired = new Date(expiredTime);
+        const diff = expired.getTime() - now.getTime();
+        const days = Math.floor(diff / (24 * 3600 * 1000));
+        const hours = Math.floor((diff % (24 * 3600 * 1000)) / (3600 * 1000));
+        if (expiredTime === null) {
+          return <span style={{ color: 'green' }}>永久有效</span>
+        }
+        if (days < 0) {
+          return <span style={{ color: 'red' }}>已过期{Math.abs(days)}天</span>
+        }
+        if (days === 0 && hours < 24) {
+          return <span style={{ color: 'red' }}>剩余{hours}小时</span>
+        }
+        if (days < 30) {
+          return <span style={{ color: 'red' }}>剩余{days}天</span>
+        }
+        return <span>剩余{days}天</span>
+      }
+    },
+    {
       dataIndex: 'code',
       render(_, entity) {
         return <Tooltip placement={'top'} title={'点击登录'}>
@@ -50,6 +80,22 @@ const TableList: React.FC = () => {
             shape="circle"
             type={'link'}
             onClick={() => {
+              // 如果已过期
+              if (entity.expiredTime !== null && new Date(entity.expiredTime) < new Date()) {
+                // 提示已过期
+                message.error('租户已过期');
+                return;
+              }
+              // // 如果未初始化
+              // if (!entity.isInitDatabase) {
+              //   // 提示未创建超级管理员
+              //   message.error('请先创建超级管理员');
+              //   return;
+              // }
+              setItem(APP_TENANT_INFO_KEY, JSON.stringify({
+                code: entity.code,
+                name: entity.name,
+              }));
               history.push(`/user/login?t_code=${entity.code}`);
             }}>
             {entity.code}

@@ -64,13 +64,13 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
             throw FriendlyException.Of("租户不存在");
         }
 
-        var clientIds = entity.Applications.Select(p => p.ApplicationClientId).ToList();
+        // var clientIds = entity.Applications.Select(p => p.ApplicationClientId).ToList();
 
         // 读取应用列表
         var applications = await QueryNoTracking<Application>()
             .Where(p => p.Status == Status.Enabled)
             .Where(p => p.Environment == AspNetCoreEnvironment)
-            .Where(p => clientIds.Contains(p.ClientId))
+            // .Where(p => clientIds.Contains(p.ClientId))
             .ToListAsync(cancellationToken);
 
         var tenantApplications = new List<TenantApplicationModel>();
@@ -84,7 +84,10 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
             {
                 TenantId = id,
                 ApplicationName = app.Name,
-                IsolationLevel = TenantIsolationLevel.Shared
+                IsolationLevel = TenantIsolationLevel.Shared,
+                ApplicationClientId = app.ClientId,
+                IsEnabled = true,
+                ApplicationApiUrl = app.ApiUrl
             };
             item.ConnectionString = string.IsNullOrEmpty(item.ConnectionString)
                 ? string.Empty

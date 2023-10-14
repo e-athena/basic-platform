@@ -13,7 +13,7 @@ public class TenantModel : ModelBase
     /// <summary>
     /// 唯一编码
     /// </summary>
-    public string Code { get; set; } = null!;
+    public string? Code { get; set; }
 
     /// <summary>
     /// 租户类型

@@ -107,10 +107,13 @@ const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const query: QueryProps = parse(history.location.search.split('?')[1], '&');
   const { clientId, redirectUrl, t_code } = query;
-  const [tenantCode, setTenantCode] = useLocalStorageState<string | undefined>(APP_TENANT_CODE_KEY);
+  const [tenantInfo, setTenantInfo] = useLocalStorageState<TenantInfo | undefined>(APP_TENANT_INFO_KEY);
   useEffect(() => {
-    if (t_code && t_code !== tenantCode) {
-      setTenantCode(t_code);
+    if (t_code && t_code !== tenantInfo?.code) {
+      setTenantInfo({
+        code: t_code,
+        name: t_code,
+      });
     }
   }, [t_code]);
 
@@ -157,7 +160,7 @@ const Login: React.FC = () => {
       if (clientId) {
         values.clientId = clientId as string;
       }
-      const res = await login({ ...values, type, tenantId: tenantCode });
+      const res = await login({ ...values, type, tenantId: tenantInfo?.code });
       if (res.success) {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -244,13 +247,13 @@ const Login: React.FC = () => {
           logo={<img alt="logo" src={appSettings.logo || "https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png"} width={44} height={44} />}
           title={<>
             <span>{appSettings.title || 'Athena Pro'}</span>
-            {tenantCode && <Tag
+            {tenantInfo?.code && <Tag
               color="purple"
               closable
               onClose={(e) => {
                 e.stopPropagation();
-                setTenantCode(undefined);
-              }}>{tenantCode}</Tag>}
+                setTenantInfo(undefined);
+              }}>{tenantInfo?.name}</Tag>}
           </>}
           // subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           subTitle={appSettings.subTitle || 'Athena Pro'}

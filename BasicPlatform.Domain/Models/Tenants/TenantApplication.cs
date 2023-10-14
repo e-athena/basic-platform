@@ -1,5 +1,3 @@
-using Athena.Infrastructure.Tenants;
-
 namespace BasicPlatform.Domain.Models.Tenants;
 
 /// <summary>

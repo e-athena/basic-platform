@@ -34,6 +34,9 @@ export async function getInitialState(): Promise<{
   customNavTheme?: 'realDark' | 'light' | undefined;
   setCustomNavTheme?: (theme: string) => void;
   settings?: Partial<LayoutSettings>;
+  /**
+   * 当前用户信息
+   */
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
@@ -45,6 +48,9 @@ export async function getInitialState(): Promise<{
     API.ApplicationDataPermissionResourceInfo[]
   >;
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
+  /**
+   * 扩展页面
+   */
   externalPages?: API.ExternalPage[];
   noticeConnectionHub?: HubConnection;
   fetchSignalRConnectionNotice?: (token: string) => Promise<HubConnection>;

@@ -166,6 +166,6 @@ export default defineConfig({
     APP_SESSION_CODE_KEY: 'basic_platform_session_code',
     LOGIN_PATH: '/user/login',
     CDN_ADDRESS: 'https://cdn.gzwjz.com',
-    APP_TENANT_CODE_KEY: 'basic_platform_tenant_code',
+    APP_TENANT_INFO_KEY: 'basic_platform_tenant_info',
   },
 });

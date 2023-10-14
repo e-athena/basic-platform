@@ -34,7 +34,7 @@ public class UtilController : ControllerBase
         _securityContextAccessor = securityContextAccessor;
         _logger = loggerFactory.CreateLogger<UtilController>();
     }
-    
+
     /// <summary>
     /// 读取租户信息
     /// </summary>
@@ -477,10 +477,28 @@ public class UtilController : ControllerBase
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public class DirectoryOrFile
 {
-    public string Name { get; set; }
-    public string FullName { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? FullName { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public bool IsDirectory { get; set; }
-    public List<DirectoryOrFile> Directories { get; set; } = new List<DirectoryOrFile>();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public List<DirectoryOrFile> Directories { get; set; } = new();
 }

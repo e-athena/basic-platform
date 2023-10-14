@@ -114,11 +114,13 @@ public class ApplicationQueryService : QueryServiceBase<Application>, IApplicati
     public Task<List<SelectViewModel>> GetSelectListAsync()
     {
         return QueryableNoTracking
+            .Where(p => p.Environment == AspNetCoreEnvironment)
             .ToListAsync(p => new SelectViewModel
             {
                 Value = p.Id,
                 Label = p.Name,
-                Disabled = p.Status == Status.Disabled
+                Disabled = p.Status == Status.Disabled,
+                Extend = p.ClientId
             });
     }
 

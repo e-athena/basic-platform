@@ -31,11 +31,14 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
     /// <returns></returns>
     public async Task<string> Handle(CreateTenantRequest request, CancellationToken cancellationToken)
     {
-        // 租户编码唯一检查
-        var exists = await QueryableNoTracking.Where(p => p.Code == request.Code).AnyAsync(cancellationToken);
-        if (exists)
+        if (!string.IsNullOrEmpty(request.Code))
         {
-            throw FriendlyException.Of("租户编码已存在");
+            // 租户编码唯一检查
+            var exists = await QueryableNoTracking.Where(p => p.Code == request.Code).AnyAsync(cancellationToken);
+            if (exists)
+            {
+                throw FriendlyException.Of("租户编码已存在");
+            }
         }
 
         var id = ObjectId.GenerateNewStringId();
@@ -88,7 +91,7 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
         var entity = await GetForUpdateAsync(request.Id!, cancellationToken);
         entity.Update(
             request.Name,
-            request.Code,
+            request.Code!,
             request.IsolationLevel,
             request.ContactName,
             request.ContactPhoneNumber,
