@@ -143,6 +143,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         const find = defaultColumns.find((x) => x.dataIndex === item.dataIndex);
         if (find !== undefined) {
           find.title = find.title || item.title;
+          find.tooltip = find.tooltip || item.tooltip;
           // find.hideInTable = find.dataIndex === 'option' ? find.hideInTable : item.hideInTable;
           find.hideInTable = find.hideInTable || item.hideInTable;
           find.hideInDescriptions = find.hideInDescriptions || item.hideInDescriptions;

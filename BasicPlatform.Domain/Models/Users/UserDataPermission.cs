@@ -13,12 +13,6 @@ public class UserDataPermission : ValueObject
     public string? ApplicationId { get; set; }
 
     /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; } = null!;
-
-    /// <summary>
     /// 用户ID
     /// </summary>
     /// <value></value>
@@ -78,10 +72,25 @@ public class UserDataPermission : ValueObject
     /// </summary>
     public DateTime? ExpireAt { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public UserDataPermission()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="userId"></param>
+    /// <param name="resourceKey"></param>
+    /// <param name="dataScope"></param>
+    /// <param name="dataScopeCustom"></param>
+    /// <param name="policyResourceKey"></param>
+    /// <param name="policy"></param>
+    /// <param name="enabled"></param>
+    /// <param name="expireAt"></param>
     public UserDataPermission(
         string? applicationId,
         string userId,

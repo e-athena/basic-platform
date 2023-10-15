@@ -39,7 +39,8 @@ public interface IRoleQueryService
     /// <param name="organizationId">组织架构Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<List<SelectViewModel>> GetSelectListAsync(string organizationId,CancellationToken cancellationToken = default);
+    Task<List<SelectViewModel>>
+        GetSelectListAsync(string organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 读取用户拥有的角色
@@ -55,4 +56,11 @@ public interface IRoleQueryService
     /// <param name="id"></param>
     /// <returns></returns>
     Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync(string id);
+
+    /// <summary>
+    /// 读取列权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<RoleColumnPermissionModel>> GetColumnPermissionsAsync(string id);
 }

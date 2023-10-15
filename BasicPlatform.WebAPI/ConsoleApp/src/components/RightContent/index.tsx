@@ -33,12 +33,12 @@ export const Question = () => {
 };
 
 export const TenantInfo = () => {
-  const [tenantCode] = useLocalStorageState<string>(APP_TENANT_CODE_KEY);
-  if (!tenantCode) {
+  const [tenantInfo] = useLocalStorageState<TenantInfo | undefined>(APP_TENANT_INFO_KEY);
+  if (!tenantInfo) {
     return null;
   }
   return (
-    <Tag color="purple">{tenantCode}</Tag>
+    <Tag color="purple">{tenantInfo.name}</Tag>
   );
 }
 

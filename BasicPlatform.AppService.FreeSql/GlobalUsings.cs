@@ -22,6 +22,7 @@ global using Athena.Infrastructure.Caching;
 global using BasicPlatform.Infrastructure.Caches;
 global using Athena.Infrastructure.FrontEndTables;
 global using Athena.Infrastructure;
+global using Athena.Infrastructure.EventTracking.Aop;
 global using Athena.Infrastructure.FreeSql.Tenants;
 global using Athena.Infrastructure.Helpers;
 global using Athena.Infrastructure.Providers;

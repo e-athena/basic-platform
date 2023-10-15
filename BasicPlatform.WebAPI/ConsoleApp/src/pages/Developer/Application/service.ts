@@ -24,3 +24,8 @@ export function update(data: API.UpdateApplicationItem) {
 export function statusChange(id: string) {
   return put('/api/Application/StatusChange', { id });
 }
+
+/** 读取环境列表 */
+export function getEnvironmentList() {
+  return get<string[]>('/api/Application/GetEnvironmentList');
+}

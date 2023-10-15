@@ -1,7 +1,7 @@
 namespace BasicPlatform.Domain.Models.Users.Events;
 
 /// <summary>
-/// 
+/// 用户创建成功
 /// </summary>
 public class UserCreatedEvent : EventBase
 {
@@ -46,6 +46,17 @@ public class UserCreatedEvent : EventBase
     /// </summary>
     public string? CreatedUserId { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <param name="realName"></param>
+    /// <param name="gender"></param>
+    /// <param name="nickName"></param>
+    /// <param name="phoneNumber"></param>
+    /// <param name="email"></param>
+    /// <param name="isTenantAdmin"></param>
+    /// <param name="createdUserId"></param>
     public UserCreatedEvent(string userName, string realName, Gender gender, string? nickName,
         string? phoneNumber, string? email, bool isTenantAdmin, string? createdUserId)
     {

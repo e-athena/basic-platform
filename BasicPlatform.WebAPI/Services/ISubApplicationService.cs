@@ -8,6 +8,13 @@ public interface ISubApplicationService
     /// <summary>
     /// 读取菜单资源
     /// </summary>
+    /// <param name="resourceUrl"></param>
+    /// <returns></returns>
+    Task<List<MenuTreeInfo>> GetMenuResourcesAsync(string resourceUrl);
+
+    /// <summary>
+    /// 读取菜单资源
+    /// </summary>
     /// <param name="resources"></param>
     /// <returns></returns>
     Task<List<ApplicationResourceInfo>> GetMenuResourcesAsync(IList<ResourceModel>? resources);

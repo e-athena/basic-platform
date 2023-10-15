@@ -10,6 +10,10 @@ public class TenantResourceAssignedEvent : EventBase
     /// </summary>
     public List<TenantResource> Resources { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="resources"></param>
     public TenantResourceAssignedEvent(List<TenantResource> resources)
     {
         Resources = resources;

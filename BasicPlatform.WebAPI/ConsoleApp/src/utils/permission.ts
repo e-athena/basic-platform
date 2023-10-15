@@ -54,6 +54,8 @@ export default {
         assignResourcesAsync: 'RoleController_AssignResourcesAsync',
         /** 分配权限 */
         assignDataPermissionsAsync: 'RoleController_AssignDataPermissionsAsync',
+        /** 分配列权限 */
+        assignColumnPermissionsAsync: 'RoleController_AssignColumnPermissionsAsync',
         /** 分配用户 */
         assignUsersAsync: 'RoleController_AssignUsersAsync',
     },
@@ -104,6 +106,8 @@ export default {
         assignResourcesAsync: 'UserController_AssignResourcesAsync',
         /** 分配权限 */
         assignDataPermissionsAsync: 'UserController_AssignDataPermissionsAsync',
+        /** 分配列权限 */
+        assignColumnPermissionsAsync: 'UserController_AssignColumnPermissionsAsync',
         /** 重置密码 */
         resetPasswordAsync: 'UserController_ResetPasswordAsync',
         /** 读取资源 */
@@ -125,6 +129,30 @@ export default {
         putAsync: 'ApplicationController_PutAsync',
         /** 状态变更 */
         statusChangeAsync: 'ApplicationController_StatusChangeAsync',
+    },
+    /** 事件追踪配置管理 */
+    eventTrackingConfig: {
+        /** 读取列表 */
+        getPagingAsync: 'EventTrackingConfigController_GetPagingAsync',
+        /** 根据ID读取 */
+        getAsync: 'EventTrackingConfigController_GetAsync',
+        /** 根据追踪特性列表 */
+        getSelectList: 'event-tracking-select-list',
+        /** 根据事件下拉列表 */
+        getEventSelectList: 'event-tracking-event-select-list',
+        /** 保存 */
+        saveAsync: 'EventTrackingConfigController_SaveAsync',
+        /** 删除 */
+        deleteAsync: 'EventTrackingConfigController_DeleteAsync',
+    },
+    /** 事件追踪管理 */
+    eventTracking: {
+        /** 读取列表 */
+        getPagingAsync: 'EventTrackingController_GetPagingAsync',
+        /** 根据ID读取 */
+        getAsync: 'EventTrackingController_GetAsync',
+        /** 根据ID读取 */
+        getDecompositionTreeGraphAsync: 'EventTrackingController_GetDecompositionTreeGraphAsync',
     },
     /** 资源管理 */
     resource: {

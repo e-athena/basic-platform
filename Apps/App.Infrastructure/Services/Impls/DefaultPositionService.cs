@@ -8,8 +8,6 @@ namespace App.Infrastructure.Services.Impls;
 [Component]
 public class DefaultPositionService : DefaultServiceBase, IPositionService
 {
-    private const string ApiUrl = "http://localhost:5078";
-
     public DefaultPositionService(ISecurityContextAccessor accessor) : base(accessor)
     {
     }
@@ -21,7 +19,7 @@ public class DefaultPositionService : DefaultServiceBase, IPositionService
     /// <returns></returns>
     public async Task<List<SelectViewModel>> GetSelectListAsync(string? organizationId = null)
     {
-        var url = $"{ApiUrl}/api/SubApplication/GetPositionSelectList";
+        var url = "/api/SubApplication/GetPositionSelectList";
         if (!string.IsNullOrEmpty(organizationId))
         {
             url += $"?organizationId={organizationId}";

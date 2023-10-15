@@ -1,12 +1,13 @@
 using Athena.Infrastructure.Event.Interfaces;
-using CMS.Domain.Models.Events;
+using CMS.Domain.Models.Articles;
+using CMS.Domain.Models.Articles.Events;
 
 namespace CMS.AppService.FreeSql.DomainEventHandlers;
 
 /// <summary>
 /// 测试领域事件
 /// </summary>
-public class TestEventHandler : AppServiceBase<Article>,
+public class TestEventHandler : ServiceBase<Article>,
     IDomainEventHandler<ArticlePublishedEvent>
 {
     public TestEventHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor) : base(

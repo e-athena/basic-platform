@@ -1,5 +1,15 @@
+using Athena.Infrastructure.EventTracking;
+using Athena.Infrastructure.EventTracking.Enums;
+using Athena.Infrastructure.EventTracking.Messaging.Models;
+using Athena.Infrastructure.EventTracking.Messaging.Requests;
+using Athena.Infrastructure.EventTracking.Messaging.Responses;
+using Athena.Infrastructure.EventTracking.Models;
 using BasicPlatform.AppService.Applications;
+using BasicPlatform.AppService.FreeSql.Users;
+using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Users;
+using BasicPlatform.Domain.Models.Users.Events;
+using BasicPlatform.ProcessManager;
 using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers;
@@ -23,6 +33,24 @@ public class UtilController : ControllerBase
     {
         _securityContextAccessor = securityContextAccessor;
         _logger = loggerFactory.CreateLogger<UtilController>();
+    }
+
+    /// <summary>
+    /// 读取租户信息
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="tenantCode"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [BasicAuthFilter]
+    public Task<TenantInfo> GetTenantInfoAsync(
+        [FromServices] ITenantQueryService service,
+        [FromQuery] string tenantCode,
+        [FromQuery] string appId
+    )
+    {
+        return service.GetAsync(tenantCode, appId);
     }
 
     /// <summary>
@@ -284,4 +312,193 @@ public class UtilController : ControllerBase
     {
         return Content("ok");
     }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [IgnoreApiResultFilter]
+    public async Task<IActionResult> TestAsync([FromServices] ITrackConfigService service)
+    {
+        var test = new List<TrackConfig>();
+        var root = new TrackConfig
+        {
+            EventName = "创建用户",
+            EventTypeName = nameof(UserCreatedEvent),
+            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
+        };
+        test.Add(root);
+        var sub1 = new TrackConfig
+        {
+            ConfigId = root.Id,
+            ParentId = root.Id,
+            EventName = "用户通知",
+            EventTypeName = nameof(UserCreatedEvent),
+            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
+            ProcessorName = nameof(UserNotificationHandler),
+            ProcessorFullName = typeof(UserNotificationHandler).FullName!,
+            EventType = EventType.DomainEvent
+        };
+        test.Add(sub1);
+        var sub3 = new TrackConfig
+        {
+            ConfigId = root.Id,
+            ParentId = root.Id,
+            EventName = "租户设置为已初始化",
+            EventTypeName = nameof(UserCreatedEvent),
+            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
+            ProcessorName = nameof(TenantProcessManager),
+            ProcessorFullName = typeof(TenantProcessManager).FullName!,
+        };
+        test.Add(sub3);
+
+        await service.SaveAsync(new SaveTrackConfigRequest
+        {
+            Configs = test
+        });
+
+        return Content("ok");
+    }
+
+    /// <summary>
+    /// 测试
+    /// </summary>
+    /// <param name="mediator"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<string> Test1([FromServices] IMediator mediator)
+    {
+        return mediator.SendAsync(new InitTenantRequest
+        {
+            Code = "baidu666"
+        });
+    }
+
+    /// <summary>
+    /// 检查授权
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<Paging<GetTrackPagingResponse>> GetTestPagingAsync([FromServices] ITrackStorageService service)
+    {
+        return service.GetPagingAsync(new GetTrackPagingRequest());
+    }
+
+    /// <summary>
+    /// 检查授权
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<GetTrackInfoResponse?> GetTestInfoAsync([FromServices] ITrackStorageService service, string traceId)
+    {
+        return service.GetAsync(traceId);
+    }
+
+    /// <summary>
+    /// 检查授权
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<DecompositionTreeGraphModel?> GetTestInfo1Async([FromServices] ITrackStorageService service,
+        string traceId)
+    {
+        return service.GetDecompositionTreeGraphAsync(traceId);
+    }
+
+    /// <summary>
+    /// 读取配置ID
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public Task<GetTrackConfigInfoResponse?> GetTestConfigInfoAsync([FromServices] ITrackConfigService service,
+        string id)
+    {
+        return service.GetAsync(id);
+    }
+
+    /// <summary>
+    /// 根据目录读取所有目录及文件
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [IgnoreApiResultFilter]
+    public Task<List<DirectoryOrFile>> GetDirectoryInfoAsync(string path)
+    {
+        var dir = new DirectoryInfo(path);
+        return Task.FromResult(dir.GetDirectories().Select(GetDirectoryInfo).ToList());
+    }
+
+    private static readonly string[] IgnoreDirs =
+    {
+        ".git", "bin", "obj", "node_modules", "packages", "dist", "build", "logs", ".umi", ".umi-production", ".vscode",
+        ".idea", ".vs"
+    };
+
+    // 递归读取目录及文件
+    private static DirectoryOrFile GetDirectoryInfo(DirectoryInfo dir)
+    {
+        var result = new DirectoryOrFile
+        {
+            Name = dir.Name,
+            FullName = dir.FullName,
+            IsDirectory = true
+        };
+
+        if (IgnoreDirs.Contains(dir.Name))
+        {
+            return result;
+        }
+
+        foreach (var directory in dir.GetDirectories())
+        {
+            var dir1 = GetDirectoryInfo(directory);
+            if (IgnoreDirs.Contains(dir1.Name))
+            {
+                continue;
+            }
+
+            result.Directories.Add(dir1);
+        }
+
+        foreach (var file in dir.GetFiles())
+        {
+            result.Directories.Add(new DirectoryOrFile
+            {
+                Name = file.Name,
+                FullName = file.FullName,
+                IsDirectory = false
+            });
+        }
+
+        return result;
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
+public class DirectoryOrFile
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? FullName { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool IsDirectory { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public List<DirectoryOrFile> Directories { get; set; } = new();
 }

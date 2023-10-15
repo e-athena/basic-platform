@@ -7,7 +7,7 @@ namespace BasicPlatform.Domain.Models.Roles;
 /// 角色
 /// </summary>
 [Table("authority_roles")]
-public class Role : EntityCore, ICreator, IUpdater
+public class Role : FullEntityCore
 {
     /// <summary>
     /// 名称
@@ -41,21 +41,9 @@ public class Role : EntityCore, ICreator, IUpdater
     public string? DataScopeCustom { get; set; }
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
@@ -126,6 +114,18 @@ public class Role : EntityCore, ICreator, IUpdater
         LastUpdatedUserId = updatedUserId;
         ApplyEvent(new RoleDataPermissionAssignedEvent(permissions));
     }
+
+    /// <summary>
+    /// 分配列权限
+    /// </summary>
+    /// <param name="permissions"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignColumnPermissions(List<RoleColumnPermission> permissions, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new RoleColumnPermissionAssignedEvent(permissions));
+    }
+
 
     /// <summary>
     /// 分配资源

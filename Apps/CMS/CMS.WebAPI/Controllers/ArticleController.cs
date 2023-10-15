@@ -2,7 +2,6 @@ using App.Infrastructure.Messaging.Responses;
 using CMS.AppService.Articles;
 using CMS.AppService.Articles.Models;
 using CMS.AppService.Articles.Requests;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.WebAPI.Controllers;
 

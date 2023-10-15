@@ -33,7 +33,7 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
 services.AddCustomCsRedisCache(configuration);
 services.AddCustomApiPermission();
 services.AddCustomBasicAuth(configuration);
-services.AddCustomJwtAuthWithSignalR(configuration);
+services.AddCustomJwtAuth(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
 services.AddCustomStorageLogger(configuration);
@@ -46,14 +46,14 @@ host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
     .UseDefaultServiceProvider(options => { options.ValidateScopes = false; });
 var app = builder.Build();
 
-app.UseAthenaProvider();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseCustomSwagger();
 }
 
-app.UseStaticFiles();
+app.UseAthenaProvider();
+app.UseCustomStaticFiles();
 app.UseCors();
 //启用验证
 app.UseAuthentication();
@@ -61,8 +61,7 @@ app.UseAuthorization();
 app.UseCustomAuditLog();
 app.UseCustomFreeSqlMultiTenancy();
 app.MapControllers();
-app.MapCustomSignalR();
-// app.MapSpaFront();
-// app.MapHealth();
+app.MapSpaFront<Program>();
+app.MapHealth();
 
 app.Run();

@@ -16,6 +16,7 @@ declare module '@antv/data-set';
 declare module 'mockjs';
 declare module 'react-fittext';
 declare module 'bizcharts-plugin-slider';
+declare module 'e-athena-components';
 
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 // 以下变量声明对应config.[env].ts文件内define的变量
@@ -28,8 +29,15 @@ declare const APP_SESSION_CODE_KEY: string;
 declare const LOGIN_PATH: string;
 /** CDN地址 */
 declare const CDN_ADDRESS: string;
-/** 租户编码存储Key */
-declare const APP_TENANT_CODE_KEY: string;
+/** 租户信息存储Key */
+declare const APP_TENANT_INFO_KEY: string;
+
+/** 应用设置 */
+declare interface AppSettings {
+  logo?: string;
+  title?: string;
+  subTitle?: string;
+}
 
 /**
  * 分页结构
@@ -121,4 +129,10 @@ declare interface DownloadFileInfo {
   fileName: string,
   fileType: string,
   fileToken: string,
+}
+
+/** 租户信息 */
+declare interface TenantInfo {
+  code: string,
+  name: string,
 }

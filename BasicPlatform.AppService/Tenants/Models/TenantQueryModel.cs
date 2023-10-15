@@ -12,9 +12,15 @@ public class TenantQueryModel : QueryModelBase
     public string Name { get; set; } = null!;
 
     /// <summary>
+    /// 数据隔离方式
+    /// </summary>
+    [TableColumn(Sort = 1, Width = 140)]
+    public TenantIsolationLevel IsolationLevel { get; set; }
+
+    /// <summary>
     /// 编码
     /// </summary>
-    [TableColumn(Sort = 5, Width = 100)]
+    [TableColumn(Sort = 5, Width = 225)]
     public string Code { get; set; } = null!;
 
     /// <summary>
@@ -44,13 +50,13 @@ public class TenantQueryModel : QueryModelBase
     /// <summary>
     /// 生效日期
     /// </summary>
-    [TableColumn(Tooltip = "订阅生效日期", Sort = 15)]
+    [TableColumn(Tooltip = "订阅生效日期", Sort = 15, ValueType = "date")]
     public DateTime EffectiveTime { get; set; }
 
     /// <summary>
-    /// 过期时间
+    /// 过期日期
     /// </summary>
-    [TableColumn(Tooltip = "订阅过期时间，为空时永久有效。", Sort = 20)]
+    [TableColumn(Tooltip = "订阅过期日期，为空时永久有效。", Sort = 20, ValueType = "date")]
     public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
@@ -68,6 +74,6 @@ public class TenantQueryModel : QueryModelBase
     /// <summary>
     /// 是否已初始化数据库
     /// </summary>
-    [TableColumn(Title = "初始化", Tooltip = "是否已初始化数据和创建超级管理员", Sort = 35, Width = 90)]
+    [TableColumn(Title = "初始化", Tooltip = "是否已创建超级管理员", Sort = 35, Width = 90)]
     public bool IsInitDatabase { get; set; }
 }

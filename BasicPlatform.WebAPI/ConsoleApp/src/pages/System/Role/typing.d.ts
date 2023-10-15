@@ -55,4 +55,10 @@ declare namespace API {
     id: string;
     permissions: DataPermissionItem[];
   };
+
+  // 分配列权限
+  type AssignRoleColumnPermissionsRequest = {
+    id: string;
+    permissions: ColumnPermissionItem[];
+  };
 }

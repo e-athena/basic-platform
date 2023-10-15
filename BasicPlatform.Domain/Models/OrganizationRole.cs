@@ -31,10 +31,18 @@ public class OrganizationRole : ValueObject
     public virtual Role Role { get; set; } = null!;
 
 
+    /// <summary>
+    /// 
+    /// </summary>
     public OrganizationRole()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="organizationId"></param>
+    /// <param name="roleId"></param>
     public OrganizationRole(string organizationId, string roleId)
     {
         OrganizationId = organizationId;

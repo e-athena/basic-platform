@@ -1,5 +1,6 @@
 using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Resources.Requests;
+using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers.Developer;
 
@@ -44,6 +45,7 @@ public class ResourceController : CustomControllerBase
     [ApiPermission(DisplayName = "同步资源", Description = "该操作会增量添加资源数据，存在且已分配的数据不会被删除，不存在且分配的的数据将会被删除")]
     public async Task<int> SyncAsync(
         [FromServices] IApplicationQueryService applicationQueryService,
+        [FromServices] ISubApplicationService subApplicationService,
         CancellationToken cancellationToken
     )
     {
@@ -74,14 +76,13 @@ public class ResourceController : CustomControllerBase
             var resourceUrl = $"{app.ApiUrl}{app.MenuResourceRoute}";
             try
             {
-                var res = await resourceUrl.GetAsync(cancellationToken: cancellationToken)
-                    .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
+                var data = await subApplicationService.GetMenuResourcesAsync(resourceUrl);
 
-                if (res.Data != null && res.Success && res.Data.Count > 0)
+                if (data.Count > 0)
                 {
                     var appResources = new List<ResourceModel>();
 
-                    foreach (var info in res.Data.Where(module => module.Children != null)
+                    foreach (var info in data.Where(module => module.Children != null)
                                  .SelectMany(module => module.Children!.Where(info => info.Functions != null)))
                     {
                         appResources.Add(new ResourceModel
@@ -118,22 +119,16 @@ public class ResourceController : CustomControllerBase
     /// <summary>
     /// 读取子应用资源
     /// </summary>
+    /// <param name="service"></param>
     /// <param name="resourceUrl"></param>
     /// <returns></returns>
     [HttpGet]
     [AllowAnonymous]
-    public async Task<List<MenuTreeInfo>> GetSubAppResourcesAsync(string resourceUrl)
+    public Task<List<MenuTreeInfo>> GetSubAppResourcesAsync(
+        [FromServices] ISubApplicationService service,
+        [FromQuery] string resourceUrl
+    )
     {
-        try
-        {
-            var res = await resourceUrl.GetAsync()
-                .ReceiveJson<ApiResult<List<MenuTreeInfo>>>();
-            return res.Data ?? new List<MenuTreeInfo>();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "读取资源错误，资源地址:{Url}", resourceUrl);
-            throw FriendlyException.Of("读取资源错误");
-        }
+        return service.GetMenuResourcesAsync(resourceUrl);
     }
 }

@@ -1,12 +1,10 @@
-using BasicPlatform.Domain.Models.Tenants.Events;
-
 namespace BasicPlatform.Domain.Models.Tenants;
 
 /// <summary>
 /// 租户
 /// </summary>
 [Table("tenants")]
-public class Tenant : EntityCore, ICreator, IUpdater
+public class Tenant : FullEntityCore
 {
     /// <summary>
     /// 名称
@@ -19,6 +17,11 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// </summary>
     [MaxLength(32)]
     public string Code { get; set; } = null!;
+
+    /// <summary>
+    /// 租户类型
+    /// </summary>
+    public TenantIsolationLevel IsolationLevel { get; set; } = TenantIsolationLevel.Shared;
 
     /// <summary>
     /// 联系人姓名
@@ -42,7 +45,7 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// 数据库链接字符串
     /// <remarks>主应用的</remarks>
     /// </summary>
-    public string ConnectionString { get; set; } = null!;
+    public string? ConnectionString { get; set; }
 
     /// <summary>
     /// 是否已初始化数据库
@@ -71,15 +74,8 @@ public class Tenant : EntityCore, ICreator, IUpdater
     public Status Status { get; set; }
 
     /// <summary>
-    /// 创建人
+    /// 
     /// </summary>
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
-    /// 更新人
-    /// </summary>
-    public string? LastUpdatedUserId { get; set; }
-
     public Tenant()
     {
     }
@@ -97,25 +93,53 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// <param name="expiredTime"></param>
     /// <param name="createdUserId"></param>
     /// <param name="applications"></param>
+    /// <param name="isolationLevel"></param>
     /// <param name="contactName"></param>
     /// <param name="contactPhoneNumber"></param>
-    public Tenant(string id, string name, string code, string contactName, string contactPhoneNumber,
-        string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime,
-        DateTime? expiredTime, string? createdUserId, List<TenantApplication> applications) : base(id)
+    public Tenant(string id,
+        string name, string? code,
+        TenantIsolationLevel isolationLevel,
+        string contactName,
+        string contactPhoneNumber,
+        string? contactEmail,
+        string? connectionString,
+        string? remarks,
+        DateTime effectiveTime,
+        DateTime? expiredTime,
+        string? createdUserId,
+        List<TenantApplication> applications
+    ) : base(id)
     {
         Name = name;
-        Code = code;
+        Code = code ?? ObjectId.GenerateNewStringId();;
         ContactName = contactName;
         ContactPhoneNumber = contactPhoneNumber;
         ContactEmail = contactEmail;
-        ConnectionString = SecurityHelper.Encrypt(connectionString);
+        IsolationLevel = isolationLevel;
+
+        switch (isolationLevel)
+        {
+            case TenantIsolationLevel.Independent:
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw FriendlyException.Of("独立租户必须指定数据库链接字符串");
+                }
+
+                ConnectionString = SecurityHelper.Encrypt(connectionString);
+                break;
+            case TenantIsolationLevel.Shared:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(isolationLevel), isolationLevel, null);
+        }
+
         Remarks = remarks;
         EffectiveTime = effectiveTime;
         ExpiredTime = expiredTime;
         CreatedUserId = createdUserId;
         Status = Status.Enabled;
 
-        ApplyEvent(new TenantCreatedEvent(name, code, contactName, contactPhoneNumber, contactEmail,
+        ApplyEvent(new TenantCreatedEvent(name, Code, contactName, contactPhoneNumber, contactEmail,
             connectionString, remarks, effectiveTime, expiredTime, Status, createdUserId, applications));
     }
 
@@ -130,11 +154,13 @@ public class Tenant : EntityCore, ICreator, IUpdater
     /// <param name="effectiveTime"></param>
     /// <param name="expiredTime"></param>
     /// <param name="lastUpdatedUserId"></param>
+    /// <param name="isolationLevel"></param>
     /// <param name="contactName"></param>
     /// <param name="contactPhoneNumber"></param>
     /// <param name="applications"></param>
-    public void Update(string name, string code, string contactName, string contactPhoneNumber,
-        string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime,
+    public void Update(string name, string code, TenantIsolationLevel isolationLevel, string contactName,
+        string contactPhoneNumber,
+        string? contactEmail, string? connectionString, string? remarks, DateTime effectiveTime,
         DateTime? expiredTime, string? lastUpdatedUserId, List<TenantApplication> applications)
     {
         Name = name;
@@ -142,14 +168,31 @@ public class Tenant : EntityCore, ICreator, IUpdater
         ContactName = contactName;
         ContactPhoneNumber = contactPhoneNumber;
         ContactEmail = contactEmail;
-        var connectString = SecurityHelper.Encrypt(connectionString);
-        // 如果数据库链接字符串有变更，则重置数据库初始化状态
-        if (ConnectionString != connectString)
+        IsolationLevel = isolationLevel;
+
+        switch (isolationLevel)
         {
-            IsInitDatabase = false;
+            case TenantIsolationLevel.Independent:
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw FriendlyException.Of("独立租户必须指定数据库链接字符串");
+                }
+
+                var connectString = SecurityHelper.Encrypt(connectionString);
+                // 如果数据库链接字符串有变更，则重置数据库初始化状态
+                if (ConnectionString != connectString)
+                {
+                    IsInitDatabase = false;
+                }
+
+                ConnectionString = connectString;
+                break;
+            case TenantIsolationLevel.Shared:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(isolationLevel), isolationLevel, null);
         }
 
-        ConnectionString = connectString;
         Remarks = remarks;
         EffectiveTime = effectiveTime;
         ExpiredTime = expiredTime;
@@ -167,6 +210,8 @@ public class Tenant : EntityCore, ICreator, IUpdater
     {
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         LastUpdatedUserId = lastUpdatedUserId;
+
+        ApplyEvent(new TenantStatusChangedEvent(Status));
     }
 
     /// <summary>
@@ -188,5 +233,7 @@ public class Tenant : EntityCore, ICreator, IUpdater
     {
         IsInitDatabase = true;
         LastUpdatedUserId = lastUpdatedUserId;
+
+        ApplyEvent(new TenantDatabaseInitializedEvent(lastUpdatedUserId));
     }
 }

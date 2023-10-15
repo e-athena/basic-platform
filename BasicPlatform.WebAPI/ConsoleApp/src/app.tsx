@@ -34,6 +34,9 @@ export async function getInitialState(): Promise<{
   customNavTheme?: 'realDark' | 'light' | undefined;
   setCustomNavTheme?: (theme: string) => void;
   settings?: Partial<LayoutSettings>;
+  /**
+   * 当前用户信息
+   */
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
@@ -45,6 +48,9 @@ export async function getInitialState(): Promise<{
     API.ApplicationDataPermissionResourceInfo[]
   >;
   fetchExternalPages?: () => Promise<API.ExternalPage[]>;
+  /**
+   * 扩展页面
+   */
   externalPages?: API.ExternalPage[];
   noticeConnectionHub?: HubConnection;
   fetchSignalRConnectionNotice?: (token: string) => Promise<HubConnection>;
@@ -114,7 +120,10 @@ export async function getInitialState(): Promise<{
     fetchMenuData,
     fetchUserInfo,
     fetchApiResources,
+    fetchApplicationResources,
+    fetchApplicationDataPermissionResources,
     fetchExternalPages,
+    fetchSignalRConnectionNotice,
     settings: defaultSettings as Partial<LayoutSettings>,
     customNavTheme: getNavTheme(),
     setCustomNavTheme: setNavTheme,
@@ -138,6 +147,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         console.log(response)
       });
   }
+
+  const appSettings: AppSettings = {
+    logo: 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
+    title: 'Athena Pro',
+  };
 
   return {
     actionsRender: () => [
@@ -281,7 +295,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) {
+        return <PageLoading />;
+      }
       return (
         <>
           {children}
@@ -299,6 +315,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </>
       );
     },
+    // title:'111',
     ...initialState?.settings,
     // 根据操作系统设置自动切换主题
     navTheme:
@@ -307,6 +324,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           ? 'realDark'
           : 'light'
         : initialState?.customNavTheme,
+    ...appSettings
   };
 };
 

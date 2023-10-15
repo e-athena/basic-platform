@@ -24,18 +24,30 @@ import { fetchSignalRConnectionNotice } from './signalr/connection';
 import { HubConnection } from '@microsoft/signalr';
 import { getNavTheme, setNavTheme } from '@/utils/navTheme';
 import { Modal } from 'antd';
+import { isQiankun } from './utils/utils';
 
+let isShowLoginModal = false;
 const reLogin = () => {
-  Modal.confirm({
-    title: '登录已过期',
-    content: '您的登录已过期，请重新登录',
-    okText: '重新登录',
-    cancelText: '取消',
-    onOk: () => {
-      const { pathname, search } = history.location;
-      history.push(`${LOGIN_PATH}?redirect=${encodeURIComponent(pathname + search)}`);
-    },
-  });
+  if (isShowLoginModal) {
+    return;
+  }
+  if (!isQiankun()) {
+    Modal.destroyAll();
+    Modal.confirm({
+      title: '登录已过期',
+      content: '您的登录已过期，请重新登录',
+      okText: '重新登录',
+      cancelText: '取消',
+      onOk: () => {
+        const { pathname, search } = history.location;
+        history.push(`${LOGIN_PATH}?redirect=${encodeURIComponent(pathname + search)}`);
+      },
+    });
+  } else {
+    const { pathname, search } = history.location;
+    history.push(`${LOGIN_PATH}?redirect=${encodeURIComponent(pathname + search)}`);
+  }
+  isShowLoginModal = true;
 };
 
 /**
@@ -64,8 +76,10 @@ export async function getInitialState(): Promise<{
         skipErrorHandler: true,
       });
       return msg.data;
-    } catch (error) {
-      reLogin();
+    } catch (error: any) {
+      if (error.code !== 'ERR_NETWORK') {
+        reLogin();
+      }
     }
     return undefined;
   };
@@ -88,7 +102,8 @@ export async function getInitialState(): Promise<{
     const apiResources = await fetchApiResources();
     const externalPages = (await fetchExternalPages()) || [];
     // SignalR
-    const noticeConnectionHub = await fetchSignalRConnectionNotice();
+    // 如果是在主应用中，不需要连接通知中心
+    const noticeConnectionHub = isQiankun() ? undefined : (await fetchSignalRConnectionNotice());
     // const eventConnectionHub = await fetchSignalRConnectionEvent(token);
     return {
       fetchMenuData,
@@ -127,25 +142,21 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         ? 'realDark'
         : 'light'
       : initialState?.customNavTheme;
-  // @ts-ignore
-  const isQiankun = window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ !== undefined;
-  // // @ts-ignore
-  // console.log(window.__INJECTED_QIANKUN_MASTER_NAV_THEME__);
 
-  const customSettings: LayoutSettings = isQiankun
+  const customSettings: LayoutSettings = isQiankun()
     ? {
-        layout: 'side',
-        contentWidth: 'Fluid',
-        fixedHeader: false,
-        fixSiderbar: false,
-        splitMenus: false,
-        headerRender: false,
-        footerRender: false,
-        menuRender: false,
-        menuHeaderRender: false,
-        // @ts-ignore
-        navTheme: window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ || customNavTheme,
-      }
+      layout: 'side',
+      contentWidth: 'Fluid',
+      fixedHeader: false,
+      fixSiderbar: false,
+      splitMenus: false,
+      headerRender: false,
+      footerRender: false,
+      menuRender: false,
+      menuHeaderRender: false,
+      // @ts-ignore
+      navTheme: window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ || customNavTheme,
+    }
     : {};
 
   return {
@@ -248,7 +259,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && !location.pathname.includes(LOGIN_PATH)) {
         // history.push(`${LOGIN_PATH}?redirect=${encodeURIComponent(location.pathname)}`);
-        reLogin();
+        // reLogin();
+        initialState?.fetchUserInfo?.();
         return;
       }
       // if (location.pathname !== '/') {
@@ -278,11 +290,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

@@ -4,6 +4,7 @@ import { history, useModel } from '@umijs/max';
 import { parse } from 'querystring';
 import { setToken } from '@/utils/token';
 import { flushSync } from 'react-dom';
+import { isQiankun } from '@/utils/utils';
 
 const gotoSSOAuth = () => {
   const urlParams = parse(window.location.href.split('login-redirect?')[1], '&');
@@ -30,11 +31,26 @@ const LoginRedirect: React.FC = () => {
       });
     }
   };
+  const fetchApiResources = async () => {
+    const resources = await initialState?.fetchApiResources?.();
+    if (resources) {
+      flushSync(() => {
+        setInitialState((s) => ({
+          ...s,
+          apiResources: resources,
+        }));
+      });
+    }
+  };
   useEffect(() => {
     const fetch = async () => {
       setToken(query.token as string);
       await fetchUserInfo();
-      const redirect = (query?.redirect as string) || '/';
+      await fetchApiResources();
+      let redirect = (query?.redirect as string) || '/';
+      if (isQiankun()) {
+        redirect = '/';
+      }
       history.push(redirect);
       setHandling(false);
     };

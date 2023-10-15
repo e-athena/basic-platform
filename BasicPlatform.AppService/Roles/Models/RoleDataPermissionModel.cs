@@ -4,7 +4,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 namespace BasicPlatform.AppService.Roles.Models;
 
 /// <summary>
-/// 数据数据权限模型
+/// 角色数据权限模型
 /// </summary>
 public class RoleDataPermissionModel
 {

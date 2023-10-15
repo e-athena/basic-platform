@@ -10,7 +10,10 @@ const Center = () => {
   const { initialState } = useModel('@@initialState');
   const [segmentedValue, setSegmentedValue] = useState<string>('基础信息');
   return (
-    <ProCard split="vertical">
+    <ProCard split="vertical" style={{
+      width: 1052,
+      margin: '0 auto'
+    }}>
       <ProCard colSpan="30%">
         <div style={{ textAlign: 'center', padding: 24 }}>
           <Avatar

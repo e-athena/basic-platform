@@ -11,11 +11,6 @@ public class TenantApplicationModel
     public string? TenantId { get; set; }
 
     /// <summary>
-    /// 应用ID
-    /// </summary>
-    public string ApplicationId { get; set; } = null!;
-
-    /// <summary>
     /// 应用名称
     /// </summary>
     public string ApplicationName { get; set; } = null!;
@@ -28,7 +23,12 @@ public class TenantApplicationModel
     /// <summary>
     /// 应用客户端ID
     /// </summary>
-    public string? ApplicationClientId { get; set; }
+    public string ApplicationClientId { get; set; } = null!;
+
+    /// <summary>
+    /// 租户类型
+    /// </summary>
+    public TenantIsolationLevel IsolationLevel { get; set; }
 
     /// <summary>
     /// 数据库链接字符串

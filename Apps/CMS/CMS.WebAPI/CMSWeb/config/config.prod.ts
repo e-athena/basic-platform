@@ -1,4 +1,4 @@
-import { defineConfig } from '@umijs/max';
+import {defineConfig} from '@umijs/max';
 
 export default defineConfig({
   // 打包后输入目录
@@ -8,7 +8,8 @@ export default defineConfig({
   },
 
   define: {
-    API_URL: '',
-    RTC_URL: '',
+    API_URL: 'http://e-cms.zhengjinfan.cn',
+    RTC_URL: 'http://basic.zhengjinfan.cn',
+    SSO_URL: 'http://basic.zhengjinfan.cn/#/user/login-redirect',
   },
 });

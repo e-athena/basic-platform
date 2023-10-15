@@ -1,10 +1,10 @@
-import { query, detail, statusChange } from './service';
+import { query, detail, statusChange, getEnvironmentList } from './service';
 import { PlusOutlined, FormOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-components';
 import { FormattedMessage, useModel, useLocation, Access } from '@umijs/max';
-import { Button, Modal, Switch, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Modal, Segmented, Switch, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import permission from '@/utils/permission';
 import { canAccessible, hasPermission, queryDetail } from '@/utils/utils';
 import CreateOrUpdateForm from './components/CreateOrUpdateForm';
@@ -20,6 +20,24 @@ const TableList: React.FC = () => {
   const location = useLocation();
   const resource = getResource(location.pathname);
   const showOption: boolean = hasPermission([permission.application.putAsync], resource);
+  const [environmentOptions, setEnvironmentOptions] = useState<string[]>([]);
+  const [currentEnvironment, setCurrentEnvironment] = useState<string>('');
+  const [environmentOptionsLoading, setEnvironmentOptionsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      setEnvironmentOptionsLoading(false);
+      const res = await getEnvironmentList();
+      const options = res.data || ['Development', 'Test', 'Production'];
+      // 将'All'放在第一位
+      options.unshift('All');
+      setEnvironmentOptions(options);
+      setCurrentEnvironment('All');
+    }
+    if (environmentOptionsLoading) {
+      fetch();
+    }
+  }, [environmentOptionsLoading]);
 
   /**需要重写的Column */
   const [defaultColumns] = useState<ProColumns<API.ApplicationListItem>[]>([
@@ -132,11 +150,20 @@ const TableList: React.FC = () => {
       }}
     >
       <ProTablePlus<API.ApplicationListItem, API.ApplicationPagingParams>
+        headerTitle={<Segmented
+          options={environmentOptions}
+          value={currentEnvironment}
+          onChange={(value) => {
+            setCurrentEnvironment(value.toString());
+          }} />}
         actionRef={actionRef}
         defaultColumns={defaultColumns}
         query={query}
         moduleName={'Application'}
         showDescriptions
+        params={{
+          environment: currentEnvironment === 'All' ? undefined : currentEnvironment,
+        }}
         toolBarRender={() => [
           <Access
             key={'add'}

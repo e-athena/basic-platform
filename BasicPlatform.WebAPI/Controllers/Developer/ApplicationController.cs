@@ -133,6 +133,17 @@ public class ApplicationController : CustomControllerBase
     #region 扩展接口
 
     /// <summary>
+    /// 读取环境列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(IsVisible = false)]
+    public Task<List<string>> GetEnvironmentListAsync()
+    {
+        return _queryService.GetEnvironmentListAsync();
+    }
+
+    /// <summary>
     /// 读取下拉列表
     /// </summary>
     /// <returns></returns>

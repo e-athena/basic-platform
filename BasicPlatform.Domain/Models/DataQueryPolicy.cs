@@ -6,7 +6,7 @@ namespace BasicPlatform.Domain.Models;
 /// 数据查询策略
 /// </summary>
 [Table("authority_data_query_policies")]
-public class DataQueryPolicy : EntityCore, ICreator, IUpdater
+public class DataQueryPolicy : FullEntityCore
 {
     /// <summary>
     /// 名称
@@ -48,27 +48,18 @@ public class DataQueryPolicy : EntityCore, ICreator, IUpdater
     public string? Remarks { get; set; }
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
     public User? UpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public DataQueryPolicy()
     {
     }

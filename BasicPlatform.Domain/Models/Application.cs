@@ -6,8 +6,14 @@ namespace BasicPlatform.Domain.Models;
 /// 网站系统应用
 /// </summary>
 [Table("authority_applications")]
-public class Application : EntityCore, ICreator, IUpdater
+public class Application : FullEntityCore
 {
+    /// <summary>
+    /// 运行环境
+    /// </summary>
+    [MaxLength(32)]
+    public string Environment { get; set; } = "Development";
+
     /// <summary>
     /// 名称
     /// </summary>
@@ -59,27 +65,18 @@ public class Application : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
     public virtual User? LastUpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Application()
     {
     }
@@ -87,6 +84,7 @@ public class Application : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="environment"></param>
     /// <param name="name"></param>
     /// <param name="clientId"></param>
     /// <param name="useDefaultClientSecret"></param>
@@ -97,6 +95,7 @@ public class Application : EntityCore, ICreator, IUpdater
     /// <param name="remarks"></param>
     /// <param name="createdUserId"></param>
     public Application(
+        string environment,
         string name,
         string clientId,
         bool useDefaultClientSecret,
@@ -108,6 +107,7 @@ public class Application : EntityCore, ICreator, IUpdater
         string? createdUserId
     )
     {
+        Environment = environment;
         Name = name;
         ClientId = clientId;
         UseDefaultClientSecret = useDefaultClientSecret;

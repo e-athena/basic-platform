@@ -5,11 +5,16 @@ namespace BasicPlatform.AppService.FreeSql.Organizations;
 /// <summary>
 /// 组织架构请求处理程序
 /// </summary>
-public class OrganizationRequestHandler : AppServiceBase<Organization>,
+public class OrganizationRequestHandler : ServiceBase<Organization>,
     IRequestHandler<CreateOrganizationRequest, string>,
     IRequestHandler<UpdateOrganizationRequest, string>,
     IRequestHandler<OrganizationStatusChangeRequest, string>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public OrganizationRequestHandler(
         UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor) : base(unitOfWorkManager, accessor)

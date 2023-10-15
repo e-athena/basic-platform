@@ -27,8 +27,7 @@ services.AddCustomIntegrationEvent(configuration, capOptions =>
     capOptions.UseDashboard();
 }, new[]
 {
-    Assembly.Load("BasicPlatform.IntegratedEventHandler"),
-    Assembly.Load("BasicPlatform.ProcessManager"), 
+    Assembly.Load("BasicPlatform.ProcessManager"),
 });
 
 services.AddCustomCsRedisCache(configuration);
@@ -39,6 +38,7 @@ services.AddCustomJwtAuthWithSignalR(configuration);
 services.AddCustomSignalRWithRedis(configuration);
 services.AddCustomCors(configuration);
 services.AddCustomStorageLogger(configuration);
+services.AddCustomEventTracking(configuration);
 services.AddCustomController().AddNewtonsoftJson();
 
 host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
@@ -48,14 +48,14 @@ host.ConfigureLogging((_, loggingBuilder) => loggingBuilder.ClearProviders())
     .UseDefaultServiceProvider(options => { options.ValidateScopes = false; });
 var app = builder.Build();
 
-app.UseAthenaProvider();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseCustomSwagger();
 }
 
-app.UseStaticFiles();
+app.UseAthenaProvider();
+app.UseCustomStaticFiles();
 app.UseCors();
 //启用验证
 app.UseAuthentication();
@@ -64,7 +64,7 @@ app.UseCustomAuditLog();
 app.UseCustomFreeSqlMultiTenancy();
 app.MapControllers();
 app.MapCustomSignalR();
-app.MapSpaFront();
+app.MapSpaFront<Program>();
 app.MapHealth();
 // run
 app.Run();

@@ -1,10 +1,10 @@
 // https://umijs.org/config/
-import { defineConfig } from '@umijs/max';
+import {defineConfig} from '@umijs/max';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
-const { REACT_APP_ENV = 'dev' } = process.env;
+const {REACT_APP_ENV = 'dev'} = process.env;
 
 export default defineConfig({
   history: {
@@ -131,7 +131,7 @@ export default defineConfig({
    */
   headScripts: [
     // 解决首次加载时白屏的问题
-    { src: '/scripts/loading.js', async: true },
+    {src: '/scripts/loading.js', async: true},
   ],
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],
@@ -156,6 +156,7 @@ export default defineConfig({
   define: {
     API_URL: '',
     APP_TOKEN_KEY: 'app_cms_token',
+    MAIN_APP_TOKEN_KEY: 'basic_platform_token',
     APP_NAV_THEME_KEY: 'app_cms_nav_theme',
     APP_SESSION_CODE_KEY: 'app_cms_session_code',
     SSO_URL: '',

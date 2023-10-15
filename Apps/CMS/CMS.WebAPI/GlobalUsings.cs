@@ -19,5 +19,6 @@ global using Athena.Infrastructure.DataPermission.Models;
 global using Athena.Infrastructure.Messaging.Responses;
 global using Athena.Infrastructure.ViewModels;
 global using MediatR;
+global using Microsoft.AspNetCore.Authorization;
 global using Serilog;
 global using Serilog.Debugging;

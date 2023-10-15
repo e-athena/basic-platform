@@ -7,7 +7,7 @@ namespace BasicPlatform.Domain.Models;
 /// <remarks>对应页面上的模块、菜单和按钮</remarks>
 /// </summary>
 [Table("authority_resources")]
-public class Resource : EntityCore, ICreator, IUpdater
+public class Resource : FullEntityCore
 {
     /// <summary>
     /// 应用ID
@@ -38,31 +38,30 @@ public class Resource : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人
     /// </summary>
     public virtual User? LastUpdatedUser { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Resource()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="key"></param>
+    /// <param name="sort"></param>
+    /// <param name="status"></param>
+    /// <param name="userId"></param>
     public Resource(string applicationId, string key, int sort, Status status, string? userId)
     {
         ApplicationId = applicationId;

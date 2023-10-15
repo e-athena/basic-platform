@@ -61,10 +61,11 @@ declare namespace API {
     id: string;
     name: string;
     code: string;
+    isolationLevel: number,
     contactName: string;
     contactPhoneNumber: string;
     contactEmail?: string;
-    connectionString: string;
+    connectionString?: string;
     effectiveTime: string;
     expiredTime: string;
     remarks: string;
@@ -97,6 +98,8 @@ declare namespace API {
     isEnabled: boolean;
     applicationId: string;
     applicationName: string;
+    applicationClientId: string;
+    isolationLevel: number,
     connectionString: string | null;
     expiredTime: string | null;
   };

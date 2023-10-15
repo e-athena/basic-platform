@@ -1,4 +1,3 @@
-using BasicPlatform.AppService.Tenants;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Tenants.Responses;
 using BasicPlatform.AppService.Users;

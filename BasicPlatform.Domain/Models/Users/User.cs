@@ -6,7 +6,7 @@ namespace BasicPlatform.Domain.Models.Users;
 /// 用户
 /// </summary>
 [Table("authority_users")]
-public class User : EntityCore, ICreator, IUpdater
+public class User : FullEntityCore
 {
     /// <summary>
     /// 用户名
@@ -86,21 +86,9 @@ public class User : EntityCore, ICreator, IUpdater
     public Status Status { get; set; } = Status.Enabled;
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 更新人
@@ -137,6 +125,9 @@ public class User : EntityCore, ICreator, IUpdater
     /// </summary>
     public bool IsTenantAdmin { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public User()
     {
     }
@@ -144,6 +135,7 @@ public class User : EntityCore, ICreator, IUpdater
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="id"></param>
     /// <param name="userName">用户名</param>
     /// <param name="password">密码</param>
     /// <param name="avatar">头像</param>
@@ -156,9 +148,10 @@ public class User : EntityCore, ICreator, IUpdater
     /// <param name="positionId">所属职位ID</param>
     /// <param name="createdUserId">创建人</param>
     /// <param name="isTenantAdmin">是否为租户管理员</param>
-    public User(string userName, string? password, string? avatar, string realName, Gender gender, string? nickName,
+    public User(string id, string userName, string? password, string? avatar, string realName, Gender gender,
+        string? nickName,
         string? phoneNumber, string? email, string organizationId, string? positionId, string? createdUserId,
-        bool isTenantAdmin)
+        bool isTenantAdmin) : base(id)
     {
         password ??= "123456";
         UserName = userName;
@@ -244,7 +237,7 @@ public class User : EntityCore, ICreator, IUpdater
         UpdatedOn = DateTime.Now;
 
         // 添加领域事件
-        ApplyEvent(new UserUpdatedEvent(Id, userName, avatar, realName, gender,
+        ApplyEvent(new UserUpdatedEvent(userName, avatar, realName, gender,
             nickName, phoneNumber, email, organizationId, positionId)
         );
     }
@@ -319,5 +312,16 @@ public class User : EntityCore, ICreator, IUpdater
     {
         LastUpdatedUserId = updatedUserId;
         ApplyEvent(new UserDataPermissionAssignedEvent(permissions));
+    }
+
+    /// <summary>
+    /// 分配列权限
+    /// </summary>
+    /// <param name="permissions"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignColumnPermissions(List<UserColumnPermission> permissions, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new UserColumnPermissionAssignedEvent(permissions));
     }
 }

@@ -37,7 +37,7 @@ public interface IUserQueryService
     /// </summary>
     /// <returns></returns>
     Task<UserModel> GetTenantSuperAdminAsync();
-    
+
     /// <summary>
     /// 读取信息
     /// </summary>
@@ -135,4 +135,24 @@ public interface IUserQueryService
     /// <param name="id"></param>
     /// <returns></returns>
     Task<List<GetUserDataPermissionsResponse>> GetDataPermissionsAsync(string id);
+
+    /// <summary>
+    /// 读取用户列权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<List<GetUserColumnPermissionsResponse>> GetColumnPermissionsAsync(string id);
+
+    /// <summary>
+    /// 读取用户列权限
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="userId"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    Task<List<UserColumnPermissionModel>> GetColumnPermissionsByModuleNameAsync(
+        string type,
+        string? userId = null,
+        string? appId = null
+    );
 }

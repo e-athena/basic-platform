@@ -22,6 +22,11 @@ public static class ApiPermissionConstant
     /// </summary>
     public const string RoleDataPermissions = "role:dataPermissions";
 
+    /// <summary>
+    /// 角色列权限
+    /// </summary>
+    public const string RoleColumnPermissions = "role:columnPermissions";
+
     #endregion
 
     #region 用户
@@ -45,6 +50,11 @@ public static class ApiPermissionConstant
     /// 用户数据权限
     /// </summary>
     public const string UserDataPermissions = "user:dataPermissions";
+
+    /// <summary>
+    /// 用户列权限
+    /// </summary>
+    public const string UserColumnPermissions = "user:columnPermissions";
 
     #endregion
 

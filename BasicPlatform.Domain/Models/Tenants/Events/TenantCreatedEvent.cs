@@ -34,7 +34,7 @@ public class TenantCreatedEvent : EventBase
     /// 数据库链接字符串
     /// <remarks>主应用的</remarks>
     /// </summary>
-    public string ConnectionString { get; set; }
+    public string? ConnectionString { get; set; }
 
     /// <summary>
     /// 备注
@@ -67,8 +67,23 @@ public class TenantCreatedEvent : EventBase
     /// </summary>
     public List<TenantApplication> Applications { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="code"></param>
+    /// <param name="contactName"></param>
+    /// <param name="contactPhoneNumber"></param>
+    /// <param name="contactEmail"></param>
+    /// <param name="connectionString"></param>
+    /// <param name="remarks"></param>
+    /// <param name="effectiveTime"></param>
+    /// <param name="expiredTime"></param>
+    /// <param name="status"></param>
+    /// <param name="createdUserId"></param>
+    /// <param name="applications"></param>
     public TenantCreatedEvent(string name, string code, string contactName, string contactPhoneNumber,
-        string? contactEmail, string connectionString, string? remarks, DateTime effectiveTime, DateTime? expiredTime,
+        string? contactEmail, string? connectionString, string? remarks, DateTime effectiveTime, DateTime? expiredTime,
         Status status, string? createdUserId, List<TenantApplication> applications)
     {
         Name = name;

@@ -23,12 +23,17 @@ public abstract class DefaultServiceBase
     /// <returns></returns>
     protected IFlurlRequest GetRequest(string url)
     {
+        // return url
+        //     .WithBasicAuth(_config.UserName, _config.Password);
         return url
             .WithBasicAuth(_config.UserName, _config.Password)
             .OnError(act =>
             {
                 var res = act.Response;
-                throw new FriendlyException(res.StatusCode, res.ResponseMessage.ReasonPhrase ?? "未知错误");
+                if (res != null)
+                {
+                    throw new FriendlyException(res.StatusCode, res.ResponseMessage.ReasonPhrase ?? "未知错误", url);
+                }
             });
     }
 }

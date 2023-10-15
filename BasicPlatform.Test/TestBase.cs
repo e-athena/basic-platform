@@ -47,7 +47,7 @@ public class TestBase
         services.AddCustomCsRedisCache(Configuration);
         services.AddCustomFreeSql(Configuration, true);
         services.AddCustomIntegrationEvent(Configuration,
-            new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
+            new[] {Assembly.Load("BasicPlatform.ProcessManager")});
         services.AddScoped<ISecurityContextAccessor, DefaultSecurityContextAccessor>();
         Provider = services.BuildServiceProvider();
         DbContext = Provider.GetService<IFreeSql>()!;

@@ -7,7 +7,7 @@ namespace BasicPlatform.Domain.Models.Roles;
 /// </summary>
 [Table("authority_role_groups")]
 // ReSharper disable once ClassNeverInstantiated.Global
-public class RoleGroup : EntityCore, ICreator, IUpdater
+public class RoleGroup : FullEntityCore
 {
   /// <summary>
   /// 名称
@@ -31,28 +31,15 @@ public class RoleGroup : EntityCore, ICreator, IUpdater
   public Status Status { get; set; } = Status.Enabled;
 
   /// <summary>
-  /// 创建人Id
-  /// </summary>
-  [MaxLength(36)]
-  public string? CreatedUserId { get; set; }
-
-  /// <summary>
   /// 创建人
   /// </summary>
   public virtual User? CreatedUser { get; set; }
 
   /// <summary>
-  /// 最后更新人Id
-  /// </summary>
-  [MaxLength(36)]
-  public string? LastUpdatedUserId { get; set; }
-
-  /// <summary>
   /// 最后更新人
   /// </summary>
   public virtual User? LastUpdatedUser { get; set; }
-
-
+  
   /// <summary>
   /// 状态变更
   /// </summary>

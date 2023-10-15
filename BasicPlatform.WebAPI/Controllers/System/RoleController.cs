@@ -142,6 +142,23 @@ public class RoleController : CustomControllerBase
     }
 
     /// <summary>
+    /// 分配列权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [ApiPermission(AdditionalRules = new[]
+    {
+        ApiPermissionConstant.RoleColumnPermissions
+    })]
+    public Task<string> AssignColumnPermissionsAsync([FromBody] AssignRoleColumnPermissionsRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
     /// 分配用户
     /// </summary>
     /// <param name="request"></param>
@@ -182,6 +199,17 @@ public class RoleController : CustomControllerBase
     public Task<List<RoleDataPermissionModel>> GetDataPermissionsAsync([FromQuery] string id)
     {
         return _service.GetDataPermissionsAsync(id);
+    }
+
+    /// <summary>
+    /// 读取列权限
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ApiPermission(ApiPermissionConstant.RoleColumnPermissions, IsVisible = false)]
+    public Task<List<RoleColumnPermissionModel>> GetColumnPermissionsAsync([FromQuery] string id)
+    {
+        return _service.GetColumnPermissionsAsync(id);
     }
 
     #endregion

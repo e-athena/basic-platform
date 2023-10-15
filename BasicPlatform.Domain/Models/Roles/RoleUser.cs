@@ -34,10 +34,18 @@ public class RoleUser : ValueObject
     /// <value></value>
     public virtual User User { get; set; } = null!;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public RoleUser()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="roleId"></param>
+    /// <param name="userId"></param>
     public RoleUser(string roleId, string userId)
     {
         RoleId = roleId;

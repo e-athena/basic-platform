@@ -6,14 +6,23 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net6.0\BasicPlatform.AppService.FreeSql.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net6.0\BasicPlatform.AppService.FreeSql.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\BasicPlatform.AppService\BasicPlatform.AppService.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission.FreeSql" Version="6.0.4" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.5.2" />
-        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.15" />
+        <PackageReference Include="Athena.Infrastructure.DataPermission.FreeSql" Version="6.0.6" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.5.10" />
+<!--        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.16" />-->
+        <PackageReference Include="Rougamo.Fody" Version="1.4.1" />
     </ItemGroup>
 
 </Project>

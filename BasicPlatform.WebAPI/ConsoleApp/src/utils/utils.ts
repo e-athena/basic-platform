@@ -120,7 +120,7 @@ export async function queryDetail<T>(
  * @param {*} fields
  */
 export async function submitHandle<T>(
-  func: (values: T) => Promise<ApiResponse<boolean | string>>,
+  func: (values: T) => Promise<ApiResponse<boolean | string | number>>,
   fields: T,
   tips?: string,
 ): Promise<boolean> {

@@ -39,6 +39,9 @@ public class UserAppointment : ValueObject
     /// </summary>
     public virtual User User { get; set; } = null!;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public UserAppointment()
     {
     }

@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// <summary>
 /// 用户请求处理程序
 /// </summary>
-public class UserRequestHandler : AppServiceBase<User>,
+public class UserRequestHandler : ServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UpdateUserRequest, string>,
     IRequestHandler<UserStatusChangeRequest, string>,
@@ -16,10 +16,16 @@ public class UserRequestHandler : AppServiceBase<User>,
     IRequestHandler<AddUserAccessRecordRequest, long>,
     IRequestHandler<UpdateUserCustomColumnsRequest, long>,
     IRequestHandler<ResetUserPasswordRequest, string>,
-    IRequestHandler<AssignUserDataPermissionsRequest, string>
+    IRequestHandler<AssignUserDataPermissionsRequest, string>,
+    IRequestHandler<AssignUserColumnPermissionsRequest, string>
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="contextAccessor"></param>
     public UserRequestHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor contextAccessor)
         : base(unitOfWorkManager, contextAccessor)
     {
@@ -56,6 +62,7 @@ public class UserRequestHandler : AppServiceBase<User>,
         }
 
         var entity = new User(
+            request.Id ?? ObjectId.GenerateNewStringId(),
             request.UserName,
             request.Password,
             request.Avatar,
@@ -228,6 +235,39 @@ public class UserRequestHandler : AppServiceBase<User>,
                     p.Enabled,
                     request.ExpireAt)
                 )
+                .ToList(),
+            UserId
+        );
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
+    }
+
+    /// <summary>
+    /// 分配列数据权限
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Handle(AssignUserColumnPermissionsRequest request, CancellationToken cancellationToken)
+    {
+        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+
+        // 分配权限
+        entity.AssignColumnPermissions(request
+                .Permissions
+                .Select(p => new UserColumnPermission(
+                    p.AppId,
+                    request.Id,
+                    p.Enabled,
+                    p.ColumnType,
+                    p.ColumnKey,
+                    p.IsEnableDataMask,
+                    p.DataMaskType,
+                    p.MaskLength,
+                    p.MaskPosition,
+                    p.MaskChar,
+                    request.ExpireAt
+                ))
                 .ToList(),
             UserId
         );

@@ -1,3 +1,4 @@
+import { UserColumnProperty } from '@/components/ApplicationColumnPermission';
 import { get, paging, post, put } from '@/utils/request';
 
 /** 数据列 */
@@ -50,4 +51,13 @@ export function statusChange(id: string) {
 /** 重置密码 */
 export function resetPassword(id: string): Promise<ApiResponse<string>> {
   return post('/api/User/ResetPassword', { id });
+}
+
+/** 列权限列表 */
+export function columnPermission(id: string) {
+  return get<UserColumnProperty[]>('/api/User/GetColumnPermissions', { id });
+}
+/** 分配列权限 */
+export function assignColumnPermissions(data: API.AssignRoleColumnPermissionsRequest) {
+  return put<API.AssignRoleColumnPermissionsRequest, string>('/api/User/AssignColumnPermissions', data);
 }

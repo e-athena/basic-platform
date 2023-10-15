@@ -6,24 +6,32 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// <summary>
 /// 角色通知处理器
 /// </summary>
-public class RoleNotificationHandler : AppServiceBase<Role>,
+public class RoleNotificationHandler : ServiceBase<Role>,
     IDomainEventHandler<RoleResourceAssignedEvent>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
+    IDomainEventHandler<RoleColumnPermissionAssignedEvent>,
     IDomainEventHandler<RoleUserAssignedEvent>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unitOfWorkManager"></param>
+    /// <param name="accessor"></param>
     public RoleNotificationHandler(UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor)
-        : base(unitOfWorkManager, accessor)
+        :
+        base(unitOfWorkManager, accessor)
     {
     }
 
     /// <summary>
-    /// 角色资源分配事件处理
+    /// 更新角色资源
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleResourceAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据
@@ -40,12 +48,13 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     }
 
     /// <summary>
-    /// 角色数据权限分配事件处理
+    /// 更新角色数据权限
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleDataPermissionAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据
@@ -62,12 +71,36 @@ public class RoleNotificationHandler : AppServiceBase<Role>,
     }
 
     /// <summary>
-    /// 角色用户分配事件处理
+    /// 更新角色列权限
     /// </summary>
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
+    public async Task Handle(RoleColumnPermissionAssignedEvent notification, CancellationToken cancellationToken)
+    {
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<RoleColumnPermission>(
+            p => p.RoleId == notification.GetId(), cancellationToken
+        );
+        if (notification.Permissions.Count <= 0)
+        {
+            return;
+        }
+
+        // 新增新数据
+        await RegisterNewRangeValueObjectAsync(notification.Permissions, cancellationToken);
+    }
+
+    /// <summary>
+    /// 更新角色用户
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
     public async Task Handle(RoleUserAssignedEvent notification, CancellationToken cancellationToken)
     {
         // 删除旧数据

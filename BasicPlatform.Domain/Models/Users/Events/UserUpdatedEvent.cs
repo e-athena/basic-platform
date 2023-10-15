@@ -51,7 +51,19 @@ public class UserUpdatedEvent : EventBase
     /// </summary>
     public string? PositionId { get; set; }
 
-    public UserUpdatedEvent(string id, string userName, string? avatar, string realName, Gender gender,
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <param name="avatar"></param>
+    /// <param name="realName"></param>
+    /// <param name="gender"></param>
+    /// <param name="nickName"></param>
+    /// <param name="phoneNumber"></param>
+    /// <param name="email"></param>
+    /// <param name="organizationId"></param>
+    /// <param name="positionId"></param>
+    public UserUpdatedEvent(string userName, string? avatar, string realName, Gender gender,
         string? nickName, string? phoneNumber, string? email, string organizationId, string? positionId)
     {
         UserName = userName;

@@ -3,6 +3,7 @@ import type { RequestConfig } from '@umijs/max';
 import { Modal, message, notification } from 'antd';
 import { getToken, removeToken } from '@/utils/token';
 import { history } from '@umijs/max';
+import { isQiankun } from './utils/utils';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -78,15 +79,28 @@ export const errorConfig: RequestConfig = {
         switch (error.response.status) {
           case 401:
             removeToken();
-            Modal.confirm({
-              title: '系统提示',
-              content: '登录状态已过期，您可以继续留在该页面，或者重新登录',
-              okText: '重新登录',
-              cancelText: '取消',
-              onOk: () => {
-                const { pathname, search } = history.location;
-                history.push(`${LOGIN_PATH}?redirect=${pathname}${search}`);
-              },
+            if (!isQiankun()) {
+              Modal.destroyAll();
+              Modal.confirm({
+                title: '系统提示',
+                content: '登录状态已过期，您可以继续留在该页面，或者重新登录',
+                okText: '重新登录',
+                cancelText: '取消',
+                onOk: () => {
+                  const { pathname, search } = history.location;
+                  history.push(`${LOGIN_PATH}?redirect=${pathname}${search}`);
+                },
+              });
+            } else {
+              const { pathname, search } = history.location;
+              history.push(`${LOGIN_PATH}?redirect=${pathname}${search}`);
+            }
+            break;
+          case 400:
+            Modal.destroyAll();
+            Modal.error({
+              title: '系统错误提示(400)',
+              content: '请求参数错误，请联系管理员！',
             });
             break;
           case 403:
@@ -103,11 +117,23 @@ export const errorConfig: RequestConfig = {
             });
             break;
           default:
-            // console.log(error)
+            Modal.destroyAll();
             if (error.response.status === 0) {
-              message.error('连接到服务器失败，请检查网络或联系管理员处理。');
+              Modal.confirm({
+                title: '系统错误提示',
+                content: '连接到服务器失败，请检查网络或联系管理员处理。',
+                okText: '知道了',
+                cancelText: '刷新页面',
+                onCancel: () => {
+                  window.location.reload();
+                },
+              });
+            } else {
+              Modal.error({
+                title: '系统错误提示',
+                content: '发生未知错误，请重试或联系管理员！',
+              });
             }
-            // message.error(`Response status:${error.response.status}`);
             break;
         }
       } else if (error.request) {
@@ -127,7 +153,12 @@ export const errorConfig: RequestConfig = {
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理
       const url = `${API_URL}${config?.url}`;
-      const authHeader = { Authorization: getToken() };
+      const authHeader: any = {
+        Authorization: getToken()
+      };
+      if (isQiankun()) {
+        authHeader.AppId = APPID;
+      }
       config.headers = { ...config.headers, ...authHeader };
       return { ...config, url };
     },

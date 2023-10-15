@@ -138,4 +138,17 @@ declare namespace API {
     queryFilterGroups?: FilterGroupItem[];
     policyResourceKey: string;
   };
+
+  /** 分配列权限 */
+  type ColumnPermissionItem = {
+    appId?: string;
+    enabled: boolean;
+    columnType: string;
+    columnKey: string;
+    isEnableDataMask: boolean;
+    dataMaskType: number;
+    maskLength: number;
+    maskPosition: number;
+    maskChar: string;
+  };
 }

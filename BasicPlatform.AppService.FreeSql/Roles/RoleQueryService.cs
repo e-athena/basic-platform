@@ -13,7 +13,13 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 [Component]
 public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
 {
-    public RoleQueryService(IFreeSql freeSql) : base(freeSql)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="multiTenancy"></param>
+    /// <param name="accessor"></param>
+    public RoleQueryService(FreeSqlMultiTenancy multiTenancy, ISecurityContextAccessor accessor) : base(multiTenancy,
+        accessor)
     {
     }
 
@@ -29,7 +35,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .HasWhere(request.DataScope, p => request.DataScope!.Contains(p.DataScope))
-            .ToPagingAsync(request, p => new GetRolePagingResponse
+            .ToPagingAsync(UserId, request, p => new GetRolePagingResponse
             {
                 CreatedUserName = p.CreatedUser!.RealName,
                 UpdatedUserName = p.LastUpdatedUser!.RealName
@@ -203,5 +209,17 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
         return QueryNoTracking<RoleDataPermission>()
             .Where(p => p.RoleId == id)
             .ToListAsync<RoleDataPermissionModel>();
+    }
+
+    /// <summary>
+    /// 读取角色拥有的列权限
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public Task<List<RoleColumnPermissionModel>> GetColumnPermissionsAsync(string id)
+    {
+        return QueryNoTracking<RoleColumnPermission>()
+            .Where(p => p.RoleId == id)
+            .ToListAsync<RoleColumnPermissionModel>();
     }
 }

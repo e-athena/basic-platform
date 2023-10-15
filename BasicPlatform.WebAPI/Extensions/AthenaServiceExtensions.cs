@@ -116,7 +116,11 @@ public static class AthenaServiceExtensions
         {
             // Dashboard
             capOptions.UseDashboard();
-        }, new[] {Assembly.Load("BasicPlatform.IntegratedEventHandler")});
+        }, new[]
+        {
+            // 
+            Assembly.Load("BasicPlatform.ProcessManager")
+        });
 
         services.AddCustomCsRedisCache(configuration);
         services.AddCustomApiPermission();

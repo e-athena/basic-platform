@@ -8,8 +8,6 @@ namespace App.Infrastructure.Services.Impls;
 [Component]
 public class DefaultOrganizationService : DefaultServiceBase, IOrganizationService
 {
-    private const string ApiUrl = "http://localhost:5078";
-
     public DefaultOrganizationService(ISecurityContextAccessor accessor) : base(accessor)
     {
     }
@@ -20,7 +18,7 @@ public class DefaultOrganizationService : DefaultServiceBase, IOrganizationServi
     /// <returns></returns>
     public async Task<List<CascaderViewModel>> GetCascaderListAsync(string? parentId = null)
     {
-        var url = $"{ApiUrl}/api/SubApplication/GetOrganizationCascaderList";
+        var url = "/api/SubApplication/GetOrganizationCascaderList";
         if (!string.IsNullOrEmpty(parentId))
         {
             url += $"?organizationId={parentId}";
@@ -37,7 +35,7 @@ public class DefaultOrganizationService : DefaultServiceBase, IOrganizationServi
     /// <returns></returns>
     public async Task<List<TreeViewModel>> GetTreeListAsync(string? parentId = null)
     {
-        var url = $"{ApiUrl}/api/SubApplication/GetOrganizationTreeList";
+        var url = "/api/SubApplication/GetOrganizationTreeList";
         if (!string.IsNullOrEmpty(parentId))
         {
             url += $"?organizationId={parentId}";
@@ -55,7 +53,7 @@ public class DefaultOrganizationService : DefaultServiceBase, IOrganizationServi
     /// <returns></returns>
     public async Task<List<SelectViewModel>> GetSelectListAsync(string? parentId = null)
     {
-        var url = $"{ApiUrl}/api/SubApplication/GetOrganizationSelectList";
+        var url = "/api/SubApplication/GetOrganizationSelectList";
         if (!string.IsNullOrEmpty(parentId))
         {
             url += $"?organizationId={parentId}";
@@ -73,7 +71,7 @@ public class DefaultOrganizationService : DefaultServiceBase, IOrganizationServi
     /// <returns></returns>
     public async Task<string?> GetIdByNameAsync(string name)
     {
-        const string url = $"{ApiUrl}/api/SubApplication/GetOrganizationIdByName";
+        const string url = "/api/SubApplication/GetOrganizationIdByName";
         var result = await GetRequest(url)
             .SetQueryParam("organizationName", name)
             .GetJsonAsync<ApiResult<string>>();

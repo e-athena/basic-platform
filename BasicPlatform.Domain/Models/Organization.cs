@@ -7,7 +7,7 @@ namespace BasicPlatform.Domain.Models;
 /// </summary>
 [Table("authority_organizations")]
 // ReSharper disable once ClassNeverInstantiated.Global
-public class Organization : EntityCore, ICreator, IUpdater
+public class Organization : FullEntityCore
 {
     /// <summary>
     /// 所属上级Id
@@ -60,21 +60,9 @@ public class Organization : EntityCore, ICreator, IUpdater
     public int Sort { get; set; }
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
     public virtual User? CreatedUser { get; set; }
-
-    /// <summary>
-    /// 最后更新人Id
-    /// </summary>
-    [MaxLength(36)]
-    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后更新人

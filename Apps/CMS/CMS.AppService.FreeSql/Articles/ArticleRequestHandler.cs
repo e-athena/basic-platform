@@ -1,11 +1,12 @@
 using CMS.AppService.Articles.Requests;
+using CMS.Domain.Models.Articles;
 
 namespace CMS.AppService.FreeSql.Articles;
 
 /// <summary>
 /// 组织架构请求处理程序
 /// </summary>
-public class ArticleRequestHandler : AppServiceBase<Article>,
+public class ArticleRequestHandler : ServiceBase<Article>,
     IRequestHandler<CreateArticleRequest, string>,
     IRequestHandler<UpdateArticleRequest, string>,
     IRequestHandler<DeleteArticleRequest, string>,

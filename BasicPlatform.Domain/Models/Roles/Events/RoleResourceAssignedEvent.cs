@@ -10,6 +10,10 @@ public class RoleResourceAssignedEvent : EventBase
     /// </summary>
     public List<RoleResource> Resources { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="resources"></param>
     public RoleResourceAssignedEvent(List<RoleResource> resources)
     {
         Resources = resources;

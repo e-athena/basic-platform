@@ -3,9 +3,9 @@ using BasicPlatform.AppService.Applications.Models;
 namespace BasicPlatform.AppService.Applications.Responses;
 
 /// <summary>
-/// 网站应用分页返回值
+/// 子应用分页返回值
 /// </summary>
-[DataPermission(typeof(Application), "网站应用管理模块", AppId = "system")]
+[DataPermission(typeof(Application), "子应用管理模块", AppId = "system")]
 public class GetApplicationPagingResponse : ApplicationQueryModel
 {
 }

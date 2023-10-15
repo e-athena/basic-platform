@@ -55,7 +55,7 @@ export default [
         path: '/dashboard/workbench',
         name: '工作台',
         icon: 'smile',
-        component: './Welcome',
+        component: './Dashboard/Workbench',
       },
     ],
   },
@@ -80,11 +80,12 @@ export default [
     path: '/developer',
     name: '开发者中心',
     icon: 'crown',
+    component: './BasicLayout',
     routes: [
-      {
-        path: '/developer',
-        redirect: '/developer/resource',
-      },
+      // {
+      //   path: '/developer',
+      //   redirect: '/developer/resource',
+      // },
       {
         path: '/developer/resource',
         name: '资源管理',
@@ -97,17 +98,31 @@ export default [
         component: './Developer/Application',
         access: 'routeFilter',
       },
+      {
+        path: '/developer/event-tracking',
+        name: '事件追踪',
+        component: './Developer/EventTracking',
+        access: 'routeFilter',
+        routes: [
+          {
+            path: '/developer/event-tracking/config',
+            name: '事件追踪配置',
+            component: './Developer/EventTracking/Config',
+          },
+        ],
+      },
     ],
   },
   {
     path: '/system',
     name: '系统管理',
     icon: 'crown',
+    component: './BasicLayout',
     routes: [
-      {
-        path: '/system',
-        redirect: '/system/organization',
-      },
+      // {
+      //   path: '/system',
+      //   redirect: '/system/organization',
+      // },
       {
         path: '/system/tenant',
         name: '租户管理',
@@ -159,7 +174,7 @@ export default [
     ],
   },
   {
-    path: '/external/:id',
+    path: '/external/:url',
     component: './ExternalPages',
   },
   {

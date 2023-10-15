@@ -10,6 +10,12 @@ namespace BasicPlatform.AppService.Applications;
 public interface IApplicationQueryService
 {
     /// <summary>
+    /// 读取环境列表
+    /// </summary>
+    /// <returns></returns>
+    Task<List<string>> GetEnvironmentListAsync();
+
+    /// <summary>
     /// 读取密钥
     /// </summary>
     /// <param name="clientId">客户端ID</param>
