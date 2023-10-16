@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <DocumentationFile>bin\Debug\net6.0\BasicPlatform.AppService.xml</DocumentationFile>
+        <DocumentationFile>bin\Debug\net7.0\BasicPlatform.AppService.xml</DocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <DocumentationFile>bin\Release\net6.0\BasicPlatform.AppService.xml</DocumentationFile>
+        <DocumentationFile>bin\Release\net7.0\BasicPlatform.AppService.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="UAParser" Version="3.1.47" />
-        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="6.2.7" />
+        <PackageReference Include="UAParser" Version="3.1.47"/>
+        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="7.0.0-preview.20231013.1"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj" />
+        <ProjectReference Include="..\BasicPlatform.Domain\BasicPlatform.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

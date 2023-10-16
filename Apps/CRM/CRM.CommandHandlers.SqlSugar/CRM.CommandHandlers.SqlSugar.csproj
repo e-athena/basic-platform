@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -11,8 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="6.2.7" />
-        <PackageReference Include="Athena.Infrastructure.SqlSugar" Version="6.0.6" />
-        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.17" />
+        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.Infrastructure.SqlSugar" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="7.0.0-preview.20231013.1" />
     </ItemGroup>
 </Project>

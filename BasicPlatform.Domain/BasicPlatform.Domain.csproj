@@ -1,25 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>bin\Debug\net6.0\BasicPlatform.Domain.xml</DocumentationFile>
+        <DocumentationFile>bin\Debug\net7.0\BasicPlatform.Domain.xml</DocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <DocumentationFile>bin\Release\net6.0\BasicPlatform.Domain.xml</DocumentationFile>
+        <DocumentationFile>bin\Release\net7.0\BasicPlatform.Domain.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BasicPlatform.Infrastructure\BasicPlatform.Infrastructure.csproj" />
+        <ProjectReference Include="..\BasicPlatform.Infrastructure\BasicPlatform.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Athena.Infrastructure.Domain" Version="6.5.5" />
+        <PackageReference Include="Athena.Infrastructure.Domain" Version="7.0.0-preview.20231013.1"/>
     </ItemGroup>
 
 </Project>

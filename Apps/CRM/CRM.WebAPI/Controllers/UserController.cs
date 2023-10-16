@@ -32,7 +32,7 @@ public class UserController : CustomControllerBase
         var assembly = Assembly.GetExecutingAssembly();
         if (accessor.IsRoot)
         {
-            return service.GetMenuResources(assembly, GlobalConstant.DefaultAppId);
+            return service.GetFrontEndRoutingResources(assembly, GlobalConstant.DefaultAppId);
         }
 
         var resources = await _userService.GetUserResourceAsync(UserId!, GlobalConstant.DefaultAppId);
@@ -41,7 +41,7 @@ public class UserController : CustomControllerBase
             .Select(p => p.Key)
             .ToList();
 
-        return service.GetPermissionMenuResources(assembly, keys, GlobalConstant.DefaultAppId);
+        return service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId);
     }
 
     /// <summary>

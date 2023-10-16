@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.17" />
-        <PackageReference Include="Athena.InstantMessaging" Version="6.0.0" />
-        <PackageReference Include="Athena.Infrastructure" Version="6.2.17" />
+        <PackageReference Include="Athena.Infrastructure.Jwt" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.InstantMessaging" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.Infrastructure" Version="7.0.0-preview.20231014.1" />
         <PackageReference Include="Flurl.Http" Version="3.2.4" />
         <PackageReference Include="NewLife.Core" Version="10.6.2023.1001" />
     </ItemGroup>

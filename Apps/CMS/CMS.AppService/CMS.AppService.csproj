@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>bin\Debug\net6.0\CMS.AppService.xml</DocumentationFile>
+      <DocumentationFile>bin\Debug\net7.0\CMS.AppService.xml</DocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <DocumentationFile>bin\Release\net6.0\CMS.AppService.xml</DocumentationFile>
+      <DocumentationFile>bin\Release\net7.0\CMS.AppService.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="6.2.7" />
+        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="7.0.0-preview.20231013.1" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using Athena.Infrastructure.Attributes;
 using Athena.Infrastructure.Messaging.Responses;
 using CMS.AppService.Articles;
@@ -9,7 +8,7 @@ using CMS.Domain.Models.Articles;
 namespace CMS.AppService.FreeSql.Articles;
 
 /// <summary>
-/// 网站系统应用查询接口服务实现类
+/// 文章查询接口服务实现类
 /// </summary>
 [Component]
 public class ArticleQueryService : QueryServiceBase<Article>, IArticleQueryService

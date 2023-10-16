@@ -4,7 +4,7 @@ using CMS.Domain.Models.Articles;
 namespace CMS.AppService.FreeSql.Articles;
 
 /// <summary>
-/// 组织架构请求处理程序
+/// 文章请求处理程序
 /// </summary>
 public class ArticleRequestHandler : ServiceBase<Article>,
     IRequestHandler<CreateArticleRequest, string>,
