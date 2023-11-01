@@ -1,7 +1,7 @@
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Users;
 
-namespace BasicPlatform.AppService.FreeSql;
+namespace BasicPlatform.AppService.FreeSql.Commons;
 
 /// <summary>
 /// 数据权限服务

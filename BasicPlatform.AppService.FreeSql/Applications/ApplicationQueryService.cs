@@ -2,7 +2,6 @@ using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Applications.Models;
 using BasicPlatform.AppService.Applications.Requests;
 using BasicPlatform.AppService.Applications.Responses;
-using BasicPlatform.Domain.Models.Tenants;
 
 namespace BasicPlatform.AppService.FreeSql.Applications;
 
@@ -134,11 +133,7 @@ public class ApplicationQueryService : QueryServiceBase<Application>, IApplicati
         var result = await QueryableNoTracking
             .HasWhere(request.Keyword, p => p.Name.Contains(request.Keyword!))
             .HasWhere(request.Environment, p => p.Environment == request.Environment)
-            .ToPagingAsync(UserId, request, p => new GetApplicationPagingResponse
-            {
-                CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.LastUpdatedUser!.RealName,
-            });
+            .ToPagingAsync(UserId, request, p => new GetApplicationPagingResponse());
         return result;
     }
 

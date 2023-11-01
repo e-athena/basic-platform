@@ -152,6 +152,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           const succeed = await submitHandle(save, { configs: dataConfigs });
           if (succeed) {
             props.onSuccess();
+            setDataConfigs([]);
+            setCurrentConfig(undefined);
+            setHandleTarget(0);
+            setDataSource(undefined);
           }
         }}
         initialValues={{

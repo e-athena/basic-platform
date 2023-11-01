@@ -1,4 +1,4 @@
-using Athena.Infrastructure.Jwt;
+using Athena.Infrastructure.Auths;
 
 namespace CRM.WebAPI.Controllers;
 

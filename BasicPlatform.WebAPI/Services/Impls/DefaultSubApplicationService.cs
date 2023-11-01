@@ -1,11 +1,9 @@
-using BasicPlatform.AppService.Applications;
-
 namespace BasicPlatform.WebAPI.Services.Impls;
 
 /// <summary>
 /// 子应用服务接口默认实现类
 /// </summary>
-[Component(LifeStyle.Singleton)]
+[Component]
 public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationService
 {
     private readonly ILogger<DefaultSubApplicationService> _logger;

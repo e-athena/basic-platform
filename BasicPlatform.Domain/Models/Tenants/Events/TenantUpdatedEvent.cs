@@ -1,7 +1,7 @@
 namespace BasicPlatform.Domain.Models.Tenants.Events;
 
 /// <summary>
-/// 租户创建成功事件
+/// 租户更新成功事件
 /// </summary>
 public class TenantUpdatedEvent : EventBase
 {

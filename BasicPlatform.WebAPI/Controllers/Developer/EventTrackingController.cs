@@ -52,7 +52,7 @@ public class EventTrackingController : CustomControllerBase
         return _service.GetAsync(id);
     }
     /// <summary>
-    /// 根据ID读取
+    /// 读取分解树图
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>

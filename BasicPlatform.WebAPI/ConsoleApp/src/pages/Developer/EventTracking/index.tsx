@@ -72,8 +72,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.eventTracking.getAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<SearchOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();

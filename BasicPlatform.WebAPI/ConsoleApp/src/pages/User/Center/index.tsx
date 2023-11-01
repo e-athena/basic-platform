@@ -48,18 +48,15 @@ const Center = () => {
         <div style={{ minHeight: 360, paddingBottom: 24 }}>
           {segmentedValue === '基础信息' && (
             <>
-              <ProForm>
+              <ProForm initialValues={{
+                ...initialState?.currentUser
+              }}>
                 <ProForm.Group>
                   <ProFormText
                     name="userName"
                     label={'登录名'}
                     width="md"
-                    rules={[
-                      {
-                        required: true,
-                        message: '请输入登录名',
-                      },
-                    ]}
+                    disabled={true}
                   />
                   <ProFormText
                     name="realName"

@@ -111,7 +111,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 130,
+      width: 155,
       hideInTable: !showOption,
       render(_, entity) {
         return [
@@ -120,8 +120,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.externalPage.putAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               disabled={entity.isPublic && !isRoot}
               onClick={async (e) => {
@@ -141,8 +140,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.externalPage.deleteAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<DeleteOutlined />}
               disabled={entity.isPublic && !isRoot}
               onClick={() => {

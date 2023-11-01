@@ -11,6 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.Infrastructure.DataPermission" Version="7.0.0" />
     </ItemGroup>
 </Project>

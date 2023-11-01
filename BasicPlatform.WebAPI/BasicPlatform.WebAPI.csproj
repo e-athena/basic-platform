@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -15,41 +16,15 @@
         <DocumentationFile>bin\Release\net7.0\BasicPlatform.WebAPI.xml</DocumentationFile>
     </PropertyGroup>
 
-    <ItemGroup><!--        <PackageReference Include="Athena.Infrastructure.ApiPermission" Version="6.2.8" />-->
-        <!--        <PackageReference Include="Athena.Infrastructure.Cors" Version="6.0.2" />-->
-        <!--        <PackageReference Include="Athena.Infrastructure.CSRedis" Version="6.1.3" />-->
-        <!--        <PackageReference Include="Athena.Infrastructure.EventTracking.FreeSql" Version="6.0.1" />-->
-        <!--&lt;!&ndash;        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="6.5.6-preview.20230804.1" />&ndash;&gt;-->
-        <!--        <PackageReference Include="Athena.Infrastructure.FreeSql.AspNetCore" Version="6.5.7" />-->
-        <!--        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="6.2.0-pre1.4" />-->
-        <!--&lt;!&ndash;        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.16" />&ndash;&gt;-->
-        <!--        <PackageReference Include="Athena.Infrastructure.Logger.FreeSql" Version="6.3.3" />-->
-        <!--        <PackageReference Include="Athena.Infrastructure.Mvc" Version="6.1.20" />-->
-        <!--        <PackageReference Include="Athena.Infrastructure.Swagger" Version="6.0.4" />-->
-        <!--        <PackageReference Include="Athena.InstantMessaging.SignalR" Version="6.0.6" />-->
-        <!--        <PackageReference Include="Athena.Serilog.Enrichers.ClientInfo" Version="1.0.0" />-->
-        <!--        <PackageReference Include="Athena.Serilog.Enrichers.OpenTracing" Version="1.0.0" />-->
-
-        <!--        <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />-->
-        <!--        <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />-->
-        <!--        <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />-->
-        <!--        <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />-->
-        <!--        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.1.0" />-->
-
-        <!--&lt;!&ndash;        <PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.2.697" />&ndash;&gt;-->
-        <!--        <PackageReference Include="FreeSql.Provider.MySql" Version="3.2.801" />-->
-        <!--        <PackageReference Include="FreeSql.Provider.SqliteCore" Version="3.2.801" />-->
-        <!--        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />-->
-
-        <!--        <PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.2.1" />-->
-        <!--        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />-->
-
-        <PackageReference Include="Athena.All.FreeSql" Version="7.0.0-preview.20231014.4"/>
-        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="7.0.0-preview.20231013.1" />
+    <ItemGroup>
+        <PackageReference Include="Athena.All.FreeSql" Version="7.0.1" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="7.0.0-preview.20231101.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BasicPlatform.AppService.FreeSql\BasicPlatform.AppService.FreeSql.csproj"/>
+        <ProjectReference Include="..\BasicPlatform.Domain.EventHandler\BasicPlatform.Domain.EventHandler.csproj" />
         <ProjectReference Include="..\BasicPlatform.ProcessManager\BasicPlatform.ProcessManager.csproj"/>
     </ItemGroup>
 

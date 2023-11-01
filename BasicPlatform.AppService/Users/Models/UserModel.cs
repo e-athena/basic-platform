@@ -38,12 +38,14 @@ public class UserModel : ModelBase
     /// <summary>
     /// 手机号
     /// </summary>
+    [PhoneNumber]
     public string? PhoneNumber { get; set; }
 
     /// <summary>
     /// 电子邮箱
     /// </summary>
     /// <value></value>
+    [EmailAddress]
     public string? Email { get; set; }
 
     /// <summary>

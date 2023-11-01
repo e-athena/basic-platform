@@ -155,7 +155,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: !showOption,
-      width: 95,
+      width: 120,
       render(_, entity) {
         const moreItems: ItemType[] = [];
         if (canAccessible(permission.user.assignResourcesAsync, resource)) {
@@ -189,8 +189,7 @@ const TableList: React.FC = () => {
         return [
           <Access key={'edit'} accessible={canAccessible(permission.user.putAsync, resource)}>
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
@@ -260,8 +259,7 @@ const TableList: React.FC = () => {
               placement="bottom"
             >
               <Button
-                shape="circle"
-                type={'link'}
+                size="small"
                 icon={<MoreOutlined />}
                 onClick={(e) => {
                   e.stopPropagation();

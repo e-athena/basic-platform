@@ -43,6 +43,11 @@ public static class CacheConstant
     public const string UserColumnPermissionKey = "user:{0}:UserColumnPermission:{1}";
 
     /// <summary>
+    /// 用户表格列权限缓存键
+    /// </summary>
+    public const string UserTableColumnPermissionKey = "user:{0}:UserColumnPermission:TableInfo:{1}";
+
+    /// <summary>
     /// 用户列权限缓存键
     /// </summary>
     public const string UserColumnPermissionPatternKey = "user:{0}:UserColumnPermission:*";

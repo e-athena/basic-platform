@@ -1,12 +1,12 @@
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Roles.Events;
 
-namespace BasicPlatform.AppService.FreeSql.Roles;
+namespace BasicPlatform.Domain.EventHandler;
 
 /// <summary>
 /// 角色通知处理器
 /// </summary>
-public class RoleNotificationHandler : ServiceBase<Role>,
+public class RoleEventHandler : ServiceBase<Role>,
     IDomainEventHandler<RoleResourceAssignedEvent>,
     IDomainEventHandler<RoleDataPermissionAssignedEvent>,
     IDomainEventHandler<RoleColumnPermissionAssignedEvent>,
@@ -17,7 +17,7 @@ public class RoleNotificationHandler : ServiceBase<Role>,
     /// </summary>
     /// <param name="unitOfWorkManager"></param>
     /// <param name="accessor"></param>
-    public RoleNotificationHandler(UnitOfWorkManager unitOfWorkManager,
+    public RoleEventHandler(UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor)
         :
         base(unitOfWorkManager, accessor)
@@ -36,7 +36,7 @@ public class RoleNotificationHandler : ServiceBase<Role>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<RoleResource>(
-            p => p.RoleId == notification.GetId(), cancellationToken
+            p => p.RoleId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Resources.Count == 0)
         {
@@ -59,7 +59,7 @@ public class RoleNotificationHandler : ServiceBase<Role>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<RoleDataPermission>(
-            p => p.RoleId == notification.GetId(), cancellationToken
+            p => p.RoleId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Permissions.Count <= 0)
         {
@@ -82,7 +82,7 @@ public class RoleNotificationHandler : ServiceBase<Role>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<RoleColumnPermission>(
-            p => p.RoleId == notification.GetId(), cancellationToken
+            p => p.RoleId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Permissions.Count <= 0)
         {
@@ -105,7 +105,7 @@ public class RoleNotificationHandler : ServiceBase<Role>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<RoleUser>(
-            p => p.RoleId == notification.GetId(), cancellationToken
+            p => p.RoleId == notification.AggregateRootId, cancellationToken
         );
         if (notification.UserIds.Count <= 0)
         {
@@ -115,7 +115,7 @@ public class RoleNotificationHandler : ServiceBase<Role>,
         // 新增新数据
         var roleResources = notification
             .UserIds
-            .Select(userId => new RoleUser(notification.GetId()!, userId))
+            .Select(userId => new RoleUser(notification.AggregateRootId, userId))
             .ToList();
         // 新增新数据
         await RegisterNewRangeValueObjectAsync(roleResources, cancellationToken);

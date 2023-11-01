@@ -1,4 +1,3 @@
-using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Resources.Requests;
 using BasicPlatform.WebAPI.Services;
 

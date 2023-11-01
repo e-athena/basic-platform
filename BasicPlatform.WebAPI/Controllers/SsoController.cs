@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Users.Models;
 
 namespace BasicPlatform.WebAPI.Controllers;

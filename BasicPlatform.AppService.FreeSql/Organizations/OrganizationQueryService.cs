@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Organizations;
 /// <summary>
 /// 
 /// </summary>
-[Component(LifeStyle.Transient)]
+[Component]
 public class OrganizationQueryService : QueryServiceBase<Organization>, IOrganizationQueryService
 {
     /// <summary>
@@ -44,9 +44,7 @@ public class OrganizationQueryService : QueryServiceBase<Organization>, IOrganiz
             .HasWhere(request.Status, p => request.Status!.Contains(p.Status))
             .ToPagingAsync(UserId, request, p => new GetOrganizationPagingResponse
             {
-                CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.LastUpdatedUser!.RealName,
-                LeaderName = p.Leader!.RealName
+                LeaderUserId = p.LeaderId
             });
 
         return result;
@@ -288,7 +286,6 @@ public class OrganizationQueryService : QueryServiceBase<Organization>, IOrganiz
                 CreatedOn = item.CreatedOn,
                 UpdatedOn = item.UpdatedOn,
                 Status = item.Status,
-                CreatedUserName = item.CreatedUserName
             };
             if (entities.Any(p => p.ParentId == item.Id))
             {

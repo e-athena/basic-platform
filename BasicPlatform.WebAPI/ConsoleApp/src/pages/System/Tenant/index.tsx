@@ -142,11 +142,11 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '操作',
+      title: '操作1',
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: !showOption,
-      width: 125,
+      width: 120,
       render(_, entity) {
         const moreItems: ItemType[] = [];
         if (canAccessible(permission.tenant.postAsync, resource)) {
@@ -185,16 +185,15 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.tenant.putAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
-                const data = await queryDetail(detail, entity.id);
-                if (data) {
-                  setCurrentRow(data);
-                  handleCreateOrUpdateModalOpen(true);
-                }
+                  const data = await queryDetail(detail, entity.id);
+                  if (data) {
+                    setCurrentRow(data);
+                    handleCreateOrUpdateModalOpen(true);
+                  }
               }}
             >
               编辑
@@ -261,8 +260,7 @@ const TableList: React.FC = () => {
               placement="bottom"
             >
               <Button
-                shape="circle"
-                type={'link'}
+                size="small"
                 icon={<MoreOutlined />}
                 onClick={(e) => {
                   e.stopPropagation();

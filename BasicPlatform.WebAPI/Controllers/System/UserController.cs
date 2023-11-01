@@ -1,4 +1,3 @@
-using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;

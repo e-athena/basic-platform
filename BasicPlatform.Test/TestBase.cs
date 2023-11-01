@@ -1,6 +1,6 @@
 using System.Reflection;
 using System.Security.Claims;
-using Athena.Infrastructure.Jwt;
+using Athena.Infrastructure.Auths;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 

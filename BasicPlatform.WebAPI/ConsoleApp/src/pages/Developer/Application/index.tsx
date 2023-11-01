@@ -94,7 +94,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: !showOption,
-      width: 125,
+      width: 140,
       render(_, entity) {
         return [
           <Access
@@ -102,8 +102,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.application.putAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
@@ -122,13 +121,13 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.application.postAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               onClick={async (e) => {
                 e.stopPropagation();
                 const data = await queryDetail(detail, entity.id!);
                 if (data) {
                   data.id = undefined;
+                  data.clientSecret = undefined;
                   setCurrentRow(data);
                   handleCreateOrUpdateModalOpen(true);
                 }

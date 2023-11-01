@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.Cors" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.Infrastructure.Cors" Version="7.0.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.1.0" />
-        <PackageReference Include="Yarp.ReverseProxy" Version="2.0.0" />
+        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.2.0" />
+        <PackageReference Include="Yarp.ReverseProxy" Version="2.0.1" />
     </ItemGroup>
 
 </Project>

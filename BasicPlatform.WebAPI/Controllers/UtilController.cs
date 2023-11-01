@@ -4,7 +4,6 @@ using Athena.Infrastructure.EventTracking.Messaging.Models;
 using Athena.Infrastructure.EventTracking.Messaging.Requests;
 using Athena.Infrastructure.EventTracking.Messaging.Responses;
 using Athena.Infrastructure.EventTracking.Models;
-using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.FreeSql.Users;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Users;
@@ -75,8 +74,9 @@ public class UtilController : ControllerBase
     )
     {
         var result = new List<ApplicationDataPermissionInfo>();
-        var assembly = Assembly.Load("BasicPlatform.AppService");
-        var defaultList = DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
+        // var assembly = Assembly.Load("BasicPlatform.AppService");
+        // var defaultList = DataPermissionHelper.GetGroupList(assembly, GlobalConstant.DefaultAppId);
+        var defaultList = DataPermissionHelper.GetGroupList(GlobalConstant.DefaultAppId);
         result.Add(new ApplicationDataPermissionInfo
         {
             ApplicationId = GlobalConstant.DefaultAppId,
@@ -99,7 +99,8 @@ public class UtilController : ControllerBase
     public async Task<IList<ApplicationResourceInfo>> GetApplicationMenuResourcesAsync(
         [FromServices] IUserQueryService userQueryService,
         [FromServices] IApiPermissionService service,
-        [FromServices] ISubApplicationService subApplicationService
+        [FromServices] ISubApplicationService subApplicationService,
+        [FromServices] Microsoft.AspNetCore.Mvc.Infrastructure.IActionDescriptorCollectionProvider provider
     )
     {
         var result = new List<ApplicationResourceInfo>();
@@ -311,111 +312,6 @@ public class UtilController : ControllerBase
     public IActionResult CheckAuthAsync()
     {
         return Content("ok");
-    }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [IgnoreApiResultFilter]
-    public async Task<IActionResult> TestAsync([FromServices] ITrackConfigService service)
-    {
-        var test = new List<TrackConfig>();
-        var root = new TrackConfig
-        {
-            EventName = "创建用户",
-            EventTypeName = nameof(UserCreatedEvent),
-            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
-        };
-        test.Add(root);
-        var sub1 = new TrackConfig
-        {
-            ConfigId = root.Id,
-            ParentId = root.Id,
-            EventName = "用户通知",
-            EventTypeName = nameof(UserCreatedEvent),
-            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
-            ProcessorName = nameof(UserNotificationHandler),
-            ProcessorFullName = typeof(UserNotificationHandler).FullName!,
-            EventType = EventType.DomainEvent
-        };
-        test.Add(sub1);
-        var sub3 = new TrackConfig
-        {
-            ConfigId = root.Id,
-            ParentId = root.Id,
-            EventName = "租户设置为已初始化",
-            EventTypeName = nameof(UserCreatedEvent),
-            EventTypeFullName = typeof(UserCreatedEvent).FullName!,
-            ProcessorName = nameof(TenantProcessManager),
-            ProcessorFullName = typeof(TenantProcessManager).FullName!,
-        };
-        test.Add(sub3);
-
-        await service.SaveAsync(new SaveTrackConfigRequest
-        {
-            Configs = test
-        });
-
-        return Content("ok");
-    }
-
-    /// <summary>
-    /// 测试
-    /// </summary>
-    /// <param name="mediator"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<string> Test1([FromServices] IMediator mediator)
-    {
-        return mediator.SendAsync(new InitTenantRequest
-        {
-            Code = "baidu666"
-        });
-    }
-
-    /// <summary>
-    /// 检查授权
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<Paging<GetTrackPagingResponse>> GetTestPagingAsync([FromServices] ITrackStorageService service)
-    {
-        return service.GetPagingAsync(new GetTrackPagingRequest());
-    }
-
-    /// <summary>
-    /// 检查授权
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<GetTrackInfoResponse?> GetTestInfoAsync([FromServices] ITrackStorageService service, string traceId)
-    {
-        return service.GetAsync(traceId);
-    }
-
-    /// <summary>
-    /// 检查授权
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<DecompositionTreeGraphModel?> GetTestInfo1Async([FromServices] ITrackStorageService service,
-        string traceId)
-    {
-        return service.GetDecompositionTreeGraphAsync(traceId);
-    }
-
-    /// <summary>
-    /// 读取配置ID
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public Task<GetTrackConfigInfoResponse?> GetTestConfigInfoAsync([FromServices] ITrackConfigService service,
-        string id)
-    {
-        return service.GetAsync(id);
     }
 
     /// <summary>

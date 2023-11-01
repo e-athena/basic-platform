@@ -70,13 +70,12 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: !showOption,
-      width: 95,
+      width: 85,
       render(_, entity) {
         return [
           <Access key={'edit'} accessible={canAccessible(permission.position.putAsync, resource)}>
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();

@@ -10,7 +10,7 @@ public class PositionQueryModel : QueryModelBase
     /// </summary>
     [MaxLength(36)]
     [Required]
-    [TableColumn(HideInTable = true)]
+    [TableColumn(TableIgnore = true)]
     public string OrganizationId { get; set; } = null!;
 
     /// <summary>

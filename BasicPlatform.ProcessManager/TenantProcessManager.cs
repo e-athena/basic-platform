@@ -28,7 +28,8 @@ public class TenantProcessManager :
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [EventTracking]
-    [IntegratedEventSubscribe(nameof(UserCreatedEvent), Group = nameof(TenantProcessManager))]
+    [DistributedLock]
+    [IntegratedEventSubscribe(nameof(UserCreatedEvent), nameof(TenantProcessManager))]
     public async Task HandleAsync(UserCreatedEvent payload, CancellationToken cancellationToken)
     {
         // 不是创建租户超级管理员，不处理

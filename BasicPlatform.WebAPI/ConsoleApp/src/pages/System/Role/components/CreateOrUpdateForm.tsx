@@ -32,7 +32,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
     <ModalForm
       width={530}
       formRef={formRef}
-      title={props.values === undefined ? '创建角色' : '更新角色'}
+      title={props.values?.id === undefined ? '创建角色' : '更新角色'}
       open={props.open}
       modalProps={{
         onCancel: () => {

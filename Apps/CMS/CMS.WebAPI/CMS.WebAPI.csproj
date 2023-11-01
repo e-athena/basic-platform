@@ -16,8 +16,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.All.FreeSql" Version="7.0.0-preview.20231014.4" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="7.0.0-preview.20231013.1" />
+        <PackageReference Include="Athena.All.FreeSql" Version="7.0.1" />
+        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="7.0.0-preview.20231101.1" />
     </ItemGroup>
 
     <ItemGroup>

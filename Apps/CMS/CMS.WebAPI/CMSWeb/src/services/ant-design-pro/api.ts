@@ -81,7 +81,12 @@ export function queryColumns(modelName: string) {
     method: 'GET',
   });
 }
-
+/** 详情数据列 */
+export function queryDetailColumns(modelName: string) {
+  return request<ApiResponse<API.TableColumnResponse>>(`/api/${modelName}/GetDetailColumns`, {
+    method: 'GET',
+  });
+}
 /** 更新数据列 */
 export function updateUserCustomColumns(body: any) {
   return request<ApiResponse<number>>('/api/user/updateUserCustomColumns', {

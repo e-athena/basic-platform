@@ -33,7 +33,12 @@ declare namespace API {
     columns: TableColumnItem[];
   };
 
+
   type TableColumnItem = {
+    /** 是否已过滤 */
+    ignore: boolean;
+    /** 是否已过滤 */
+    tableIgnore: boolean;
     /** 列名 */
     dataIndex: string;
     /** 列标题 */
@@ -44,6 +49,7 @@ declare namespace API {
     hideInTable: boolean;
     /** 在搜索中隐藏 */
     hideInSearch: boolean;
+    hideInDescriptions: boolean;
     /** 是否必须 */
     required: boolean;
     /** 固定到左侧 */
@@ -64,12 +70,18 @@ declare namespace API {
     valueType?: any;
     /** 枚举值类型 */
     valueEnum?: any;
+    /** 提示 */
+    tooltip?: string;
     /** 属性类型 */
     propertyType: string;
     /** 属性名称 */
     propertyName: string;
     /** 枚举 */
     enumOptions?: any[];
+    /** 分组 */
+    group: string;
+    /** 分组详情 */
+    groupDescription?: string;
   };
 
   /** 应用数据权限资源 */

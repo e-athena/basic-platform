@@ -17,17 +17,6 @@ public class TenantApplication : ValueObject
     /// </summary>
     public virtual Tenant Tenant { get; set; } = null!;
 
-    // /// <summary>
-    // /// 应用ID
-    // /// </summary>
-    // [MaxLength(36)]
-    // public string ApplicationId { get; set; } = null!;
-    //
-    // /// <summary>
-    // /// 应用
-    // /// </summary>
-    // public virtual Application Application { get; set; } = null!;
-
     /// <summary>
     /// 子应用客户端ID
     /// </summary>

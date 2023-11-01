@@ -2,7 +2,6 @@ using BasicPlatform.AppService.Tenants;
 using BasicPlatform.AppService.Tenants.Models;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Tenants.Responses;
-using BasicPlatform.Domain.Models.Tenants;
 
 namespace BasicPlatform.AppService.FreeSql.Tenants;
 

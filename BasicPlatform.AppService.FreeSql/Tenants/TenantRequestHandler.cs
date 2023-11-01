@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Tenants.Requests;
-using BasicPlatform.Domain.Models.Tenants;
 
 namespace BasicPlatform.AppService.FreeSql.Tenants;
 
@@ -162,6 +161,12 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
         if (entity == null)
         {
             throw FriendlyException.Of("租户不存在");
+        }
+
+        // 已处理过，不再处理
+        if (entity.IsInitDatabase)
+        {
+            return entity.Id;
         }
 
         entity.InitDatabase(request.UserId ?? UserId);

@@ -1,7 +1,8 @@
 using BasicPlatform.AppService.TableColumns;
 using BasicPlatform.AppService.Users;
+using BasicPlatform.AppService.Users.Models;
 
-namespace BasicPlatform.AppService.FreeSql;
+namespace BasicPlatform.AppService.FreeSql.Commons;
 
 /// <summary>
 /// 通用服务接口实现类
@@ -10,14 +11,21 @@ namespace BasicPlatform.AppService.FreeSql;
 public class CommonService : ICommonService
 {
     private readonly IUserQueryService _userQueryService;
+    private readonly ISecurityContextAccessor _accessor;
+    private readonly ICacheManager _cacheManager;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="userQueryService"></param>
-    public CommonService(IUserQueryService userQueryService)
+    /// <param name="accessor"></param>
+    /// <param name="cacheManager"></param>
+    public CommonService(IUserQueryService userQueryService, ISecurityContextAccessor accessor,
+        ICacheManager cacheManager)
     {
         _userQueryService = userQueryService;
+        _accessor = accessor;
+        _cacheManager = cacheManager;
     }
 
     /// <summary>
@@ -70,10 +78,19 @@ public class CommonService : ICommonService
     /// <param name="moduleName"></param>
     /// <param name="sources"></param>
     /// <returns></returns>
-    private async Task<List<TableColumnInfo>> ColumnAuthAsync(string moduleName, IEnumerable<TableColumnInfo> sources)
+    private async Task<List<TableColumnInfo>> ColumnAuthAsync(
+        string moduleName,
+        IList<TableColumnInfo> sources
+    )
     {
-        // 处理列权限
-        var columns = await _userQueryService.GetColumnPermissionsByModuleNameAsync(moduleName);
+        // 添加缓存
+        // Key
+        var key = string.Format(CacheConstant.UserTableColumnPermissionKey, _accessor.UserId, moduleName);
+        // 过期时间
+        var expireTime = TimeSpan.FromMinutes(1);
+        var columns = await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ??
+                      new List<UserColumnPermissionModel>();
+
         if (columns.Count == 0)
         {
             return sources.OrderBy(p => p.Sort).ToList();
@@ -91,5 +108,12 @@ public class CommonService : ICommonService
         }
 
         return news;
+
+        // 查询
+        Task<List<UserColumnPermissionModel>> QueryFunc()
+        {
+            // 读取
+            return _userQueryService.GetColumnPermissionsByModuleNameAsync(moduleName, _accessor.UserId);
+        }
     }
 }

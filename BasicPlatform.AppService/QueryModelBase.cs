@@ -8,7 +8,8 @@ public class QueryModelBase
     /// <summary>
     /// ID
     /// </summary>
-    [TableColumn(Sort = 0, HideInTable = true, HideInSearch = true, HideInDescriptions = true)]
+    // [TableColumn(Sort = 0, HideInTable = true, HideInSearch = true, HideInDescriptions = true)]
+    [TableColumn(Ignore = true)]
     public string? Id { get; set; }
 
     /// <summary>
@@ -18,16 +19,10 @@ public class QueryModelBase
     public string? OrganizationalUnitIds { get; set; }
 
     /// <summary>
-    /// 创建人Id
-    /// </summary>
-    [TableColumn(Sort = 85, HideInTable = true, HideInDescriptions = true)]
-    public string? CreatedUserId { get; set; }
-
-    /// <summary>
     /// 创建人
     /// </summary>
-    [TableColumn(Sort = 86, HideInTable = true, Width = 90)]
-    public string? CreatedUserName { get; set; }
+    [TableColumn(Sort = 85, HideInTable = true, Width = 90)]
+    public string? CreatedUserId { get; set; }
 
     /// <summary>
     /// 创建时间
@@ -36,16 +31,10 @@ public class QueryModelBase
     public DateTime CreatedOn { get; set; }
 
     /// <summary>
-    /// 更新人Id  
-    /// </summary>
-    [TableColumn(Sort = 88, HideInTable = true, HideInDescriptions = true)]
-    public string? LastUpdatedUserId { get; set; }
-
-    /// <summary>
     /// 更新人
     /// </summary>
-    [TableColumn(Sort = 89, HideInTable = true, Width = 90)]
-    public string? UpdatedUserName { get; set; }
+    [TableColumn(Sort = 88, HideInTable = true, Width = 90)]
+    public string? LastUpdatedUserId { get; set; }
 
     /// <summary>
     /// 最后修改时间

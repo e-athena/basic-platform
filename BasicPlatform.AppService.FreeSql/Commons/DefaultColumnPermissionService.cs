@@ -3,7 +3,7 @@ using Athena.Infrastructure.ColumnPermissions.Models;
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Users;
 
-namespace BasicPlatform.AppService.FreeSql;
+namespace BasicPlatform.AppService.FreeSql.Commons;
 
 /// <summary>
 /// 

@@ -205,6 +205,10 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         if (item.dataIndex.includes('UserId') && item.hideInTable === false) {
           nItem.valueType = 'select';
           nItem.valueEnum = userListValueEnums;
+          // 如果值在userListValueEnums中不存在，则显示-，否则显示值
+          nItem.renderText = (value) => {
+            return userListValueEnums[value] ? userListValueEnums[value].text : '-';
+          };
         }
         if (
           props.showDescriptions &&
@@ -424,7 +428,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
             />,
             <EditTableColumnForm
               key={'editTableColumn'}
-              data={columnData}
+              data={columnData.filter(d => !d.tableIgnore)}
               onOk={(list) => {
                 setColumnData(list);
                 setColumnLoading(true);

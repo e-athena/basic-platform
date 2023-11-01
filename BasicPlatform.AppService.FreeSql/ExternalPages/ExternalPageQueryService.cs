@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.ExternalPages;
 /// <summary>
 /// 
 /// </summary>
-[Component(LifeStyle.Transient)]
+[Component]
 public class ExternalPageQueryService : QueryServiceBase<ExternalPage>, IExternalPageQueryService
 {
     /// <summary>

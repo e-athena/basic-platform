@@ -6,7 +6,6 @@ using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
 using BasicPlatform.Domain.Models.Roles;
-using BasicPlatform.Domain.Models.Tenants;
 using BasicPlatform.Domain.Models.Users;
 
 namespace BasicPlatform.AppService.FreeSql.Users;
@@ -14,7 +13,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 /// <summary>
 /// 用户服务接口实现类
 /// </summary>
-[Component(LifeStyle.Transient)]
+[Component]
 public class UserQueryService : QueryServiceBase<User>, IUserQueryService
 {
     private readonly IRoleQueryService _roleQueryService;
@@ -70,8 +69,6 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
             .HasWhere(userRoleQuery, p => userRoleQuery!.Any(d => d.UserId == p.Id))
             .ToPagingAsync(UserId, request, p => new GetUserPagingResponse
             {
-                CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.LastUpdatedUser!.RealName,
                 OrganizationName = p.Organization!.Name,
                 PositionName = p.Position!.Name
             });

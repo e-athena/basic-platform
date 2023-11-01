@@ -44,8 +44,6 @@ public class PositionQueryService : DataPermissionQueryServiceBase<Position>, IP
             .HasWhere(organizationQuery, p => organizationQuery!.Any(o => o.Id == p.OrganizationId))
             .ToPagingAsync(UserId, request, p => new GetPositionPagingResponse
             {
-                CreatedUserName = p.CreatedUser!.RealName,
-                UpdatedUserName = p.LastUpdatedUser!.RealName,
                 OrganizationName = p.Organization!.Name
             }, cancellationToken);
         return result;

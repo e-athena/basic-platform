@@ -65,11 +65,12 @@ public class EventTrackingConfigController : CustomControllerBase
     [ApiPermission(ConfigSelectList)]
     public IList<EventTrackingInfo> GetSelectList()
     {
-        return EventTrackingHelper.GetEventTrackingInfos(new List<Assembly>
-        {
-            Assembly.Load("BasicPlatform.AppService.FreeSql"),
-            Assembly.Load("BasicPlatform.ProcessManager")
-        });
+        return EventTrackingHelper.GetEventTrackingInfos("BasicPlatform");
+        // return EventTrackingHelper.GetEventTrackingInfos(new List<Assembly>
+        // {
+        //     Assembly.Load("BasicPlatform.AppService.FreeSql"),
+        //     Assembly.Load("BasicPlatform.ProcessManager")
+        // });
     }
 
     /// <summary>
@@ -80,10 +81,11 @@ public class EventTrackingConfigController : CustomControllerBase
     [ApiPermission(EventSelectList)]
     public IList<SelectViewModel> GetEventSelectList()
     {
-        return EventTrackingHelper.GetEventSelectList(new List<Assembly>
-        {
-            Assembly.Load("BasicPlatform.Domain")
-        });
+        return EventTrackingHelper.GetEventSelectList("BasicPlatform");
+        // return EventTrackingHelper.GetEventSelectList(new List<Assembly>
+        // {
+        //     Assembly.Load("BasicPlatform.Domain")
+        // });
     }
 
     /// <summary>

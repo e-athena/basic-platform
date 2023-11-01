@@ -71,7 +71,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 160,
+      width: 180,
       hideInTable: !showOption,
       render(_, entity) {
         return [
@@ -80,8 +80,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.organization.putAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
@@ -100,8 +99,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.organization.postAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               onClick={(e) => {
                 const parentPath = entity.parentPath ? `${entity.parentPath},${entity.id}` : entity.id;
                 e.stopPropagation();

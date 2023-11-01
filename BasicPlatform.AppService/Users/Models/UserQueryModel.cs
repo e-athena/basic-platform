@@ -20,7 +20,7 @@ public class UserQueryModel : QueryModelBase
     /// <summary>
     /// 头像
     /// </summary>
-    [TableColumn(Sort = 0, Width = 50)]
+    [TableColumn(Sort = 0, Width = 62)]
     public string? Avatar { get; set; }
 
     /// <summary>
@@ -58,13 +58,13 @@ public class UserQueryModel : QueryModelBase
     /// <summary>
     /// 所属组织ID
     /// </summary>
-    [TableColumn(HideInTable = true, HideInDescriptions = true)]
+    [TableColumn(TableIgnore = true)]
     public string OrganizationId { get; set; } = null!;
 
     /// <summary>
     /// 所属职位ID
     /// </summary>
-    [TableColumn(HideInTable = true, HideInDescriptions = true)]
+    [TableColumn(TableIgnore = true)]
     public string PositionId { get; set; } = null!;
 
     /// <summary>
@@ -89,7 +89,7 @@ public class UserQueryModel : QueryModelBase
     /// <summary>
     /// 是否启用
     /// </summary>
-    [TableColumn(HideInTable = true, Ignore = true)]
+    [TableColumn(Ignore = true)]
     public bool IsEnabled => Status == Status.Enabled;
 
     /// <summary>

@@ -1,12 +1,12 @@
 using BasicPlatform.Domain.Models.Users;
 using BasicPlatform.Domain.Models.Users.Events;
 
-namespace BasicPlatform.AppService.FreeSql.Users;
+namespace BasicPlatform.Domain.EventHandler;
 
 /// <summary>
 /// 用户通知处理器
 /// </summary>
-public class UserNotificationHandler : ServiceBase<User>,
+public class UserEventHandler : ServiceBase<User>,
     IDomainEventHandler<UserDataPermissionAssignedEvent>,
     IDomainEventHandler<UserColumnPermissionAssignedEvent>
 {
@@ -15,7 +15,7 @@ public class UserNotificationHandler : ServiceBase<User>,
     /// </summary>
     /// <param name="unitOfWorkManager"></param>
     /// <param name="accessor"></param>
-    public UserNotificationHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
+    public UserEventHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
     {
     }
@@ -32,7 +32,7 @@ public class UserNotificationHandler : ServiceBase<User>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserDataPermission>(
-            p => p.UserId == notification.GetId(), cancellationToken
+            p => p.UserId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Permissions.Count <= 0)
         {
@@ -55,7 +55,7 @@ public class UserNotificationHandler : ServiceBase<User>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<UserColumnPermission>(
-            p => p.UserId == notification.GetId(), cancellationToken
+            p => p.UserId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Permissions.Count <= 0)
         {

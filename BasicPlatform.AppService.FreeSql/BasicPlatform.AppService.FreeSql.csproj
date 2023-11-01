@@ -19,10 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.Infrastructure.DataPermission.FreeSql" Version="7.0.0-preview.20231013.1"/>
-        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="7.0.0-preview.20231013.1"/>
-        <!--        <PackageReference Include="Athena.Infrastructure.Jwt" Version="6.0.16" />-->
-        <PackageReference Include="Rougamo.Fody" Version="2.0.0"/>
+        <PackageReference Include="Athena.Infrastructure.FreeSql" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

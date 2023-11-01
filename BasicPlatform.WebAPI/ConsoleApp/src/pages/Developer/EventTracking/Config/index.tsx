@@ -51,7 +51,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInTable: !showOption,
-      width: 135,
+      width: 115,
       render(_, entity) {
         return [
           <Access
@@ -59,8 +59,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.eventTrackingConfig.saveAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<FormOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
@@ -77,8 +76,7 @@ const TableList: React.FC = () => {
             accessible={canAccessible(permission.eventTrackingConfig.getAsync, resource)}
           >
             <Button
-              shape="circle"
-              type={'link'}
+              size="small"
               icon={<SearchOutlined />}
               onClick={async (e) => {
                 e.stopPropagation();
@@ -109,8 +107,7 @@ const TableList: React.FC = () => {
               cancelText="取消"
             >
               <Button
-                shape="circle"
-                type={'link'}
+                size="small"
                 danger
                 icon={<DeleteOutlined />}
               />

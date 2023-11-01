@@ -28,7 +28,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   return (
     <ModalForm
       width={592}
-      title={props.values === undefined ? '创建新用户' : '更新用户'}
+      title={props.values?.id === undefined ? '创建新用户' : '更新用户'}
       open={props.open}
       formRef={formRef}
       modalProps={{

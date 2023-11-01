@@ -1,12 +1,12 @@
 using BasicPlatform.Domain.Models.Tenants;
 using BasicPlatform.Domain.Models.Tenants.Events;
 
-namespace BasicPlatform.AppService.FreeSql.Tenants;
+namespace BasicPlatform.Domain.EventHandler;
 
 /// <summary>
 /// 租户通知处理器
 /// </summary>
-public class TenantNotificationHandler : ServiceBase<Tenant>,
+public class TenantEventHandler : ServiceBase<Tenant>,
     IDomainEventHandler<TenantResourceAssignedEvent>,
     IDomainEventHandler<TenantCreatedEvent>,
     IDomainEventHandler<TenantUpdatedEvent>
@@ -16,7 +16,7 @@ public class TenantNotificationHandler : ServiceBase<Tenant>,
     /// </summary>
     /// <param name="unitOfWorkManager"></param>
     /// <param name="accessor"></param>
-    public TenantNotificationHandler(UnitOfWorkManager unitOfWorkManager,
+    public TenantEventHandler(UnitOfWorkManager unitOfWorkManager,
         ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
     {
@@ -34,7 +34,7 @@ public class TenantNotificationHandler : ServiceBase<Tenant>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<TenantResource>(
-            p => p.TenantId == notification.GetId(), cancellationToken
+            p => p.TenantId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Resources.Count == 0)
         {
@@ -74,7 +74,7 @@ public class TenantNotificationHandler : ServiceBase<Tenant>,
     {
         // 删除旧数据
         await RegisterDeleteValueObjectAsync<TenantApplication>(
-            p => p.TenantId == notification.GetId(), cancellationToken
+            p => p.TenantId == notification.AggregateRootId, cancellationToken
         );
         if (notification.Applications.Count == 0)
         {

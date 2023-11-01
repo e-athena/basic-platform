@@ -1,5 +1,3 @@
-using BasicPlatform.Domain.Models.Tenants;
-
 namespace BasicPlatform.AppService.FreeSql.Commons;
 
 /// <summary>
@@ -8,13 +6,11 @@ namespace BasicPlatform.AppService.FreeSql.Commons;
 [Component(LifeStyle.Singleton)]
 public class TenantService : QueryServiceBase<Tenant>, ITenantService
 {
-
     /// <summary>
     /// 
     /// </summary>
     /// <param name="multiTenancy"></param>
-    /// <param name="accessor"></param>
-    public TenantService(FreeSqlMultiTenancy multiTenancy, ISecurityContextAccessor accessor) : base(multiTenancy, accessor)
+    public TenantService(FreeSqlMultiTenancy multiTenancy) : base(multiTenancy)
     {
     }
 

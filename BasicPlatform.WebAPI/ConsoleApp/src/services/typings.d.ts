@@ -32,6 +32,10 @@ declare namespace API {
   };
 
   type TableColumnItem = {
+    /** 是否已过滤 */
+    ignore: boolean;
+    /** 是否已过滤 */
+    tableIgnore: boolean;
     /** 列名 */
     dataIndex: string;
     /** 列标题 */
