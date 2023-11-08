@@ -67,4 +67,4 @@
 - 本软件不提供任何形式的明示或暗示担保，包括但不限于对软件的适用性、特定用途的适用性和非侵权性的担保。
 
 ## 鸣谢
-![https://jb.gg/OpenSourceSupport](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png){ width=100 height=auto }
+![https://jb.gg/OpenSourceSupport](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*ruggdh*_ga*MTcxMjE2Nzg1MS4xNjUxMDI5ODA0*_ga_9J976DJZ68*MTY5OTQ1MjM4MC4zOC4xLjE2OTk0NTMzNzQuNDIuMC4w&_ga=2.209954133.1323999414.1699367271-1712167851.1651029804)
