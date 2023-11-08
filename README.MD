@@ -5,7 +5,8 @@
 - 基于`.NET7`开发
 - 前端使用`Ant Design Pro`，`UmiJs`
 - 支持多租户
-- 支持自动根据数据库连接字符串识别数据库类型。当前支持自动识别的有`Sqlite`、`MySql`、`SqlServer`、`PostgreSQL`，如需要支持其他数据库，可以自行指定在AddCustomFreeSql中指定`DateType`。支持FreeSql支持的所有数据库。
+- 支持自动根据数据库连接字符串识别数据库类型。如：`sqlite,Data Source=test_local.db;`代表数据库类型为`sqlite`，连接字符串为`Data Source=test_local.db;`
+- 支持两种ORM，`SqlSugar`和`FreeSql`，可根据需要自行选择。
 - 支持自定义查询，可根据数据列表上的字段进行查询
 - 支持列设置，可根据需要显示或隐藏数据列表上的字段
 - 支持基于角色的授权(资源权限，数据权限，列权限，数据脱敏)。
@@ -47,6 +48,8 @@
     > npm install
     > # or
     > yarn
+    > # or
+    > pnpm i # 推荐使用pnpm管理
     > ```
 4. 执行`npm start`命令
 5. 打开浏览器，访问`http://localhost:5079`
@@ -61,6 +64,7 @@
 - 仓库源码完全免费开源商用。
 - 不能以任何形式用于非法为目的的行为。
 - 任何基于本软件而产生的一切法律纠纷和责任，均于作者无关。
+- 本软件不提供任何形式的明示或暗示担保，包括但不限于对软件的适用性、特定用途的适用性和非侵权性的担保。
 
-## 赞助商
-![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
+## 鸣谢
+![https://jb.gg/OpenSourceSupport](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png){ width=100 height=auto }
