@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace BasicPlatform.WebAPI.Attributes;
 
 /// <summary>
@@ -33,6 +35,20 @@ public class SubApplicationFilterAttribute : ActionFilterAttribute
             .GetService(typeof(ISecurityContextAccessor)) as ISecurityContextAccessor;
 
         if (contextAccessor == null)
+        {
+            base.OnActionExecuting(context);
+            return;
+        }
+
+        // 如果当前请求是内网请求，则跳过
+        if (IsPrivateNetwork(context.HttpContext.Connection.RemoteIpAddress))
+        {
+            base.OnActionExecuting(context);
+            return;
+        }
+        
+        // 如果是dapr调用，则跳过
+        if (contextAccessor.UserAgent.Contains("dapr-sdk-dotnet"))
         {
             base.OnActionExecuting(context);
             return;
@@ -85,5 +101,31 @@ public class SubApplicationFilterAttribute : ActionFilterAttribute
         }
 
         base.OnActionExecuting(context);
+    }
+    private static bool IsPrivateNetwork(IPAddress? ip)
+    {
+        if (ip == null){
+            return true;
+        }
+        // 如果是::1
+        if (ip.ToString() == "::1")
+        {
+            return true;
+        }
+        var bytes = ip.GetAddressBytes();
+        switch (ip.AddressFamily)
+        {
+            case System.Net.Sockets.AddressFamily.InterNetwork:
+                if (bytes[0] == 10 || 
+                    (bytes[0] == 172 && bytes[1] < 32 && bytes[1] >= 16) || 
+                    (bytes[0] == 192 && bytes[1] == 168))
+                    return true;
+                break;
+            case System.Net.Sockets.AddressFamily.InterNetworkV6:
+                if (ip.IsIPv6SiteLocal || ip.IsIPv6LinkLocal)
+                    return true;
+                break;
+        }
+        return false;
     }
 }

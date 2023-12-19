@@ -1,6 +1,7 @@
 using BasicPlatform.AppService.Organizations;
 using BasicPlatform.AppService.Organizations.Requests;
 using BasicPlatform.AppService.Organizations.Responses;
+using BasicPlatform.Domain.Models.Organizations;
 
 namespace BasicPlatform.AppService.FreeSql.Organizations;
 

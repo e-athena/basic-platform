@@ -3,7 +3,7 @@
 # 构建镜像
 .PHONY:build
 build:
-	docker buildx build --platform=linux/amd64 -f ./${path}/Dockerfile . -t ${image}:${tag} --network=host
+	docker buildx build --platform=linux/amd64,linux/arm64 -f ./${path}/Dockerfile . -t ${image}:${tag} --push # --network=host
 
 # 推送到镜像仓库
 .PHONY:push
@@ -18,7 +18,7 @@ rmi:
 # 运行命令
 .PHONY:run
 run:
-	make build && make push && make rmi
+	make build # && make push && make rmi
 
 # 运行python脚本执行<构建-推送-删除>
 .PHONY:run-build
@@ -45,7 +45,7 @@ web-app-build:
 
 .PHONY:web-dapr-api
 web-dapr-api:
-	dapr run --app-id basic-platform-app --app-port 5078
+	dapr run --app-id basic-platform-app --app-port 5078 -H 3500
 
 .PHONY:cms-api
 cms-api:

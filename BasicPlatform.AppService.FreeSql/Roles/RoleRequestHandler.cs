@@ -7,7 +7,7 @@ namespace BasicPlatform.AppService.FreeSql.Roles;
 /// <summary>
 /// 角色请求处理程序
 /// </summary>
-public class RoleRequestHandler : ServiceBase<Role>,
+public class RoleRequestHandler : DataPermissionServiceBase<Role>,
     IRequestHandler<CreateRoleRequest, string>,
     IRequestHandler<UpdateRoleRequest, string>,
     IRequestHandler<RoleStatusChangeRequest, string>,
@@ -58,7 +58,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(UpdateRoleRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id!, cancellationToken);
+        var entity = await GetAsync(request.Id!, cancellationToken);
         // 删除旧的资源
         await RegisterDeleteValueObjectAsync<RoleResource>(p => p.RoleId == request.Id, cancellationToken);
         entity.Update(request.Name,
@@ -78,7 +78,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(RoleStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
@@ -92,24 +92,24 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleResourcesRequest request, CancellationToken cancellationToken)
     {
-        // 如果不是超级管理员，则需要检查分配的权限中是否有超过自己的权限，按ApplicationId分组，如果分配的权限中包含超过自己的权限，则抛出异常
+        // 如果不是超级管理员，则需要检查分配的权限中是否有超过自己的权限，按AppId分组，如果分配的权限中包含超过自己的权限，则抛出异常
         if (!IsRoot)
         {
             var resources = await _userQueryService.GetUserResourceAsync(null, null);
             var resourceKeys = resources
-                .GroupBy(p => p.ApplicationId)
+                .GroupBy(p => p.AppId)
                 .Select(p => new
                 {
-                    ApplicationId = p.Key,
+                    AppId = p.Key,
                     Keys = p.Select(k => k.Key).ToList()
                 }).ToList();
 
             var assignResourceKeys = request
                 .Resources
-                .GroupBy(p => p.ApplicationId)
+                .GroupBy(p => p.AppId)
                 .Select(p => new
                 {
-                    ApplicationId = p.Key,
+                    AppId = p.Key,
                     Keys = p.Select(k => k.Key).ToList()
                 }).ToList();
 
@@ -117,7 +117,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
                 .Any(p =>
                     !resourceKeys
                         .Any(k =>
-                            k.ApplicationId == p.ApplicationId &&
+                            k.AppId == p.AppId &&
                             k.Keys.Any(p.Keys.Contains)
                         )
                 ))
@@ -126,10 +126,10 @@ public class RoleRequestHandler : ServiceBase<Role>,
             }
         }
 
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.AssignResources(request
                 .Resources
-                .Select(p => new RoleResource(p.ApplicationId, request.Id, p.Key, p.Code))
+                .Select(p => new RoleResource(p.AppId, request.Id, p.Key, p.Code))
                 .ToList(),
             UserId
         );
@@ -146,7 +146,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<string> Handle(AssignRoleUsersRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.AssignUsers(request.UserIds, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
@@ -160,13 +160,13 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleDataPermissionsRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
 
         // 分配权限
         entity.AssignDataPermissions(request
                 .Permissions
                 .Select(p => new RoleDataPermission(
-                    p.ApplicationId,
+                    p.AppId,
                     request.Id,
                     p.ResourceKey,
                     p.DataScope,
@@ -190,7 +190,7 @@ public class RoleRequestHandler : ServiceBase<Role>,
     /// <returns></returns>
     public async Task<string> Handle(AssignRoleColumnPermissionsRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
 
         // 分配权限
         entity.AssignColumnPermissions(request

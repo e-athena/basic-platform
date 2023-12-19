@@ -1,6 +1,8 @@
 using BasicPlatform.AppService.Positions;
 using BasicPlatform.AppService.Positions.Requests;
 using BasicPlatform.AppService.Positions.Responses;
+using BasicPlatform.Domain.Models.Organizations;
+using BasicPlatform.Domain.Models.Positions;
 
 namespace BasicPlatform.AppService.FreeSql.Positions;
 

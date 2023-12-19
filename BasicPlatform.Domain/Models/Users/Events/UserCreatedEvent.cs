@@ -13,7 +13,8 @@ public class UserCreatedEvent : EventBase
     /// <summary>
     /// 真实姓名
     /// </summary>
-    public string RealName { get; set; }
+    [MaxLength(16)]
+    public string RealName { get; set; } = null!;
 
     /// <summary>
     /// 性别
@@ -40,7 +41,7 @@ public class UserCreatedEvent : EventBase
     /// 是否为租户管理员
     /// </summary>
     public bool IsTenantAdmin { get; set; }
-    
+
     /// <summary>
     /// 创建人
     /// </summary>

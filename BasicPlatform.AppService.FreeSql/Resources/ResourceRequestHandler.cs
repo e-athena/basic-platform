@@ -31,7 +31,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
         var keys = request.Resources.Select(c => c.Key);
         // 查询系统存在的资源，但是请求中不存在的资源
         var notExists = await QueryableNoTracking
-            .Where(p => p.ApplicationId == request.ApplicationId)
+            .Where(p => p.AppId == request.AppId)
             .Where(p => !keys.Contains(p.Key))
             .ToListAsync(p => p.Key, cancellationToken);
 
@@ -40,23 +40,23 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
             // 删除用户资源关联
             await RegisterDeleteValueObjectAsync<UserResource>(p =>
                     notExists.Contains(p.ResourceKey) &&
-                    p.ApplicationId == request.ApplicationId, cancellationToken
+                    p.AppId == request.AppId, cancellationToken
             );
             // 删除角色资源关联
             await RegisterDeleteValueObjectAsync<RoleResource>(p =>
                     notExists.Contains(p.ResourceKey) &&
-                    p.ApplicationId == request.ApplicationId, cancellationToken
+                    p.AppId == request.AppId, cancellationToken
             );
             // 删除资源
             await RegisterDeleteAsync(p =>
                     notExists.Contains(p.Key) &&
-                    p.ApplicationId == request.ApplicationId, cancellationToken
+                    p.AppId == request.AppId, cancellationToken
             );
         }
 
         // 查询请求中存在的资源，但是系统不存在的资源
         var exists = await QueryableNoTracking
-            .Where(p => p.ApplicationId == request.ApplicationId)
+            .Where(p => p.AppId == request.AppId)
             .Where(p => keys.Contains(p.Key))
             .ToListAsync(p => p.Key, cancellationToken);
 
@@ -70,7 +70,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
                 .Distinct()
                 // 过滤已经存在的
                 .Where(p => !exists.Contains(p))
-                .Select(key => new Resource(request.ApplicationId, key, 0, Status.Enabled, UserId))
+                .Select(key => new Resource(request.AppId, key, 0, Status.Enabled, UserId))
                 .ToList();
 
             if (newResources.Count > 0)
@@ -84,7 +84,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
         // 更新用户和角色已分配的资源
         // 处理角色资源
         var roleResources = await QueryNoTracking<RoleResource>()
-            .Where(p => p.ApplicationId == request.ApplicationId)
+            .Where(p => p.AppId == request.AppId)
             .ToListAsync(p => new
             {
                 p.RoleId,
@@ -102,7 +102,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
             // 删除角色资源关联
             await RegisterDeleteValueObjectAsync<RoleResource>(p =>
                     roleIds.Contains(p.RoleId) &&
-                    p.ApplicationId == request.ApplicationId,
+                    p.AppId == request.AppId,
                 cancellationToken
             );
             var newRoleResources = new List<RoleResource>();
@@ -118,7 +118,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
                         continue;
                     }
 
-                    newRoleResources.Add(new RoleResource(request.ApplicationId, roleId, item.ResourceKey, rm.Code));
+                    newRoleResources.Add(new RoleResource(request.AppId, roleId, item.ResourceKey, rm.Code));
                 }
             }
 
@@ -130,7 +130,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
 
         // 处理用户资源
         var userResources = await QueryNoTracking<UserResource>()
-            .Where(p => p.ApplicationId == request.ApplicationId)
+            .Where(p => p.AppId == request.AppId)
             .ToListAsync(p => new
             {
                 p.UserId,
@@ -151,7 +151,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
         // 删除用户资源关联
         await RegisterDeleteValueObjectAsync<UserResource>(p =>
                 userIds.Contains(p.UserId) &&
-                p.ApplicationId == request.ApplicationId,
+                p.AppId == request.AppId,
             cancellationToken
         );
         var newUserResources = new List<UserResource>();
@@ -167,7 +167,7 @@ public class ResourceRequestHandler : ServiceBase<Resource>,
                     continue;
                 }
 
-                newUserResources.Add(new UserResource(request.ApplicationId, userId, item.ResourceKey, rm.Code));
+                newUserResources.Add(new UserResource(request.AppId, userId, item.ResourceKey, rm.Code));
             }
         }
 

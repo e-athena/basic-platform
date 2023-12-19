@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Organizations.Models;
+using BasicPlatform.Domain.Models.Organizations;
 
 namespace BasicPlatform.AppService.Organizations.Responses;
 

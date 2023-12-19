@@ -33,6 +33,14 @@ declare const CDN_ADDRESS: string;
 declare const APP_TENANT_INFO_KEY: string;
 
 /** 应用设置 */
+declare interface WebSetting {
+  logo?: any;
+  name?: string;
+  shortName?: string;
+  description?: string;
+  copyRight?: string;
+}
+/** 应用设置 */
 declare interface AppSettings {
   logo?: string;
   title?: string;
@@ -96,7 +104,7 @@ declare interface ApiResponse<T = any> {
 
 /** 资源模型 */
 declare interface ResourceModel {
-  applicationId?: string;
+  appId?: string;
   key: string;
   code: string;
 }

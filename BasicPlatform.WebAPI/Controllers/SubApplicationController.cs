@@ -42,7 +42,7 @@ public class SubApplicationController : ControllerBase
     /// <param name="userId"></param>
     /// <returns></returns>
     [HttpGet]
-    public Task<List<UserCustomColumnModel>> GetUserCustomColumnsAsync(string appId, string moduleName, string userId)
+    public Task<List<UserCustomColumnModel>> GetUserCustomColumnsAsync(string? appId, string moduleName, string userId)
     {
         return _queryService.GetUserCustomColumnsAsync(appId, moduleName, userId);
     }
@@ -50,15 +50,15 @@ public class SubApplicationController : ControllerBase
     /// <summary>
     /// 读取用户列权限
     /// </summary>
-    /// <param name="appId"></param>
     /// <param name="moduleName"></param>
     /// <param name="userId"></param>
+    /// <param name="appId"></param>
     /// <returns></returns>
     [HttpGet]
     public Task<List<UserColumnPermissionModel>> GetUserColumnPermissionsAsync(
-        string appId,
         string moduleName,
-        string userId
+        string userId,
+        string? appId
     )
     {
         return _queryService.GetColumnPermissionsByModuleNameAsync(moduleName, userId, appId);
@@ -99,7 +99,7 @@ public class SubApplicationController : ControllerBase
     [HttpGet]
     public Task<List<ResourceModel>> GetUserResourceAsync(
         [FromQuery] string userId,
-        [FromQuery] string appId
+        [FromQuery] string? appId
     )
     {
         return _queryService.GetUserResourceAsync(userId, appId);
@@ -114,7 +114,7 @@ public class SubApplicationController : ControllerBase
     [HttpGet]
     public Task<List<string>> GetUserResourceCodesAsync(
         [FromQuery] string userId,
-        [FromQuery] string appId
+        [FromQuery] string? appId
     )
     {
         return _queryService.GetResourceCodesAsync(userId, appId);

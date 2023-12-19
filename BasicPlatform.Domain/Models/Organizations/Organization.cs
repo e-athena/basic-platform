@@ -1,6 +1,7 @@
+using BasicPlatform.Domain.Models.Organizations.Events;
 using BasicPlatform.Domain.Models.Users;
 
-namespace BasicPlatform.Domain.Models;
+namespace BasicPlatform.Domain.Models.Organizations;
 
 /// <summary>
 /// 组织机构
@@ -96,6 +97,8 @@ public class Organization : FullEntityCore
         Status = status;
         Sort = sort;
         CreatedUserId = userId;
+
+        ApplyEvent(new OrganizationCreatedEvent(parentId, name, leaderId, remarks, status, sort));
     }
 
     /// <summary>
@@ -115,6 +118,8 @@ public class Organization : FullEntityCore
         Remarks = remarks;
         Sort = sort;
         LastUpdatedUserId = userId;
+
+        ApplyEvent(new OrganizationUpdatedEvent(parentId, name, leaderId, remarks, sort));
     }
 
     /// <summary>
@@ -126,5 +131,7 @@ public class Organization : FullEntityCore
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
+
+        ApplyEvent(new OrganizationStatusChangedEvent(Status));
     }
 }

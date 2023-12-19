@@ -25,6 +25,8 @@ public class RoleColumnPermission : ValueObject
     /// 角色
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Role Role { get; set; } = null!;
 
     /// <summary>

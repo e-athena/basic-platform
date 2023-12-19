@@ -27,7 +27,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           isEnabled: false,
           applicationId: item.value,
           applicationName: item.label,
-          applicationClientId: item.extend,
+          appId: item.extend,
           isolationLevel: 2,
           connectionString: null,
           expiredTime: null,

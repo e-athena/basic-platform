@@ -11,14 +11,15 @@ public class UserUpdatedEvent : EventBase
     public string UserName { get; set; }
 
     /// <summary>
+    /// 真实姓名
+    /// </summary>
+    [MaxLength(16)]
+    public string RealName { get; set; } = null!;
+
+    /// <summary>
     /// 头像
     /// </summary>
     public string? Avatar { get; set; }
-
-    /// <summary>
-    /// 真实姓名
-    /// </summary>
-    public string RealName { get; set; }
 
     /// <summary>
     /// 性别

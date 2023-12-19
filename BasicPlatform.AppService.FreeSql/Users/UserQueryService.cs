@@ -5,6 +5,7 @@ using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Models;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
+using BasicPlatform.Domain.Models.Organizations;
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Users;
 
@@ -402,7 +403,7 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
                 .Where(p => p.Tenant.Code == TenantId)
                 .ToListAsync(p => new ResourceModel
                 {
-                    ApplicationId = p.ApplicationId,
+                    AppId = p.AppId,
                     Key = p.ResourceKey,
                     Code = p.ResourceCode
                 });
@@ -457,11 +458,11 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
         {
             // 角色资源
             roleResources = await QueryNoTracking<RoleResource>()
-                .HasWhere(appId, p => p.ApplicationId == appId)
+                .HasWhere(appId, p => p.AppId == appId)
                 .Where(p => roleIds.Contains(p.RoleId))
                 .ToListAsync(p => new ResourceModel
                 {
-                    ApplicationId = p.ApplicationId,
+                    AppId = p.AppId,
                     Key = p.ResourceKey,
                     Code = p.ResourceCode
                 });
@@ -469,13 +470,13 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
 
         // 用户资源
         var userResources = await QueryNoTracking<UserResource>()
-            .HasWhere(appId, p => p.ApplicationId == appId)
+            .HasWhere(appId, p => p.AppId == appId)
             .Where(p => p.UserId == userId)
             // 读取未过期的
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new ResourceModel
             {
-                ApplicationId = p.ApplicationId,
+                AppId = p.AppId,
                 Key = p.ResourceKey,
                 Code = p.ResourceCode
             });
@@ -553,7 +554,7 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
             )
             .ToListAsync(p => new GetUserDataPermissionsResponse
             {
-                ApplicationId = p.ApplicationId,
+                AppId = p.AppId,
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,
@@ -573,7 +574,7 @@ public class UserQueryService : QueryServiceBase<User>, IUserQueryService
             .Where(p => p.ExpireAt == null || p.ExpireAt > DateTime.Now)
             .ToListAsync(p => new GetUserDataPermissionsResponse
             {
-                ApplicationId = p.ApplicationId,
+                AppId = p.AppId,
                 ResourceKey = p.ResourceKey,
                 DataScope = p.DataScope,
                 Enabled = p.Enabled,

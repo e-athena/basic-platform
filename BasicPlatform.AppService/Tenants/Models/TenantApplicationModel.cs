@@ -21,9 +21,9 @@ public class TenantApplicationModel
     public string? ApplicationApiUrl { get; set; }
 
     /// <summary>
-    /// 应用客户端ID
+    /// 应用ID
     /// </summary>
-    public string ApplicationClientId { get; set; } = null!;
+    public string AppId { get; set; } = null!;
 
     /// <summary>
     /// 租户类型

@@ -40,6 +40,10 @@ type ProTablePlusProps<T, U, ValueType = 'text'> = {
   scrollY?: number;
   /** 详情列列名 */
   detailColumnName?: string;
+  /** 请求前转换 */
+  requestBeforeTransform?: (params: U) => Promise<U>;
+  hideCloumnSetting?: boolean;
+  hideAdvancedSearch?: boolean;
 } & Partial<ProTableProps<T, U, ValueType>>;
 
 /**
@@ -135,6 +139,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
       } else {
         userListValueEnums = userValueEnums;
       }
+
       const result: ProColumns<T, ValueType>[] = [];
       // 按sort排序
       list.sort((a, b) => a.sort - b.sort);
@@ -187,6 +192,14 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
               );
             };
           }
+          if ((item.dataIndex.includes('UserId') || item.dataIndex.includes('userId')) && item.hideInTable === false) {
+            find.valueType = 'select';
+            find.valueEnum = userListValueEnums;
+            // 如果值在userListValueEnums中不存在，则显示-，否则显示值
+            find.renderText = (value) => {
+              return userListValueEnums[value] ? userListValueEnums[value].text : '-';
+            };
+          }
           result.push(find);
           continue;
         }
@@ -202,7 +215,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
             true: { text: '是', status: 'Success' },
           };
         }
-        if (item.dataIndex.includes('UserId') && item.hideInTable === false) {
+        if ((item.dataIndex.includes('UserId') || item.dataIndex.includes('userId')) && item.hideInTable === false) {
           nItem.valueType = 'select';
           nItem.valueEnum = userListValueEnums;
           // 如果值在userListValueEnums中不存在，则显示-，否则显示值
@@ -418,7 +431,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
         toolBarRender={(action, rows) => [
           ...(props.toolBarRender ? props.toolBarRender(action, rows) : []),
           ...[
-            <AdvancedSearch
+            !props.hideAdvancedSearch && <AdvancedSearch
               key={'advancedSearch'}
               data={columnData.filter((d) => d.dataIndex !== 'option')}
               historyFilters={advancedSearchFilter}
@@ -426,7 +439,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
                 setAdvancedSearchFilter(d);
               }}
             />,
-            <EditTableColumnForm
+            !props.hideCloumnSetting && <EditTableColumnForm
               key={'editTableColumn'}
               data={columnData.filter(d => !d.tableIgnore)}
               onOk={(list) => {
@@ -442,7 +455,20 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
           ...props.params,
         }}
         request={async (params, sorter, filter) => {
-          const res = await query({ ...params, ...getSorter(sorter, 'a'), ...getFilter(filter) });
+          let data = params;
+          if (props.requestBeforeTransform) {
+            try {
+              data = await props.requestBeforeTransform(params);
+            } catch (error) {
+              console.error(error);
+              return {
+                data: [],
+                success: true,
+                total: 0,
+              };
+            }
+          }
+          const res = await query({ ...data, ...getSorter(sorter, 'a'), ...getFilter(filter) });
           return {
             data: res.data?.items || [],
             success: res.success,

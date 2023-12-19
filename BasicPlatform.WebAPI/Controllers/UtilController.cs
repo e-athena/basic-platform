@@ -1,15 +1,4 @@
-using Athena.Infrastructure.EventTracking;
-using Athena.Infrastructure.EventTracking.Enums;
-using Athena.Infrastructure.EventTracking.Messaging.Models;
-using Athena.Infrastructure.EventTracking.Messaging.Requests;
-using Athena.Infrastructure.EventTracking.Messaging.Responses;
-using Athena.Infrastructure.EventTracking.Models;
-using BasicPlatform.AppService.FreeSql.Users;
-using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Users;
-using BasicPlatform.Domain.Models.Users.Events;
-using BasicPlatform.ProcessManager;
-using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers;
 
@@ -42,11 +31,11 @@ public class UtilController : ControllerBase
     /// <param name="appId"></param>
     /// <returns></returns>
     [HttpGet]
-    [BasicAuthFilter]
+    // [BasicAuthFilter]
     public Task<TenantInfo> GetTenantInfoAsync(
         [FromServices] ITenantQueryService service,
         [FromQuery] string tenantCode,
-        [FromQuery] string appId
+        [FromQuery] string? appId
     )
     {
         return service.GetAsync(tenantCode, appId);
@@ -118,7 +107,7 @@ public class UtilController : ControllerBase
         {
             resources = await userQueryService.GetUserResourceAsync(null, null);
             var keys = resources
-                .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Where(p => p.AppId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.AppId))
                 .Select(p => p.Key)
                 .ToList();
             defaultList = service.GetPermissionFrontEndRoutingResources(assembly, keys, GlobalConstant.DefaultAppId);
@@ -176,11 +165,14 @@ public class UtilController : ControllerBase
         // 可正常访问的应用
         var healthyList = new List<string>();
 
-        await Parallel.ForEachAsync(list, async (app, index) =>
+        await Parallel.ForEachAsync(list, async (app, cancelToken) =>
         {
             try
             {
-                var res = await app.FrontendUrl.GetAsync(cancellationToken: index);
+                var res = await app
+                    .FrontendUrl
+                    .WithTimeout(10)
+                    .GetAsync(cancellationToken: cancelToken);
                 if (res.StatusCode == 200)
                 {
                     healthyList.Add(app.ClientId);
@@ -313,88 +305,4 @@ public class UtilController : ControllerBase
     {
         return Content("ok");
     }
-
-    /// <summary>
-    /// 根据目录读取所有目录及文件
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [IgnoreApiResultFilter]
-    public Task<List<DirectoryOrFile>> GetDirectoryInfoAsync(string path)
-    {
-        var dir = new DirectoryInfo(path);
-        return Task.FromResult(dir.GetDirectories().Select(GetDirectoryInfo).ToList());
-    }
-
-    private static readonly string[] IgnoreDirs =
-    {
-        ".git", "bin", "obj", "node_modules", "packages", "dist", "build", "logs", ".umi", ".umi-production", ".vscode",
-        ".idea", ".vs"
-    };
-
-    // 递归读取目录及文件
-    private static DirectoryOrFile GetDirectoryInfo(DirectoryInfo dir)
-    {
-        var result = new DirectoryOrFile
-        {
-            Name = dir.Name,
-            FullName = dir.FullName,
-            IsDirectory = true
-        };
-
-        if (IgnoreDirs.Contains(dir.Name))
-        {
-            return result;
-        }
-
-        foreach (var directory in dir.GetDirectories())
-        {
-            var dir1 = GetDirectoryInfo(directory);
-            if (IgnoreDirs.Contains(dir1.Name))
-            {
-                continue;
-            }
-
-            result.Directories.Add(dir1);
-        }
-
-        foreach (var file in dir.GetFiles())
-        {
-            result.Directories.Add(new DirectoryOrFile
-            {
-                Name = file.Name,
-                FullName = file.FullName,
-                IsDirectory = false
-            });
-        }
-
-        return result;
-    }
-}
-
-/// <summary>
-/// 
-/// </summary>
-public class DirectoryOrFile
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public string? Name { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public string? FullName { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public bool IsDirectory { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public List<DirectoryOrFile> Directories { get; set; } = new();
 }

@@ -1,3 +1,5 @@
+using BasicPlatform.Domain.Models.Applications;
+
 namespace BasicPlatform.Domain.Models.Users;
 
 /// <summary>
@@ -10,13 +12,7 @@ public class UserResource : ValueObject
     /// 应用ID
     /// </summary>
     [MaxLength(36)]
-    public string? ApplicationId { get; set; }
-
-    /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; } = null!;
+    public string? AppId { get; set; }
 
     /// <summary>
     /// 用户ID
@@ -29,6 +25,8 @@ public class UserResource : ValueObject
     /// 用户
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 
     /// <summary>
@@ -67,18 +65,18 @@ public class UserResource : ValueObject
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="applicationId"></param>
+    /// <param name="appId"></param>
     /// <param name="userId"></param>
     /// <param name="resourceKey"></param>
     /// <param name="resourceCode"></param>
     /// <param name="expireAt"></param>
     /// <exception cref="ArgumentNullException"></exception>
     public UserResource(
-        string? applicationId,
+        string? appId,
         string userId, string resourceKey, string resourceCode,
         DateTime? expireAt = null)
     {
-        ApplicationId = applicationId;
+        AppId = appId;
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
         ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));

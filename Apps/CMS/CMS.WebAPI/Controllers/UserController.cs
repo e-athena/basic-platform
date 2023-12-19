@@ -37,7 +37,7 @@ public class UserController : CustomControllerBase
 
         var resources = await _userService.GetUserResourceAsync(UserId!, GlobalConstant.DefaultAppId);
         var keys = resources
-            .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+            .Where(p => p.AppId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.AppId))
             .Select(p => p.Key)
             .ToList();
 

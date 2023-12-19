@@ -10,6 +10,7 @@ namespace BasicPlatform.AppService.FreeSql.Users;
 public class UserRequestHandler : ServiceBase<User>,
     IRequestHandler<CreateUserRequest, string>,
     IRequestHandler<UpdateUserRequest, string>,
+    IRequestHandler<DeleteUserRequest, int>,
     IRequestHandler<UserStatusChangeRequest, string>,
     IRequestHandler<AssignUserResourcesRequest, string>,
     IRequestHandler<UpdateUserLoginInfoRequest, bool>,
@@ -17,7 +18,9 @@ public class UserRequestHandler : ServiceBase<User>,
     IRequestHandler<UpdateUserCustomColumnsRequest, long>,
     IRequestHandler<ResetUserPasswordRequest, string>,
     IRequestHandler<AssignUserDataPermissionsRequest, string>,
-    IRequestHandler<AssignUserColumnPermissionsRequest, string>
+    IRequestHandler<AssignUserColumnPermissionsRequest, string>,
+    // 添加任职
+    IRequestHandler<AddUserAppointmentRequest, string>
 {
     private readonly ISecurityContextAccessor _contextAccessor;
 
@@ -115,7 +118,7 @@ public class UserRequestHandler : ServiceBase<User>,
         }
 
         // 读取数据
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         // 更新
         entity.Update(
             request.UserName,
@@ -167,7 +170,7 @@ public class UserRequestHandler : ServiceBase<User>,
             throw FriendlyException.Of("不能修改自己的状态");
         }
 
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
@@ -187,23 +190,17 @@ public class UserRequestHandler : ServiceBase<User>,
             throw FriendlyException.Of("不能给自己分配资源");
         }
 
-        // 删除旧数据
-        await RegisterDeleteValueObjectAsync<UserResource>(
-            p => p.UserId == request.Id, cancellationToken
+        var entity = await GetAsync(request.Id, cancellationToken);
+
+        // 分配权限
+        entity.AssignUserResources(request
+                .Resources
+                .Select(p => new UserResource(p.AppId, request.Id, p.Key, p.Code, request.ExpireAt))
+                .ToList(),
+            UserId
         );
-        if (request.Resources.Count <= 0)
-        {
-            return request.Id;
-        }
-
-        // 新增新数据
-        var userResources = request
-            .Resources
-            .Select(p => new UserResource(p.ApplicationId, request.Id, p.Key, p.Code, request.ExpireAt))
-            .ToList();
-        await RegisterNewRangeValueObjectAsync(userResources, cancellationToken);
-
-        return request.Id;
+        await RegisterDirtyAsync(entity, cancellationToken);
+        return entity.Id;
     }
 
     /// <summary>
@@ -219,13 +216,13 @@ public class UserRequestHandler : ServiceBase<User>,
             throw FriendlyException.Of("不能给自己分配权限");
         }
 
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
 
         // 分配权限
         entity.AssignDataPermissions(request
                 .Permissions
                 .Select(p => new UserDataPermission(
-                    p.ApplicationId,
+                    p.AppId,
                     request.Id,
                     p.ResourceKey,
                     p.DataScope,
@@ -250,7 +247,7 @@ public class UserRequestHandler : ServiceBase<User>,
     /// <returns></returns>
     public async Task<string> Handle(AssignUserColumnPermissionsRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
 
         // 分配权限
         entity.AssignColumnPermissions(request
@@ -283,7 +280,7 @@ public class UserRequestHandler : ServiceBase<User>,
     /// <returns></returns>
     public async Task<bool> Handle(UpdateUserLoginInfoRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.UpdateLoginInfo(_contextAccessor.IpAddress);
         await RegisterDirtyAsync(entity, cancellationToken);
         return true;
@@ -369,10 +366,38 @@ public class UserRequestHandler : ServiceBase<User>,
             throw FriendlyException.Of("不能重置自己的密码，请使用修改密码功能");
         }
 
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         var newPassword = StringGenerator.Generate(10);
         entity.ResetPassword(newPassword, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return newPassword;
+    }
+
+    /// <summary>
+    /// 添加任职
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<string> Handle(AddUserAppointmentRequest request, CancellationToken cancellationToken)
+    {
+        var entity = await GetAsync(request.Id, cancellationToken);
+        // entity.Avatar
+
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// 删除用户
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public Task<int> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
+    {
+        return RegisterSoftDeleteAsync(p => p.Id == request.Id, cancellationToken);
     }
 }

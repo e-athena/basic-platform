@@ -10,7 +10,7 @@ public class UserDataPermission : ValueObject
     /// 应用ID
     /// </summary>
     [MaxLength(36)]
-    public string? ApplicationId { get; set; }
+    public string? AppId { get; set; }
 
     /// <summary>
     /// 用户ID
@@ -23,6 +23,8 @@ public class UserDataPermission : ValueObject
     /// 用户
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 
     /// <summary>
@@ -56,6 +58,7 @@ public class UserDataPermission : ValueObject
     /// <summary>
     /// 策略
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
     [JsonIgnore]
     public IList<QueryFilterGroup> Policies => string.IsNullOrEmpty(Policy)
         ? new List<QueryFilterGroup>()
@@ -82,7 +85,7 @@ public class UserDataPermission : ValueObject
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="applicationId"></param>
+    /// <param name="appId"></param>
     /// <param name="userId"></param>
     /// <param name="resourceKey"></param>
     /// <param name="dataScope"></param>
@@ -92,7 +95,7 @@ public class UserDataPermission : ValueObject
     /// <param name="enabled"></param>
     /// <param name="expireAt"></param>
     public UserDataPermission(
-        string? applicationId,
+        string? appId,
         string userId,
         string resourceKey,
         RoleDataScope dataScope,
@@ -102,7 +105,7 @@ public class UserDataPermission : ValueObject
         bool enabled,
         DateTime? expireAt)
     {
-        ApplicationId = applicationId;
+        AppId = appId;
         UserId = userId;
         ResourceKey = resourceKey;
         DataScope = dataScope;

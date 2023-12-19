@@ -10,7 +10,7 @@ public class RoleDataPermission : ValueObject
     /// 应用ID
     /// </summary>
     [MaxLength(36)]
-    public string? ApplicationId { get; set; }
+    public string? AppId { get; set; }
 
     /// <summary>
     /// 角色ID
@@ -23,6 +23,8 @@ public class RoleDataPermission : ValueObject
     /// 角色
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Role Role { get; set; } = null!;
 
     /// <summary>
@@ -56,6 +58,7 @@ public class RoleDataPermission : ValueObject
     /// <summary>
     /// 策略
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
     [JsonIgnore]
     public IList<QueryFilterGroup> Policies => string.IsNullOrEmpty(Policy)
         ? new List<QueryFilterGroup>()
@@ -76,7 +79,7 @@ public class RoleDataPermission : ValueObject
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="applicationId"></param>
+    /// <param name="appId"></param>
     /// <param name="roleId"></param>
     /// <param name="resourceKey"></param>
     /// <param name="dataScope"></param>
@@ -85,7 +88,7 @@ public class RoleDataPermission : ValueObject
     /// <param name="policy"></param>
     /// <param name="enabled"></param>
     public RoleDataPermission(
-        string? applicationId,
+        string? appId,
         string roleId,
         string resourceKey,
         RoleDataScope dataScope,
@@ -94,7 +97,7 @@ public class RoleDataPermission : ValueObject
         IList<QueryFilterGroup>? policy,
         bool enabled)
     {
-        ApplicationId = applicationId;
+        AppId = appId;
         RoleId = roleId;
         ResourceKey = resourceKey;
         DataScope = dataScope;

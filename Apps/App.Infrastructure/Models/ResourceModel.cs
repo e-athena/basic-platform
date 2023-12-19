@@ -9,7 +9,7 @@ public class ResourceModel
     /// <summary>
     /// 应用ID
     /// </summary>
-    public string? ApplicationId { get; set; }
+    public string? AppId { get; set; }
 
     /// <summary>
     /// KEY

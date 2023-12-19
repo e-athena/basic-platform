@@ -1,6 +1,6 @@
 using BasicPlatform.Domain.Models.Roles;
 
-namespace BasicPlatform.Domain.Models;
+namespace BasicPlatform.Domain.Models.Organizations;
 
 /// <summary>
 /// 组织架构角色
@@ -17,6 +17,8 @@ public class OrganizationRole : ValueObject
     /// <summary>
     /// 组织架构
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Organization Organization { get; set; } = null!;
 
     /// <summary>
@@ -28,6 +30,8 @@ public class OrganizationRole : ValueObject
     /// <summary>
     /// 角色
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Role Role { get; set; } = null!;
 
 

@@ -15,19 +15,15 @@ public class TenantResource : ValueObject
     /// <summary>
     /// 组织架构
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Tenant Tenant { get; set; } = null!;
 
     /// <summary>
     /// 应用ID
     /// </summary>
     [MaxLength(36)]
-    public string? ApplicationId { get; set; }
-
-    /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; } = null!;
+    public string? AppId { get; set; }
 
     /// <summary>
     /// 资源Key
@@ -59,14 +55,14 @@ public class TenantResource : ValueObject
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="applicationId"></param>
+    /// <param name="appId"></param>
     /// <param name="tenantId"></param>
     /// <param name="resourceKey"></param>
     /// <param name="resourceCode"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public TenantResource(string? applicationId, string tenantId, string resourceKey, string resourceCode)
+    public TenantResource(string? appId, string tenantId, string resourceKey, string resourceCode)
     {
-        ApplicationId = applicationId;
+        AppId = appId;
         TenantId = tenantId ?? throw new ArgumentNullException(nameof(tenantId));
         ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));

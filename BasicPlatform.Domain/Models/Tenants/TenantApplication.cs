@@ -15,12 +15,14 @@ public class TenantApplication : ValueObject
     /// <summary>
     /// 组织架构
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Tenant Tenant { get; set; } = null!;
 
     /// <summary>
     /// 子应用客户端ID
     /// </summary>
-    public string ApplicationClientId { get; set; } = null!;
+    public string AppId { get; set; } = null!;
 
     /// <summary>
     /// 租户类型
@@ -59,7 +61,7 @@ public class TenantApplication : ValueObject
     /// 创建
     /// </summary>
     /// <param name="tenantId"></param>
-    /// <param name="applicationClientId"></param>
+    /// <param name="appId"></param>
     /// <param name="isolationLevel"></param>
     /// <param name="connectionString"></param>
     /// <param name="expiredTime"></param>
@@ -67,7 +69,7 @@ public class TenantApplication : ValueObject
     /// <param name="isEnabled"></param>
     public TenantApplication(
         string tenantId,
-        string applicationClientId,
+        string appId,
         TenantIsolationLevel isolationLevel,
         string? connectionString,
         DateTime? expiredTime,
@@ -76,7 +78,7 @@ public class TenantApplication : ValueObject
     )
     {
         TenantId = tenantId;
-        ApplicationClientId = applicationClientId;
+        AppId = appId;
         IsolationLevel = isolationLevel;
         ConnectionString = string.IsNullOrEmpty(connectionString) ? null : SecurityHelper.Encrypt(connectionString);
         ExpiredTime = expiredTime;

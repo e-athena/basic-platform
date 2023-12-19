@@ -9,7 +9,7 @@ public class SyncResourceRequest : ITxRequest<int>
     /// <summary>
     /// 应用Id
     /// </summary>
-    public string ApplicationId { get; set; } = null!;
+    public string AppId { get; set; } = null!;
 
     /// <summary>
     /// 资源代码列表

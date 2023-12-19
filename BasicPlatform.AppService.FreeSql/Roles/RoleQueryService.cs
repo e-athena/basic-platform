@@ -2,6 +2,7 @@ using BasicPlatform.AppService.Roles;
 using BasicPlatform.AppService.Roles.Models;
 using BasicPlatform.AppService.Roles.Requests;
 using BasicPlatform.AppService.Roles.Responses;
+using BasicPlatform.Domain.Models.Organizations;
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Users;
 
@@ -60,6 +61,7 @@ public class RoleQueryService : QueryServiceBase<Role>, IRoleQueryService
             .Where(p => p.RoleId == id)
             .ToListAsync(p => new ResourceModel
             {
+                AppId = p.AppId,
                 Key = p.ResourceKey,
                 Code = p.ResourceCode
             }, cancellationToken);

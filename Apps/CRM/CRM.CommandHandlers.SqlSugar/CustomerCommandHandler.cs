@@ -1,6 +1,3 @@
-using CRM.Commands.Customers;
-using CRM.Domain.Customers;
-
 namespace CRM.CommandHandlers.SqlSugar;
 
 /// <summary>

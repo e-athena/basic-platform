@@ -11,6 +11,7 @@ WORKDIR /app
 EXPOSE 80
 
 VOLUME /app/Databases
+VOLUME /app/wwwroot/static
 
 COPY /BasicPlatform.WebAPI/bin/Release/net7.0/linux-x64/publish/ .
 ENTRYPOINT ["dotnet", "BasicPlatform.WebAPI.dll"]

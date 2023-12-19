@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Organizations.Requests;
+using BasicPlatform.Domain.Models.Organizations;
 
 namespace BasicPlatform.AppService.FreeSql.Organizations;
 
@@ -76,7 +77,7 @@ public class OrganizationRequestHandler : ServiceBase<Organization>,
         }
 
         // 封装实体对象
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(request.ParentId))
         {
@@ -117,7 +118,7 @@ public class OrganizationRequestHandler : ServiceBase<Organization>,
     /// <returns></returns>
     public async Task<string> Handle(OrganizationStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         // 变更状态
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);

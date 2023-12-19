@@ -102,7 +102,7 @@ public class ExternalPageRequestHandler : ServiceBase<ExternalPage>,
         }
 
         // 封装实体对象
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         var ownerId = IsRoot && request.IsPublic ? null : UserId;
         // 更新
         entity.Update(

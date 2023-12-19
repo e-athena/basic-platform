@@ -52,6 +52,11 @@
       },
     },
     {
+      title: '性别',
+      dataIndex: 'gender',
+      width: 140,
+    },
+    {
       title: '操作',
       width: 125,
       fixed: 'right',

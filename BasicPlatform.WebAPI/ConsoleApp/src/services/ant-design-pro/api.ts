@@ -162,3 +162,10 @@ export function queryAppSelectList() {
     method: 'GET',
   });
 }
+
+/** 读取网站设置 */
+export function queryWebSetting() {
+  return request<ApiResponse<WebSetting>>('/api/WebSetting/Get', {
+    method: 'GET',
+  });
+}

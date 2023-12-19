@@ -16,7 +16,7 @@ public class QueryModelBase
     /// 组织架构ID
     /// </summary>
     [TableColumn(Ignore = true)]
-    public string? OrganizationalUnitIds { get; set; }
+    public string? OrganizationalUnitId { get; set; }
 
     /// <summary>
     /// 创建人

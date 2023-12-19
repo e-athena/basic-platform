@@ -66,14 +66,14 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
             checked={selectedResources.map((p) => p.key).includes(entity.code)}
             disabled={props.disabledResourceKeys?.includes(entity.code)}
             onChange={(e) => {
-              let infos = [{ key: entity.code, code: entity.code, applicationId: entity.appId }];
+              let infos = [{ key: entity.code, code: entity.code, appId: entity.appId }];
               if (entity.parentCode === null) {
                 infos = [
-                  { key: entity.code, code: entity.code, applicationId: entity.appId },
+                  { key: entity.code, code: entity.code, appId: entity.appId },
                   ...(entity.children || []).map((p) => ({
                     key: p.code,
                     code: p.code,
-                    applicationId: entity.appId,
+                    appId: entity.appId,
                   })),
                 ];
               }
@@ -142,7 +142,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
                         (func): ResourceModel => ({
                           key: func.key,
                           code: func.value,
-                          applicationId: entity.appId,
+                          appId: entity.appId,
                         }),
                       );
                     });
@@ -161,7 +161,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
                         .map((func) => ({
                           key: func.key,
                           code: func.value,
-                          applicationId: entity.appId,
+                          appId: entity.appId,
                         }));
                     });
                   }
@@ -206,7 +206,7 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
               if (checked) {
                 setSelectedResources([
                   ...selectedResources,
-                  { key: item.key, code: item.value, applicationId: entity.appId },
+                  { key: item.key, code: item.value, appId: entity.appId },
                 ]);
               } else {
                 setSelectedResources(selectedResources.filter((c) => c.key !== item.key));
@@ -253,12 +253,12 @@ const Authorization: React.FC<AuthorizationProps> = (props) => {
                 {
                   key: entity.code,
                   code: entity.code,
-                  applicationId: entity.appId,
+                  appId: entity.appId,
                 },
                 ...(entity.functions?.map((p) => ({
                   key: p.key,
                   code: p.value,
-                  applicationId: entity.appId,
+                  appId: entity.appId,
                 })) || []),
               ];
               if (checked) {

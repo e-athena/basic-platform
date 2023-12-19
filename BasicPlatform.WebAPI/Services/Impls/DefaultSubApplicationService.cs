@@ -20,7 +20,7 @@ public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationS
     /// <param name="applicationQueryService"></param>
     /// <param name="tenantQueryService"></param>
     public DefaultSubApplicationService(
-        IOptions<BasicAuthConfig> options,
+        IOptionsMonitor<BasicAuthConfig> options,
         IApiPermissionService apiPermissionService,
         ILoggerFactory loggerFactory,
         IApplicationQueryService applicationQueryService,
@@ -31,6 +31,88 @@ public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationS
         _applicationQueryService = applicationQueryService;
         _tenantQueryService = tenantQueryService;
         _logger = loggerFactory.CreateLogger<DefaultSubApplicationService>();
+    }
+
+    /// <summary>
+    /// 读取事件列表
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<IDictionary<string, List<SelectViewModel>>> GetEventsAsync()
+    {
+        var appList = await _applicationQueryService.GetListAsync();
+        if (appList.Count == 0)
+        {
+            return new Dictionary<string, List<SelectViewModel>>();
+        }
+
+        const string resourceUrl = "/api/external/get-events";
+        var dict = new Dictionary<string, List<SelectViewModel>>();
+        await Parallel.ForEachAsync(appList, async (app, cancellationToken) =>
+        {
+            var url = $"{app.ApiUrl}{resourceUrl}";
+            try
+            {
+                var res = await GetRequest(url)
+                    .GetAsync(cancellationToken)
+                    .ReceiveJson<ApiResult<List<SelectViewModel>>>();
+
+                if (res.Data != null && res.Success && res.Data.Count > 0)
+                {
+                    dict.Add(app.Name, res.Data);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e,
+                    "读取应用事件失败，应用ID:{ClientId},资源地址:{Url}",
+                    app.ClientId,
+                    resourceUrl
+                );
+            }
+        });
+        return dict;
+    }
+
+    /// <summary>
+    /// 读取事件追踪配置列表
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<IDictionary<string, List<EventTrackingInfo>>> GetEventTrackingListAsync()
+    {
+        var appList = await _applicationQueryService.GetListAsync();
+        if (appList.Count == 0)
+        {
+            return new Dictionary<string, List<EventTrackingInfo>>();
+        }
+
+        const string resourceUrl = "/api/external/get-event-tracking-list";
+        var dict = new Dictionary<string, List<EventTrackingInfo>>();
+        await Parallel.ForEachAsync(appList, async (app, cancellationToken) =>
+        {
+            var url = $"{app.ApiUrl}{resourceUrl}";
+            try
+            {
+                var res = await GetRequest(url)
+                    .GetAsync(cancellationToken)
+                    .ReceiveJson<ApiResult<List<EventTrackingInfo>>>();
+
+                if (res.Data != null && res.Success && res.Data.Count > 0)
+                {
+                    dict.Add(app.Name, res.Data);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e,
+                    "读取应用事件追踪配置失败，应用ID:{ClientId},资源地址:{Url}",
+                    app.ClientId,
+                    resourceUrl
+                );
+            }
+        });
+        return dict;
     }
 
     /// <summary>
@@ -91,7 +173,7 @@ public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationS
                     else
                     {
                         var keys = resources
-                            .Where(p => p.ApplicationId == app.ClientId)
+                            .Where(p => p.AppId == app.ClientId)
                             .Select(p => p.Key)
                             .ToList();
                         resourceList = _apiPermissionService
@@ -189,7 +271,7 @@ public class DefaultSubApplicationService : DefaultServiceBase, ISubApplicationS
                 {
                     var res = await GetRequest(url)
                         .WithHeader("TenantId", tenantCode)
-                        .WithHeader("AppId", app.ApplicationClientId)
+                        .WithHeader("AppId", app.AppId)
                         .GetAsync(cancellationToken)
                         .ReceiveJson<ApiResult<string>>();
                     if (res.Data == "ok")

@@ -1,8 +1,6 @@
 using Athena.Infrastructure.EventTracking;
-using Athena.Infrastructure.EventTracking.Helpers;
 using Athena.Infrastructure.EventTracking.Messaging.Requests;
 using Athena.Infrastructure.EventTracking.Messaging.Responses;
-using Athena.Infrastructure.Messaging.Requests;
 
 namespace BasicPlatform.WebAPI.Controllers.Developer;
 
@@ -23,6 +21,7 @@ namespace BasicPlatform.WebAPI.Controllers.Developer;
 public class EventTrackingConfigController : CustomControllerBase
 {
     private readonly ITrackConfigService _service;
+    private readonly ISubApplicationService _subApplicationService;
     private const string ConfigSelectList = "event-tracking-select-list";
     private const string EventSelectList = "event-tracking-event-select-list";
 
@@ -30,9 +29,11 @@ public class EventTrackingConfigController : CustomControllerBase
     /// 
     /// </summary>
     /// <param name="service"></param>
-    public EventTrackingConfigController(ITrackConfigService service)
+    /// <param name="subApplicationService"></param>
+    public EventTrackingConfigController(ITrackConfigService service, ISubApplicationService subApplicationService)
     {
         _service = service;
+        _subApplicationService = subApplicationService;
     }
 
     /// <summary>
@@ -63,9 +64,27 @@ public class EventTrackingConfigController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [ApiPermission(ConfigSelectList)]
-    public IList<EventTrackingInfo> GetSelectList()
+    public async Task<IList<EventTrackingInfo>> GetSelectListAsync()
     {
-        return EventTrackingHelper.GetEventTrackingInfos("BasicPlatform");
+        var res = await _subApplicationService.GetEventTrackingListAsync();
+
+        var result = new List<EventTrackingInfo>();
+        var basic = EventTrackingHelper.GetEventTrackingInfos("BasicPlatform");
+        result.AddRange(basic);
+        foreach (var (_, value) in res)
+        {
+            result.AddRange(value);
+        }
+
+        // 过滤重复的
+        result = result.GroupBy(x => new
+        {
+            x.EventTypeFullName,
+            x.ProcessorFullName
+        }).Select(x => x.First()).ToList();
+
+        return result;
+        // return EventTrackingHelper.GetEventTrackingInfos("BasicPlatform");
         // return EventTrackingHelper.GetEventTrackingInfos(new List<Assembly>
         // {
         //     Assembly.Load("BasicPlatform.AppService.FreeSql"),
@@ -79,9 +98,23 @@ public class EventTrackingConfigController : CustomControllerBase
     /// <returns></returns>
     [HttpGet]
     [ApiPermission(EventSelectList)]
-    public IList<SelectViewModel> GetEventSelectList()
+    public async Task<IList<SelectViewModel>> GetEventSelectListAsync()
     {
-        return EventTrackingHelper.GetEventSelectList("BasicPlatform");
+        var res = await _subApplicationService.GetEventsAsync();
+
+        var result = new List<SelectViewModel>();
+        var basic = EventTrackingHelper.GetEventSelectList("BasicPlatform");
+        result.AddRange(basic);
+        foreach (var (_, value) in res)
+        {
+            result.AddRange(value);
+        }
+
+        // 过滤掉重复的
+        result = result.GroupBy(x => x.Value).Select(x => x.First()).ToList();
+
+        return result;
+        // return EventTrackingHelper.GetEventSelectList("BasicPlatform");
         // return EventTrackingHelper.GetEventSelectList(new List<Assembly>
         // {
         //     Assembly.Load("BasicPlatform.Domain")

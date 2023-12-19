@@ -17,6 +17,8 @@ public class UserGroupUser : ValueObject
     /// 用户组
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual UserGroup UserGroup { get; set; } = null!;
 
     /// <summary>
@@ -30,5 +32,7 @@ public class UserGroupUser : ValueObject
     /// 用户
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 }

@@ -216,9 +216,9 @@ const Login: React.FC = () => {
   const { status, type: loginType, errorMessage } = userLoginState;
 
   const appSettings: AppSettings = {
-    logo: 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
-    title: 'Athena Pro',
-    subTitle: '.NET Core下更好用且功能强大的通用基础权限管理平台'
+    logo: initialState?.webSetting?.logo || 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
+    title: initialState?.webSetting?.name || 'Athena Pro',
+    subTitle: initialState?.webSetting?.description || '.NET Core下更好用且功能强大的通用基础权限管理平台'
   };
 
   return (
@@ -451,7 +451,7 @@ const Login: React.FC = () => {
           </div>
         </LoginForm>
       </div>
-      <Footer />
+      <Footer message={initialState?.webSetting?.copyRight} />
     </div>
   );
 };

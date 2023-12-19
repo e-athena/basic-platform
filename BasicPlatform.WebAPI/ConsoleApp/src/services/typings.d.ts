@@ -112,7 +112,7 @@ declare namespace API {
 
   /** 分配数据权限 */
   type DataPermissionItem = {
-    applicationId?: string;
+    appId?: string;
     resourceKey: string;
     dataScope: number;
     enabled: boolean;
@@ -132,7 +132,7 @@ declare namespace API {
 
   /** 数据权限 */
   type UserDataPermission = {
-    applicationId?: string;
+    appId?: string;
     resourceKey: string;
     dataScope: number;
     enabled: boolean;

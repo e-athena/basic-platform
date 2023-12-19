@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Applications.Models;
+using BasicPlatform.Domain.Models.Applications;
 
 namespace BasicPlatform.AppService.Applications.Responses;
 

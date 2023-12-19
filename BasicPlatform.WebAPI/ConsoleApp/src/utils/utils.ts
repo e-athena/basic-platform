@@ -123,6 +123,7 @@ export async function submitHandle<T>(
   func: (values: T) => Promise<ApiResponse<boolean | string | number>>,
   fields: T,
   tips?: string,
+  skipSucceedTips: boolean = false,
 ): Promise<boolean> {
   const aTips = tips || '处理';
   const hide = message.loading(`${aTips}中`, 0);
@@ -130,7 +131,9 @@ export async function submitHandle<T>(
     const res = await func(fields);
     hide();
     if (res.success) {
-      message.success(`${aTips}成功`);
+      if (!skipSucceedTips) {
+        message.success(`${aTips}成功`);
+      }
       return true;
     }
     Modal.error({
@@ -263,3 +266,83 @@ export const isQiankun = () => {
   // @ts-ignore
   return window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ !== undefined;
 }
+
+// saveAs
+export const saveAs = (blob: Blob, fileName: string) => {
+  let link = document.createElement('a');
+  let body = document.querySelector('body');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  // fix Firefox
+  link.style.display = 'none';
+  body?.appendChild(link);
+  link.click();
+  body?.removeChild(link);
+  window.URL.revokeObjectURL(link.href);
+};
+
+// 导出为.txt文件
+export const exportTxtFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.csv文件
+export const exportCsvFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  saveAs(blob, filename);
+};
+
+// 导出为.xls文件
+export const exportExcelFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/vnd.ms-excel;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.xlsx文件
+export const exportXlsxFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.html文件
+export const exportHtmlFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.json文件
+export const exportJsonFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.xml文件
+export const exportXmlFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'text/xml;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.zip文件
+export const exportZipFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/zip;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.tar文件
+export const exportTarFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/x-tar;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.gz文件
+export const exportGzFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/gzip;charset=utf-8' });
+  saveAs(blob, filename);
+};
+
+// 导出为.rar文件
+export const exportRarFile = (filename: string, content: string) => {
+  let blob = new Blob([content], { type: 'application/x-rar-compressed;charset=utf-8' });
+  saveAs(blob, filename);
+};

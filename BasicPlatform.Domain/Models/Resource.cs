@@ -4,7 +4,6 @@ namespace BasicPlatform.Domain.Models;
 
 /// <summary>
 /// 资源
-/// <remarks>对应页面上的模块、菜单和按钮</remarks>
 /// </summary>
 [Table("authority_resources")]
 public class Resource : FullEntityCore
@@ -13,13 +12,7 @@ public class Resource : FullEntityCore
     /// 应用ID
     /// </summary>
     [MaxLength(36)]
-    public string ApplicationId { get; set; } = null!;
-
-    /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; }
+    public string AppId { get; set; } = null!;
 
     /// <summary>
     /// 唯一Key
@@ -57,14 +50,14 @@ public class Resource : FullEntityCore
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="applicationId"></param>
+    /// <param name="appId"></param>
     /// <param name="key"></param>
     /// <param name="sort"></param>
     /// <param name="status"></param>
     /// <param name="userId"></param>
-    public Resource(string applicationId, string key, int sort, Status status, string? userId)
+    public Resource(string appId, string key, int sort, Status status, string? userId)
     {
-        ApplicationId = applicationId;
+        AppId = appId;
         Key = key;
         Sort = sort;
         Status = status;

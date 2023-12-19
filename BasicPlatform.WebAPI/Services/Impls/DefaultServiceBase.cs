@@ -5,15 +5,15 @@ namespace BasicPlatform.WebAPI.Services.Impls;
 /// </summary>
 public abstract class DefaultServiceBase
 {
-    private readonly BasicAuthConfig _config;
+    private readonly IOptionsMonitor<BasicAuthConfig> _options;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="options"></param>
-    public DefaultServiceBase(IOptions<BasicAuthConfig> options)
+    public DefaultServiceBase(IOptionsMonitor<BasicAuthConfig> options)
     {
-        _config = options.Value;
+        _options = options;
     }
 
     /// <summary>
@@ -26,7 +26,8 @@ public abstract class DefaultServiceBase
         // return url
         //     .WithBasicAuth(_config.UserName, _config.Password);
         return url
-            .WithBasicAuth(_config.UserName, _config.Password)
+            .WithTimeout(30)
+            .WithBasicAuth(_options.CurrentValue.UserName, _options.CurrentValue.Password)
             .OnError(act =>
             {
                 var res = act.Response;

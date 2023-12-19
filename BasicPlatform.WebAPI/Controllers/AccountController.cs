@@ -39,7 +39,7 @@ public class AccountController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     public async Task<dynamic> LoginAsync(
-        [FromServices] IOptions<JwtConfig> options,
+        [FromServices] IOptionsMonitor<JwtConfig> options,
         [FromServices] IMediator mediator,
         [FromServices] ICacheManager cacheManager,
         [FromBody] LoginRequest request
@@ -87,15 +87,14 @@ public class AccountController : ControllerBase
             new("IsTenantAdmin", info.IsTenantAdmin ? "true" : "false"),
             new("TenantId", _securityContextAccessor.TenantId ?? string.Empty)
         };
-        var jwtConfig = options.Value;
         var sessionCode = Guid.NewGuid().ToString("N").ToUpper();
-        var cacheTime = TimeSpan.FromSeconds(jwtConfig.Expires);
+        var cacheTime = TimeSpan.FromSeconds(options.CurrentValue.Expires);
         var key = string.Format(SsoCacheKey.CurrentUserInfo, sessionCode);
         await cacheManager.SetAsync(key, info, cacheTime);
         // 设置会话过期时间
         await cacheManager.SetAsync(
             string.Format(SsoCacheKey.SessionExpiry, sessionCode),
-            DateTime.Now.AddSeconds(jwtConfig.Expires),
+            DateTime.Now.AddSeconds(options.CurrentValue.Expires),
             cacheTime
         );
         var token = _securityContextAccessor.CreateToken(claims);

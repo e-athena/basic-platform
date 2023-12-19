@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Positions.Models;
+using BasicPlatform.Domain.Models.Positions;
 
 namespace BasicPlatform.AppService.Positions.Responses;
 

@@ -6,6 +6,19 @@ namespace BasicPlatform.WebAPI.Services;
 public interface ISubApplicationService
 {
     /// <summary>
+    /// 读取事件列表
+    /// </summary>
+    /// <returns></returns>
+    Task<IDictionary<string, List<SelectViewModel>>> GetEventsAsync();
+
+    /// <summary>
+    /// 读取事件追踪配置列表
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    Task<IDictionary<string, List<EventTrackingInfo>>> GetEventTrackingListAsync();
+
+    /// <summary>
     /// 读取菜单资源
     /// </summary>
     /// <param name="resourceUrl"></param>

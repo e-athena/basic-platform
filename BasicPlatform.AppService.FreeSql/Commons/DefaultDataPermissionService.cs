@@ -1,3 +1,4 @@
+using BasicPlatform.Domain.Models.Organizations;
 using BasicPlatform.Domain.Models.Roles;
 using BasicPlatform.Domain.Models.Users;
 
@@ -34,6 +35,18 @@ public class DefaultDataPermissionService : IDataPermissionService
         string resourceKey,
         string? appId)
     {
+        if (_cacheManager == null)
+        {
+            return await QueryFunc();
+        }
+
+        // Key
+        var key = string.Format(CacheConstant.UserPolicyFilterGroupQueryKey, userId, resourceKey);
+        // 过期时间
+        var expireTime = TimeSpan.FromMinutes(30);
+
+        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<QueryFilterGroup>();
+
         async Task<List<QueryFilterGroup>> QueryFunc()
         {
             // 组装查询过滤器
@@ -82,18 +95,6 @@ public class DefaultDataPermissionService : IDataPermissionService
 
             return result;
         }
-
-        if (_cacheManager == null)
-        {
-            return await QueryFunc();
-        }
-
-        // Key
-        var key = string.Format(CacheConstant.UserPolicyFilterGroupQueryKey, userId, resourceKey);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
-
-        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<QueryFilterGroup>();
     }
 
     /// <summary>
@@ -115,26 +116,6 @@ public class DefaultDataPermissionService : IDataPermissionService
     /// <returns></returns>
     public async Task<List<string>> GetUserOrganizationIdsAsync(string userId, string? appId)
     {
-        async Task<List<string>> QueryFunc()
-        {
-            // 兼任职信息表
-            var orgIds = await _freeSql.Select<UserAppointment>()
-                .Where(p => p.UserId == userId)
-                .ToListAsync(p => p.OrganizationId);
-
-            // 用户组织
-            var orgId = _freeSql.Select<User>()
-                .Where(p => p.Id == userId)
-                .First(p => p.OrganizationId);
-
-            if (!string.IsNullOrEmpty(orgId))
-            {
-                orgIds.Add(orgId);
-            }
-
-            return orgIds;
-        }
-
         if (_cacheManager == null)
         {
             return await QueryFunc();
@@ -146,6 +127,27 @@ public class DefaultDataPermissionService : IDataPermissionService
         var expireTime = TimeSpan.FromMinutes(30);
 
         return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
+
+        async Task<List<string>> QueryFunc()
+        {
+            var result = new List<string>();
+
+            // 用户组织
+            var orgId = _freeSql.Select<User>()
+                .Where(p => p.Id == userId)
+                .First(p => p.OrganizationId);
+
+            result.Add(orgId);
+
+            // 兼任职信息表
+            var orgIds = await _freeSql.Select<UserAppointment>()
+                .Where(p => p.UserId == userId)
+                .ToListAsync(p => p.OrganizationId);
+
+            result.AddRange(orgIds);
+
+            return result;
+        }
     }
 
     /// <summary>
@@ -167,6 +169,17 @@ public class DefaultDataPermissionService : IDataPermissionService
     /// <returns></returns>
     public async Task<List<string>> GetUserOrganizationIdsTreeAsync(string userId, string? appId)
     {
+        if (_cacheManager == null)
+        {
+            return await QueryFunc();
+        }
+
+        // Key
+        var key = string.Format(CacheConstant.UserOrganizationsKey, userId);
+        // 过期时间
+        var expireTime = TimeSpan.FromMinutes(30);
+        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
+
         async Task<List<string>> QueryFunc()
         {
             // 查询用户所在的组织
@@ -178,9 +191,14 @@ public class DefaultDataPermissionService : IDataPermissionService
             }
 
             var filters = list.Select(p => new QueryFilter
-                {Key = "ParentPath", Operator = "contains", Value = p, XOR = "or"}).ToList();
+            {
+                Key = "ParentPath",
+                Operator = "contains",
+                Value = p,
+                XOR = "or"
+            }).ToList();
             // 生成查询条件
-            var filterWhere = QueryableExtensions.MakeFilterWhere<Organization>(filters, false);
+            var filterWhere = filters.MakeFilterWhere<Organization>(false);
             // 查询用户组织架构的下级组织
             var orgIds = _freeSql.Select<Organization>()
                 .Where(filterWhere)
@@ -190,17 +208,6 @@ public class DefaultDataPermissionService : IDataPermissionService
             // 数据去重
             return list.GroupBy(p => p).Select(p => p.Key).ToList();
         }
-
-        if (_cacheManager == null)
-        {
-            return await QueryFunc();
-        }
-
-        // Key
-        var key = string.Format(CacheConstant.UserOrganizationsKey, userId);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
-        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<string>();
     }
 
     /// <summary>
@@ -226,6 +233,12 @@ public class DefaultDataPermissionService : IDataPermissionService
         {
             return await QueryFunc();
         }
+
+        // Key
+        var key = string.Format(CacheConstant.UserDataScopesKey, userId);
+        // 过期时间
+        var expireTime = TimeSpan.FromMinutes(30);
+        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<DataPermission>();
 
         async Task<List<DataPermission>> QueryFunc()
         {
@@ -312,11 +325,5 @@ public class DefaultDataPermissionService : IDataPermissionService
 
             return list;
         }
-
-        // Key
-        var key = string.Format(CacheConstant.UserDataScopesKey, userId);
-        // 过期时间
-        var expireTime = TimeSpan.FromMinutes(30);
-        return await _cacheManager.GetOrCreateAsync(key, QueryFunc, expireTime) ?? new List<DataPermission>();
     }
 }

@@ -2,8 +2,11 @@ import { GithubOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-components';
 import React from 'react';
 
-const Footer: React.FC = () => {
-  const defaultMessage = 'Athena Pro';
+type FooterProps = {
+  message?: string;
+};
+const Footer: React.FC<FooterProps> = (props) => {
+  const defaultMessage = props.message || 'Athena Pro';
 
   const currentYear = new Date().getFullYear();
 

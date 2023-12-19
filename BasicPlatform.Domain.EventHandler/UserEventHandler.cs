@@ -7,6 +7,7 @@ namespace BasicPlatform.Domain.EventHandler;
 /// 用户通知处理器
 /// </summary>
 public class UserEventHandler : ServiceBase<User>,
+    IDomainEventHandler<UserResourceAssignedEvent>,
     IDomainEventHandler<UserDataPermissionAssignedEvent>,
     IDomainEventHandler<UserColumnPermissionAssignedEvent>
 {
@@ -18,6 +19,27 @@ public class UserEventHandler : ServiceBase<User>,
     public UserEventHandler(UnitOfWorkManager unitOfWorkManager, ISecurityContextAccessor accessor)
         : base(unitOfWorkManager, accessor)
     {
+    }
+
+    /// <summary>
+    /// 更新用户资源权限
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [EventTracking]
+    public async Task Handle(UserResourceAssignedEvent notification, CancellationToken cancellationToken)
+    {
+        // 删除旧数据
+        await RegisterDeleteValueObjectAsync<UserResource>(
+            p => p.UserId == notification.AggregateRootId, cancellationToken
+        );
+        if (notification.Resources.Count <= 0)
+        {
+            return;
+        }
+        await RegisterNewRangeValueObjectAsync(notification.Resources, cancellationToken);
     }
 
     /// <summary>

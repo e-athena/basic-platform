@@ -197,23 +197,23 @@
     toggle();
   };
 
-  // detailColumnData按group分组
-  const detailColumnDataGroup = detailColumnData.value.reduce((prev, cur) => {
-    const group = prev.find((x) => x.group === cur.group);
-    if (group) {
-      if (cur.groupDescription && !group.description) {
-        group.description = cur.groupDescription;
-      }
-      group.columns.push(cur);
-    } else {
-      prev.push({
-        description: cur.groupDescription,
-        group: cur.group,
-        columns: [cur],
-      });
-    }
-    return prev;
-  }, [] as { group: string; description?: string; columns: TableColumnItem[] }[]);
+  // // detailColumnData按group分组
+  // const detailColumnDataGroup = detailColumnData.value.reduce((prev, cur) => {
+  //   const group = prev.find((x) => x.group === cur.group);
+  //   if (group) {
+  //     if (cur.groupDescription && !group.description) {
+  //       group.description = cur.groupDescription;
+  //     }
+  //     group.columns.push(cur);
+  //   } else {
+  //     prev.push({
+  //       description: cur.groupDescription,
+  //       group: cur.group,
+  //       columns: [cur],
+  //     });
+  //   }
+  //   return prev;
+  // }, [] as { group: string; description?: string; columns: TableColumnItem[] }[]);
 
   const fetchColumns = async () => {
     let list = columnData.value;
@@ -230,7 +230,6 @@
         list = defaultColumns.map((x) => {
           return {
             ...x,
-            // hideInTable: x.hideInTable || false,
             sort: x.index || 999,
           } as TableColumnItem;
         });
@@ -549,8 +548,8 @@
   };
 
   // 选择表格大小
-  const handleSizeSelect = (v: 'mini' | 'small' | 'medium' | 'large') => {
-    size.value = v;
+  const handleSizeSelect = (value: any) => {
+    size.value = value;
   };
 
   const handleDrawerCancel = () => {

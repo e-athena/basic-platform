@@ -147,4 +147,13 @@ public static class ApiPermissionConstant
     public const string TenantAdminDetail = "tenantAdmin:detail";
 
     #endregion
+
+    #region 开发
+
+    /// <summary>
+    /// 日志服务下拉列表
+    /// </summary>
+    public const string LogServiceSelectList = "log:service:select";
+
+    #endregion
 }

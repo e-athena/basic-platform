@@ -111,6 +111,18 @@ export default [
           },
         ],
       },
+      {
+        path: '/developer/event-storage',
+        name: '事件存储查询',
+        component: './Developer/EventStorage',
+        access: 'routeFilter',
+      },
+      {
+        path: '/developer/log',
+        name: '日志查询',
+        component: './Developer/Log',
+        access: 'routeFilter',
+      },
     ],
   },
   {
@@ -169,6 +181,12 @@ export default [
         path: '/system/external-page',
         name: '外部页面',
         component: './System/ExternalPage',
+        access: 'routeFilter',
+      },
+      {
+        path: '/system/setting',
+        name: '网站设置',
+        component: './System/WebSetting',
         access: 'routeFilter',
       },
     ],

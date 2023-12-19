@@ -50,7 +50,7 @@ const DataPermissionForm: React.FC<DataPermissionFormProps> = (props) => {
         for (let i = 0; i < selectedData.length; i++) {
           const item = selectedData[i];
           permissions.push({
-            applicationId: item.applicationId,
+            appId: item.appId,
             resourceKey: item.resourceKey,
             dataScope: item.dataScope,
             enabled: item.enabled,

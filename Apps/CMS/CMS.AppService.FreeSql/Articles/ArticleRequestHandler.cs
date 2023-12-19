@@ -51,7 +51,7 @@ public class ArticleRequestHandler : ServiceBase<Article>,
     public async Task<string> Handle(UpdateArticleRequest request, CancellationToken cancellationToken)
     {
         // 封装实体对象
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         // 更新
         entity.Update(
             request.Title,
@@ -89,7 +89,7 @@ public class ArticleRequestHandler : ServiceBase<Article>,
     public async Task<string> Handle(PublishArticleRequest request, CancellationToken cancellationToken)
     {
         // 封装实体对象
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         if (entity.IsPublish)
         {
             entity.UnPublish(UserId);

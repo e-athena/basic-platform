@@ -40,7 +40,7 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
                   const item = group.items[j];
                   const dataItem = props.selectedData?.find(
                     (d) =>
-                      d.resourceKey === item.resourceKey && d.applicationId === p.applicationId,
+                      d.resourceKey === item.resourceKey && d.appId === p.applicationId,
                   );
                   if (dataItem) {
                     // 替换数据
@@ -68,7 +68,7 @@ const ApplicationDataPermission: React.FC<ApplicationDataPermissionProps> = (pro
                       for (let j = 0; j < group.items.length; j++) {
                         const item = group.items[j];
                         changeValues.push({
-                          applicationId: item.appId,
+                          appId: item.appId,
                           resourceKey: item.resourceKey,
                           dataScope: item.dataScope,
                           enabled: item.enabled,

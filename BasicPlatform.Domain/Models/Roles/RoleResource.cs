@@ -10,13 +10,7 @@ public class RoleResource : ValueObject
     /// 应用ID
     /// </summary>
     [MaxLength(36)]
-    public string? ApplicationId { get; set; }
-
-    /// <summary>
-    /// 应用
-    /// </summary>
-    /// <value></value>
-    public virtual Application? Application { get; set; } = null!;
+    public string? AppId { get; set; }
 
     /// <summary>
     /// 角色ID
@@ -29,6 +23,8 @@ public class RoleResource : ValueObject
     /// 角色
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Role Role { get; set; } = null!;
 
     /// <summary>
@@ -61,9 +57,9 @@ public class RoleResource : ValueObject
     /// <summary>
     /// 
     /// </summary>
-    public RoleResource(string? applicationId, string roleId, string resourceKey, string resourceCode)
+    public RoleResource(string? appId, string roleId, string resourceKey, string resourceCode)
     {
-        ApplicationId = applicationId;
+        AppId = appId;
         RoleId = roleId ?? throw new ArgumentNullException(nameof(roleId));
         ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
         ResourceCode = resourceCode ?? throw new ArgumentNullException(nameof(resourceCode));

@@ -19,6 +19,8 @@ public class RoleGroupUser : ValueObject
     /// 角色组
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual RoleGroup RoleGroup { get; set; } = null!;
 
     /// <summary>
@@ -32,5 +34,7 @@ public class RoleGroupUser : ValueObject
     /// 用户
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 }

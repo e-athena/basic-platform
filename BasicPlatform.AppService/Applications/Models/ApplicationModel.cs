@@ -33,11 +33,13 @@ public class ApplicationModel : ModelBase
     /// <summary>
     /// 前端地址
     /// </summary>
+    [Url(ErrorMessage = "前端地址格式不正确")]
     public string? FrontendUrl { get; set; }
 
     /// <summary>
     /// 接口地址
     /// </summary>
+    [Url(ErrorMessage = "接口地址格式不正确")]
     public string? ApiUrl { get; set; }
 
     /// <summary>

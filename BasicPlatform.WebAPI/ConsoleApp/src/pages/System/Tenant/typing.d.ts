@@ -96,9 +96,8 @@ declare namespace API {
   type TenantApplicationItem = {
     tenantId: string;
     isEnabled: boolean;
-    applicationId: string;
     applicationName: string;
-    applicationClientId: string;
+    appId: string;
     isolationLevel: number,
     connectionString: string | null;
     expiredTime: string | null;

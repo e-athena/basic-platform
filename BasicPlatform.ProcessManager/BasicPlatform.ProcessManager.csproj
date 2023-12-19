@@ -19,6 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Rougamo.Fody" Version="2.0.0" />
+        <PackageReference Include="Rougamo.Fody" Version="2.0.1" />
     </ItemGroup>
 </Project>

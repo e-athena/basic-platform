@@ -25,6 +25,8 @@ public class UserColumnPermission : ValueObject
     /// 用户
     /// </summary>
     /// <value></value>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 
     /// <summary>

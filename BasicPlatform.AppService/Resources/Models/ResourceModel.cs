@@ -8,7 +8,7 @@ public class ResourceModel
     /// <summary>
     /// 应用ID
     /// </summary>
-    public string? ApplicationId { get; set; }
+    public string? AppId { get; set; }
 
     /// <summary>
     /// KEY
@@ -24,6 +24,6 @@ public class ResourceModel
     /// <summary>
     /// 资源代码列表
     /// </summary>
-    public IList<string> Codes =>
+    public IEnumerable<string> Codes =>
         string.IsNullOrEmpty(Code) ? new List<string>() : Code.Split(",");
 }

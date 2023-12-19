@@ -56,7 +56,7 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
             UserId,
             request.Applications.Select(x =>
                     new TenantApplication(id,
-                        x.ApplicationClientId,
+                        x.AppId,
                         x.IsolationLevel,
                         x.ConnectionString,
                         x.ExpiredTime,
@@ -87,7 +87,7 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
             throw FriendlyException.Of("租户编码已存在");
         }
 
-        var entity = await GetForUpdateAsync(request.Id!, cancellationToken);
+        var entity = await GetAsync(request.Id!, cancellationToken);
         entity.Update(
             request.Name,
             request.Code!,
@@ -103,7 +103,7 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
             request.Applications.Select(x =>
                     new TenantApplication(
                         request.Id!,
-                        x.ApplicationClientId,
+                        x.AppId,
                         x.IsolationLevel,
                         x.ConnectionString,
                         x.ExpiredTime,
@@ -124,7 +124,7 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
     /// <returns></returns>
     public async Task<string> Handle(ChangeTenantStatusRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.ChangeStatus(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
@@ -138,10 +138,10 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
     /// <returns></returns>
     public async Task<string> Handle(AssignTenantResourcesRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.AssignResources(request
                 .Resources
-                .Select(p => new TenantResource(p.ApplicationId, request.Id, p.Key, p.Code))
+                .Select(p => new TenantResource(p.AppId, request.Id, p.Key, p.Code))
                 .ToList(),
             UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
@@ -149,7 +149,7 @@ public class TenantRequestHandler : ServiceBase<Tenant>,
     }
 
     /// <summary>
-    /// 
+    /// 初始化租户数据库
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>

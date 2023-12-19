@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Applications.Requests;
+using BasicPlatform.Domain.Models.Applications;
 
 namespace BasicPlatform.AppService.FreeSql.Applications;
 
@@ -76,7 +77,7 @@ public class ApplicationRequestHandler : ServiceBase<Application>,
             throw FriendlyException.Of("ClientId已存在");
         }
 
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.Update(request.Name,
             request.ClientId,
             request.UseDefaultClientSecret,
@@ -99,7 +100,7 @@ public class ApplicationRequestHandler : ServiceBase<Application>,
     /// <returns></returns>
     public async Task<string> Handle(ApplicationStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;

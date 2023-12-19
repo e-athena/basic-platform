@@ -73,6 +73,8 @@ public class Role : FullEntityCore
         DataScopeCustom = dataScopeCustom;
         Remarks = remarks;
         CreatedUserId = createdUserId;
+
+        ApplyEvent(new RoleCreatedEvent(name, remarks, dataScope, dataScopeCustom));
     }
 
     /// <summary>
@@ -91,6 +93,8 @@ public class Role : FullEntityCore
         DataScopeCustom = dataScopeCustom;
         Remarks = remarks;
         LastUpdatedUserId = updatedUserId;
+
+        ApplyEvent(new RoleUpdatedEvent(name, remarks, dataScope, dataScopeCustom));
     }
 
     /// <summary>
@@ -102,6 +106,8 @@ public class Role : FullEntityCore
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
+
+        ApplyEvent(new RoleStatusChangedEvent(Status));
     }
 
     /// <summary>
@@ -125,7 +131,6 @@ public class Role : FullEntityCore
         LastUpdatedUserId = updatedUserId;
         ApplyEvent(new RoleColumnPermissionAssignedEvent(permissions));
     }
-
 
     /// <summary>
     /// 分配资源

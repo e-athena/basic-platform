@@ -24,7 +24,7 @@ public class TestEventHandler : ServiceBase<Article>,
     /// <exception cref="NotImplementedException"></exception>
     public async Task Handle(ArticlePublishedEvent notification, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(notification.AggregateRootId, cancellationToken);
+        var entity = await GetAsync(notification.AggregateRootId, cancellationToken);
         // 将标题改成45555+时间戳
         entity.Title = "45555_" + DateTime.Now.Ticks;
         entity.Author = "领域事件修改的";

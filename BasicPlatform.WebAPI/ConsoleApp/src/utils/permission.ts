@@ -100,6 +100,8 @@ export default {
         postAsync: 'UserController_PostAsync',
         /** 更新 */
         putAsync: 'UserController_PutAsync',
+        /** 删除 */
+        deleteAsync: 'UserController_DeleteAsync',
         /** 状态变更 */
         statusChangeAsync: 'UserController_StatusChangeAsync',
         /** 分配资源 */
@@ -130,6 +132,13 @@ export default {
         /** 状态变更 */
         statusChangeAsync: 'ApplicationController_StatusChangeAsync',
     },
+    /** 事件存储管理 */
+    eventStorage: {
+        /** 读取列表 */
+        getPagingAsync: 'EventStorageController_GetPagingAsync',
+        /** 读取内容 */
+        getAsync: 'EventStorageController_GetAsync',
+    },
     /** 事件追踪配置管理 */
     eventTrackingConfig: {
         /** 读取列表 */
@@ -151,8 +160,21 @@ export default {
         getPagingAsync: 'EventTrackingController_GetPagingAsync',
         /** 根据ID读取 */
         getAsync: 'EventTrackingController_GetAsync',
-        /** 根据ID读取 */
+        /** 读取分解树图 */
         getDecompositionTreeGraphAsync: 'EventTrackingController_GetDecompositionTreeGraphAsync',
+    },
+    /** 日志管理 */
+    log: {
+        /** 读取列表 */
+        getPagingAsync: 'LogController_GetPagingAsync',
+        /** 读取日志详情 */
+        getByIdAsync: 'LogController_GetByIdAsync',
+        /** 读取日志详情 */
+        getByTraceIdAsync: 'LogController_GetByTraceIdAsync',
+        /** 读取调用次数 */
+        getCallCountAsync: 'LogController_GetCallCountAsync',
+        /** 读取服务列表 */
+        getServiceSelectListAsync: 'log:service:select',
     },
     /** 资源管理 */
     resource: {

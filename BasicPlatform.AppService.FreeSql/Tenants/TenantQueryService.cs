@@ -2,6 +2,7 @@ using BasicPlatform.AppService.Tenants;
 using BasicPlatform.AppService.Tenants.Models;
 using BasicPlatform.AppService.Tenants.Requests;
 using BasicPlatform.AppService.Tenants.Responses;
+using BasicPlatform.Domain.Models.Applications;
 
 namespace BasicPlatform.AppService.FreeSql.Tenants;
 
@@ -63,7 +64,7 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
             throw FriendlyException.Of("租户不存在");
         }
 
-        // var clientIds = entity.Applications.Select(p => p.ApplicationClientId).ToList();
+        // var clientIds = entity.Applications.Select(p => p.AppId).ToList();
 
         // 读取应用列表
         var applications = await QueryNoTracking<Application>()
@@ -79,12 +80,12 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
             var app = group.First();
             var item = entity
                 .Applications
-                .FirstOrDefault(p => p.ApplicationClientId == app.ClientId) ?? new TenantApplicationModel
+                .FirstOrDefault(p => p.AppId == app.ClientId) ?? new TenantApplicationModel
             {
                 TenantId = id,
                 ApplicationName = app.Name,
                 IsolationLevel = TenantIsolationLevel.Shared,
-                ApplicationClientId = app.ClientId,
+                AppId = app.ClientId,
                 IsEnabled = true,
                 ApplicationApiUrl = app.ApiUrl
             };
@@ -131,7 +132,7 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
 
         if (entity.Applications.Count > 0)
         {
-            var clientIds = entity.Applications.Select(p => p.ApplicationClientId).ToList();
+            var clientIds = entity.Applications.Select(p => p.AppId).ToList();
             var apps = await MainQueryNoTracking<Application>()
                 .Where(p => p.Environment == AspNetCoreEnvironment)
                 .Where(p => clientIds.Contains(p.ClientId))
@@ -140,13 +141,13 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
             {
                 foreach (var model in entity.Applications)
                 {
-                    var item = apps.FirstOrDefault(p => p.ClientId == model.ApplicationClientId);
+                    var item = apps.FirstOrDefault(p => p.ClientId == model.AppId);
                     if (item == null)
                     {
                         continue;
                     }
 
-                    model.ApplicationClientId = item.ClientId;
+                    model.AppId = item.ClientId;
                     model.ApplicationName = item.Name;
                     model.ApplicationApiUrl = item.ApiUrl;
                 }
@@ -168,7 +169,7 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
     {
         return MainQueryNoTracking<TenantApplication>()
             .Where(p => p.Tenant.Code == code)
-            .Where(p => p.ApplicationClientId == appId)
+            .Where(p => p.AppId == appId)
             .Where(p => p.IsEnabled)
             .ToOneAsync(p => p.ConnectionString!);
     }
@@ -180,11 +181,24 @@ public class TenantQueryService : QueryServiceBase<Tenant>, ITenantQueryService
     /// <param name="appId"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task<TenantInfo> GetAsync(string code, string appId)
+    public Task<TenantInfo> GetAsync(string code, string? appId)
     {
+        if (string.IsNullOrEmpty(appId))
+        {
+            return MainQueryableNoTracking
+                .Where(p => p.Code == code)
+                .Where(p => p.Status == Status.Enabled)
+                .ToOneAsync(p => new TenantInfo
+                {
+                    ConnectionString = p.ConnectionString!,
+                    DbKey = code,
+                    IsolationLevel = p.IsolationLevel
+                });
+        }
+
         return MainQueryNoTracking<TenantApplication>()
             .Where(p => p.Tenant.Code == code)
-            .Where(p => p.ApplicationClientId == appId)
+            .Where(p => p.AppId == appId)
             .Where(p => p.IsEnabled)
             .ToOneAsync(p => new TenantInfo
             {

@@ -2,6 +2,7 @@ using BasicPlatform.AppService.Applications;
 using BasicPlatform.AppService.Applications.Models;
 using BasicPlatform.AppService.Applications.Requests;
 using BasicPlatform.AppService.Applications.Responses;
+using BasicPlatform.Domain.Models.Applications;
 
 namespace BasicPlatform.AppService.FreeSql.Applications;
 
@@ -84,9 +85,7 @@ public class ApplicationQueryService : QueryServiceBase<Application>, IApplicati
         {
             var clientIdList = await MainQueryNoTracking<TenantApplication>()
                 .Where(p => p.IsEnabled)
-                // .Where(p => p.Application.Status == Status.Enabled)
-                // .GroupBy(p => p.Application.ClientId)
-                .GroupBy(p => p.ApplicationClientId)
+                .GroupBy(p => p.AppId)
                 .ToListAsync(p => p.Key);
             if (clientIdList == null || clientIdList.Count == 0)
             {

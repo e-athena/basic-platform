@@ -1,5 +1,4 @@
 using BasicPlatform.AppService.Resources.Requests;
-using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers.Developer;
 
@@ -56,10 +55,10 @@ public class ResourceController : CustomControllerBase
         var resources = _apiPermissionService.GetResourceCodeInfos(assembly, GlobalConstant.DefaultAppId);
         var request = new SyncResourceRequest
         {
-            ApplicationId = GlobalConstant.DefaultAppId,
+            AppId = GlobalConstant.DefaultAppId,
             Resources = resources.Select(p => new ResourceModel
             {
-                ApplicationId = p.ApplicationId,
+                AppId = p.ApplicationId,
                 Key = p.Key,
                 Code = p.Code
             }).ToList()
@@ -86,13 +85,13 @@ public class ResourceController : CustomControllerBase
                     {
                         appResources.Add(new ResourceModel
                         {
-                            ApplicationId = app.ClientId,
+                            AppId = app.ClientId,
                             Key = info.Code,
                             Code = info.Code
                         });
                         appResources.AddRange(info.Functions!.Select(p => new ResourceModel
                         {
-                            ApplicationId = app.ClientId,
+                            AppId = app.ClientId,
                             Key = p.Key,
                             Code = p.Value
                         }));
@@ -100,7 +99,7 @@ public class ResourceController : CustomControllerBase
 
                     var req = new SyncResourceRequest
                     {
-                        ApplicationId = app.ClientId,
+                        AppId = app.ClientId,
                         Resources = appResources
                     };
                     count += await _mediator.SendAsync(req, cancellationToken);

@@ -4,6 +4,7 @@ namespace BasicPlatform.Domain.Models.Users;
 /// 用户自定义列
 /// </summary>
 [Table("basic_user_custom_columns")]
+[Index(nameof(UserId),nameof(ModuleName), IsUnique = false)]
 public class UserCustomColumn : ValueObject
 {
     /// <summary>

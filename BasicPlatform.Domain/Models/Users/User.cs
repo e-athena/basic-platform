@@ -1,3 +1,5 @@
+using BasicPlatform.Domain.Models.Organizations;
+using BasicPlatform.Domain.Models.Positions;
 using BasicPlatform.Domain.Models.Users.Events;
 
 namespace BasicPlatform.Domain.Models.Users;
@@ -6,6 +8,7 @@ namespace BasicPlatform.Domain.Models.Users;
 /// 用户
 /// </summary>
 [Table("authority_users")]
+[Index(nameof(UserName), nameof(TenantId), IsUnique = true)]
 public class User : FullEntityCore
 {
     /// <summary>
@@ -201,6 +204,8 @@ public class User : FullEntityCore
         {
             throw FriendlyException.Of("不能禁用开发者帐号");
         }
+
+        ApplyEvent(new UserStatusChangedEvent(Status));
     }
 
     /// <summary>
@@ -255,6 +260,8 @@ public class User : FullEntityCore
         PhoneNumber = phoneNumber;
         Email = email;
         LastUpdatedUserId = updatedUserId;
+
+        ApplyEvent(new UserBasicUpdatedEvent(realName, phoneNumber, email));
     }
 
     /// <summary>
@@ -272,6 +279,8 @@ public class User : FullEntityCore
 
         Password = PasswordHash.CreateHash(newPassword);
         LastUpdatedUserId = updatedUserId;
+
+        ApplyEvent(new UserPasswordChangedEvent());
     }
 
     /// <summary>
@@ -301,6 +310,19 @@ public class User : FullEntityCore
         Password = PasswordHash.CreateHash(newPassword);
         IsInitPassword = true;
         LastUpdatedUserId = updatedUserId;
+
+        ApplyEvent(new UserPasswordResetEvent());
+    }
+
+    /// <summary>
+    /// 分配资源权限
+    /// </summary>
+    /// <param name="resources"></param>
+    /// <param name="updatedUserId"></param>
+    public void AssignUserResources(List<UserResource> resources, string? updatedUserId)
+    {
+        LastUpdatedUserId = updatedUserId;
+        ApplyEvent(new UserResourceAssignedEvent(resources));
     }
 
     /// <summary>
@@ -323,5 +345,17 @@ public class User : FullEntityCore
     {
         LastUpdatedUserId = updatedUserId;
         ApplyEvent(new UserColumnPermissionAssignedEvent(permissions));
+    }
+
+    /// <summary>
+    /// 添加任职
+    /// </summary>
+    /// <param name="appointments"></param>
+    public void AddAppointment(List<UserAppointment> appointments)
+    {
+        // OrganizationId = organizationId;
+        // PositionId = positionId;
+        // LastUpdatedUserId = updatedUserId;
+        // ApplyEvent(new UserAppointmentAddedEvent(organizationId, positionId));
     }
 }

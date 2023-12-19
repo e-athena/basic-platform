@@ -1,9 +1,10 @@
+using BasicPlatform.Domain.Models.Applications.Events;
 using BasicPlatform.Domain.Models.Users;
 
-namespace BasicPlatform.Domain.Models;
+namespace BasicPlatform.Domain.Models.Applications;
 
 /// <summary>
-/// 网站系统应用
+/// 业务子应用
 /// </summary>
 [Table("authority_applications")]
 public class Application : FullEntityCore
@@ -118,6 +119,19 @@ public class Application : FullEntityCore
         PermissionResourceRoute = permissionResourceRoute;
         Remarks = remarks;
         CreatedUserId = createdUserId;
+
+        ApplyEvent(new ApplicationCreatedEvent(
+            environment,
+            name,
+            clientId,
+            ClientSecret,
+            useDefaultClientSecret,
+            frontendUrl,
+            apiUrl,
+            menuResourceRoute,
+            permissionResourceRoute,
+            remarks
+        ));
     }
 
     /// <summary>
@@ -148,6 +162,17 @@ public class Application : FullEntityCore
         PermissionResourceRoute = permissionResourceRoute;
         Remarks = remarks;
         LastUpdatedUserId = updatedUserId;
+
+        ApplyEvent(new ApplicationUpdatedEvent(
+            name,
+            clientId,
+            useDefaultClientSecret,
+            frontendUrl,
+            apiUrl,
+            menuResourceRoute,
+            permissionResourceRoute,
+            remarks
+        ));
     }
 
     /// <summary>
@@ -159,5 +184,7 @@ public class Application : FullEntityCore
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
+
+        ApplyEvent(new ApplicationStatusChangedEvent(Status));
     }
 }

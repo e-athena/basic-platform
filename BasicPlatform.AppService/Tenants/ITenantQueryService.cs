@@ -47,5 +47,5 @@ public interface ITenantQueryService
     /// <param name="code"></param>
     /// <param name="appId"></param>
     /// <returns></returns>
-    Task<TenantInfo> GetAsync(string code, string appId);
+    Task<TenantInfo> GetAsync(string code, string? appId);
 }

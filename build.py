@@ -10,14 +10,17 @@ image_prefix = 'registry.cn-shenzhen.aliyuncs.com/lrmtc/'
 image_dict = {
     'web-api': image_prefix + 'basic-platform-web-api',
     'cms-api': image_prefix + 'e-demo-cms-api',
+    'gateway': image_prefix + 'e-yarp-gateway',
 }
 path_dict = {
     'web-api': 'BasicPlatform.WebAPI',
-    'cms-api': 'Apps/CMS/CMS.WebAPI'
+    'cms-api': 'Apps/CMS/CMS.WebAPI',
+    'gateway': 'BasicPlatform.Gateway'
 }
 proj_name_dict = {
     'web-api': 'BasicPlatform.WebAPI',
-    'cms-api': 'CMS.WebAPI'
+    'cms-api': 'CMS.WebAPI',
+    'gateway': 'BasicPlatform.Gateway'
 }
 
 
@@ -55,7 +58,7 @@ def main(argv):
     # # 执行命令
     # make_cmd = "make run image={0} tag={1} path={2}".format(image_name, tag_name, path_name)
     # os.system(make_cmd)
-    
+
     # 本地 publish
     os.system(
         "dotnet publish -r linux-x64 \"./" + path_name + "/" + proj_name + ".csproj\" -c Release --no-self-contained")

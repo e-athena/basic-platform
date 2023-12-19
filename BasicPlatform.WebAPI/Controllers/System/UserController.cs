@@ -2,7 +2,6 @@ using BasicPlatform.AppService.ExternalPages.Models;
 using BasicPlatform.AppService.Users;
 using BasicPlatform.AppService.Users.Requests;
 using BasicPlatform.AppService.Users.Responses;
-using BasicPlatform.WebAPI.Services;
 
 namespace BasicPlatform.WebAPI.Controllers.System;
 
@@ -114,6 +113,18 @@ public class UserController : CustomControllerBase
         ApiPermissionConstant.UserDetail
     })]
     public Task<string> PutAsync([FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
+    {
+        return _mediator.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    public Task<int> DeleteAsync([FromBody] DeleteUserRequest request, CancellationToken cancellationToken)
     {
         return _mediator.SendAsync(request, cancellationToken);
     }
@@ -250,7 +261,7 @@ public class UserController : CustomControllerBase
         {
             var resources = await _queryService.GetUserResourceAsync(null, null);
             var keys = resources
-                .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
+                .Where(p => p.AppId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.AppId))
                 .Select(p => p.Key)
                 .ToList();
             systemResources =

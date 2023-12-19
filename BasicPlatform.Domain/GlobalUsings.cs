@@ -12,6 +12,7 @@ global using System.Text.Json;
 global using Athena.Infrastructure.QueryFilters;
 global using System.Text.Json.Serialization;
 global using Athena.Infrastructure;
+global using Athena.Infrastructure.DataAnnotations.Schema;
 global using Athena.Infrastructure.Helpers;
 global using Athena.Infrastructure.Tenants;
 global using BasicPlatform.Domain.Models.Tenants.Events;

@@ -1,4 +1,5 @@
 using BasicPlatform.AppService.Positions.Requests;
+using BasicPlatform.Domain.Models.Positions;
 
 namespace BasicPlatform.AppService.FreeSql.Positions;
 
@@ -49,7 +50,7 @@ public class PositionRequestHandler : DataPermissionServiceBase<Position>,
     /// <returns></returns>
     public async Task<string> Handle(UpdatePositionRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.Update(request.OrganizationId, request.Name, request.Remarks, request.Sort, UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;
@@ -63,7 +64,7 @@ public class PositionRequestHandler : DataPermissionServiceBase<Position>,
     /// <returns></returns>
     public async Task<string> Handle(PositionStatusChangeRequest request, CancellationToken cancellationToken)
     {
-        var entity = await GetForUpdateAsync(request.Id, cancellationToken);
+        var entity = await GetAsync(request.Id, cancellationToken);
         entity.StatusChange(UserId);
         await RegisterDirtyAsync(entity, cancellationToken);
         return entity.Id;

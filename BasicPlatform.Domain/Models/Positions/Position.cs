@@ -1,6 +1,8 @@
+using BasicPlatform.Domain.Models.Organizations;
+using BasicPlatform.Domain.Models.Positions.Events;
 using BasicPlatform.Domain.Models.Users;
 
-namespace BasicPlatform.Domain.Models;
+namespace BasicPlatform.Domain.Models.Positions;
 
 /// <summary>
 /// 职位
@@ -91,6 +93,8 @@ public class Position : FullEntityCore
         Status = status;
         Sort = sort;
         CreatedUserId = createdUserId;
+
+        ApplyEvent(new PositionCreatedEvent(organizationId, name, remarks, status, sort));
     }
 
     /// <summary>
@@ -108,6 +112,8 @@ public class Position : FullEntityCore
         Remarks = remarks;
         Sort = sort;
         LastUpdatedUserId = updatedUserId;
+
+        ApplyEvent(new PositionUpdatedEvent(organizationId, name, remarks, sort));
     }
 
     /// <summary>
@@ -119,5 +125,7 @@ public class Position : FullEntityCore
         Status = Status == Status.Disabled ? Status.Enabled : Status.Disabled;
         LastUpdatedUserId = updatedUserId;
         UpdatedOn = DateTime.Now;
+
+        ApplyEvent(new PositionStatusChangedEvent(Status));
     }
 }

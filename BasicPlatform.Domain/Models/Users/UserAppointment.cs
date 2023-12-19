@@ -1,3 +1,6 @@
+using BasicPlatform.Domain.Models.Organizations;
+using BasicPlatform.Domain.Models.Positions;
+
 namespace BasicPlatform.Domain.Models.Users;
 
 /// <summary>
@@ -15,6 +18,8 @@ public class UserAppointment : ValueObject
     /// <summary>
     /// 组织架构
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Organization Organization { get; set; } = null!;
 
     /// <summary>
@@ -26,6 +31,8 @@ public class UserAppointment : ValueObject
     /// <summary>
     /// 所属职位
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual Position Position { get; set; } = null!;
 
     /// <summary>
@@ -37,6 +44,8 @@ public class UserAppointment : ValueObject
     /// <summary>
     /// 用户
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 
     /// <summary>

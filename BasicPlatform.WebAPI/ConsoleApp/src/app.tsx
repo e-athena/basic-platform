@@ -15,6 +15,7 @@ import {
   queryExternalPages,
   addUserAccessRecord,
   queryAppConfig,
+  queryWebSetting,
 } from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
@@ -56,6 +57,7 @@ export async function getInitialState(): Promise<{
   fetchSignalRConnectionNotice?: (token: string) => Promise<HubConnection>;
   // eventConnectionHub?: HubConnection;
   // fetchSignalRConnectionEvent?: (token: string) => Promise<HubConnection>;
+  webSetting?: WebSetting;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -88,6 +90,16 @@ export async function getInitialState(): Promise<{
     const data = await fetchApiResources();
     return recursionMenu(data);
   };
+
+  const res = await queryWebSetting();
+  let webSetting: WebSetting | undefined;
+  if (res.success && res.data !== null) {
+    // 处理logo，如果不包含http或者https，则加上API_URL
+    if (res.data!.logo && res.data!.logo.indexOf('http') === -1) {
+      res.data!.logo = API_URL + res.data!.logo;
+    }
+    webSetting = res.data;
+  }
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== LOGIN_PATH) {
@@ -98,6 +110,7 @@ export async function getInitialState(): Promise<{
     const noticeConnectionHub = await fetchSignalRConnectionNotice();
     // const eventConnectionHub = await fetchSignalRConnectionEvent(token);
     return {
+      webSetting,
       fetchMenuData,
       fetchUserInfo,
       fetchApiResources,
@@ -117,6 +130,7 @@ export async function getInitialState(): Promise<{
     };
   }
   return {
+    webSetting,
     fetchMenuData,
     fetchUserInfo,
     fetchApiResources,
@@ -149,8 +163,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   }
 
   const appSettings: AppSettings = {
-    logo: 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
-    title: 'Athena Pro',
+    logo: initialState?.webSetting?.logo || 'https://cdn.gzwjz.com/FmzrX15jYA03KMVfbgMJnk-P6WGl.png',
+    title: initialState?.webSetting?.shortName || 'Athena Pro',
+    // subTitle: initialState?.webSetting?.description || '.NET Core下更好用且功能强大的通用基础权限管理平台'
   };
 
   return {

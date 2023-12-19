@@ -11,7 +11,7 @@ public class RoleDataPermissionModel
     /// <summary>
     /// 应用ID
     /// </summary>
-    public string? ApplicationId { get; set; }
+    public string? AppId { get; set; }
 
     /// <summary>
     /// 资源Key

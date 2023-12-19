@@ -15,6 +15,8 @@ public class UserAccessRecord : ValueObject
     /// <summary>
     /// 用户
     /// </summary>
+    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 
     /// <summary>
