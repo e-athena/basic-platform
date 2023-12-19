@@ -14,5 +14,5 @@ public class CustomControllerBase : ControllerBase
     /// <summary>
     /// 用户ID
     /// </summary>
-    protected string? UserId => HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    protected string UserId => HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 }

@@ -10,4 +10,8 @@
       <ProjectReference Include="..\CMS.Domain\CMS.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Athena.InstantMessaging" Version="7.0.0" />
+    </ItemGroup>
+
 </Project>

@@ -103,7 +103,7 @@ export async function getInitialState(): Promise<{
     const externalPages = (await fetchExternalPages()) || [];
     // SignalR
     // 如果是在主应用中，不需要连接通知中心
-    const noticeConnectionHub = isQiankun() ? undefined : (await fetchSignalRConnectionNotice());
+    const noticeConnectionHub = isQiankun() ? undefined : await fetchSignalRConnectionNotice();
     // const eventConnectionHub = await fetchSignalRConnectionEvent(token);
     return {
       fetchMenuData,
@@ -145,18 +145,18 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 
   const customSettings: LayoutSettings = isQiankun()
     ? {
-      layout: 'side',
-      contentWidth: 'Fluid',
-      fixedHeader: false,
-      fixSiderbar: false,
-      splitMenus: false,
-      headerRender: false,
-      footerRender: false,
-      menuRender: false,
-      menuHeaderRender: false,
-      // @ts-ignore
-      navTheme: window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ || customNavTheme,
-    }
+        layout: 'side',
+        contentWidth: 'Fluid',
+        fixedHeader: false,
+        fixSiderbar: false,
+        splitMenus: false,
+        headerRender: false,
+        footerRender: false,
+        menuRender: false,
+        menuHeaderRender: false,
+        // @ts-ignore
+        navTheme: window.__INJECTED_QIANKUN_MASTER_NAV_THEME__ || customNavTheme,
+      }
     : {};
 
   return {
@@ -290,11 +290,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

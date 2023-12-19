@@ -1,5 +1,5 @@
 import Storage from '@/utils/storage';
-import {isQiankun} from "@/utils/utils";
+import { isQiankun } from '@/utils/utils';
 
 const tokenKey = isQiankun() ? MAIN_APP_TOKEN_KEY : APP_TOKEN_KEY;
 const sessionCodeKey = APP_SESSION_CODE_KEY || 'basic_platform_session_code';

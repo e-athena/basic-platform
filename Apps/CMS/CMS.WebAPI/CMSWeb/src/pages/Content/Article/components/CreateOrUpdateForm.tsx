@@ -1,9 +1,5 @@
 import { submitHandle } from '@/utils/utils';
-import {
-  ProFormText,
-  ProFormTextArea,
-  ModalForm,
-} from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea, ModalForm } from '@ant-design/pro-components';
 import React from 'react';
 import { update, create } from '../service';
 

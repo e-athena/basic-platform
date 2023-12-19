@@ -68,10 +68,7 @@ const TableList: React.FC = () => {
       width: 125,
       render(_, entity) {
         return [
-          <Access
-            key={'edit'}
-            accessible={canAccessible(permission.article.putAsync, resource)}
-          >
+          <Access key={'edit'} accessible={canAccessible(permission.article.putAsync, resource)}>
             <Button
               shape="circle"
               type={'link'}
@@ -88,10 +85,7 @@ const TableList: React.FC = () => {
               编辑
             </Button>
           </Access>,
-          <Access
-            key={'copy'}
-            accessible={canAccessible(permission.article.postAsync, resource)}
-          >
+          <Access key={'copy'} accessible={canAccessible(permission.article.postAsync, resource)}>
             <Button
               shape="circle"
               type={'link'}
@@ -126,10 +120,7 @@ const TableList: React.FC = () => {
         query={query}
         moduleName={'Article'}
         toolBarRender={() => [
-          <Access
-            key={'add'}
-            accessible={canAccessible(permission.article.postAsync, resource)}
-          >
+          <Access key={'add'} accessible={canAccessible(permission.article.postAsync, resource)}>
             <Button
               type="primary"
               onClick={() => {

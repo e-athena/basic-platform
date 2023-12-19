@@ -33,7 +33,6 @@ declare namespace API {
     columns: TableColumnItem[];
   };
 
-
   type TableColumnItem = {
     /** 是否已过滤 */
     ignore: boolean;

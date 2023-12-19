@@ -428,7 +428,7 @@ function ProTablePlus<T extends Record<string, any>, U extends ParamsType, Value
             />,
             <EditTableColumnForm
               key={'editTableColumn'}
-              data={columnData.filter(d => !d.tableIgnore)}
+              data={columnData.filter((d) => !d.tableIgnore)}
               onOk={(list) => {
                 setColumnData(list);
                 setColumnLoading(true);

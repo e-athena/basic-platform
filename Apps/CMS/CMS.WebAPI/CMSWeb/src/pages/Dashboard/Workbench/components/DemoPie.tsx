@@ -48,7 +48,7 @@ const DemoPie = () => {
         type: 'element-active',
       },
     ],
-    height: 300
+    height: 300,
   };
   return <Pie {...config} />;
 };

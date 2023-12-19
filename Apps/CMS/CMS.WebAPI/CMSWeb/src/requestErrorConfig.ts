@@ -154,7 +154,7 @@ export const errorConfig: RequestConfig = {
       // 拦截请求配置，进行个性化处理
       const url = `${API_URL}${config?.url}`;
       const authHeader: any = {
-        Authorization: getToken()
+        Authorization: getToken(),
       };
       if (isQiankun()) {
         authHeader.AppId = APPID;

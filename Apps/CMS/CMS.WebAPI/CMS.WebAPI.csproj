@@ -16,9 +16,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Athena.All.FreeSql" Version="7.0.4-preview.20231218.2" />
-        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="7.0.0-preview.20231101.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
+        <PackageReference Include="Athena.All.FreeSql" Version="7.0.4-preview.20231218.2"/>
+        <PackageReference Include="Athena.Infrastructure.FreeSql.OTel" Version="7.0.0-preview.20231101.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13"/>
+        <PackageReference Include="Athena.Infrastructure.SubApplication" Version="7.0.3-preview.20231215.4"/>
     </ItemGroup>
 
     <ItemGroup>

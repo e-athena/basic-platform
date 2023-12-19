@@ -16,7 +16,7 @@ const Welcome: React.FC = () => {
     width: '33.3%',
     textAlign: 'center',
     cursor: 'pointer',
-    padding: '16px 8px'
+    padding: '16px 8px',
   };
   return (
     <RcResizeObserver
@@ -26,8 +26,16 @@ const Welcome: React.FC = () => {
         setResponsive1(offset.width < 1070);
       }}
     >
-      <ProCard.Group gutter={[16, 16]} style={{ backgroundColor: 'transparent' }} direction={responsive1 ? 'column' : 'row'}>
-        <ProCard title={`欢迎回来，${initialState?.currentUser?.realName}`} headerBordered colSpan={responsive1 ? 24 : 17}>
+      <ProCard.Group
+        gutter={[16, 16]}
+        style={{ backgroundColor: 'transparent' }}
+        direction={responsive1 ? 'column' : 'row'}
+      >
+        <ProCard
+          title={`欢迎回来，${initialState?.currentUser?.realName}`}
+          headerBordered
+          colSpan={responsive1 ? 24 : 17}
+        >
           <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
             <StatisticCard
               statistic={{
@@ -73,7 +81,14 @@ const Welcome: React.FC = () => {
           </Card>
         </ProCard>
         <ProCard colSpan={responsive1 ? 24 : 7}>
-          <Card title="快捷访问" extra={<Button size={'middle'} type={'link'}>管理</Button>}>
+          <Card
+            title="快捷访问"
+            extra={
+              <Button size={'middle'} type={'link'}>
+                管理
+              </Button>
+            }
+          >
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
               <Card.Grid key={item} style={gridStyle}>
                 <PieChartOutlined style={{ fontSize: 22 }} />
@@ -98,11 +113,19 @@ const Welcome: React.FC = () => {
           </Card>
         </ProCard>
       </ProCard.Group>
-      <ProCard.Group gutter={[16, 16]} style={{ backgroundColor: 'transparent' }} direction={responsive1 ? 'column' : 'row'}>
+      <ProCard.Group
+        gutter={[16, 16]}
+        style={{ backgroundColor: 'transparent' }}
+        direction={responsive1 ? 'column' : 'row'}
+      >
         <ProCard title={'柱形图'} headerBordered colSpan={responsive1 ? 24 : 17}>
           <DemoColumn />
         </ProCard>
-        <ProCard title={'最活跃员工'} subTitle={'最近30天前十的活跃度'} colSpan={responsive1 ? 24 : 7}>
+        <ProCard
+          title={'最活跃员工'}
+          subTitle={'最近30天前十的活跃度'}
+          colSpan={responsive1 ? 24 : 7}
+        >
           <DemoPie />
         </ProCard>
       </ProCard.Group>

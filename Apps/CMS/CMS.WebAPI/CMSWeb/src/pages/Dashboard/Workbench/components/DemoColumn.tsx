@@ -29,7 +29,7 @@ const DemoColumn = () => {
       start: 0.1,
       end: 0.2,
     },
-    height: 282
+    height: 282,
   };
 
   return <Column {...config} />;

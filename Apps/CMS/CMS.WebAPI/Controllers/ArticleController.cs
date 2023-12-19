@@ -1,4 +1,4 @@
-using App.Infrastructure.Messaging.Responses;
+using Athena.Infrastructure.SubApplication.Messaging.Responses;
 using CMS.AppService.Articles;
 using CMS.AppService.Articles.Models;
 using CMS.AppService.Articles.Requests;

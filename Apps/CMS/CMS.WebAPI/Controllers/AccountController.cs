@@ -1,5 +1,3 @@
-using Athena.Infrastructure.Auths;
-
 namespace CMS.WebAPI.Controllers;
 
 /// <summary>

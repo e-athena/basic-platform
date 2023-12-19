@@ -1,4 +1,4 @@
-import {defineConfig} from '@umijs/max';
+import { defineConfig } from '@umijs/max';
 
 export default defineConfig({
   // 打包后输入目录

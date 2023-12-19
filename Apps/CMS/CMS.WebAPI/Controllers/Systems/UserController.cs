@@ -1,6 +1,4 @@
-using Athena.Infrastructure.Auths;
-
-namespace CMS.WebAPI.Controllers;
+namespace CMS.WebAPI.Controllers.Systems;
 
 /// <summary>
 /// 用户控制器
@@ -37,7 +35,7 @@ public class UserController : CustomControllerBase
 
         var resources = await _userService.GetUserResourceAsync(UserId!, GlobalConstant.DefaultAppId);
         var keys = resources
-            .Where(p => p.AppId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.AppId))
+            .Where(p => p.ApplicationId == GlobalConstant.DefaultAppId || string.IsNullOrEmpty(p.ApplicationId))
             .Select(p => p.Key)
             .ToList();
 
@@ -69,5 +67,16 @@ public class UserController : CustomControllerBase
         request.AppId = GlobalConstant.DefaultAppId;
         request.UserId = UserId!;
         return _userService.UpdateUserCustomColumnsAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// 读取下拉列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [SkipApiPermissionVerification]
+    public Task<List<SelectViewModel>> GetSelectListAsync()
+    {
+        return _userService.GetAllUserAsync();
     }
 }
